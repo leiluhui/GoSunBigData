@@ -20,6 +20,7 @@ import scala.collection.JavaConverters
   *
   */
 object FaceOffLineAlarmJob {
+  
   def main(args: Array[String]): Unit = {
     val offLineAlarmMessage = new OffLineAlarmMessage()
     val properties = PropertiesUtil.getProperties

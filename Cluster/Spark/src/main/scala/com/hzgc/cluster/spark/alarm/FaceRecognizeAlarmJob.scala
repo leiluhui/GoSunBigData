@@ -12,6 +12,7 @@ import com.hzgc.common.jni.FaceFunction
 import com.hzgc.common.rocketmq.RocketMQProducer
 import com.ibm.icu.text.SimpleDateFormat
 import kafka.serializer.StringDecoder
+import org.apache.log4j.Logger
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Durations, StreamingContext}
@@ -23,7 +24,7 @@ import scala.collection.mutable.ArrayBuffer
   * 人脸识别告警实时计算任务
   */
 object FaceRecognizeAlarmJob {
-
+  val LOG: Logger = Logger.getLogger(FaceRecognizeAlarmJob.getClass)
   case class Json(staticID: String,
                   staticObjectType: String,
                   sim: Float)

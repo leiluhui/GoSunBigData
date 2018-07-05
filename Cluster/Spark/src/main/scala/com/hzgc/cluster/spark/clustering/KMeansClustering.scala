@@ -258,9 +258,10 @@ object KMeansClustering {
         LOG.info("write clustering info to HBase...")
         PutDataToHBase.putClusteringInfo(rowKey, table1List)
 
-        //update each clustering data to es
-        val putDataToEs = PutDataToEs.getInstance()
+
         finalData.foreachPartition(part => {
+          //update each clustering data to es
+          val putDataToEs = PutDataToEs.getInstance()
           conn = DriverManager.getConnection(capture_url, capture_data_table_user, capture_data_table_password)
           part.foreach(data => {
             val rowKey = yearMon + "-" + region + "-" + data._1 + "-" + uuidString
