@@ -10,6 +10,7 @@ import com.hzgc.common.facedispatch.DeviceUtilImpl
 import com.hzgc.common.facedispatch.table.DispatchTable
 import com.hzgc.common.facestarepo.table.alarm.StaticRepoUtil
 import com.hzgc.common.rocketmq.RocketMQProducer
+import org.apache.log4j.Logger
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.JavaConverters
@@ -19,7 +20,6 @@ import scala.collection.JavaConverters
   *
   */
 object FaceOffLineAlarmJob {
-
   def main(args: Array[String]): Unit = {
     val offLineAlarmMessage = new OffLineAlarmMessage()
     val properties = PropertiesUtil.getProperties
@@ -38,7 +38,7 @@ object FaceOffLineAlarmJob {
       println("Start offline alarm task data processing ...")
       val objTypeList = PropertiesUtil.getOffLineArarmObjType(offLineAlarmRule)
       val returnResult = StaticRepoUtil
-        .getInstance(kafkaBootStrapBroadCast.value, kafkaBootStrapBroadCast.value)
+        .getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value)
         .searchByPkeysUpdateTime(objTypeList)
       if (returnResult != null && !returnResult.isEmpty) {
         val totalData = sc.parallelize(JavaConverters.asScalaBufferConverter(returnResult).asScala)
