@@ -1,6 +1,8 @@
 package com.hzgc.cluster.spark.clustering;
 
 import com.hzgc.cluster.spark.util.PropertiesUtil;
+import com.hzgc.common.faceclustering.table.PeopleSchedulerTable;
+import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.util.json.JSONUtil;
 import org.apache.hadoop.hbase.client.*;
@@ -17,8 +19,8 @@ public class Discover {
         Properties properties = PropertiesUtil.getProperties();
         String startDate = properties.getProperty("kmeans.start.date");
         String endDate = properties.getProperty("kmeans.end.date");
-        Table table = HBaseHelper.getTable("peoplescheduler");
-        Table regionTable = HBaseHelper.getTable("personregion");
+        Table table = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
+        Table regionTable = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
         Scan scan = new Scan();
         Calendar calendar = Calendar.getInstance();
         int day = calendar.getActualMaximum(Calendar.DATE);
@@ -53,13 +55,13 @@ public class Discover {
         try {
             ResultScanner resultScanner = table.getScanner(scan);
             for (Result result : resultScanner) {
-                String moveInLastRunTime = Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveInLastRunTime")));
-                String moveInCount = Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveInCount")));
-                String moveOutDays = Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveOutDays")));
+                String moveInLastRunTime = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINLASTRUNTIME));
+                String moveInCount = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT));
+                String moveOutDays = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS));
                 String regionId = Bytes.toString(result.getRow());
                 Get get = new Get(Bytes.toBytes(regionId));
                 Result result1 = regionTable.get(get);
-                String ipcids = Bytes.toString(result1.getValue(Bytes.toBytes("region"), Bytes.toBytes("ipcids")));
+                String ipcids = Bytes.toString(result1.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS));
                 List<String> ipcidList = JSONUtil.toObject(ipcids, ArrayList.class);
                 long moveInLast = sdf.parse(moveInLastRunTime).getTime();
                 long inter = day * 24 * 60 * 60 * 1000;

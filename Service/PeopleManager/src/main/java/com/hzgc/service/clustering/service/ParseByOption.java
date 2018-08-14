@@ -147,32 +147,6 @@ public class ParseByOption {
         return sqlAndSetValues;
     }
 
-
-    public String getRegionNameMapping(List<String> regionIdList) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("select ").append(PersonRegionTable.REGION_ID)
-                .append(", ")
-                .append(PersonRegionTable.REGION_NAME)
-                .append(" from ")
-                .append(PersonRegionTable.TABLE_NAME)
-                .append(" where ")
-                .append(PersonRegionTable.REGION_ID)
-                .append(" in (");
-        int count = 0;
-        for (String regionid : regionIdList) {
-            sql.append("'")
-                    .append(regionid)
-                    .append("'");
-            count++;
-            if (count == regionIdList.size()) {
-                sql.append(")");
-            } else {
-                sql.append(", ");
-            }
-        }
-        return sql.toString();
-    }
-
     public SqlAndArgs getSqlFromGetResidentParam(GetResidentParam param) {
         StringBuilder sql = new StringBuilder();
         List<Object> setValues = new ArrayList<>();

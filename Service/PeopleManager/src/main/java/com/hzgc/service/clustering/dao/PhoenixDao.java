@@ -211,14 +211,6 @@ public class PhoenixDao implements Serializable {
         return 0;
     }
 
-    private String getLastId(SqlRowSet sqlRowSet) throws SQLException {
-        String lastId = null;
-        while (sqlRowSet.next()) {
-            lastId = sqlRowSet.getString(PersonRegionTable.REGION_ID);
-        }
-        return lastId;
-    }
-
     /**
      * 抓拍次数查询
      *

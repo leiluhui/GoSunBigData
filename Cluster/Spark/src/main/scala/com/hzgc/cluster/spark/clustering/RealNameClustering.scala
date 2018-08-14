@@ -6,6 +6,7 @@ import java.util.Date
 
 import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
 import com.hzgc.common.collect.bean.FaceObject
+import com.hzgc.common.faceclustering.table.{ClusteringTable, PeopleRecognizeTable, PeopleSchedulerTable, PersonRegionTable}
 import com.hzgc.common.facedispatch.DeviceUtilImpl
 import com.hzgc.common.facestarepo.table.alarm.StaticRepoUtil
 import com.hzgc.common.hbase.HBaseHelper
@@ -19,8 +20,8 @@ import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Durations, StreamingContext}
 
-import scala.collection.{JavaConverters, immutable, mutable}
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.collection.JavaConverters
+import scala.collection.mutable.ArrayBuffer
 
 object RealNameClustering extends Serializable {
 
@@ -63,17 +64,19 @@ object RealNameClustering extends Serializable {
         LOG.info("The big url of the faceObject is " + faceObj.getBurl)
         val ipcID = faceObj.getIpcId
         val filterResult = new ArrayBuffer[Json]()
-        val table = HBaseHelper.getTable("peoplescheduler")
-        val get = new Get(Bytes.toBytes("RealNameRule"))
-        val rs = table.get(get)
-        val rules = Bytes.toString(rs.getValue(Bytes.toBytes("rules"), Bytes.toBytes("rule")))
-        LOG.info("rules is : +++++++++" + rules)
-        val obj = JSONUtil.toObject(rules, classOf[Rules])
-        val realnamelist = obj.getRealNames
-        while (realnamelist.iterator().hasNext) {
-          val realName = realnamelist.iterator().next()
-          if (realName.getIpcIds.contains(ipcID)) {
-            val sim = realName.getSim.toInt
+        val table = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME)
+        val regionTable = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME)
+        val scan = new Scan()
+        val resultScanner = table.getScanner(scan)
+        while (resultScanner.iterator().hasNext) {
+          val result = resultScanner.iterator().next()
+          val regionId = result.getRow
+          val get = new Get(regionId)
+          val regionResult = regionTable.get(get)
+          val ipcidStr = Bytes.toString(regionResult.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS))
+          val ipcidList = JSONUtil.toObject(ipcidStr, util.Arrays.asList[String]().getClass)
+          if (ipcidList.contains(ipcID)) {
+            val sim = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)).toInt
             totalList.foreach(record => {
               val threshold = FaceFunction.featureCompare(record(2).asInstanceOf[Array[Float]], faceObj.getAttribute.getFeature)
               if (threshold > sim) {
@@ -87,8 +90,8 @@ object RealNameClustering extends Serializable {
 
     val putToHBase = jsonResult.foreachRDD(forRDD => {
       forRDD.foreachPartition(parRDD => {
-        val hbaseTable: Table = HBaseHelper.getTable("peopleadd")
-        val hbaseTableReco: Table = HBaseHelper.getTable("peoplerecognize")
+        val hbaseTableAdd: Table = HBaseHelper.getTable(ClusteringTable.TABLE_PEOPLECOMPARE)
+        val hbaseTableReco: Table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME)
         val df: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val list = new util.ArrayList[String]()
         LOG.info("time  is ++++++++++++++++++++")
@@ -105,8 +108,8 @@ object RealNameClustering extends Serializable {
             val feature = faceobj.getAttribute.getFeature
             val put: Put = new Put(Bytes.toBytes(rowkey))
             LOG.info("rowkey is : ++++++++++++++++" + rowkey)
-            put.addColumn(Bytes.toBytes("add"), Bytes.toBytes("faceobject"), Bytes.toBytes(JSONUtil.toJson(faceobj)))
-            hbaseTable.put(put)
+            put.addColumn(ClusteringTable.PEOPELCOMPARE_COLUMNFAMILY, ClusteringTable.PEOPELCOMPARE_COLUMNDATA, Bytes.toBytes(JSONUtil.toJson(faceobj)))
+            hbaseTableAdd.put(put)
           } else {
             val updateTimeList = new java.util.ArrayList[String]()
             finalList.foreach(message => {
@@ -120,17 +123,17 @@ object RealNameClustering extends Serializable {
               if (list.contains(message.staticID)) {
                 val get = new Get(Bytes.toBytes(message.staticID))
                 val r = hbaseTableReco.get(get)
-                val listString = Bytes.toString(r.getValue(Bytes.toBytes("recognize"), Bytes.toBytes("faceobject")))
-                var list  = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
+                val listString = Bytes.toString(r.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT))
+                var list = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
                 list.add(obj._2)
                 val put = new Put(Bytes.toBytes(message.staticID))
-                put.addColumn(Bytes.toBytes("recognize"), Bytes.toBytes("faceobj"), Bytes.toBytes(JSONUtil.toJson(list)))
+                put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(list)))
                 hbaseTableReco.put(put)
               } else {
                 val put = new Put(Bytes.toBytes(message.staticID))
                 val peopleList = new util.ArrayList[FaceObject]()
                 peopleList.add(obj._2)
-                put.addColumn(Bytes.toBytes("recognize"), Bytes.toBytes("faceobj"), Bytes.toBytes(JSONUtil.toJson(peopleList)))
+                put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(peopleList)))
                 hbaseTableReco.put(put)
               }
               updateTimeList.add(message.staticID)

@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @Api(tags = "人口实名制管理")
-public class ClusteringController {
+public class ResidentController {
 
     @Autowired
     private ClusteringSearchService clusteringSearchService;

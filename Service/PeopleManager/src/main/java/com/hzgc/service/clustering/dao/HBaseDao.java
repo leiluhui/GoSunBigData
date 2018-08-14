@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.ClusteringAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
+import com.hzgc.common.faceclustering.table.PeopleSchedulerTable;
+import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
@@ -126,7 +128,7 @@ public class HBaseDao {
     }
 
     public Integer saveRegular(Regular regular) {
-        Table clusteringInfoTable = HBaseHelper.getTable("peoplescheduler");
+        Table clusteringInfoTable = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = simpleDateFormat.format(new Date());
         String rowkey = regular.getRegionID();
@@ -135,11 +137,11 @@ public class HBaseDao {
         String moveInCount = regular.getMoveInCount();
         String moveOutDays = regular.getMoveOutDays();
         Put put = new Put(Bytes.toBytes(rowkey));
-        put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("regionName"), Bytes.toBytes(regionName));
-        put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("sim"), Bytes.toBytes(sim));
-        put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveInCount"), Bytes.toBytes(moveInCount));
-        put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveOutDays"), Bytes.toBytes(moveOutDays));
-        put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveInLastRunTime"), Bytes.toBytes(time));
+        put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME, Bytes.toBytes(regionName));
+        put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM, Bytes.toBytes(sim));
+        put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT, Bytes.toBytes(moveInCount));
+        put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS, Bytes.toBytes(moveOutDays));
+        put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINLASTRUNTIME, Bytes.toBytes(time));
         try {
             clusteringInfoTable.put(put);
             log.info("Put data to hbase succeed !!!");
@@ -151,7 +153,7 @@ public class HBaseDao {
     }
 
     public List<Regular> searchPlan(String regionID) {
-        Table peoplescheduler = HBaseHelper.getTable("peoplescheduler");
+        Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
         List<Regular> regularList = new ArrayList<>();
         if (regionID == null) {
             Scan scan = new Scan();
@@ -160,10 +162,10 @@ public class HBaseDao {
                 for (Result result : resultScanner) {
                     Regular regular = new Regular();
                     regular.setRegionID(Bytes.toString(result.getRow()));
-                    regular.setRegionName(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("regionName"))));
-                    regular.setSim(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("sim"))));
-                    regular.setMoveInCount(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveInCount"))));
-                    regular.setMoveOutDays(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveOutDays"))));
+                    regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
+                    regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
+                    regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
+                    regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));
                     regularList.add(regular);
                 }
             } catch (Exception e) {
@@ -175,10 +177,10 @@ public class HBaseDao {
                 Result result = peoplescheduler.get(get);
                 Regular regular = new Regular();
                 regular.setRegionID(Bytes.toString(result.getRow()));
-                regular.setRegionName(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("regionName"))));
-                regular.setSim(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("sim"))));
-                regular.setMoveInCount(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveInCount"))));
-                regular.setMoveOutDays(Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveOutDays"))));
+                regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
+                regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
+                regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
+                regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));
                 regularList.add(regular);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -188,18 +190,18 @@ public class HBaseDao {
     }
 
     public Integer modifyPlan(String regionID, String sim, String moveInCount, String moveOutDays) {
-        Table peoplescheduler = HBaseHelper.getTable("peoplescheduler");
+        Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
         Get get = new Get(Bytes.toBytes(regionID));
         try {
             Result result = peoplescheduler.get(get);
-            String moveInLastRunTime = Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("moveInLastRunTime")));
-            String regionName = Bytes.toString(result.getValue(Bytes.toBytes("rules"), Bytes.toBytes("regionName")));
+            String moveInLastRunTime = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINLASTRUNTIME));
+            String regionName = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME));
             Put put = new Put(Bytes.toBytes(regionID));
-            put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("regionName"), Bytes.toBytes(regionName));
-            put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("sim"), Bytes.toBytes(sim));
-            put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveInLastRunTime"), Bytes.toBytes(moveInLastRunTime));
-            put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveInCount"), Bytes.toBytes(moveInCount));
-            put.addColumn(Bytes.toBytes("rules"), Bytes.toBytes("moveOutDays"), Bytes.toBytes(moveOutDays));
+            put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME, Bytes.toBytes(regionName));
+            put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM, Bytes.toBytes(sim));
+            put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINLASTRUNTIME, Bytes.toBytes(moveInLastRunTime));
+            put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT, Bytes.toBytes(moveInCount));
+            put.addColumn(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS, Bytes.toBytes(moveOutDays));
             peoplescheduler.put(put);
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +211,7 @@ public class HBaseDao {
     }
 
     public Integer deletePlan(List<String> regionID) {
-        Table peoplescheduler = HBaseHelper.getTable("peoplescheduler");
+        Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
         for (String region : regionID) {
             Delete delete = new Delete(Bytes.toBytes(region));
             try {
@@ -227,18 +229,18 @@ public class HBaseDao {
      * 更新PersonRegionTable
      */
     public void UpdataPersonRegionTable(){
-        Table peoplescheduler = HBaseHelper.getTable("peoplescheduler");
-        Table personRegion = HBaseHelper.getTable("personregion");
+        Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
+        Table personRegion = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
         Scan scan = new Scan();
         try {
             ResultScanner resultScanner = peoplescheduler.getScanner(scan);
             for (Result result : resultScanner){
                 String regionId = Bytes.toString(result.getRow());
                 List<String> ipcidList = getIpcIds(Long.getLong(regionId),"d");
-                String regionName = Bytes.toString(result.getValue(Bytes.toBytes("rules"),Bytes.toBytes("regionName")));
+                String regionName = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME));
                 Put put = new Put(Bytes.toBytes(regionId));
-                put.addColumn(Bytes.toBytes("rules"),Bytes.toBytes("regionName"),Bytes.toBytes(regionName));
-                put.addColumn(Bytes.toBytes("rules"),Bytes.toBytes("ipcids"),Bytes.toBytes(JSONUtil.toJson(ipcidList)));
+                put.addColumn(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_NAME,Bytes.toBytes(regionName));
+                put.addColumn(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_IPCIDS,Bytes.toBytes(JSONUtil.toJson(ipcidList)));
                 personRegion.put(put);
             }
         } catch (Exception e) {
