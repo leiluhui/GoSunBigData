@@ -51,7 +51,8 @@ public class ParseByOption {
     }
 
     public String getPerson() {
-        return "select " + PeopleManagerTable.NAME + ", "
+        return "select " + PeopleManagerTable.ROWKEY + ", "
+                + PeopleManagerTable.NAME + ", "
                 + PeopleManagerTable.IDCARD + ", "
                 + PeopleManagerTable.SEX + ", "
                 + PeopleManagerTable.REASON + ", "
@@ -445,6 +446,12 @@ public class ParseByOption {
             }
         }
         return whereQuery.toString();
+    }
+
+    public String getPhotoByObjectID() {
+        return  "select " + PeopleManagerTable.PHOTO
+                + " from " + PeopleManagerTable.TABLE_NAME
+                + " where " + PeopleManagerTable.ROWKEY + " = ?";
     }
 }
 

@@ -38,9 +38,9 @@ public class GetResidentParam implements Serializable {
     @ApiModelProperty(value = "人员状态")
     private Integer status;                       // 人员状态 [0 = 常住人口（默认选项），1 = 建议迁出]
     @ApiModelProperty(value = "关注等级")
-    private Integer followLevel;                  // 关注等级 [1 = 非重点关注（默认选项），2 = 重点关注]
+    private Integer followLevel;                  // 关注等级 [0 = 非重点关注（默认选项），1 = 重点关注]
     @ApiModelProperty(value = "关爱等级")
-    private Integer careLevel;                    //关爱等级  [1 = 非关爱人口（默认选项），2 = 关爱人口]
+    private Integer careLevel;                    //关爱等级  [0 = 非关爱人口（默认选项），1 = 关爱人口]
     @ApiModelProperty(value = "起始行数")
     private Integer start;                        // 起始行数
     @ApiModelProperty(value = "分页行数")

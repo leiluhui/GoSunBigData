@@ -1,11 +1,9 @@
 package com.hzgc.service.clustering.bean.export;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 public class Regular implements Serializable{

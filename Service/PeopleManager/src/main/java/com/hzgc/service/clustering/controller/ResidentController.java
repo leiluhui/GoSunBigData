@@ -6,10 +6,7 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.service.clustering.bean.export.ClusteringInfo;
-import com.hzgc.service.clustering.bean.export.Regular;
-import com.hzgc.service.clustering.bean.export.Resident;
-import com.hzgc.service.clustering.bean.export.ResidentSearchResult;
+import com.hzgc.service.clustering.bean.export.*;
 import com.hzgc.service.clustering.bean.param.ClusteringSaveParam;
 import com.hzgc.service.clustering.bean.param.ClusteringSearchParam;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
@@ -19,6 +16,8 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -238,6 +237,25 @@ public class ResidentController {
     }
 
     /**
+     * 获取常驻人口库照片
+     *
+     * @param objectID 对象ID
+     * return byte[]
+     */
+    @ApiOperation(value = "获取常驻人口库照片",produces = "image/jpeg")
+    @ApiImplicitParam(name = "objectID",value = "对象ID",dataType = "String",paramType = "query")
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_GETRESIDENTPICTURE,method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getResidentPhoto(String objectID){
+        if (StringUtils.isBlank(objectID)){
+            log.error("Start to get object photo,but the objectID is null!");
+            return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
+        }
+        log.info("Start to get the object photo, param is : " + objectID);
+        byte[] photo = clusteringSearchService.getResidentPhoto(objectID);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photo);
+    }
+
+    /**
      * 查询对象
      *
      * @param param 查询条件封装
@@ -245,14 +263,14 @@ public class ResidentController {
      */
     @ApiOperation(value = "对象查询",response = ResidentSearchResult.class)
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_RESIDENTSEARCH,method = RequestMethod.POST)
-    public ResponseResult<ResidentSearchResult> searchResident(@RequestBody @ApiParam(value = "查询条件")GetResidentParam param){
+    public ResponseResult<List> searchResident(@RequestBody @ApiParam(value = "查询条件")GetResidentParam param){
         if (param == null){
             log.error("Start get resident,but param is null!");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询人口对象参数为空，请检查！");
         }
         log.info("Start get resident,param is : " + JSONUtil.toJson(param));
-        ResidentSearchResult result = clusteringSearchService.searchResident(param);
-        return ResponseResult.init(result);
+        List<PersonObject> resultList = clusteringSearchService.searchResident(param);
+        return ResponseResult.init(resultList);
     }
 
 
@@ -282,13 +300,13 @@ public class ResidentController {
      */
     @ApiOperation(value = "根据id查询抓拍历史", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.GET)
-    public ResponseResult<List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+    public ResponseResult<Map> getCaptureHistory(List<String> rowkeylist) {
         if (rowkeylist == null | rowkeylist.size() == 0) {
             log.error("Start to get capture history, but the rowkeyList is null!");
         }
         log.info("Start to get capture history, param is : " + rowkeylist);
-        List<FaceObject> list = clusteringSearchService.getCaptureHistory(rowkeylist);
-        return ResponseResult.init(list);
+        Map<String,List<FaceObject>> map = clusteringSearchService.getCaptureHistory(rowkeylist);
+        return ResponseResult.init(map);
     }
 }
 

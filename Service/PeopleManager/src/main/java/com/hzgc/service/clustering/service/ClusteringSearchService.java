@@ -440,9 +440,9 @@ public class ClusteringSearchService {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public List<FaceObject> getCaptureHistory(List<String> rowkeylist) {
-        List<FaceObject> list = phoenixDao.getCaptureHistory(rowkeylist);
-        return list;
+    public Map<String,List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+        Map<String,List<FaceObject>> map = phoenixDao.getCaptureHistory(rowkeylist);
+        return map;
     }
 
     /**
@@ -451,14 +451,13 @@ public class ClusteringSearchService {
      * @param param 搜索参数的封装
      * @return 返回搜索所需要的结果封装成的对象，包含搜索id，成功与否标志，记录数，记录信息，照片id
      */
-    public ResidentSearchResult searchResident(GetResidentParam param) {
-        ResidentSearchResult residentSearchResult = new ResidentSearchResult();
+    public List<PersonObject> searchResident(GetResidentParam param) {
+        List<PersonObject> personObjectList = new ArrayList<>();
         SqlRowSet sqlRowSet = phoenixDao.searchResident(param);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (sqlRowSet == null){
-            return residentSearchResult;
+            return personObjectList;
         }
-        List<PersonObject> personObjectList = new ArrayList<>();
         while (sqlRowSet.next()){
             Timestamp createTime = sqlRowSet.getTimestamp(PeopleManagerTable.CREATETIME);
             String createTime_str = "";
@@ -476,14 +475,24 @@ public class ClusteringSearchService {
             personObject.setCreatorConractWay(sqlRowSet.getString(PeopleManagerTable.CPHONE));
             personObject.setCreateTime(createTime_str);
             personObject.setReason(sqlRowSet.getString(PeopleManagerTable.REASON));
+            personObject.setStatus(sqlRowSet.getInt(PeopleManagerTable.STATUS));
             personObject.setCareLevel(sqlRowSet.getInt(PeopleManagerTable.CARE));
             personObject.setFollowLevel(sqlRowSet.getInt(PeopleManagerTable.IMPORTANT));
             personObject.setSimilarity(sqlRowSet.getFloat(PeopleManagerTable.SIM));
             personObject.setLocation(sqlRowSet.getString(PeopleManagerTable.LOCATION));
             personObjectList.add(personObject);
         }
-        residentSearchResult.setObjectInfoBeans(personObjectList);
-        return residentSearchResult;
+        return personObjectList;
+    }
+
+    /**
+     * 获取常驻人口库照片
+     *
+     * @param objectID 对象ID
+     * return byte[]
+     */
+    public byte[] getResidentPhoto(String objectID) {
+        return phoenixDao.getResidentPhoto(objectID);
     }
 }
 

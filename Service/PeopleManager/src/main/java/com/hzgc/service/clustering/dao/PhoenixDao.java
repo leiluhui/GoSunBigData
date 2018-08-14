@@ -2,6 +2,7 @@ package com.hzgc.service.clustering.dao;
 
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.table.PeopleManagerTable;
+import com.hzgc.common.faceclustering.table.PeopleRecognizeTable;
 import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.util.json.JSONUtil;
@@ -219,12 +220,12 @@ public class PhoenixDao implements Serializable {
      */
     public Map<String, Integer> getCaptureCount(List<String> rowkeylist) {
         Map<String, Integer> map = new HashMap<>();
-        Table table = HBaseHelper.getTable("peoplerecognize");
+        Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
         for (String rowkey : rowkeylist) {
             Get get = new Get(Bytes.toBytes(rowkey));
             try {
                 Result result = table.get(get);
-                String listString = Bytes.toString(result.getValue(Bytes.toBytes("recognize"), Bytes.toBytes("faceobj")));
+                String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 List<FaceObject> faceObjectList = JSONUtil.toObject(listString, ArrayList.class);
                 Integer count = faceObjectList.size();
                 map.put(rowkey, count);
@@ -241,33 +242,55 @@ public class PhoenixDao implements Serializable {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public List<FaceObject> getCaptureHistory(List<String> rowkeylist) {
+    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
         List<FaceObject> list = new ArrayList<>();
-        Table table = HBaseHelper.getTable("peoplerecognize");
+        Map<String, List<FaceObject>> map = new HashMap<>();
+        Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
         for (String rowkey : rowkeylist) {
             Get get = new Get(Bytes.toBytes(rowkey));
             try {
                 Result result = table.get(get);
-                String listString = Bytes.toString(result.getValue(Bytes.toBytes("recognize"), Bytes.toBytes("faceobj")));
+                String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 list = JSONUtil.toObject(listString, ArrayList.class);
+                map.put(rowkey, list);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return list;
+        return map;
     }
 
     public SqlRowSet searchResident(GetResidentParam param) {
         //封装的sql以及需要设置的值
         SqlAndArgs sqlAndArgs = parseByOption.getSqlFromGetResidentParam(param);
-        if (sqlAndArgs == null){
+        if (sqlAndArgs == null) {
             log.warn("Start get resident,generate sql is failed!");
             return null;
         }
         log.info("Start get resident,generate sql successfully!");
         log.info("Start get resident, SQL is : " + sqlAndArgs.getSql());
         log.info("Start get resident, SQL args is : " + sqlAndArgs.getArgs().toString());
-        return jdbcTemplate.queryForRowSet(sqlAndArgs.getSql(),sqlAndArgs.getArgs().toArray());
+        return jdbcTemplate.queryForRowSet(sqlAndArgs.getSql(), sqlAndArgs.getArgs().toArray());
+    }
+
+    /**
+     * 获取常驻人口库照片
+     *
+     * @param objectID 对象ID
+     *                 return byte[]
+     */
+    public byte[] getResidentPhoto(String objectID) {
+        String sql = parseByOption.getPhotoByObjectID();
+        log.info("Start to get the object photo, SQL is : " + sql);
+        byte[] photo = null;
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, objectID);
+        while (sqlRowSet.next()) {
+            photo = (byte[]) sqlRowSet.getObject(PeopleManagerTable.PHOTO);
+        }
+        if (photo != null && photo.length > 0) {
+            log.info("Start to get the object photo successfully!");
+        }
+        return photo;
     }
 }
 

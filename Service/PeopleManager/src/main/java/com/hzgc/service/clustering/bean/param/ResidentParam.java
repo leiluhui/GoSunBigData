@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Slf4j
 @ToString
 public class ResidentParam implements Serializable{
-    @ApiModelProperty(value = "数据库中的ID")
+
     private  String id;                                 // 数据库中的唯一标志    必填选项（update）
     /*添加、修改对象信息--前端入参*/
     @ApiModelProperty(value = "对象名字")
@@ -41,11 +41,11 @@ public class ResidentParam implements Serializable{
     @ApiModelProperty(value = "更新时间")
     private String updateTime;                       // 更新时间
     @ApiModelProperty(value = "关注等级")
-    private Integer followLevel;                     // 关注等级 关注等级 [1 = 非重点关注（默认选项），2 = 重点关注]
+    private Integer followLevel;                     // 关注等级 关注等级 [0 = 非重点关注（默认选项），1 = 重点关注]
     @ApiModelProperty(value = "人员状态")
     private Integer status;                          // 人员状态 [0 = 常住人口（默认选项），1 = 建议迁出]
     @ApiModelProperty(value = "关爱等级")
-    private Integer careLevel;                       // 关爱等级 关爱等级 [1 = 非关爱（默认选项），2 = 关爱]
+    private Integer careLevel;                       // 关爱等级 关爱等级 [0 = 非关爱（默认选项），1 = 关爱]
     @ApiModelProperty(value = "地址")
     private String location;                        // 地址
 
