@@ -122,7 +122,6 @@ object RealNameClustering extends Serializable {
                 val r = hbaseTableReco.get(get)
                 val listString = Bytes.toString(r.getValue(Bytes.toBytes("recognize"), Bytes.toBytes("faceobject")))
                 var list  = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
-//                list.add(obj._2)
                 list.add(obj._2)
                 val put = new Put(Bytes.toBytes(message.staticID))
                 put.addColumn(Bytes.toBytes("recognize"), Bytes.toBytes("faceobj"), Bytes.toBytes(JSONUtil.toJson(list)))

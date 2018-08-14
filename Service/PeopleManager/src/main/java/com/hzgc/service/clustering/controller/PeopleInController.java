@@ -8,6 +8,8 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.clustering.bean.export.ClusteringInfo;
 import com.hzgc.service.clustering.bean.param.PeopleInParam;
+import com.hzgc.service.clustering.bean.param.ResidentParam;
+import com.hzgc.service.clustering.service.ClusteringSearchService;
 import com.hzgc.service.clustering.service.PeopleInSearchService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,9 @@ import java.util.List;
 public class PeopleInController {
     @Autowired
     private PeopleInSearchService peopleInSearchService;
+
+    @Autowired
+    private ClusteringSearchService clusteringSearchService;
 
 
     @ApiOperation(value = "建议迁入人口信息查询【入参：时间月份，区域】", response = ClusteringInfo.class)
@@ -105,21 +110,52 @@ public class PeopleInController {
 
     }
 
-//    @ApiOperation(value = "单个人口迁入", response = ResponseResult.class)
-//    @RequestMapping(value = BigDataPath.PEOPLEIN_SEARCH, method = RequestMethod.POST)
-//    public ResponseResult<Integer> moveIn(
-//            @RequestBody @ApiParam(value = "对象信息封装类") ObjectInfoParam objectInfoParam) {
-//
-//        log.info("[PeopleInController] Start moveIn param : " + JSONUtil.toJson(objectInfoParam));
-//        if(objectInfoParam != null) {
-//            Integer succeed = 1;
-////            Integer succeed = objectInfoHandlerService.addObjectInfo(objectInfoParam);
-//            return ResponseResult.init(succeed);
-//        } else {
-//            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-//        }
-//
-//    }
+    @ApiOperation(value = "单个人口迁入", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.PEOPLEIN_MOVEIN, method = RequestMethod.PUT)
+    public ResponseResult<Boolean> moveIn(
+            @RequestBody @ApiParam(value = "对象信息封装类") ResidentParam param,
+            @RequestBody @ApiParam(value = "建议迁入人口入参") PeopleInParam peopleInParam) {
+
+        log.info("[PeopleInController] Start moveIn ResidentParam : " + JSONUtil.toJson(param));
+        log.info("[PeopleInController] Start moveIn peoleInParam : " + JSONUtil.toJson(peopleInParam));
+        if (param == null) {
+            log.error("[PeopleInController] Start moveIn add person, but param is null!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象人口信息为空，请检查！");
+        }
+        if (StringUtils.isBlank(param.getRegionName())) {
+            log.error("[PeopleInController] Start moveIn add person, but the region is null!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象区域名称为空，请检查！");
+        }
+        if (param.getPictureDatas() == null || param.getPictureDatas().getImageData() == null) {
+            log.error("[PeopleInController] Start moveIn add person, but the picture data is empty!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象照片数据为空，请检查！");
+        }
+        boolean authentication_idCode = clusteringSearchService.authentication_idCode(param);
+        if (!authentication_idCode) {
+            log.error("[PeopleInController] Start moveIn add person, but the idcard format is error!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象身份证格式错误，请检查！");
+        }
+        boolean isExists_idCode = clusteringSearchService.isExists_idCode(param);
+        if (isExists_idCode) {
+            log.error("[PeopleInController] Start moveIn add person, but the idcard already exists!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象身份证已存在，请检查！");
+        }
+        Integer succeed = clusteringSearchService.addPerson(param);
+
+        if(succeed == 0) {
+            if(peopleInParam != null && peopleInParam.getYearMonth() != null && peopleInParam.getRegion() != null &&
+                    peopleInParam.getClusterId() != null && peopleInParam.getFlag() != null){
+                boolean result = peopleInSearchService.deleteClustering(peopleInParam.getYearMonth(), peopleInParam.getRegion(),
+                        peopleInParam.getClusterId(), peopleInParam.getFlag());
+                return ResponseResult.init(result);
+            } else {
+                return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
+            }
+        }
+        else {
+            return ResponseResult.error(succeed, "迁入对象失败！");
+        }
+    }
 
     @ApiOperation(value = "统计每个月的建议迁入人口")
     @ApiImplicitParams({
@@ -129,15 +165,15 @@ public class PeopleInController {
     @RequestMapping(value = BigDataPath.PEOPLEIN_TOTLE, method = RequestMethod.GET)
     public List<PeopleManagerCount> getTotleNum(String start_time, String end_time) {
         if(StringUtils.isBlank(start_time) || !start_time.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
-            log.error("Start time does not conform to the format: yyyy-MM-dd");
-                    return new ArrayList<>();
+            log.error("[PeopleInController] getTotleNum Start time does not conform to the format: yyyy-MM-dd");
+            return new ArrayList<>();
         }
         if(StringUtils.isBlank(start_time) || !end_time.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
-            log.error("End time does not conform to the format: yyyy-MM-dd");
+            log.error("[PeopleInController] getTotleNum End time does not conform to the format: yyyy-MM-dd");
             return new ArrayList<>();
         }
         if(end_time.compareTo(start_time) < 0){
-            log.error("End time mast be larger than start time.");
+            log.error("[PeopleInController] getTotleNum End time mast be larger than start time.");
             return new ArrayList<>();
         }
         return peopleInSearchService.getTotleNum(start_time, end_time);

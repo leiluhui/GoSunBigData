@@ -52,8 +52,8 @@ public class PeopleInSearchService {
             ListUtils.sort(listNotIgnore, sortParams.getSortNameArr(), sortParams.getIsAscArr());
             ListUtils.sort(listIgnore, sortParams.getSortNameArr(), sortParams.getIsAscArr());
         }
-        int totalYes = listNotIgnore.size();
-        int totalNo = listIgnore.size();
+        int totalYes = listNotIgnore==null? 0:listNotIgnore.size();
+        int totalNo = listIgnore==null? 0:listIgnore.size();
         int total = 0;
         ClusteringInfo clusteringInfo = new ClusteringInfo();
         //优先返回不忽略的聚类
@@ -204,34 +204,6 @@ public class PeopleInSearchService {
         boolean booDes = hBaseDao.putClustering(region, time, colNameDes, listDes);
         return booSrc && booDes;
 
-    }
-
-    /**
-     * get detail Clustering from HBase
-     *
-     * @param clusterId clustering id
-     * @param time      clustering time
-     * @param start     index start
-     * @param limit     count of data
-     * @param sortParam the parameters of sort
-     */
-    @Deprecated
-    public List<Integer> detailClusteringSearch_Hbase(String clusterId, String time, int start, int limit, String sortParam) {
-        List<Integer> alarmInfoList = hBaseDao.detailClusteringSearch_Hbase(clusterId, time);
-        if (IsEmpty.strIsRight(sortParam)) {
-            SortParam sortParams = ListUtils.getOrderStringBySort(sortParam);
-            ListUtils.sort(alarmInfoList, sortParams.getSortNameArr(), sortParams.getIsAscArr());
-        }
-        if (start > -1) {
-            if ((start + limit) > alarmInfoList.size() - 1) {
-                return alarmInfoList.subList(start, alarmInfoList.size());
-            } else {
-                return alarmInfoList.subList(start, start + limit);
-            }
-        } else {
-            log.info("Start must bigger than -1");
-            return null;
-        }
     }
 
     /**
