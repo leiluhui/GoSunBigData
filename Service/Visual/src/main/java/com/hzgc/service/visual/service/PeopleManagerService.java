@@ -88,7 +88,9 @@ public class PeopleManagerService {
     @HystrixCommand(fallbackMethod = "clusteringCountError")
     private List<PeopleManagerCount> clusteringCount(String start_time, String end_time) {
         ResponseEntity<PeopleManagerCount[]> responseEntity = restTemplate.getForEntity(
-                "http://clustering/" + BigDataPath.CLUSTERING_TOTLE
+//                "http://clustering/" + BigDataPath.CLUSTERING_TOTLE
+                // FIXME: 2018-8-13 
+                "http://clustering/" + "123"
                         + "?start_time=" + start_time + "&end_time=" + end_time,
                 PeopleManagerCount[].class);
         return Arrays.asList(responseEntity.getBody());

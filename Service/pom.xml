@@ -12,7 +12,7 @@
     <artifactId>service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>Clustering</module>
+        <module>PeopleManager</module>
         <module>Alarm</module>
         <module>DynRepo</module>
         <module>StaRepo</module>
@@ -72,6 +72,27 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-hystrix</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-collect</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
