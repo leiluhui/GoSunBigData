@@ -236,7 +236,7 @@ public class HBaseDao {
             ResultScanner resultScanner = peoplescheduler.getScanner(scan);
             for (Result result : resultScanner){
                 String regionId = Bytes.toString(result.getRow());
-                List<String> ipcidList = getIpcIds(Long.getLong(regionId),"d");
+                List<String> ipcidList = getIpcIds(Long.getLong(regionId),"area");
                 String regionName = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME));
                 Put put = new Put(Bytes.toBytes(regionId));
                 put.addColumn(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_NAME,Bytes.toBytes(regionName));
