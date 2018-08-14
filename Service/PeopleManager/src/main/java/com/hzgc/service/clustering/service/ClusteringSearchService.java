@@ -7,9 +7,7 @@ import com.hzgc.common.faceclustering.table.PeopleManagerTable;
 import com.hzgc.common.facedynrepo.DynamicTable;
 import com.hzgc.common.service.bean.PeopleManagerCount;
 import com.hzgc.common.util.empty.IsEmpty;
-import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.common.util.uuid.UuidUtil;
-import com.hzgc.jni.PictureData;
 import com.hzgc.service.clustering.bean.export.*;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
 import com.hzgc.service.clustering.bean.param.ResidentParam;
@@ -33,9 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static com.hzgc.service.clustering.service.StaticProtocol.*;
 
 /**
  * 告警聚类结果查询接口实现(彭聪)
@@ -54,6 +49,7 @@ public class ClusteringSearchService {
 
     @Autowired
     private static PeopleManagerProducer peopleManagerProducer;
+
     /**
      * 查询聚类信息
      *
@@ -83,7 +79,7 @@ public class ClusteringSearchService {
                 clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, start + limit - 1));
                 log.info("Select clustering attributes not ignored num : " + limit);
                 total = limit;
-            } else if((start + limit - 1) > totalYes && (start + limit - 1) <= (totalYes + totalNo)){
+            } else if ((start + limit - 1) > totalYes && (start + limit - 1) <= (totalYes + totalNo)) {
                 clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, totalYes));
                 clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, start + limit - totalYes - 1));
                 log.info("Select clustering attributes not ignored num : " + (totalYes - start + 1));
@@ -239,27 +235,28 @@ public class ClusteringSearchService {
     }
 
     /**
-     *  统计时间段内，每个月份的聚类数量
+     * 统计时间段内，每个月份的聚类数量
+     *
      * @param startTime 查询起始时间
-     * @param endTime 查询结束时间
+     * @param endTime   查询结束时间
      * @return 每个月份的聚类数量
      */
-    public List<PeopleManagerCount> getTotleNum(String startTime, String endTime){
+    public List<PeopleManagerCount> getTotleNum(String startTime, String endTime) {
         HBaseDao hBaseDao = new HBaseDao();
         List<PeopleManagerCount> statisticsList = new ArrayList<>();
         //起止时间处理
-        startTime = startTime.substring(0 , startTime.lastIndexOf("-"));
-        endTime = endTime.substring(0 , endTime.lastIndexOf("-"));
+        startTime = startTime.substring(0, startTime.lastIndexOf("-"));
+        endTime = endTime.substring(0, endTime.lastIndexOf("-"));
         //查询每个rowkey对应的聚类（不忽略）数量
         Map<String, Integer> map = hBaseDao.getTotleNum(startTime, endTime + "-" + "zzzzzzzzzzzzzzzz");
         //获取时间段内的所有月份
         List<String> timeList = getMonthesInRange(startTime, endTime);
         //循环计算每个月的所有聚类数量
-        for(String time : timeList){
+        for (String time : timeList) {
             PeopleManagerCount statistics = new PeopleManagerCount();
             int num = 0;
-            for(String key : map.keySet()){
-                if(key.startsWith(time)){
+            for (String key : map.keySet()) {
+                if (key.startsWith(time)) {
                     num += map.get(key);
                 }
             }
@@ -271,12 +268,13 @@ public class ClusteringSearchService {
     }
 
     /**
-     *  返回时间区域内所有月份
+     * 返回时间区域内所有月份
+     *
      * @param startTime 起始时间
-     * @param endTime 结束时间
+     * @param endTime   结束时间
      * @return 所有月份
      */
-    private static List<String> getMonthesInRange(String startTime, String endTime){
+    private static List<String> getMonthesInRange(String startTime, String endTime) {
         List<String> timeList = new ArrayList<>();
 
         DateFormat df = new SimpleDateFormat("yyyy-MM");
@@ -309,8 +307,8 @@ public class ClusteringSearchService {
         return hBaseDao.searchPlan(regionID);
     }
 
-    public Integer modifyPlan(String regionID, String sim, String moveInCount,String moveOutDays ) {
-        return hBaseDao.modifyPlan(regionID, sim, moveInCount,moveOutDays);
+    public Integer modifyPlan(String regionID, String sim, String moveInCount, String moveOutDays) {
+        return hBaseDao.modifyPlan(regionID, sim, moveInCount, moveOutDays);
     }
 
     public Integer deletePlan(List<String> regionID) {
@@ -320,8 +318,8 @@ public class ClusteringSearchService {
     /**
      * 判断身份证格式是否正确
      */
-    public boolean authentication_idCode(ResidentParam person){
-        if (!StringUtils.isBlank(person.getIdcard())){
+    public boolean authentication_idCode(ResidentParam person) {
+        if (!StringUtils.isBlank(person.getIdcard())) {
             return idCodeAuthentication(person.getIdcard());
         }
         return true;
@@ -360,28 +358,15 @@ public class ClusteringSearchService {
     /**
      * add person
      *
-     * @param person  添加对象信息
+     * @param person 添加对象信息
      * @return 返回值为0，表示插入成功，返回值为1，表示插入失败
      */
-    public Integer addPerson(ResidentParam person){
+    public Integer addPerson(ResidentParam person) {
         person.setId(UuidUtil.getUuid());
         log.info("Start add person,person id is : " + person.getId());
         //数据库操作
         Integer integer = phoenixDao.addPerson(person);
-        //向告警中同步数据
-        sendKafka(person,ADD);
         return integer;
-    }
-
-    private void sendKafka(ResidentParam param, String option) {
-        PeopleManagerObject object = new PeopleManagerObject();
-        if (param.getPictureDatas() != null && param.getPictureDatas().getFeature() != null) {
-            object.setFeature(param.getPictureDatas().getFeature().getFeature());
-        }
-        //向告警同步数据
-        object.setPkey(null);
-        object.setRowkey(param.getId());
-        peopleManagerProducer.sendKafkaMessage(INNERTOPIC, option, JSONUtil.toJson(object));
     }
 
     /**
@@ -391,13 +376,7 @@ public class ClusteringSearchService {
      * @return 返回值为0，表示删除成功，返回值为1，表示删除失败
      */
     public static Integer deletePerson(List<String> rowkeyList) {
-        Integer integer = phoenixDao.deletePerson(rowkeyList);
-        if (integer == 0){
-            for (String rowkey : rowkeyList){
-                peopleManagerProducer.sendKafkaMessage(INNERTOPIC,DELETE,rowkey);
-            }
-        }
-        return integer;
+        return phoenixDao.deletePerson(rowkeyList);
     }
 
     public Resident getPerson(String objectId) {
@@ -415,11 +394,7 @@ public class ClusteringSearchService {
     }
 
     public Integer updatePerson(ResidentParam param) {
-        Integer integer = phoenixDao.updatePerson(param);
-        if (integer == 0){
-            sendKafka(param,UPDATE);
-        }
-        return integer;
+        return phoenixDao.updatePerson(param);
     }
 
 
@@ -429,8 +404,8 @@ public class ClusteringSearchService {
      * @param rowkeylist 常驻人口库中某个人的ID
      * @reture map 返回这个人的抓拍次数的key-value对
      */
-    public Map<String,Integer> getCaptureCount(List<String> rowkeylist) {
-        Map<String,Integer> map = phoenixDao.getCaptureCount(rowkeylist);
+    public Map<String, Integer> getCaptureCount(List<String> rowkeylist) {
+        Map<String, Integer> map = phoenixDao.getCaptureCount(rowkeylist);
         return map;
     }
 
@@ -440,8 +415,8 @@ public class ClusteringSearchService {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public Map<String,List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
-        Map<String,List<FaceObject>> map = phoenixDao.getCaptureHistory(rowkeylist);
+    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+        Map<String, List<FaceObject>> map = phoenixDao.getCaptureHistory(rowkeylist);
         return map;
     }
 
@@ -455,10 +430,10 @@ public class ClusteringSearchService {
         List<PersonObject> personObjectList = new ArrayList<>();
         SqlRowSet sqlRowSet = phoenixDao.searchResident(param);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (sqlRowSet == null){
+        if (sqlRowSet == null) {
             return personObjectList;
         }
-        while (sqlRowSet.next()){
+        while (sqlRowSet.next()) {
             Timestamp createTime = sqlRowSet.getTimestamp(PeopleManagerTable.CREATETIME);
             String createTime_str = "";
             if (createTime != null) {
@@ -489,7 +464,7 @@ public class ClusteringSearchService {
      * 获取常驻人口库照片
      *
      * @param objectID 对象ID
-     * return byte[]
+     *                 return byte[]
      */
     public byte[] getResidentPhoto(String objectID) {
         return phoenixDao.getResidentPhoto(objectID);
@@ -501,11 +476,4 @@ class PeopleManagerObject implements Serializable {
     private float[] feature;
     private String pkey;
     private String rowkey;
-}
-
-class StaticProtocol {
-    static String INNERTOPIC = "staticrepo";
-    static final String DELETE = "DELETE";
-    static final String ADD = "ADD";
-    static final String UPDATE = "UPDATE";
 }

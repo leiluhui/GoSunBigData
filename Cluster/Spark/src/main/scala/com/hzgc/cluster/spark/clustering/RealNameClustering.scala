@@ -8,7 +8,7 @@ import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
 import com.hzgc.common.collect.bean.FaceObject
 import com.hzgc.common.faceclustering.table.{ClusteringTable, PeopleRecognizeTable, PeopleSchedulerTable, PersonRegionTable}
 import com.hzgc.common.facedispatch.DeviceUtilImpl
-import com.hzgc.common.facestarepo.table.alarm.StaticRepoUtil
+import com.hzgc.common.facestarepo.table.alarm.{ResidentUtil, StaticRepoUtil}
 import com.hzgc.common.hbase.HBaseHelper
 import com.hzgc.common.util.json.JSONUtil
 import com.hzgc.jni.FaceFunction
@@ -57,9 +57,11 @@ object RealNameClustering extends Serializable {
       .map(message => {
         LOG.info("kafkaboot is : +++++++++++++++" + kafkaBootStrapBroadCast.value)
         LOG.info("jdbcUrl is : +++++++++++++++++" + jdbcUrlBroadCast.value)
+//        val totalList = JavaConverters
+//          .asScalaBufferConverter(StaticRepoUtil.getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value)
+//            .getTotalList).asScala
         val totalList = JavaConverters
-          .asScalaBufferConverter(StaticRepoUtil.getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value)
-            .getTotalList).asScala
+                  .asScalaBufferConverter(ResidentUtil.getInstance(jdbcUrlBroadCast.value).getTotalList).asScala
         val faceObj = message._2
         LOG.info("The big url of the faceObject is " + faceObj.getBurl)
         val ipcID = faceObj.getIpcId
@@ -74,7 +76,8 @@ object RealNameClustering extends Serializable {
           val get = new Get(regionId)
           val regionResult = regionTable.get(get)
           val ipcidStr = Bytes.toString(regionResult.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS))
-          val ipcidList = JSONUtil.toObject(ipcidStr, util.Arrays.asList[String]().getClass)
+          //          val ipcidList = JSONUtil.toObject(ipcidStr, util.Arrays.asList[String]().getClass)
+          val ipcidList = JSONUtil.toObject(ipcidStr, new util.ArrayList[String]().getClass)
           if (ipcidList.contains(ipcID)) {
             val sim = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)).toInt
             totalList.foreach(record => {
@@ -124,7 +127,8 @@ object RealNameClustering extends Serializable {
                 val get = new Get(Bytes.toBytes(message.staticID))
                 val r = hbaseTableReco.get(get)
                 val listString = Bytes.toString(r.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT))
-                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
+                //                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
+                val list1: util.ArrayList[FaceObject] = JSONUtil.toObject(listString, new util.ArrayList[FaceObject]().getClass)
                 list1.add(obj._2)
                 val put = new Put(Bytes.toBytes(message.staticID))
                 put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(list1)))
@@ -138,8 +142,9 @@ object RealNameClustering extends Serializable {
               }
               updateTimeList.add(message.staticID)
             })
-            StaticRepoUtil
-              .getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value).updateObjectInfoTime(updateTimeList)
+//            StaticRepoUtil
+//              .getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value).updateObjectInfoTime(updateTimeList)
+            ResidentUtil.getInstance(jdbcUrlBroadCast.value).updatePeopleManagerTime(updateTimeList)
           }
         })
       })

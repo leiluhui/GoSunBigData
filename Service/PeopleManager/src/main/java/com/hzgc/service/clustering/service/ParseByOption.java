@@ -87,39 +87,44 @@ public class ParseByOption {
         sql.append("(");
         sql.append(PeopleManagerTable.ROWKEY);
         setValues.add(param.getId());
-
         String name = param.getName();
-        if (name != null) {
+        if (name != null && !"".equals(name)) {
             sql.append(", ");
             sql.append(PeopleManagerTable.NAME);
             setValues.add(name);
         }
+        String regionName = param.getRegionName();
+        if (regionName != null && !"".equals(regionName)){
+            sql.append(", ");
+            sql.append(PeopleManagerTable.REGION);
+            setValues.add(regionName);
+        }
         String idcard = param.getIdcard();
-        if (idcard != null) {
+        if (idcard != null && !"".equals(idcard)) {
             sql.append(", ");
             sql.append(PeopleManagerTable.IDCARD);
             setValues.add(idcard);
         }
         Integer sex = param.getSex();
-        if (sex != null) {
+        if (sex != null ) {
             sql.append(", ");
             sql.append(PeopleManagerTable.SEX);
             setValues.add(sex);
         }
         String reason = param.getReason();
-        if (reason != null) {
+        if (reason != null && !"".equals(reason)) {
             sql.append(", ");
             sql.append(PeopleManagerTable.REASON);
             setValues.add(reason);
         }
         String creator = param.getCreator();
-        if (creator != null) {
+        if (creator != null && !"".equals(creator)) {
             sql.append(", ");
             sql.append(PeopleManagerTable.CREATOR);
             setValues.add(creator);
         }
         String cphone = param.getCreatorContactWay();
-        if (cphone != null) {
+        if (cphone != null && !"".equals(cphone)) {
             sql.append(", ");
             sql.append(PeopleManagerTable.CPHONE);
             setValues.add(cphone);
@@ -135,6 +140,12 @@ public class ParseByOption {
             sql.append(", ");
             sql.append(PeopleManagerTable.CARE);
             setValues.add(care);
+        }
+        String local = param.getLocation();
+        if (local != null && !"".equals(local)){
+            sql.append(", ");
+            sql.append(PeopleManagerTable.LOCATION);
+            setValues.add(local);
         }
         sql.append(") values(?");
         StringBuilder tmp = new StringBuilder("");
