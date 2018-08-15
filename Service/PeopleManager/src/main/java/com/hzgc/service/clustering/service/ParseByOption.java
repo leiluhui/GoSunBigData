@@ -31,6 +31,7 @@ public class ParseByOption {
         return "upsert into " + PeopleManagerTable.TABLE_NAME + "("
                 + PeopleManagerTable.ROWKEY + ", "
                 + PeopleManagerTable.NAME + ", "
+                + PeopleManagerTable.REGION + ", "
                 + PeopleManagerTable.IDCARD + ", "
                 + PeopleManagerTable.SEX + ", "
                 + PeopleManagerTable.PHOTO + ", "
@@ -43,7 +44,7 @@ public class ParseByOption {
                 + PeopleManagerTable.IMPORTANT + ", "
                 + PeopleManagerTable.STATUS + ", "
                 + PeopleManagerTable.CARE
-                + ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 
     public String deletePerson() {
@@ -93,11 +94,11 @@ public class ParseByOption {
             sql.append(PeopleManagerTable.NAME);
             setValues.add(name);
         }
-        String regionName = param.getRegionName();
-        if (regionName != null && !"".equals(regionName)){
+        String regionID = param.getRegionID();
+        if (regionID != null && !"".equals(regionID)){
             sql.append(", ");
             sql.append(PeopleManagerTable.REGION);
-            setValues.add(regionName);
+            setValues.add(regionID);
         }
         String idcard = param.getIdcard();
         if (idcard != null && !"".equals(idcard)) {

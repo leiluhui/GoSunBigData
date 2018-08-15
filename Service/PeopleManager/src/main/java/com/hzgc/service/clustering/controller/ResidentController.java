@@ -128,9 +128,9 @@ public class ResidentController {
             log.error("Start add person,but param is null!");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象人口信息为空，请检查！");
         }
-        if (StringUtils.isBlank(param.getRegionName())) {
+        if (StringUtils.isBlank(param.getRegionID())) {
             log.error("Start add person, but the region is null!");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象区域名称为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象区域ID为空，请检查！");
         }
         if (param.getPictureDatas() == null || param.getPictureDatas().getImageData() == null) {
             log.error("Start add person,but the picture data is empty!");

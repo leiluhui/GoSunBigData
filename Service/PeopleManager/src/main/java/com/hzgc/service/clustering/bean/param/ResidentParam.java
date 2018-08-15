@@ -25,7 +25,7 @@ public class ResidentParam implements Serializable{
     @ApiModelProperty(value = "身份证")
     private String idcard;                            // 身份证
     @ApiModelProperty(value = "所属区域")
-    private String regionName;                            //人员所在区域
+    private String regionID;                            //人员所在区域
     @ApiModelProperty(value = "性别")
     private Integer sex;                              // 性别 [0 = 未知（默认选项），1 = 男，2 = 女]
     @ApiModelProperty(value = "照片数据")
