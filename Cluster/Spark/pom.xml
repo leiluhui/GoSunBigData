@@ -129,6 +129,11 @@
             <artifactId>elasticsearch-hadoop</artifactId>
             <version>${es.spark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-service</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
     <repositories>

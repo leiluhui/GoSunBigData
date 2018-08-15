@@ -1,4 +1,3 @@
-#!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
 ## Filename:    start-resident-clustering-job.sh
@@ -182,8 +181,10 @@ source /etc/profile
 source ${BIGDATA_ENV}
 nohup spark-submit \
 --master yarn \
---deploy-mode cluster \
+--deploy-mode client \
 --driver-memory 4g \
+--executor-cores 4 \
+--num-executors 8 \
 --class ${SPARK_CLASS_PARAM} \
 --jars ${SPARK_LIB_DIR}/${GSON_VERSION},\
 ${SPARK_LIB_DIR}/${JACKSON_CORE_VERSION},\
@@ -194,6 +195,32 @@ ${SPARK_LIB_DIR}/${PHOENIXDRIVER_VERSION},\
 ${SPARK_LIB_DIR}/${TEPHRA_API_VERSION},\
 ${SPARK_LIB_DIR}/${TEPHRA_CORE_VERSION},\
 ${SPARK_LIB_DIR}/${TEPHRA_HBASE_VERSION},\
+${SPARK_LIB_DIR}/spark-indexedrdd-0.4.0.jar,\
+${SPARK_LIB_DIR}/part_2.10-0.1.jar,\
+${SPARK_LIB_DIR}/common-faceclustering-1.0.jar,\
+${SPARK_LIB_DIR}/common-es-1.0.jar,\
+${SPARK_LIB_DIR}/common-facestarepo-1.0.jar,\
+${SPARK_LIB_DIR}/common-facedispatch-1.0.jar,\
+${SPARK_LIB_DIR}/common-rocketmq-1.0.jar,\
+${SPARK_LIB_DIR}/common-collect-1.0.jar,\
+${SPARK_LIB_DIR}/transport-5.5.0.jar,\
+${SPARK_LIB_DIR}/lucene-core-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-highlighter-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-join-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-queryparser-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-queries-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-spatial-6.6.0.jar,\
+${SPARK_LIB_DIR}/lucene-sandbox-6.6.0.jar,\
+${SPARK_LIB_DIR}/t-digest-3.0.jar,\
+${SPARK_LIB_DIR}/netty-common-4.1.11.Final.jar,\
+${SPARK_LIB_DIR}/transport-netty3-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/transport-netty4-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/reindex-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/percolator-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/lang-mustache-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/parent-join-client-5.5.0.jar,\
+${SPARK_LIB_DIR}/hppc-0.7.1.jar,\
+${SPARK_LIB_DIR}/log4j-api-2.7.jar,\
 ${SPARK_LIB_DIR}/${TWILL_API_VERSION},\
 ${SPARK_LIB_DIR}/${TWILL_COMMON_VERSION},\
 ${SPARK_LIB_DIR}/${TWILL_CORE_VERSION},\
