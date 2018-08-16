@@ -31,10 +31,9 @@ create table objectType(
 create table peoplemanager(
             id char(32) not null primary key,
             name varchar,
-            platformid varchar,
-            tag varchar,
             region varchar,
             idcard varchar,
+            sex integer,
             photo varbinary,
             feature float[],
             reason varchar,

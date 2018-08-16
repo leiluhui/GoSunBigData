@@ -45,7 +45,7 @@ public class ClusteringSearchService {
     private ElasticSearchDao elasticSearchDao;
 
     @Autowired
-    private static PhoenixDao phoenixDao;
+    private  PhoenixDao phoenixDao;
 
     @Autowired
     private static PeopleManagerProducer peopleManagerProducer;
@@ -375,7 +375,7 @@ public class ClusteringSearchService {
      * @param rowkeyList 对象ID
      * @return 返回值为0，表示删除成功，返回值为1，表示删除失败
      */
-    public static Integer deletePerson(List<String> rowkeyList) {
+    public Integer deletePerson(List<String> rowkeyList) {
         return phoenixDao.deletePerson(rowkeyList);
     }
 

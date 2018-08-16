@@ -169,7 +169,7 @@ public class ResidentController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除列表为空，请检查！");
         }
         log.info("Start delete object info, rowkey list is:" + rowkeyList);
-        Integer succeed = ClusteringSearchService.deletePerson(rowkeyList);
+        Integer succeed = clusteringSearchService.deletePerson(rowkeyList);
         if (succeed == 0) {
             return ResponseResult.init(succeed);
         } else {
