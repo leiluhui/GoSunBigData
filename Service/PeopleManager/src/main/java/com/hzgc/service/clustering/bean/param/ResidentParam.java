@@ -18,6 +18,7 @@ import java.io.Serializable;
 @ToString
 public class ResidentParam implements Serializable{
 
+    @ApiModelProperty(value = "数据库中唯一标识")
     private  String id;                                 // 数据库中的唯一标志    必填选项（update）
     /*添加、修改对象信息--前端入参*/
     @ApiModelProperty(value = "对象名字")
@@ -36,10 +37,8 @@ public class ResidentParam implements Serializable{
     private String creator;                           // 创建人
     @ApiModelProperty(value = "布控人联系方式")
     private String creatorContactWay;                // 布控人联系方式
-    @ApiModelProperty(value = "创建时间")
-    private String createTime;                       // 创建时间
-    @ApiModelProperty(value = "更新时间")
-    private String updateTime;                       // 更新时间
+//    private String createTime;                       // 创建时间
+//    private String updateTime;                       // 更新时间
     @ApiModelProperty(value = "关注等级")
     private Integer followLevel;                     // 关注等级 关注等级 [0 = 非重点关注（默认选项），1 = 重点关注]
     @ApiModelProperty(value = "人员状态")

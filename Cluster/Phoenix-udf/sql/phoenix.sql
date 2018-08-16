@@ -43,4 +43,5 @@ create table peoplemanager(
             updatetime TIMESTAMP,
             important integer,
             care integer,
-            status integer);
+            status integer,
+            location varchar);

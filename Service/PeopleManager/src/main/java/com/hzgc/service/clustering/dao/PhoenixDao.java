@@ -199,13 +199,16 @@ public class PhoenixDao implements Serializable {
                 setValues = entry.getValue();
             }
             log.info("Start update person, SQL is : " + sql);
+            log.info("Start update person, SQLArgs is : " + JSONUtil.toJson(setValues));
             List<Object[]> batchArgs = new ArrayList<>();
             Object[] objects = new Object[setValues.size()];
             for (int i = 0; i < setValues.size(); i++) {
                 objects[i] = setValues.get(i);
             }
             batchArgs.add(objects);
+            log.info("Start update person, batchArgs is : " + JSONUtil.toJson(batchArgs));
             jdbcTemplate.batchUpdate(sql, batchArgs);
+            log.info("11111111111111");
         } catch (Exception e) {
             e.printStackTrace();
             return 1;

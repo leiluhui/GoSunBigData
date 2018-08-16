@@ -281,7 +281,7 @@ public class ResidentController {
      * @reture map 返回这个人的抓拍次数的key-value对
      */
     @ApiOperation(value = "根据id查询抓拍次数", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.GET)
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.POST)
     public ResponseResult<Map> getCaptureCount(List<String> rowkeylist) {
         if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture count, but the rowkeyList is null!");
