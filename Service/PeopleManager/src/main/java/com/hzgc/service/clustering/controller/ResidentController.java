@@ -277,12 +277,13 @@ public class ResidentController {
     /**
      * 抓拍次数查询
      *
-     * @param rowkeylist 常驻人口库中某个人的ID
+     * @param rowkeyList 常驻人口库中某个人的ID
      * @reture map 返回这个人的抓拍次数的key-value对
      */
     @ApiOperation(value = "根据id查询抓拍次数", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.POST)
-    public ResponseResult<Map> getCaptureCount(List<String> rowkeylist) {
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.GET)
+    public ResponseResult<Map> getCaptureCount(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
+        List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture count, but the rowkeyList is null!");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询rowkey为空，请检查！");
@@ -295,12 +296,13 @@ public class ResidentController {
     /**
      * 抓拍历史查询
      *
-     * @param rowkeylist 常驻人口库ID的list
+     * @param rowkeyList 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
     @ApiOperation(value = "根据id查询抓拍历史", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.GET)
-    public ResponseResult<Map> getCaptureHistory(List<String> rowkeylist) {
+    public ResponseResult<Map> getCaptureHistory(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
+        List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null | rowkeylist.size() == 0) {
             log.error("Start to get capture history, but the rowkeyList is null!");
         }
