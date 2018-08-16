@@ -281,7 +281,7 @@ public class ResidentController {
      * @reture map 返回这个人的抓拍次数的key-value对
      */
     @ApiOperation(value = "根据id查询抓拍次数", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.GET)
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.POST)
     public ResponseResult<Map> getCaptureCount(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
         List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null || rowkeylist.size() == 0) {
@@ -300,7 +300,7 @@ public class ResidentController {
      * @return 返回一个人的抓拍历史
      */
     @ApiOperation(value = "根据id查询抓拍历史", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.GET)
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.POST)
     public ResponseResult<Map> getCaptureHistory(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
         List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null | rowkeylist.size() == 0) {
