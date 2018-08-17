@@ -29,7 +29,7 @@ public class ScheduledService {
             ResultScanner resultScanner = peoplescheduler.getScanner(scan);
             for (Result result : resultScanner){
                 String regionId = Bytes.toString(result.getRow());
-                List<String> ipcidList = getIpcIds(Long.getLong(regionId),"area");
+                List<String> ipcidList = getIpcIds(Long.getLong(regionId));
                 String regionName = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME));
                 Put put = new Put(Bytes.toBytes(regionId));
                 put.addColumn(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_NAME,Bytes.toBytes(regionName));
@@ -41,9 +41,9 @@ public class ScheduledService {
         }
     }
 
-    private static List<String> getIpcIds(Long areaId, String level) {
+    private static List<String> getIpcIds(Long areaId) {
         DeviceQueryService deviceQueryService = new DeviceQueryService();
-        List<Long> deviceIdList = deviceQueryService.query_device_id(areaId, level);
+        List<Long> deviceIdList = deviceQueryService.query_device_id(areaId, "area");
         List<String> ipcIdList = new ArrayList<>();
         if (!deviceIdList.isEmpty()) {
             Map<String, DeviceDTO> deviceDTOMap = deviceQueryService.getDeviceInfoByBatchId(deviceIdList);
