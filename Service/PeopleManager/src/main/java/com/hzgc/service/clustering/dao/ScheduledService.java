@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
+//@Component
 public class ScheduledService {
-    @Scheduled(cron = "* */5 * * * *")
+//    @Scheduled(cron = "* */5 * * * *")
     public void UpdateRegion(){
         log.info("Start to update the region tables!!!");
         Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);

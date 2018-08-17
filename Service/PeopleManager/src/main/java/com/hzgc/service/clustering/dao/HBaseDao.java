@@ -42,7 +42,7 @@ public class HBaseDao {
                 listGet.add(get);
             }
             Result[] results = peopleCompareTable.get(listGet);
-            for(Result result : results) {
+            for (Result result : results) {
                 String json = Bytes.toString(result.getValue(ClusteringTable.PEOPELCOMPARE_COLUMNFAMILY, ClusteringTable.PEOPELCOMPARE_COLUMNDATA));
                 FaceObject faceObject = gson.fromJson(json, FaceObject.class);
                 faceList.add(faceObject);
@@ -175,13 +175,15 @@ public class HBaseDao {
             Get get = new Get(Bytes.toBytes(regionID));
             try {
                 Result result = peoplescheduler.get(get);
-                Regular regular = new Regular();
-                regular.setRegionID(Bytes.toString(result.getRow()));
-                regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
-                regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
-                regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
-                regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));
-                regularList.add(regular);
+                if (result.size() > 0) {
+                    Regular regular = new Regular();
+                    regular.setRegionID(Bytes.toString(result.getRow()));
+                    regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
+                    regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
+                    regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
+                    regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));
+                    regularList.add(regular);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

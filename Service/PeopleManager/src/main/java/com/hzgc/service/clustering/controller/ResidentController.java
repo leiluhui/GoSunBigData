@@ -74,14 +74,15 @@ public class ResidentController {
     /**
      * 计划修改
      *
-     * @param regionID    区域ID
-     * @param sim         相似度
-     * @param moveInCount 判定迁入的次数
-     * @param moveOutDays 判定离线的天数
+     * @param regular
      * @return 返回是否成功的标识 【0：修改成功；1：修改失败】
      */
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_MODIFYPLAN, method = RequestMethod.POST)
-    public ResponseResult<Integer> modifyPlan(String regionID, String sim, String moveInCount, String moveOutDays) {
+    public ResponseResult<Integer> modifyPlan(@RequestBody @ApiParam(value = "实名制规则存储") Regular regular) {
+        String regionID = regular.getRegionID();
+        String sim = regular.getSim();
+        String moveInCount = regular.getMoveInCount();
+        String moveOutDays = regular.getMoveOutDays();
         if (regionID == null || sim == null || moveInCount == null || moveOutDays == null) {
             log.error("Start to modify the plan, but the region or sim is empty !!!");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改计划区域或者相似度为空，请检查！！");
