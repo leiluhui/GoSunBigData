@@ -40,7 +40,7 @@ public class ScheduledService {
             e.printStackTrace();
         }
     }
-    
+
     private static List<String> getIpcIds(Long areaId, String level) {
         DeviceQueryService deviceQueryService = new DeviceQueryService();
         List<Long> deviceIdList = deviceQueryService.query_device_id(areaId, level);
