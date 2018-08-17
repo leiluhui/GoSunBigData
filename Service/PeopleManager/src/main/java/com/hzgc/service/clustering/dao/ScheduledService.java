@@ -20,8 +20,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class ScheduledService {
-    @Scheduled(cron = "*/5 * * * *")
+    @Scheduled(cron = "* */5 * * * *")
     public void UpdateRegion(){
+        log.info("Start to update the region tables!!!");
         Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
         Table personRegion = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
         Scan scan = new Scan();
@@ -36,6 +37,7 @@ public class ScheduledService {
                 put.addColumn(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_IPCIDS,Bytes.toBytes(JSONUtil.toJson(ipcidList)));
                 personRegion.put(put);
             }
+            log.info("Update the region tables successfully!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
