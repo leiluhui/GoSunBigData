@@ -365,7 +365,7 @@ public class ParseByOption {
             }
         }
 
-        // 关于人员类型列表的查询
+        // 关于区域的查询
         List<String> regionList = param.getRegionList();
         if (regionList != null && regionList.size() > 0) {
             if (regionList.size() == 1) {
