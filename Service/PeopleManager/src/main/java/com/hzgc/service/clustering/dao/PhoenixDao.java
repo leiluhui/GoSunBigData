@@ -249,7 +249,6 @@ public class PhoenixDao implements Serializable {
      * @return 返回一个人的抓拍历史
      */
     public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
-        log.info("bbbbbbbbbbbbbbbbb");
         List<FaceObject> list = new ArrayList<>();
         Map<String, List<FaceObject>> map = new HashMap<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
