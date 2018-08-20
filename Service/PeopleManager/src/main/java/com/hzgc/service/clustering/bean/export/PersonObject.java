@@ -19,6 +19,8 @@ public class PersonObject implements Serializable{
     private String objectID;
     @ApiModelProperty(value = "区域id")                      //区域id
     private String regionId;
+    @ApiModelProperty(value = "区域名称")                    //区域名称
+    private String regionName;
     @ApiModelProperty(value = "对象名称")                    //对象名称
     private String name;
     @ApiModelProperty(value = "性别")                        //性别

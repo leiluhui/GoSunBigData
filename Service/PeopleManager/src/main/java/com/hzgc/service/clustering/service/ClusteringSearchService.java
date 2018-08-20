@@ -416,6 +416,7 @@ public class ClusteringSearchService {
      * @return 返回一个人的抓拍历史
      */
     public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+        log.info("aaaaaaaaaaaaaaa");
         return phoenixDao.getCaptureHistory(rowkeylist);
     }
 
@@ -442,6 +443,7 @@ public class ClusteringSearchService {
             PersonObject personObject = new PersonObject();
             personObject.setObjectID(sqlRowSet.getString(PeopleManagerTable.ROWKEY));
             personObject.setRegionId(sqlRowSet.getString(PeopleManagerTable.REGION));
+            personObject.setRegionName(phoenixDao.getRegionNameById(sqlRowSet.getString(PeopleManagerTable.REGION)));
             personObject.setName(sqlRowSet.getString(PeopleManagerTable.NAME));
             personObject.setSex(sqlRowSet.getInt(PeopleManagerTable.SEX));
             personObject.setIdcard(sqlRowSet.getString(PeopleManagerTable.IDCARD));

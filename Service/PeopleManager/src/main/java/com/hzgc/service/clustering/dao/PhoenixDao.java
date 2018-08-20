@@ -21,6 +21,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.Connection;
@@ -248,6 +249,7 @@ public class PhoenixDao implements Serializable {
      * @return 返回一个人的抓拍历史
      */
     public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+        log.info("bbbbbbbbbbbbbbbbb");
         List<FaceObject> list = new ArrayList<>();
         Map<String, List<FaceObject>> map = new HashMap<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
@@ -299,6 +301,24 @@ public class PhoenixDao implements Serializable {
             log.info("Start to get the object photo successfully!");
         }
         return photo;
+    }
+
+    /**
+     * 根据区域ID获取区域名称
+     */
+    public String getRegionNameById(String id){
+        Table table = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
+        Get get = new Get(Bytes.toBytes(id));
+        String regionName = "";
+        try {
+            Result result = table.get(get);
+            if (result.size() > 0 ){
+                regionName = Bytes.toString(result.getValue(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_NAME));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return regionName;
     }
 }
 
