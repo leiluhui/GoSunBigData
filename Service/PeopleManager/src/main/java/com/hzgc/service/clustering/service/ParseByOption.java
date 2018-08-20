@@ -355,7 +355,7 @@ public class ParseByOption {
         // 关于性别的查询
         Integer sex = param.getSex();
         if (sex != null) {
-            if (sex == 0 || sex == 1 || sex == 2) {
+            if (sex == 1 || sex == 2) {
                 if (isChanged) {
                     whereQuery.append(" and ");
                 }

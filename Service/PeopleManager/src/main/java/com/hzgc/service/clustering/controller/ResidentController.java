@@ -304,7 +304,7 @@ public class ResidentController {
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.POST)
     public ResponseResult<Map> getCaptureHistory(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
         List<String> rowkeylist = rowkeyList.getRowkeyList();
-        if (rowkeylist == null | rowkeylist.size() == 0) {
+        if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture history, but the rowkeyList is null!");
         }
         log.info("Start to get capture history, param is : " + rowkeylist);

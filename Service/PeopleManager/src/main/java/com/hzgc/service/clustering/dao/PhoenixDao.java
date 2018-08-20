@@ -251,12 +251,15 @@ public class PhoenixDao implements Serializable {
         List<FaceObject> list = new ArrayList<>();
         Map<String, List<FaceObject>> map = new HashMap<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
+        log.info("rowkeyList is : " + rowkeylist);
         for (String rowkey : rowkeylist) {
             Get get = new Get(Bytes.toBytes(rowkey));
             try {
                 Result result = table.get(get);
+                log.info("Result's size is :" + result.size());
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 list = JSONUtil.toObject(listString, ArrayList.class);
+                log.info("The list is :" + list);
                 map.put(rowkey, list);
             } catch (Exception e) {
                 e.printStackTrace();

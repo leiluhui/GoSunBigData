@@ -416,8 +416,7 @@ public class ClusteringSearchService {
      * @return 返回一个人的抓拍历史
      */
     public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
-        Map<String, List<FaceObject>> map = phoenixDao.getCaptureHistory(rowkeylist);
-        return map;
+        return phoenixDao.getCaptureHistory(rowkeylist);
     }
 
     /**
