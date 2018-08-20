@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################################################################
 ## Copyright:    HZGOSUN Tech. Co, BigData
-## Filename:     UpdateRegionTable
+## Filename:     discover
 ## Description:  更新区域表
 ## Author:       chenke
 ## Created:      2018-08-14
@@ -27,9 +27,9 @@ SPARK_JAR=${LIB_DIR}/${SPARK_JAR_NAME}            ##获取jar包的全路径
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function update()
+function discover()
 {
-  java -cp ${LIB_DIR}/htrace-core-3.1.0-incubating.jar:${LIB_DIR}/netty-common-4.1.11.Final.jar:${LIB_DIR}/netty-transport-4.1.11.Final.jar:${LIB_DIR}/protobuf-java-2.5.0.jar:${LIB_DIR}/hbase-protocol-1.3.2.jar:${LIB_DIR}/zookeeper-3.4.10.jar:${LIB_DIR}/hadoop-auth-2.7.2.jar:${LIB_DIR}/commons-lang-2.6.jar:${LIB_DIR}/commons-configuration-1.6.jar:${LIB_DIR}/slf4j-api-1.7.16.jar:${LIB_DIR}/hbase-client-1.3.2.jar:${LIB_DIR}/commons-collections-3.2.2.jar:${LIB_DIR}/guava-11.0.2.jar:${LIB_DIR}/commons-logging-1.1.3.jar:${LIB_DIR}/hadoop-common-2.7.2.jar:${SPARK_JAR}:${LIB_DIR}/common-hbase-1.0.jar:${LIB_DIR}/log4j-1.2.17.jar:${LIB_DIR}/common-util-1.0.jar:${LIB_DIR}/hbase-common-1.3.2.jar com.hzgc.cluster.spark.clustering.UpdateRegion
+  java -cp ${SPARK_JAR} com.hzgc.cluster.spark.clustering.Discover
 }
 #####################################################################
 # 函数名: main
@@ -40,7 +40,7 @@ function update()
 #####################################################################
 function main()
 {
-   update
+   discover
 }
 
 main

@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableEurekaClient
 @SpringBootApplication
 @EnableAuthSynchronize
-//@EnableScheduling
+@EnableScheduling
 public class ClusteringApplication {
 
     public static void main(String[] args) {
