@@ -453,7 +453,9 @@ public class ClusteringSearchService {
             personObject.setStatus(sqlRowSet.getInt(PeopleManagerTable.STATUS));
             personObject.setCareLevel(sqlRowSet.getInt(PeopleManagerTable.CARE));
             personObject.setFollowLevel(sqlRowSet.getInt(PeopleManagerTable.IMPORTANT));
-            personObject.setSimilarity(sqlRowSet.getFloat(PeopleManagerTable.SIM));
+            if (param.getPictureData() != null) {
+                personObject.setSimilarity(sqlRowSet.getFloat(PeopleManagerTable.SIM));
+            }
             personObject.setLocation(sqlRowSet.getString(PeopleManagerTable.LOCATION));
             personObjectList.add(personObject);
         }
