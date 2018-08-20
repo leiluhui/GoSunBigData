@@ -441,8 +441,6 @@ public class ClusteringSearchService {
             PersonObject personObject = new PersonObject();
             personObject.setObjectID(sqlRowSet.getString(PeopleManagerTable.ROWKEY));
             personObject.setRegionId(sqlRowSet.getString(PeopleManagerTable.REGION));
-            personObject.setRegionName(phoenixDao.getRegionNameById(sqlRowSet.getString(PeopleManagerTable.REGION)));
-            log.info("regionName is :"+phoenixDao.getRegionNameById(sqlRowSet.getString(PeopleManagerTable.REGION)));
             personObject.setName(sqlRowSet.getString(PeopleManagerTable.NAME));
             personObject.setSex(sqlRowSet.getInt(PeopleManagerTable.SEX));
             personObject.setIdcard(sqlRowSet.getString(PeopleManagerTable.IDCARD));

@@ -301,24 +301,6 @@ public class PhoenixDao implements Serializable {
         }
         return photo;
     }
-
-    /**
-     * 根据区域ID获取区域名称
-     */
-    public String getRegionNameById(String id){
-        Table table = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
-        Get get = new Get(Bytes.toBytes(id));
-        String regionName = "";
-        try {
-            Result result = table.get(get);
-            if (result.size() > 0 ){
-                regionName = Bytes.toString(result.getValue(PersonRegionTable.COLUMNFAMILY,PersonRegionTable.REGION_NAME));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return regionName;
-    }
 }
 
 
