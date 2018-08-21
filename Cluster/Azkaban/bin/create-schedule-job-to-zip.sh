@@ -60,7 +60,7 @@ else
    echo "command=sh \${cluster_home}/start-face-offline-alarm-job.sh" >> start-face-offline-alarm-job.job
 fi
 
-if [ ! -f "DISCOVER_FILE" ]; then
+if [ ! -f "$DISCOVER_FILE" ]; then
    echo "The discover.sh is not exist!!!"
 else
    touch discover-one-day.job       ##创建discover-one-day.job文件
