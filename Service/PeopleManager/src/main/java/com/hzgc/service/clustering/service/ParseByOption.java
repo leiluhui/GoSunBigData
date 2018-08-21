@@ -381,7 +381,7 @@ public class ParseByOption {
                     whereParamList.add(regionList.get(0));
                 } else {
                     whereQuery.append(PeopleManagerTable.REGION)
-                            .append(" like '%").append(regionList.get(0)).append("%'");
+                            .append(" = '").append(regionList.get(0)).append("'");
                     whereParamList.add(regionList.get(0));
                     isChanged = true;
                 }
