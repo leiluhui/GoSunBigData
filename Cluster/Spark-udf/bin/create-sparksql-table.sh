@@ -13,35 +13,15 @@
 #---------------------------------------------------------------------#
 cd `dirname $0`
 BIN_DIR=`pwd`                                   ### bin 目录
-cd ..
-SPARK_DIR=`pwd`                                 ###spark目录
-cd ..
-CLUSTER_DIR=`pwd`                               ###cluster目录
-cd ..
-OBJECT_DIR=`pwd`                                ### Real 根目录
-COMMON_DIR=${OBJECT_DIR}/common                 ### common 目录
-CONF_FILE=${COMMON_DIR}/conf/project-conf.properties
 
+cd ..
+SCRIPT_DIR=`pwd`
+CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
 ## bigdata cluster path
-BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
+BIGDATA_CLUSTER_PATH=$(grep install_homedir ${CONF_FILE} |cut -d '=' -f2)
 ## bigdata hive path
 SPARK_PATH=${BIGDATA_CLUSTER_PATH}/Spark/spark
-## HBase_home
-HBASE_HOME=${BIGDATA_CLUSTER_PATH}/HBase/hbase
-## bigdata hadoop path
-HADOOP_PATH=${BIGDATA_CLUSTER_PATH}/Hadoop/hadoop
-## bigdata hive path
-HIVE_PATH=${BIGDATA_CLUSTER_PATH}/Hive/hive
-## udf function name
-UDF_FUNCTION_NAME=compare
-## udf class path
-UDF_CLASS_PATH=com.hzgc.cluster.spark.udf.UDFArrayCompare
-## hdfs udf  path
-HDFS_UDF_PATH=/user/hive/udf
-## udf jar version
-UDF_VERSION=`ls ${SPARK_DIR}/lib | grep ^spark-udf-[0-9].[0-9].[0-9].jar$`
-## hdfs udf Absolute path
-HDFS_UDF_ABSOLUTE_PATH=hdfs://hzgc/${HDFS_UDF_PATH}/${UDF_VERSION}
+
 #####################################################################
 # 函数名: create_person_table_mid_table
 # 描述: 创建person表， mid_table 表格

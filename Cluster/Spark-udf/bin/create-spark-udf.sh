@@ -13,21 +13,20 @@
 #---------------------------------------------------------------------#
 
 cd `dirname $0`
-cd ..
 SPARK_DIR=`pwd`                         ### spark 目录
-cd ..
-CLUSTER_DIR=`pwd`                        ### 集群根目录
-cd ..
-OBJECT_DIR=`pwd`                         ### Real根目录
 ## log 日记目录
 LOG_DIR=${SPARK_DIR}/logs
 ##  log 日记文件
 LOG_FILE=${LOG_DIR}/add-udf.log
 
+cd ..
+SCRIPT_DIR=`pwd`
+CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
+
 ## udf jar version
 UDF_VERSION=`ls ${SPARK_DIR}/lib | grep ^spark-udf-[0-9].[0-9].[0-9].jar$`
 ## bigdata cluster path
-BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
+BIGDATA_CLUSTER_PATH=$(grep install_homedir ${CONF_FILE} |cut -d '=' -f2)
 ## bigdata hadoop path
 HADOOP_PATH=${BIGDATA_CLUSTER_PATH}/Hadoop/hadoop
 ## bigdata hive path

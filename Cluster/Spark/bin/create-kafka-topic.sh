@@ -15,30 +15,22 @@ cd `dirname $0`
 BIN_DIR=`pwd`                                         ### bin目录：脚本所在目录
 cd ..
 SPARK_DIR=`pwd`                                         ### spark模块部署目录
-CONF_FTP_DIR=$SPARK_DIR/conf                            ### 配置文件目录
-LOG_DIR=$SPARK_DIR/logs                                 ### log日志目录
-LOG_FILE=$LOG_DIR/create-kafka-topic.log              ### log日志目录
+LOG_DIR=${BIN_DIR}/logs                                 ### log日志目录
+LOG_FILE=${LOG_DIR}/create-kafka-topic.log              ### log日志目录
 
 cd ..
-CLUSTER_DIR=`pwd`                                      ### cluster模块目录
-cd ..
-REAL_DIR=`pwd`                                        ##项目根目录
-COMMON_DIR=$REAL_DIR/common                         ### common模块部署目录
-CONF_COMMON_DIR=$COMMON_DIR/conf                      ### 配置文件目录
-CONF_FILE=$CONF_COMMON_DIR/project-conf.properties    ### 项目配置文件
-
-cd ../hzgc/conf
-CONF_HZGC_DIR=`pwd`                                   ### 集群配置文件目录
+SCRIPT_DIR=`pwd`
+CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
 
 ## 最终安装的根目录，所有bigdata 相关的根目录：/opt/hzgc/bigdata
-INSTALL_HOME=$(grep install_homedir $CONF_FILE |cut -d '=' -f2)
+INSTALL_HOME=$(grep install_homedir ${CONF_FILE} |cut -d '=' -f2)
 ## KAFKA_INSTALL_HOME kafka 安装目录
 KAFKA_INSTALL_HOME=${INSTALL_HOME}/Kafka
 ## KAFKA_HOME  kafka 根目录
 KAFKA_HOME=${INSTALL_HOME}/Kafka/kafka
 
-if [ ! -d $LOG_DIR ]; then
-    mkdir $LOG_DIR
+if [ ! -d ${LOG_DIR} ]; then
+    mkdir ${LOG_DIR}
 fi
 
 
@@ -51,10 +43,10 @@ fi
 #####################################################################
 function create_kafka_topic()
 {
-    echo ""  | tee -a $LOG_FILE
-    echo "**********************************************" | tee -a $LOG_FILE
-    echo "" | tee -a $LOG_FILE
-	echo "开始创建kafka的topic.."                       | tee  -a  $LOG_FILE
+    echo ""  | tee -a ${LOG_FILE}
+    echo "**********************************************" | tee -a ${LOG_FILE}
+    echo "" | tee -a ${LOG_FILE}
+	echo "开始创建kafka的topic.."                       | tee  -a  ${LOG_FILE}
 
     # 根据zookeeper字段，查找配置文件中，zk的IP地址和端口号
     #ZK_IP_PORTS=`sed '/zookeeper/!d;s/.*=//' ${CONF_FILE} | tr -d '\r'`
@@ -64,7 +56,7 @@ function create_kafka_topic()
     zkpro=''    
     for zk_host in ${zk_arr[@]}
     do
-        zkpro=$zkpro$zk_host":2181,"
+        zkpro=${zkpro}${zk_host}":2181,"
     done
     zkpro=${zkpro%?}
     
@@ -82,22 +74,22 @@ function create_kafka_topic()
     --topic feature >> ${LOG_FILE} 2>&1 &
 	
     if [ $? = 0 ];then
-		echo "创建成功...."  | tee  -a  $LOG_FILE
-		echo "kafka topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+		echo "创建成功...."  | tee  -a  ${LOG_FILE}
+		echo "kafka topic 副本数为${repl_factor},分区数为${part_num}." | tee -a ${LOG_FILE}
 	else
-		echo "创建失败...." | tee -a $LOG_FILE
+		echo "创建失败...." | tee -a ${LOG_FILE}
 	fi	
 	
     # 列出所有topic
-	echo ""  | tee -a $LOG_FILE
-	echo "**********************************************" | tee -a $LOG_FILE
-	echo ""  | tee -a $LOG_FILE
-	echo "验证Kafka创建是否成功....." | tee -a $LOG_FILE
-    echo "执行${KAFKA_HOME}/bin/kafka-topics.sh --list --zookeeper ${zkpro}，列出所有topic..." | tee -a $LOG_FILE
+	echo ""  | tee -a ${LOG_FILE}
+	echo "**********************************************" | tee -a ${LOG_FILE}
+	echo ""  | tee -a ${LOG_FILE}
+	echo "验证Kafka创建是否成功....." | tee -a ${LOG_FILE}
+    echo "执行${KAFKA_HOME}/bin/kafka-topics.sh --list --zookeeper ${zkpro}，列出所有topic..." | tee -a ${LOG_FILE}
 	sleep 2s
 	./kafka-topics.sh --list \
-    --zookeeper ${zkpro} | tee  -a  $LOG_FILE
-	echo "**********************************************" | tee -a $LOG_FILE
+    --zookeeper ${zkpro} | tee  -a  ${LOG_FILE}
+	echo "**********************************************" | tee -a ${LOG_FILE}
 
 }
 
@@ -120,9 +112,9 @@ function main()
 #---------------------------------------------------------------------#
 
 ## 打印时间
-echo ""  | tee  -a  $LOG_FILE
-echo "==================================================="  | tee -a $LOG_FILE
-echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  $LOG_FILE
+echo ""  | tee  -a  ${LOG_FILE}
+echo "==================================================="  | tee -a ${LOG_FILE}
+echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  ${LOG_FILE}
 main
 
 set +x

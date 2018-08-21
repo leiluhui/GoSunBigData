@@ -26,9 +26,6 @@ tephra-hbase-compat-1.1-0.13.0-incubating.jar
 SPARK_CLASS_PARAM=com.hzgc.cluster.spark.alarm.FaceOffLineAlarmJob
 
 
-
-
-
 cd `dirname $0`
 cd ..
 SPARK_DIR=`pwd`                                        #spark模块目录
@@ -45,18 +42,18 @@ fi
 ############ 判断是否存在大数据集群###################
 BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
 if [ ! -d ${BIGDATA_CLUSTER_PATH} ];then
-   printf "\033[31m ERROR: ${BIGDATA_CLUSTER_PATH} does not exit,please go to the node of the existing bigdata cluster! \033[0m\n"
+   printf "ERROR: ${BIGDATA_CLUSTER_PATH} does not exit,please go to the node of the existing bigdata cluster! "
    exit 0
 fi
 ############### 判断是否存在配置文件 ##################
 if [ ! -f ${SPARK_CONF_DIR}/sparkJob.properties ];then
-    printf "\033[31m ERROR: ${SPARK_CONF_DIR}/sparkJob.properties does not exit! \033[0m\n"
+    printf "ERROR: ${SPARK_CONF_DIR}/sparkJob.properties does not exit! "
     exit 0
 else
     cp ${SPARK_CONF_DIR}/sparkJob.properties /opt/hzgc/bigdata/Spark/spark/conf/
 fi
 if [ ! -f ${SPARK_CONF_DIR}/log4j.properties ];then
-    printf "\033[31m ERROR: ${SPARK_CONF_DIR}/log4j.properties does not exit! \033[0m\n"
+    printf "ERROR: ${SPARK_CONF_DIR}/log4j.properties does not exit!"
     exit 0
 else
     sed -i "s#^log4j.appender.FILE.File=.*#log4j.appender.FILE.File=${LOG_FILE}#g" ${SPARK_CONF_DIR}/log4j.properties
@@ -66,7 +63,7 @@ JARS_PATH=""
 for jar in ${JARS[@]}; do
 	jar_path=${SPARK_LIB_DIR}/${jar}
 	if [ ! -f ${jar_path} ];then
-		printf "\033[31m ERROR: ${jar_path} not exist exit \033[0m\n"
+		printf "ERROR: ${jar_path} not exist exit"
 		exit 0
 	fi
 	JARS_PATH=${JARS_PATH}${jar_path},
@@ -89,8 +86,8 @@ nohup spark-submit \
 ${SPARK_LIB_DIR}/${SPARK_API_VERSION} > ${LOG_FILE} 2>&1 &
 
 if [ $? -eq 0 ];then
-    printf "\033[32m SUCCESS: Start faceOffLineAlarmJob success!!! \033[0m\n"
+    printf "SUCCESS: Start faceOffLineAlarmJob success!!!"
 else
-     printf "\033[31m ERROR: Start faceOffLineAlarmJob Failure!!! \033[0m\n"
+     printf "ERROR: Start faceOffLineAlarmJob Failure!!!"
      exit 1
 fi

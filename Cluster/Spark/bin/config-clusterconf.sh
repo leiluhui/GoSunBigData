@@ -24,9 +24,9 @@ CLUSTER_DIR=`pwd`                                     ### cluster 模块目录
 cd ..
 OBJECT_DIR=`pwd`                                      ### 项目根目录
 
-CLUSTER_BUILD_DIR=$OBJECT_DIR/common                   ### common 目录
-CONF_CLUSTER_DIR=$CLUSTER_BUILD_DIR/conf               ### 配置文件目录
-CONF_FILE=$CONF_CLUSTER_DIR/project-conf.properties    ### 项目配置文件
+CLUSTER_BUILD_DIR=${OBJECT_DIR}/common                   ### common 目录
+CONF_CLUSTER_DIR=${CLUSTER_BUILD_DIR}/conf               ### 配置文件目录
+CONF_FILE=${CONF_CLUSTER_DIR}/project-conf.properties    ### 项目配置文件
 
 ## 安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep install_homedir ${CONF_FILE}|cut -d '=' -f2)
@@ -54,17 +54,17 @@ mkdir -p $LOG_DIR
 #####################################################################
 function move_xml()
 {
-    echo ""  | tee -a $LOG_FILE
-    echo "**********************************************" | tee -a $LOG_FILE
-    echo "" | tee -a $LOG_FILE
-    echo "copy 文件 hbase-site.xml core-site.xml hdfs-site.xml hive-site.xml到 cluster/conf......"  | tee  -a  $LOG_FILE
+    echo ""  | tee -a ${LOG_FILE}
+    echo "**********************************************" | tee -a ${LOG_FILE}
+    echo "" | tee -a ${LOG_FILE}
+    echo "copy 文件 hbase-site.xml core-site.xml hdfs-site.xml hive-site.xml到 cluster/conf......"  | tee  -a  ${LOG_FILE}
 
     cp ${HBASE_HOME}/conf/hbase-site.xml ${CONF_SPARK_DIR}
     cp ${HADOOP_HOME}/etc/hadoop/core-site.xml ${CONF_SPARK_DIR}
     cp ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml ${CONF_SPARK_DIR}
     cp ${HIVE_HOME}/conf/hive-site.xml ${CONF_SPARK_DIR}
 
-    echo "copy完毕......"  | tee  -a  $LOG_FILE
+    echo "copy完毕......"  | tee  -a  ${LOG_FILE}
 }
 
 #####################################################################
@@ -76,10 +76,10 @@ function move_xml()
 #####################################################################
 function config_sparkJob()
 {
-    echo ""  | tee -a $LOG_FILE
-    echo "**********************************************" | tee -a $LOG_FILE
-    echo "" | tee -a $LOG_FILE
-    echo "配置cluster/spark/conf/sparkJob 文件......"  | tee  -a  $LOG_FILE
+    echo ""  | tee -a ${LOG_FILE}
+    echo "**********************************************" | tee -a ${LOG_FILE}
+    echo "" | tee -a ${LOG_FILE}
+    echo "配置cluster/spark/conf/sparkJob 文件......"  | tee  -a  ${LOG_FILE}
 
     ### 从project-conf.properties读取sparkJob所需配置IP
     # 根据字段kafka，查找配置文件中，Kafka的安装节点所在IP端口号的值，这些值以分号分割
@@ -139,9 +139,9 @@ function config_sparkJob()
     value="job.clustering.mysql.url=${value}"
     sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
 
-    echo "配置完毕......"  | tee  -a  $LOG_FILE
+    echo "配置完毕......"  | tee  -a  ${LOG_FILE}
 
-    echo "开始分发SparkJob文件......"  | tee  -a  $LOG_FILE
+    echo "开始分发SparkJob文件......"  | tee  -a  ${LOG_FILE}
     for spark_hname in ${spark_arr[@]}
     do
         scp -r ${CONF_SPARK_DIR}/sparkJob.properties root@${spark_hname}:${SPARK_HOME}/conf
@@ -167,11 +167,11 @@ function main()
 #---------------------------------------------------------------------#
 
 ## 打印时间
-echo ""  | tee  -a  $LOG_FILE
-echo ""  | tee  -a  $LOG_FILE
-echo "==================================================="  | tee -a $LOG_FILE
-echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  $LOG_FILE
-echo "开始配置cluster中的conf文件"                       | tee  -a  $LOG_FILE
+echo ""  | tee  -a  ${LOG_FILE}
+echo ""  | tee  -a  ${LOG_FILE}
+echo "==================================================="  | tee -a ${LOG_FILE}
+echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  ${LOG_FILE}
+echo "开始配置cluster中的conf文件"                       | tee  -a  ${LOG_FILE}
 main
 
 set +x

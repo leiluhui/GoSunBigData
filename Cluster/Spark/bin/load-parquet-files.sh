@@ -17,17 +17,17 @@ cd ..
 CLUSTER_DIR=`pwd`                                                            ## cluster 模块目录
 cd ..
 PROJECT_DIR=`pwd`                                                            ## 项目根目录
-CONF_DIR=$DEPLOY_DIR/conf                                                    ## spark模块conf目录
-LIB_DIR=$DEPLOY_DIR/lib                                                      ## lib目录
-LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`   ## jar 包位置以及第三方依赖jar包，绝对路径
+CONF_DIR=${DEPLOY_DIR}/conf                                                    ## spark模块conf目录
+LIB_DIR=${DEPLOY_DIR}/lib                                                      ## lib目录
+LIB_JARS=`ls ${LIB_DIR}|grep .jar|awk '{print "'${LIB_DIR}'/"$0}'|tr "\n" ":"`   ## jar 包位置以及第三方依赖jar包，绝对路径
 sleep 2s
 LOG_DIR=${DEPLOY_DIR}/logs                                                   ## log 日记目录
 LOG_FILE=${LOG_DIR}/load-parquet-files.log                                   ## log 日记文件
 SPARKJOB_PROPERTIES=${DEPLOY_DIR}/conf/sparkJob.properties
 
 
-if [ ! -d $LOG_DIR ]; then
-    mkdir -p $LOG_DIR;
+if [ ! -d ${LOG_DIR} ]; then
+    mkdir -p ${LOG_DIR};
 fi
 
 
@@ -70,16 +70,16 @@ function load_parquet()
 #####################################################################
 function main()
 {
-    echo ""  | tee  -a  $LOG_FILE
-    echo ""  | tee  -a  $LOG_FILE
-    echo "==================================================="  | tee -a $LOG_FILE
-    echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  $LOG_FILE
+    echo ""  | tee  -a  ${LOG_FILE}
+    echo ""  | tee  -a  ${LOG_FILE}
+    echo "==================================================="  | tee -a ${LOG_FILE}
+    echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  ${LOG_FILE}
     load_parquet
 }
 ## 脚本主要业务入口
 # 主程序入口
-echo "" | tee  -a  $LOG_FILE
-echo "*******************************************************************"  | tee  -a  $LOG_FILE
+echo "" | tee  -a  ${LOG_FILE}
+echo "*******************************************************************"  | tee  -a  ${LOG_FILE}
 main
 
 

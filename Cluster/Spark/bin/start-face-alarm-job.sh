@@ -26,7 +26,7 @@ SPARK_LIB_DIR=${SPARK_DIR}/lib
 SPARK_LOG_DIR=${SPARK_DIR}/logs
 LOG_FILE=${SPARK_LOG_DIR}/sparkFaceAlarmJob.log
 ######## common目录 ########
-COMMON_CONF_DIR=${DEPLOY_DIR}/common/conf
+COMMON_CONF_DIR=${DEPLOY_DIR}/Common/conf
 ########service目录###########
 ## bigdata_env
 BIGDATA_ENV=/opt/hzgc/env_bigdata.sh
@@ -121,10 +121,6 @@ if [ ! -e ${SPARK_LIB_DIR}/${JACKSON_CORE_VERSION} ];then
 fi
 if [ ! -e ${SPARK_LIB_DIR}/${SPARK_STREAMING_KAFKA_VERSION} ];then
     echo "${SPARK_LIB_DIR}/${SPARK_STREAMING_KAFKA_VERSION} does not exit!"
-    exit 0
-fi
-if [ ! -e ${SPARK_LIB_DIR}/${SERVICE_VERSION} ];then
-    echo "${SPARK_LIB_DIR}/${SERVICE_VERSION} does not exit!"
     exit 0
 fi
 if [ ! -e ${SPARK_LIB_DIR}/${HBASE_SERVER_VERSION} ];then

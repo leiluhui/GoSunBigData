@@ -6,7 +6,7 @@
 ## Author:      chenke
 ## Created:     2017-11-09
 ################################################################################
-set -x  ## 用于调试使用，不用的时候可以注释掉
+#set -x  ## 用于调试使用，不用的时候可以注释掉
 
 #---------------------------------------------------------------------#
 #                              定义变量                               #
@@ -18,14 +18,13 @@ cd ..
 SPARK_DIR=`pwd`                                    #spark模块目录
 cd ..
 DEPLOY_DIR=`pwd`                                       #cluster目录
+cd ..
 REALTIME_DIR=`pwd`                                     #RealTimeFaceCompare目录
 ######## cluster目录########
 SPARK_CONF_DIR=${SPARK_DIR}/conf
 SPARK_LIB_DIR=${SPARK_DIR}/lib
 SPARK_LOG_DIR=${SPARK_DIR}/logs
 LOG_FILE=${SPARK_LOG_DIR}/KafkaToParquet.log
-######## common目录########
-COMMON_CONF_DIR=${DEPLOY_DIR}/common/conf
 ########service目录###########
 
 ## bigdata_env
@@ -43,9 +42,9 @@ DEPLOY_MODE=cluster
 ## module version(模块)
 SPARK_API_VERSION=`ls ${SPARK_LIB_DIR} | grep ^spark-[0-9].[0-9].[0-9].jar$`
 JNI_VERSION=`ls ${SPARK_LIB_DIR}| grep ^common-jni-[0-9].[0-9].jar$`
-ADDRESS_VERSION=`ls /opt/RealTimeFaceCompare/service/address/lib | grep ^address-[0-9].[0-9].[0-9].jar$`
-ALARM_VERSION=`ls /opt/RealTimeFaceCompare/service/alarm/lib | grep ^alarm-[0-9].[0-9].[0-9].jar$`
-CLUSTERING_VERSION=`ls /opt/RealTimeFaceCompare/service/clustering/lib | grep ^clustering-[0-9].[0-9].[0-9].jar$`
+ADDRESS_VERSION=`ls ${REALTIME_DIR}/Service/address/lib | grep ^address-[0-9].[0-9].[0-9].jar$`
+ALARM_VERSION=`ls ${REALTIME_DIR}/Service/alarm/lib | grep ^alarm-[0-9].[0-9].[0-9].jar$`
+CLUSTERING_VERSION=`ls ${REALTIME_DIR}/Service/clustering/lib | grep ^clustering-[0-9].[0-9].[0-9].jar$`
 COMMON_UTIL_VERSION=`ls ${SPARK_LIB_DIR} | grep ^common-util-[0-9].[0-9].jar$`
 COMMON_ES_VERSION=`ls ${SPARK_LIB_DIR} | grep ^common-es-[0-9].[0-9].jar$`
 COMMON_COLLECT_VERSION=`ls ${SPARK_LIB_DIR} | grep ^common-collect-[0-9].[0-9].jar$`

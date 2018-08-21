@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    ftp_distribute.sh
-## Description: 一键配置及分发Collect（FTP）模块
+## Filename:    project_distribute.sh
+## Description: 一键配置及分发微服务模块
 ## Author:      zhangbaolin
 ## Created:     2018-07-26
 ################################################################################
@@ -31,31 +31,32 @@ LOCALIP=`hostname -i`
 
 COMPONENT_HOME=${ROOT_HOME}/component
 cd ${COMPONENT_HOME}
-## 判断RealTimeFaceCompare目录是否存在
-if [[ ! -e RealTimeFaceCompare ]]; then
-    echo "RealTimeFaceCompare 目录不存在"
+## 判断GosunBigData目录是否存在
+if [[ ! -e GosunBigData ]]; then
+    echo "GosunBigData 目录不存在"
     exit 1
 fi
+
 ## 判断Collect目录是否存在
 if [[ ! -e Collect ]]; then
     echo "Collect 目录不存在"
     exit 1
 fi
 
-cd RealTimeFaceCompare
-## RealTimeFaceCompare 目录
+cd GosunBigData
+## GosunBigData 目录
 GOSUN_HOME=`pwd`
 GOSUNINSTALL_HOME=/opt/GoSunBigData
 ## common模块目录
-COMMON_DIR=${GOSUN_HOME}/common
-COMMON_INSTALL_DIR=${GOSUNINSTALL_HOME}/common
+COMMON_DIR=${GOSUN_HOME}/Common
+COMMON_INSTALL_DIR=${GOSUNINSTALL_HOME}/Common
 ## cluster模块目录
-CLUSTER_DIR=${GOSUN_HOME}/cluster
+CLUSTER_DIR=${GOSUN_HOME}/Cluster
 ## service模块目录
-SERVICE_DIR=${GOSUN_HOME}/service
-SERVICE_INSTALL_DIR=${GOSUNINSTALL_HOME}/service
+SERVICE_DIR=${GOSUN_HOME}/Service
+SERVICE_INSTALL_DIR=${GOSUNINSTALL_HOME}/Service
 ## cluster-spark模块部署目录
-SPARK_DIR=${GOSUN_HOME}/cluster/spark
+SPARK_DIR=${GOSUN_HOME}/Cluster/spark
 ## cluster-spark模块配置文件目录
 CONF_SPARK_DIR=${SPARK_DIR}/conf
 ## common log日志目录
@@ -75,49 +76,57 @@ mkdir -p ${SPARK_LOG_DIR}
 mkdir -p ${COMMON_LOG_DIR}
 mkdir -p ${SERVICE_LOG_DIR}
 ## address模块部署目录
-ADDRESS_DIR=${SERVICE_DIR}/address
+ADDRESS_DIR=${SERVICE_DIR}/common/address
+ADDRESS_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/address
 ADDRESS_BIN_DIR=${ADDRESS_DIR}/bin                                ##address模块脚本存放目录
 ADDRESS_START_FILE=${ADDRESS_BIN_DIR}/start-address.sh            ##address模块启动脚本
 ADDRESS_CONF_DIR=${ADDRESS_DIR}/conf                              ##address模块conf目录
 ADDRESS_PRO_FILE=${ADDRESS_CONF_DIR}/application-pro.properties   ##address模块配置文件
 ## alarm模块部署目录
-ALARM_DIR=${SERVICE_DIR}/alarm
+ALARM_DIR=${SERVICE_DIR}/face/alarm
+ALARM_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/alarm
 ALARM_BIN_DIR=${ALARM_DIR}/bin                           ##alarm模块脚本存放目录
 ALARM_START_FILE=${ALARM_BIN_DIR}/start-alarm.sh       ##alarm模块启动脚本
 ALARM_CONF_DIR=${ALARM_DIR}/conf                       ##alarm模块conf目录
 ALARM_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##alarm模块配置文件
 ## clustering模块部署目录
-CLUSTERING_DIR=${SERVICE_DIR}/clustering
+CLUSTERING_DIR=${SERVICE_DIR}/face/clustering
+CLUSTERING_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/clustering
 CLUSTERING_BIN_DIR=${CLUSTERING_DIR}/bin                                ##clustering模块脚本存放目录
 CLUSTERING_START_FILE=${CLUSTERING_BIN_DIR}/start-clustering.sh         ##clustering模块启动脚本
 CLUSTERING_CONF_DIR=${CLUSTERING_DIR}/conf                              ##clustering模块conf目录
 CLUSTERING_PRO_FILE=${CLUSTERING_CONF_DIR}/application-pro.properties   ##clustering模块配置文件
 ## dispatch模块部署目录
-DISPATCH_DIR=${SERVICE_DIR}/dispatch
+DISPATCH_DIR=${SERVICE_DIR}/face/dispatch
+DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dispatch
 DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin                           ##dispatch模块脚本存放目录
 DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-dispatch.sh       ##dispatch模块启动脚本
 DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##dispatch模块conf目录
 DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##dispatch模块配置文件
 ## dynrepo模块部署目录
-DYNREPO_DIR=${SERVICE_DIR}/dynRepo
+DYNREPO_DIR=${SERVICE_DIR}/face/dynRepo
+DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynRepo
 DYNREPO_BIN_DIR=${DYNREPO_DIR}/bin                           ##dynrepo模块脚本存放目录
 DYNREPO_START_FILE=${DYNREPO_BIN_DIR}/start-dynrepo.sh       ##dynrepo模块启动脚本
 DYNREPO_CONF_DIR=${DYNREPO_DIR}/conf                         ##dynrepo模块conf目录
 DYNREPO_PRO_FILE=${DYNREPO_CONF_DIR}/application-pro.properties   ##dynrepo模块配置文件
 ## face模块部署目录
-FACE_DIR=${SERVICE_DIR}/face
+FACE_DIR=${SERVICE_DIR}/common/face
+FACE_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/face
 FACE_BIN_DIR=${FACE_DIR}/bin                           ##face模块脚本存放目录
 FACE_START_FILE=${FACE_BIN_DIR}/start-face.sh       ##face模块启动脚本
 FACE_CONF_DIR=${FACE_DIR}/conf                         ##face模块conf目录
 FACE_PRO_FILE=${FACE_CONF_DIR}/application-pro.properties   ##face模块配置文件
 ## starepo模块目录
-STAREPO_DIR=${SERVICE_DIR}/staRepo
+STAREPO_DIR=${SERVICE_DIR}/face/staRepo
+STAREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/staRepo
 STAREPO_BIN_DIR=${STAREPO_DIR}/bin                           ##starepo模块脚本存放目录
 STAREPO_START_FILE=${STAREPO_BIN_DIR}/start-starepo.sh       ##starepo模块启动脚本
 STAREPO_CONF_DIR=${STAREPO_DIR}/conf                         ##starepo模块conf目录
 STAREPO_PRO_FILE=${STAREPO_CONF_DIR}/application-pro.properties   ##starepo模块配置文件
 ## visual模块目录
-VISUAL_DIR=${SERVICE_DIR}/visual
+VISUAL_DIR=${SERVICE_DIR}/common/visual
+VISUAL_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/visual
 VISUAL_BIN_DIR=${VISUAL_DIR}/bin                           ##visual模块脚本存放目录
 VISUAL_START_FILE=${VISUAL_BIN_DIR}/start-visual.sh       ##visual模块启动脚本
 VISUAL_CONF_DIR=${VISUAL_DIR}/conf                       ##visual模块conf目录
@@ -208,9 +217,9 @@ function distribute_service()
     ADDRESS_HOST_ARRAY=(${ADDRESS_HOST_LISTS//;/ })
     for hostname in ${ADDRESS_HOST_ARRAY[@]}
     do
-      ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}"; fi"
-      rsync -rvl ${ADDRESS_DIR} root@${hostname}:${SERVICE_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${ADDRESS_DIR}"
+      ssh root@${hostname} "if [ ! -x "${ADDRESS_INSTALL_DIR}" ];then mkdir -p "${ADDRESS_INSTALL_DIR}"; fi"
+      rsync -rvl ${ADDRESS_DIR} root@${hostname}:${ADDRESS_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${ADDRESS_INSTALL_DIR}"
       echo "${hostname}上分发address完毕........" | tee -a ${SERVICE_LOG_FILE}
     done
 
@@ -219,9 +228,9 @@ function distribute_service()
     ALARM_HOST_ARRAY=(${ALARM_HOST_LISTS//;/ })
     for hostname in ${ALARM_HOST_ARRAY[@]}
     do
-      ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}"; fi"
-      rsync -rvl ${ALARM_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${ALARM_DIR}"
+      ssh root@${hostname} "if [ ! -x "${ALARM_INSTALL_DIR}" ];then mkdir -p "${ALARM_INSTALL_DIR}"; fi"
+      rsync -rvl ${ALARM_DIR} root@${hostname}:${ALARM_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${ALARM_INSTALL_DIR}"
       echo "${hostname}上分发alarm完毕........" | tee -a ${SERVICE_LOG_FILE}
     done
 
@@ -230,9 +239,9 @@ function distribute_service()
     CLUSTERING_HOST_ARRAY=(${CLUSTERING_HOST_LISTS//;/ })
     for hostname in ${CLUSTERING_HOST_ARRAY[@]}
     do
-      ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}"; fi"
-      rsync -rvl ${CLUSTERING_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${CLUSTERING_DIR}"
+      ssh root@${hostname} "if [ ! -x "${CLUSTERING_INSTALL_DIR}" ];then mkdir -p "${CLUSTERING_INSTALL_DIR}"; fi"
+      rsync -rvl ${CLUSTERING_DIR} root@${hostname}:${CLUSTERING_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${CLUSTERING_INSTALL_DIR}"
       echo "${hostname}上分发clustering完毕......." | tee -a ${SERVICE_LOG_FILE}
     done
 
@@ -241,9 +250,9 @@ function distribute_service()
     DISPATCH_HOST_ARRAY=(${DISPATCH_HOST_LISTS//;/ })
     for hostname in ${DISPATCH_HOST_ARRAY[@]}
     do
-      ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}";fi"
-      rsync -rvl ${DISPATCH_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${DISPATCH_DIR}"
+      ssh root@${hostname} "if [ ! -x "${DISPATCH_INSTALL_DIR}" ];then mkdir -p "${DISPATCH_INSTALL_DIR}";fi"
+      rsync -rvl ${DISPATCH_DIR} root@${hostname}:${DISPATCH_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${DISPATCH_INSTALL_DIR}"
       echo "${hostname}上分发dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
     done
 
@@ -252,9 +261,9 @@ function distribute_service()
     DYNREPO_HOST_ARRAY=(${DYNREPO_HOST_LISTS//;/ })
     for hostname in ${DYNREPO_HOST_ARRAY[@]}
     do
-       ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}";fi"
-       rsync -rvl ${DYNREPO_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-       ssh root@${hostname} "chmod -R 755 ${DYNREPO_DIR}"
+       ssh root@${hostname} "if [ ! -x "${DYNREPO_INSTALL_DIR}" ];then mkdir -p "${DYNREPO_INSTALL_DIR}";fi"
+       rsync -rvl ${DYNREPO_DIR} root@${hostname}:${DYNREPO_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${DYNREPO_INSTALL_DIR}"
        echo "${hostname}上分发dynrepo完毕........." | tee -a ${SERVICE_LOG_FILE}
     done
 
@@ -263,9 +272,9 @@ function distribute_service()
      FACE_HOST_ARRAY=(${FACE_HOST_LISTS//;/ })
      for hostname in ${FACE_HOST_ARRAY[@]}
      do
-        ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}";fi"
-        rsync -rvl ${FACE_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-        ssh root@${hostname} "chmod -R 755 ${FACE_DIR}"
+        ssh root@${hostname} "if [ ! -x "${FACE_INSTALL_DIR}" ];then mkdir -p "${FACE_INSTALL_DIR}";fi"
+        rsync -rvl ${FACE_DIR} root@${hostname}:${FACE_INSTALL_DIR} >/dev/null
+        ssh root@${hostname} "chmod -R 755 ${FACE_INSTALL_DIR}"
         echo "${hostname}上分发face完毕......." | tee -a ${SERVICE_LOG_FILE}
      done
 
@@ -274,9 +283,9 @@ function distribute_service()
      STAREPO_HOST_ARRAY=(${STAREPO_HOST_LISTS//;/ })
      for hostname in ${STAREPO_HOST_ARRAY[@]}
      do
-        ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}";fi"
-        rsync -rvl ${STAREPO_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-        ssh root@${hostname} "chmod -R 755 ${STAREPO_DIR}"
+        ssh root@${hostname} "if [ ! -x "${STAREPO_INSTALL_DIR}" ];then mkdir -p "${STAREPO_INSTALL_DIR}";fi"
+        rsync -rvl ${STAREPO_DIR} root@${hostname}:${STAREPO_INSTALL_DIR} >/dev/null
+        ssh root@${hostname} "chmod -R 755 ${STAREPO_INSTALL_DIR}"
         echo "${hostname}上分发starepo完毕......." | tee -a ${SERVICE_LOG_FILE}
      done
 
@@ -285,11 +294,13 @@ function distribute_service()
      VISUAL_HOST_ARRAY=(${VISUAL_HOST_LISTS//;/ })
      for hostname in ${VISUAL_HOST_ARRAY[@]}
      do
-       ssh root@${hostname} "if [ ! -x "${SERVICE_INSTALL_DIR}" ];then mkdir -p "${SERVICE_INSTALL_DIR}";fi"
-       rsync -rvl ${VISUAL_DIR} root@${hostname}:${SERVICE_INSTALL_DIR} >/dev/null
-       ssh root@${hostname} "chmod -R 755 ${VISUAL_DIR}"
+       ssh root@${hostname} "if [ ! -x "${VISUAL_INSTALL_DIR}" ];then mkdir -p "${VISUAL_INSTALL_DIR}";fi"
+       rsync -rvl ${VISUAL_DIR} root@${hostname}:${VISUAL_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${VISUAL_INSTALL_DIR}"
        echo "${hostname}上分发visual完毕........" | tee -a ${SERVICE_LOG_FILE}
      done
+     ## 拷贝GoSun到opt目录下
+     cp -r ${GOSUN_HOME} /opt
 
     echo "配置完毕......" | tee -a ${SERVICE_LOG_FILE}
 
@@ -341,7 +352,7 @@ function config_sparkjob()
     sparkpro=''
     for spark_host in ${spark_arr[@]}
     do
-        sparkpro="$sparkpro$spark_host:9092,"
+        sparkpro="${sparkpro}${spark_host}:9092,"
     done
     sparkpro=${sparkpro%?}
 
@@ -358,7 +369,7 @@ function config_sparkjob()
     phoenixpro=$phoenixpro${zk_arr[0]}":2181"
     for zk_ip in ${zk_arr[@]}
     do
-        zkpro="$zkpro$zk_ip:2181,"
+        zkpro="${zkpro}${zk_ip}:2181,"
     done
     zkpro=${zkpro%?}
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
@@ -428,7 +439,7 @@ function config_service()
     kafkapro=''
     for kafka_host in ${kafka_arr[@]}
     do
-      kafkapro=$kafkapro$kafka_host":9092,"
+      kafkapro=${kafkapro}${kafka_host}":9092,"
     done
     kafkapro=${kafkapro%?}
 
@@ -452,7 +463,7 @@ function config_service()
     espro=''
     for es_host in ${es_arr[@]}
     do
-       espro="$espro$es_host,"
+       espro="${espro}${es_host},"
     done
     espro=${espro%?}
 
@@ -629,10 +640,10 @@ function ditribute_common()
 {
     for node in ${CLUSTERNODE}
     do
-     ssh root@${node} "if [ ! -x "${GOSUN_HOME}" ];then mkdir -p "${GOSUN_HOME}"; fi"
+     ssh root@${node} "if [ ! -x "${COMMON_INSTALL_DIR}" ];then mkdir -p "${COMMON_INSTALL_DIR}"; fi"
       rsync -rvl ${COMMON_DIR} root@${node}:${COMMON_INSTALL_DIR} >/dev/null
       ssh root@${node} "chmod -R 755 ${ADDRESS_DIR}"
-      echo "${node}上分发address完毕........"
+      echo "${node}上分发common完毕........"
     done
 }
 
@@ -653,8 +664,8 @@ function main()
   config_service          ##配置service各个子模块的配置文件及启停脚本
   copy_xml_to_service     ##复制集群xml文件到各个子模块的conf下
   distribute_service      ##分发service模块
-  cp -f ${CONF_FILE} ${COMMON_DIR}/conf/
-  ditribute_common
+#  cp -f ${CONF_FILE} ${COMMON_DIR}/conf/
+#  ditribute_common
 }
 
 #--------------------------------------------------------------------------#
