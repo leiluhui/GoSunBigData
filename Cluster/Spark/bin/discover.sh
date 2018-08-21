@@ -6,7 +6,7 @@
 ## Author:       chenke
 ## Created:      2018-08-14
 ########################################################################
-#set -x
+set -x
 
 cd `dirname $0`
 BIN_DIR=`pwd`               ##bin目录地址
@@ -29,7 +29,7 @@ SPARK_JAR=${LIB_DIR}/${SPARK_JAR_NAME}            ##获取jar包的全路径
 #####################################################################
 function discover()
 {
-  java -cp ${SPARK_JAR} com.hzgc.cluster.spark.clustering.Discover
+  java -cp ${LIB_DIR}/common-util-1.0.jar:${LIB_DIR}/log4j-1.2.17.jar:${SPARK_JAR} com.hzgc.cluster.spark.clustering.Discover
 }
 #####################################################################
 # 函数名: main
