@@ -49,6 +49,7 @@ function modify_config()
        do
            zklist="${zkhost}:2181,${zklist}"
        done
+       zklist=${zklist%,*}
    sed -i "s#zookeeper.address=.*#zookeeper.address=${zklist}#g" ${COllECT_CONF_FILE}
 
    ## 在collect中配置rocketmq地址
@@ -64,6 +65,7 @@ function modify_config()
        do
            kafkalist="${kafkahost}:9092,${kafkalist}"
        done
+       kafkalist=${kafkalist%,*}
    sed -i "s#kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafkalist}#g" ${COllECT_CONF_FILE}
 
    ## 在colloect中配置需要分发的节点

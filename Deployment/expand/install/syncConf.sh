@@ -23,7 +23,7 @@ EXPAND_CONF_DIR=${ROOT_HOME}/expand/conf
 ## 安装日记目录
 LOG_DIR=${ROOT_HOME}/logs
 ## 安装日记目录
-LOG_FILE=${LOG_DIR}/synConf.log
+LOG_FILE=${LOG_DIR}/synConf-expand.log
 ## 集群扩展的节点
 EXPAND_NODE=$(grep Node_HostName ${EXPAND_CONF_DIR}/expand_conf.properties | cut -d '=' -f2)
 EXPAND_NODE_ARRY=(${EXPAND_NODE//;/ })

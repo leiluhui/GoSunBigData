@@ -15,13 +15,8 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                                   ### bin 目录
 cd ..
-ES_DIR=`pwd`                                    ### es 目录
-cd ..
-CLUSTER_DIR=`pwd`                               ### cluster 目录
-cd ..
-OBJECT_DIR=`pwd`                                ### Real 根目录
-COMMON_DIR=${OBJECT_DIR}/common                 ### common 目录
-CONF_FILE=${COMMON_DIR}/conf/project-conf.properties
+SCRIPT_DIR=`pwd`
+CONF_FILE=${SCRIPT_DIR}/../conf/project-conf.properties
 
 #####################################################################
 # 函数名: index_es_dynamic
@@ -78,7 +73,7 @@ function index_es_dynamic()
 
         sh ${BIN_DIR}/dynamic-index.sh
 		if [ $? = 0 ];then
-			echo "修改dynamic-index.sh成功并执行......"  | tee  -a  $LOG_FILE
+			echo "修改dynamic-index.sh成功并执行......"
 		fi
     else
         echo "dynamic-index.sh不存在...."

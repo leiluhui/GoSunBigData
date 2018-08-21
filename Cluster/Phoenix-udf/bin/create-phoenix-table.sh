@@ -15,33 +15,28 @@ cd `dirname $0`
 BIN_DIR=`pwd`                           ### bin
 cd ..
 PHOENIX_DIR=`pwd`                        ### phonix
-cd ..
-CLUSTER_DIR=`pwd`                       ### cluster
-cd ..
-OBJECT_DIR=`pwd`                        ### RealTimeFaceCompare
-
 LOG_DIR=${PHOENIX_DIR}/log              ### 集群Log日志
 LOG_FILE=${LOG_DIR}/create-static-table.log
+cd ..
+SCRIPT_DIR=`pwd`
+CONF_FILE=${SCRIPT_DIR}/../conf/project-conf.properties
 
 ## bigdata cluster path
-BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
+BIGDATA_CLUSTER_PATH=$(grep install_homedir ${CONF_FILE} |cut -d '=' -f2)
 ## Phoenix 客户端合并
 PHOENIX_PATH=${BIGDATA_CLUSTER_PATH}/Phoenix/phoenix
 ## bigdata hadoop path
 HADOOP_PATH=${BIGDATA_CLUSTER_PATH}/Hadoop/hadoop
-## hdfs udf  path
+## hdfs udf path
 HDFS_UDF_PATH=/user/phoenix/udf/facecomp
 
 UDF_VERSION=`ls ${PHOENIX_DIR}/lib | grep ^phoenix-udf-[0-9].[0-9].[0-9].jar$`
-## hdfs udf Absolute path
-HDFS_UDF_ABSOLUTE_PATH=hdfs://hzgc/${HDFS_UDF_PATH}/${UDF_VERSION}
 
 source /opt/hzgc/env_bigdata.sh
 
-if [ ! -d $LOG_DIR ]; then
-    mkdir $LOG_DIR;
+if [ ! -d ${LOG_DIR} ]; then
+    mkdir ${LOG_DIR}
 fi
-
 
 #####################################################################
 # 函数名: create_static_repo

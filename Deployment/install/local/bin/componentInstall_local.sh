@@ -50,3 +50,6 @@ sh phoenix_local.sh
 ## 安装 kibana
 sh kinbana_local.sh
 
+## 同步配置文件
+sh syncConf.sh
+

@@ -50,8 +50,8 @@ echo "kafka-manager"
 cd ${KAFKA_HOME}
 chmod -R 755 kafka-manager/
 cd kafka-manager/
-nohup bin/kafka-manager -Dconfig.file=${KAFKA_HOME}/kafka-manager/conf/application.conf &
-echo "kafka-manager已启动,请到浏览器访问..(端口号9000)"
+nohup bin/kafka-manager -Dconfig.file=${KAFKA_HOME}/kafka-manager/conf/application.conf -Dhttp.port=8099 &
+echo "kafka-manager已启动,请到浏览器访问..(端口号8099)"
 
 # 等待7秒后再验证Kafka是否启动成功
 echo -e "********************验证Kafka是否启动成功*********************"

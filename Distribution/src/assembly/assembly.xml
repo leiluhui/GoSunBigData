@@ -17,28 +17,36 @@
 
         <!--项目目录-->
         <!--项目部署一键配置文件 -->
-        <fileSet>
+        <!--<fileSet>
             <directory>../Distribution/src/resources</directory>
             <includes>
                 <include>project-conf.properties</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Common/conf</outputDirectory>
-        </fileSet>
+            <outputDirectory>component/GoSunBigData/Common/conf</outputDirectory>
+        </fileSet>-->
         <fileSet>
             <directory>../Distribution/bin</directory>
             <includes>
-                <include>**</include>
+                <include>create-all-table.sh</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Common/bin</outputDirectory>
+            <outputDirectory>project/bin</outputDirectory>
         </fileSet>
 
         <!--spark目录-->
         <fileSet>
             <directory>../Cluster/Spark/target/spark-${project.parent.version}</directory>
+            <excludes>
+                <exclude>config-clusterconf.sh</exclude>
+            </excludes>
+            <outputDirectory>component/GoSunBigData/Cluster/spark</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../Cluster/Spark/target/spark-${project.parent.version}/bin</directory>
             <includes>
-                <include>**</include>
+                <include>create-kafka-topic.sh</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/spark</outputDirectory>
+            <outputDirectory>project/bin/spark</outputDirectory>
         </fileSet>
 
         <!--spark-udf目录-->
@@ -47,14 +55,23 @@
             <includes>
                 <include>spark-udf-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/spark/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Cluster/spark/lib</outputDirectory>
         </fileSet>
+
+        <fileSet>
+            <directory>../Cluster/Spark-udf/target/</directory>
+            <includes>
+                <include>spark-udf-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>project/bin/spark/lib</outputDirectory>
+        </fileSet>
+
         <fileSet>
             <directory>../Cluster/Spark-udf/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/spark/bin</outputDirectory>
+            <outputDirectory>project/bin/spark</outputDirectory>
         </fileSet>
 
         <!--phoenix-udf目录-->
@@ -63,21 +80,21 @@
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/phoenix/bin</outputDirectory>
+            <outputDirectory>project/bin/phoenix/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Cluster/Phoenix-udf/sql</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/phoenix/sql</outputDirectory>
+            <outputDirectory>project/bin/phoenix/sql</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Cluster/Phoenix-udf/target/</directory>
             <includes>
                 <include>phoenix-udf-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/phoenix/lib</outputDirectory>
+            <outputDirectory>project/bin/phoenix/lib</outputDirectory>
         </fileSet>
 
         <!--es目录-->
@@ -86,7 +103,7 @@
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/es/bin</outputDirectory>
+            <outputDirectory>project/bin/es</outputDirectory>
         </fileSet>
 
         <!--hbase目录-->
@@ -95,14 +112,14 @@
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/hbase/bin</outputDirectory>
+            <outputDirectory>project/bin/hbase/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Cluster/HBase/sql</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/hbase/sql</outputDirectory>
+            <outputDirectory>project/bin/hbase/sql</outputDirectory>
         </fileSet>
 
         <!--azkaban-->
@@ -111,7 +128,7 @@
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Cluster/azkaban/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Cluster/azkaban/bin</outputDirectory>
         </fileSet>
 
         <!--Service目录-->
@@ -121,21 +138,21 @@
             <includes>
                 <include>address-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/address/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/address/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Address/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/address/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/address/conf</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Address/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/address/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/address/bin</outputDirectory>
         </fileSet>
         <!--Alarm目录-->
         <fileSet>
@@ -143,21 +160,21 @@
             <includes>
                 <include>alarm-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/alarm/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/alarm/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/alarm/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/alarm/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/alarm/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/alarm/conf</outputDirectory>
         </fileSet>
         <!--Clustering目录-->
         <fileSet>
@@ -165,21 +182,21 @@
             <includes>
                 <include>clustering-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/clustering/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/clustering/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Clustering/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/clustering/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/clustering/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Clustering/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/clustering/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/clustering/conf</outputDirectory>
         </fileSet>
         <!--Dispatch目录-->
         <fileSet>
@@ -187,21 +204,21 @@
             <includes>
                 <include>dispatch-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dispatch/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dispatch/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Dispatch/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dispatch/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dispatch/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Dispatch/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dispatch/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dispatch/conf</outputDirectory>
         </fileSet>
         <!--DynRepo目录-->
         <fileSet>
@@ -209,21 +226,21 @@
             <includes>
                 <include>dynrepo-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dynRepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/DynRepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dynRepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/DynRepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/dynRepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/conf</outputDirectory>
         </fileSet>
         <!--Face目录-->
         <fileSet>
@@ -231,21 +248,21 @@
             <includes>
                 <include>face-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/face/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/face/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/face/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/face/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/face/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/face/conf</outputDirectory>
         </fileSet>
         <!--StaRepo目录-->
         <fileSet>
@@ -253,21 +270,21 @@
             <includes>
                 <include>starepo-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/staRepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/staRepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/StaRepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/staRepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/staRepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/StaRepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/face/staRepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/staRepo/conf</outputDirectory>
         </fileSet>
         <!--Visual目录-->
         <fileSet>
@@ -275,21 +292,21 @@
             <includes>
                 <include>visual-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/visual/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/visual/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Visual/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/visual/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/visual/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Visual/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GosunBigData/Service/common/visual/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/common/visual/conf</outputDirectory>
         </fileSet>
 
         <!--Collect相关配置-->
