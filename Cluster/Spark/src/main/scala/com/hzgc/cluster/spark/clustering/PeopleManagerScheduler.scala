@@ -23,11 +23,11 @@ import org.apache.spark.streaming.{Durations, StreamingContext}
 import scala.collection.JavaConverters
 import scala.collection.mutable.ArrayBuffer
 
-object RealNameClustering extends Serializable {
+object PeopleManagerScheduler extends Serializable {
 
   case class Json(staticID: String, staticObjectType: String, sim: Float)
 
-  val LOG: Logger = Logger.getLogger(RealNameClustering.getClass)
+  val LOG: Logger = Logger.getLogger(PeopleManagerScheduler.getClass)
 
   def main(args: Array[String]): Unit = {
     val deviceUtil = new DeviceUtilImpl

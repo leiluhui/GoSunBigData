@@ -3,6 +3,7 @@ package com.hzgc.cluster.spark.clustering;
 import com.hzgc.cluster.spark.util.PropertiesUtil;
 import com.hzgc.common.faceclustering.table.PeopleSchedulerTable;
 import com.hzgc.common.faceclustering.table.PersonRegionTable;
+import com.hzgc.common.facestarepo.table.alarm.RealNameServiceUtil;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.util.json.JSONUtil;
 import org.apache.hadoop.hbase.client.*;
@@ -65,14 +66,25 @@ public class Discover {
                 List<String> ipcidList = JSONUtil.toObject(ipcids, ArrayList.class);
                 long moveInLast = sdf.parse(moveInLastRunTime).getTime();
                 long inter = day * 24 * 60 * 60 * 1000;
-                if ((now - moveInLast) > inter){
+                if ((now - moveInLast) > inter) {
                     KMeans2Clustering.kmeansClustering(regionId, ipcidList, Integer.parseInt(moveInCount), startDate, endDate);
                     LOG.info("The KMeans of " + regionId + " is succeed!!!");
                 }
-                MoveOut.moveOut(moveOutDays);
+                moveOut(moveOutDays);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void moveOut(String time) {
+        Properties properties = PropertiesUtil.getProperties();
+        String jdbcUrl = properties.getProperty("phoenix.jdbc.url");
+        long updateTimeInterval = Long.parseLong(time) * 24 * 60 * 60 * 1000;
+        RealNameServiceUtil realNameServiceUtil = new RealNameServiceUtil();
+        List<String> idList = realNameServiceUtil.getOfflineAlarm(jdbcUrl, updateTimeInterval);
+        for (String id : idList) {
+            realNameServiceUtil.upsertStatus(jdbcUrl, id);
         }
     }
 }

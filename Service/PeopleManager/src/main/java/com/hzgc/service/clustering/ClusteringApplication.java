@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAuthSynchronize
 @EnableScheduling
 public class ClusteringApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ClusteringApplication.class, args);
     }
