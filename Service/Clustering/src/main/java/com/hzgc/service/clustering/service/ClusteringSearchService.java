@@ -53,26 +53,40 @@ public class ClusteringSearchService {
         }
         int totalYes = listNotIgnore == null? 0:listNotIgnore.size();
         int totalNo = listIgnore == null? 0:listIgnore.size();
-        int total = 0;
+        int total = totalYes + totalNo;
+        log.info("totalYes="+totalYes+",totalNo="+totalNo+",total="+total);
         ClusteringInfo clusteringInfo = new ClusteringInfo();
         //优先返回不忽略的聚类
-        if (start > -1 && start <= totalYes) {
-            if ((start + limit - 1) <= totalYes) {
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, start + limit - 1));
-                log.info("Select clustering attributes not ignored num : " + limit);
-                total = limit;
-            } else if((start + limit - 1) > totalYes && (start + limit - 1) <= (totalYes + totalNo)){
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, totalYes));
-                clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, start + limit - totalYes - 1));
-                log.info("Select clustering attributes not ignored num : " + (totalYes - start + 1));
-                log.info("Select clustering attributes ignored num : " + (start + limit - totalYes - 1));
-                total = limit;
+        if(start < total && total > 0) {
+            if(totalYes > 0) {
+                if((start + limit) <= totalYes) {
+                    clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start, start + limit));
+                    log.info("clusteringSearch not ignored index range : [" + start + "," + (start + limit) + ")");
+                } else if((start + limit) > totalYes && start<=totalYes ) {
+                    clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start, totalYes));
+                    log.info("clusteringSearch not ignored index range : [" + start + "," + (totalYes) + ")");
+                    if((start + limit) <= total) {
+                        clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, start + limit - totalYes));
+                        log.info("clusteringSearch ignored index range : [" + 0 +"," + (start + limit - totalYes) + ")");
+                    } else {
+                        clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, totalNo));
+                        log.info("clusteringSearch ignored index range : [" + start + "," + (totalNo) + ")");
+                    }
+                } else if(start > totalYes && (start + limit - totalYes) <= totalNo) {
+                    clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(start + limit - totalYes, start + limit - totalYes + limit));
+                    log.info("clusteringSearch ignored index range : [" + (start + limit - totalYes) + "," + (start + limit - totalYes + limit) + ")");
+                } else {
+                    clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(start - totalYes, totalNo));
+                    log.info("clusteringSearch ignored index range : [" + (start - totalYes) + "," + (totalNo) + ")");
+                }
             } else {
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, totalYes));
-                clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, totalNo));
-                log.info("Select clustering attributes not ignored num : " + (totalYes - start + 1));
-                log.info("Select clustering attributes ignored num : " + (totalNo));
-                total = totalNo + totalYes - start;
+                if((start + limit) <= totalNo) {
+                    clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(start, start + limit));
+                    log.info("clusteringSearch ignored index range : [" + start + "," + (start + limit) + ")");
+                } else {
+                    clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(start, totalNo));
+                    log.info("clusteringSearch ignored index range : [" + start + "," + (totalNo) + ")");
+                }
             }
         } else {
             log.info("Start or limit out of index ");

@@ -39,8 +39,8 @@ public class ClusteringController {
             //若传入的start和limit为空，则默认从第一条开始，取所有
             int start = clusteringSearchParam.getStart();
             int limit = clusteringSearchParam.getLimit();
-            if(start == 0){
-                start = 1;
+            if(start <= 0){
+                start = 0;
             }
             if(limit == 0){
                 limit = Integer.MAX_VALUE;
