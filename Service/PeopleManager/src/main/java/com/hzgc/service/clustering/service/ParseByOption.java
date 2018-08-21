@@ -142,6 +142,12 @@ public class ParseByOption {
             sql.append(PeopleManagerTable.CARE);
             setValues.add(care);
         }
+        Integer status = param.getStatus();
+        if (status != null) {
+            sql.append(", ");
+            sql.append(PeopleManagerTable.STATUS);
+            setValues.add(status);
+        }
         String local = param.getLocation();
         if (local != null && !"".equals(local)){
             sql.append(", ");
