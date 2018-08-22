@@ -4,6 +4,8 @@ import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.table.PeopleManagerTable;
 import com.hzgc.common.faceclustering.table.PeopleRecognizeTable;
 import com.hzgc.common.hbase.HBaseHelper;
+import com.hzgc.common.service.api.bean.DeviceDTO;
+import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.clustering.bean.export.Resident;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
@@ -39,6 +41,10 @@ public class PhoenixDao implements Serializable {
     @Autowired
     @SuppressWarnings("unused")
     private ParseByOption parseByOption;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private DeviceQueryService deviceQueryService;
 
     public List<String> getAllObjectIdcard() {
         List<String> idcardList = new ArrayList<>();
@@ -229,7 +235,7 @@ public class PhoenixDao implements Serializable {
             try {
                 Result result = table.get(get);
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
-                List<FaceObject> faceObjectList = JSONUtil.toObject(listString, ArrayList.class);
+                List<FaceObject> faceObjectList = JSONUtil.toArray(listString, FaceObject.class);
                 Integer count = faceObjectList.size();
                 map.put(rowkey, count);
             } catch (Exception e) {
@@ -255,7 +261,20 @@ public class PhoenixDao implements Serializable {
                 Result result = table.get(get);
                 log.info("Result's size is :" + result.size());
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
-                List<FaceObject> list = JSONUtil.toObject(listString, ArrayList.class);
+                List<FaceObject> list = JSONUtil.toArray(listString, FaceObject.class);
+                List<String> ipcIdList = new ArrayList<>();
+                for (FaceObject faceObject : list){
+                    String ipcId = faceObject.getIpcId();
+                    ipcIdList.add(ipcId);
+                }
+                Map<String,DeviceDTO> ipcMap = deviceQueryService.getDeviceInfoByBatchIpc(ipcIdList);
+                for (FaceObject faceObject : list){
+                    for (String key : ipcMap.keySet()){
+                        if (faceObject.getIpcId().equals(key)){
+                            faceObject.setIpcId(String.valueOf(ipcMap.get(key)));
+                        }
+                    }
+                }
                 map.put(rowkey, list);
             } catch (Exception e) {
                 e.printStackTrace();
