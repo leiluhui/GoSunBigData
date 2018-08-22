@@ -249,9 +249,8 @@ public class PhoenixDao implements Serializable {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public Map<String, List<CaptureObject>> getCaptureHistory(List<String> rowkeylist) {
-        List<CaptureObject> captureObjectList = new ArrayList<>();
-        Map<String, List<CaptureObject>> map = new HashMap<>();
+    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+        Map<String, List<FaceObject>> map = new HashMap<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
         log.info("rowkeyList is : " + rowkeylist);
         for (String rowkey : rowkeylist) {
@@ -261,21 +260,7 @@ public class PhoenixDao implements Serializable {
                 log.info("Result's size is :" + result.size());
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 List<FaceObject> list = JSONUtil.toObject(listString, ArrayList.class);
-                for (FaceObject faceObject : list) {
-                    CaptureObject captureObject = new CaptureObject();
-                    captureObject.setBurl(faceObject.getBurl());
-                    captureObject.setSurl(faceObject.getSurl());
-                    captureObject.setHostname(faceObject.getHostname());
-                    captureObject.setIpcId(faceObject.getIpcId());
-                    captureObject.setRelativePath(faceObject.getRelativePath());
-                    captureObject.setDate(faceObject.getDate());
-                    captureObject.setStartTime(faceObject.getStartTime());
-                    captureObject.setTimeSlot(faceObject.getTimeSlot());
-                    captureObject.setTimeStamp(faceObject.getTimeStamp());
-                    captureObjectList.add(captureObject);
-                }
-                log.info("The list is :" + captureObjectList);
-                map.put(rowkey, captureObjectList);
+                map.put(rowkey, list);
             } catch (Exception e) {
                 e.printStackTrace();
             }

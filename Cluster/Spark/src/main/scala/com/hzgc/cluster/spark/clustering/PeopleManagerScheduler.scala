@@ -6,12 +6,14 @@ import java.util.Date
 
 import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
 import com.hzgc.common.collect.bean.FaceObject
+import com.hzgc.common.collect.facedis.FtpRegisterClient
 import com.hzgc.common.faceclustering.table.{ClusteringTable, PeopleRecognizeTable, PeopleSchedulerTable, PersonRegionTable}
 import com.hzgc.common.facedispatch.DeviceUtilImpl
 import com.hzgc.common.facestarepo.table.alarm.{ResidentUtil, StaticRepoUtil}
 import com.hzgc.common.hbase.HBaseHelper
+import com.hzgc.common.util.empty.IsEmpty
 import com.hzgc.common.util.json.JSONUtil
-import com.hzgc.jni.FaceFunction
+import com.hzgc.jni.{FaceAttribute, FaceFunction}
 import kafka.serializer.StringDecoder
 import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
@@ -129,14 +131,22 @@ object PeopleManagerScheduler extends Serializable {
                 val listString = Bytes.toString(r.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT))
                 //                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
                 val list1: util.ArrayList[FaceObject] = JSONUtil.toObject(listString, new util.ArrayList[FaceObject]().getClass)
-                list1.add(obj._2)
+                val faceObject = obj._2
+                faceObject.setSurl(getFtpUrl(faceObject.getSurl))
+                faceObject.setBurl(getFtpUrl(faceObject.getBurl))
+                faceObject.setAttribute(null)
+                list1.add(faceObject)
                 val put = new Put(Bytes.toBytes(message.staticID))
                 put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(list1)))
                 hbaseTableReco.put(put)
               } else {
                 val put = new Put(Bytes.toBytes(message.staticID))
                 val peopleList = new util.ArrayList[FaceObject]()
-                peopleList.add(obj._2)
+                val faceObject = obj._2
+                faceObject.setSurl(getFtpUrl(faceObject.getSurl))
+                faceObject.setBurl(getFtpUrl(faceObject.getBurl))
+                faceObject.setAttribute(null)
+                peopleList.add(faceObject)
                 put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(peopleList)))
                 hbaseTableReco.put(put)
               }
@@ -151,6 +161,18 @@ object PeopleManagerScheduler extends Serializable {
     })
     ssc.start()
     ssc.awaitTermination()
+  }
+
+  def getFtpUrl(ftpurl:String):String={
+    val properties = PropertiesUtil.getProperties
+    val zkAddress = properties.getProperty("job.zookeeper.address")
+    val ftpRegisterClient = new FtpRegisterClient(zkAddress)
+    val hostname = ftpurl.substring(ftpurl.indexOf("/")+ 2,ftpurl.lastIndexOf(":"))
+    val ftpServerIP = ftpRegisterClient.getFtpIpMapping.get(hostname)
+    if (IsEmpty.strIsRight(ftpServerIP)){
+      return ftpurl.replace(hostname,ftpServerIP)
+    }
+    return ftpurl
   }
 }
 

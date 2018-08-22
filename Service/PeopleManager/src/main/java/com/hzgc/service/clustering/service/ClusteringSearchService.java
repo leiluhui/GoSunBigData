@@ -1,5 +1,6 @@
 package com.hzgc.service.clustering.service;
 
+import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.table.PeopleManagerTable;
 import com.hzgc.common.service.bean.PeopleManagerCount;
 import com.hzgc.common.util.empty.IsEmpty;
@@ -254,7 +255,7 @@ public class ClusteringSearchService {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public Map<String, List<CaptureObject>> getCaptureHistory(List<String> rowkeylist) {
+    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
         return phoenixDao.getCaptureHistory(rowkeylist);
     }
 
