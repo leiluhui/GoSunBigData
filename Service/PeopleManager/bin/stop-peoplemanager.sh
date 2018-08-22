@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
 ##opyright:   HZGOSUN Tech. Co, BigData
-## Filename:    springCloud stop clustering
-## Description:  停止clustering服务
+## Filename:    springCloud stop peoplemanager
+## Description:  停止PeopleManager服务
 ## Author:      chenke
 ## Created:     2018-05-19
 ################################################################################
@@ -11,11 +11,11 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                           ##bin目录地址
 cd ..
-CLUSTERING_DIR=`pwd`                       ##clustering目录地址
-LIB_DIR=${CLUSTERING_DIR}/lib              ##lib目录地址
-CONF_DIR=${CLUSTERING_DIR}/conf            ##conf目录地址
-CLUSTERING_JAR_NAME=`ls ${LIB_DIR} | grep ^clustering-[0-9].[0-9].[0-9].jar$`
-CLUSTERING_JAR_PID=`jps | grep ${CLUSTERING_JAR_NAME} | awk '{print $1}'`
+PEOPLEMANAGER_DIR=`pwd`                       ##peoplemanager目录地址
+LIB_DIR=${PEOPLEMANAGER_DIR}/lib              ##lib目录地址
+CONF_DIR=${PEOPLEMANAGER_DIR}/conf            ##conf目录地址
+PEOPLEMANAGER_JAR_NAME=`ls ${LIB_DIR} | grep ^peoplemanager-[0-9].[0-9].[0-9].jar$`
+PEOPLEMANAGER_JAR_PID=`jps | grep ${PEOPLEMANAGER_JAR_NAME} | awk '{print $1}'`
 
 
 #---------------------------------------------------------------------#
@@ -31,14 +31,14 @@ CLUSTERING_JAR_PID=`jps | grep ${CLUSTERING_JAR_NAME} | awk '{print $1}'`
 #####################################################################
 function stop_springCloud()
 {
-    if [  -n "${CLUSTERING_JAR_PID}" ];then
-        echo "Clustering service is exist, exit with 0, kill service now!!"
-  	    ##杀掉进程
-	    kill -9 ${CLUSTERING_JAR_PID}
-	    echo "stop service successfully!!"
-	else
-	    echo "Clustering service is not start!!"
-	fi
+    if [  -n "${PEOPLEMANAGER_JAR_PID}" ];then
+        echo "PeopleManager service is exist, exit with 0, kill service now!!"
+            ##杀掉进程
+            kill -9 ${PEOPLEMANAGER_JAR_PID}
+            echo "stop service successfully!!"
+        else
+            echo "PeopleManager service is not start!!"
+        fi
 }
 
 #####################################################################
