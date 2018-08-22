@@ -32,11 +32,9 @@ object HBaseTools {
     get
   }
 
-  def putData(rowKey:String, cf:String, kv:Seq[(String, String)]) :Put = {
+  def putData(rowKey:String, cf:Array[Byte], qf:Array[Byte], value:String) : Put = {
     val put = new Put(Bytes.toBytes(rowKey))
-    kv.foreach{
-      kv => put.addColumn(Bytes.toBytes(cf), Bytes.toBytes(kv._1), Bytes.toBytes(kv._2))
-    }
+    put.addColumn(cf, qf, Bytes.toBytes(value))
     put
   }
 

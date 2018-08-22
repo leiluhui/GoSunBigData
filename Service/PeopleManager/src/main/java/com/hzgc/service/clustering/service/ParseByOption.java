@@ -1,7 +1,6 @@
 package com.hzgc.service.clustering.service;
 
 import com.hzgc.common.faceclustering.table.PeopleManagerTable;
-import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.jni.FaceAttribute;
 import com.hzgc.jni.FaceFunction;
 import com.hzgc.jni.PictureData;

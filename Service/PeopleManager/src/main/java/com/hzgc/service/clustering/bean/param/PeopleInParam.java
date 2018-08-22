@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 import java.io.Serializable;
-import java.util.List;
 
 @ApiModel(value = "建议迁入人口入参")
 @Data

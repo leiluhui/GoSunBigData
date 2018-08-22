@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 /**
  * 常驻人口库每个人的信息

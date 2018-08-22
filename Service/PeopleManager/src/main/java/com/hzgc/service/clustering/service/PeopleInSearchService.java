@@ -5,7 +5,6 @@ import com.hzgc.common.faceclustering.PeopleInAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
-import com.hzgc.common.service.bean.PeopleManagerCount;
 import com.hzgc.service.clustering.bean.export.PeopleInHistoryRecord;
 import com.hzgc.service.clustering.bean.export.PeopleInResult;
 import com.hzgc.service.clustering.bean.param.SortParam;
@@ -15,9 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**

@@ -1,14 +1,11 @@
 package com.hzgc.service.clustering.controller;
 
 import com.hzgc.common.collect.bean.FaceObject;
-import com.hzgc.common.service.bean.PeopleManagerCount;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.clustering.bean.export.*;
-import com.hzgc.service.clustering.bean.param.ClusteringSaveParam;
-import com.hzgc.service.clustering.bean.param.ClusteringSearchParam;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
 import com.hzgc.service.clustering.bean.param.ResidentParam;
 import com.hzgc.service.clustering.service.ClusteringSearchService;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
