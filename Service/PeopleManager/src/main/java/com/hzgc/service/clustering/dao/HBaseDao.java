@@ -3,17 +3,14 @@ package com.hzgc.service.clustering.dao;
 import com.google.gson.Gson;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.ClusteringAttribute;
+import com.hzgc.common.faceclustering.PeopleInAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
 import com.hzgc.common.faceclustering.table.PeopleSchedulerTable;
-import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.common.hbase.HBaseHelper;
-import com.hzgc.common.service.api.bean.DeviceDTO;
-import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.common.util.object.ObjectUtil;
 import com.hzgc.service.clustering.bean.export.Regular;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.stereotype.Repository;
@@ -55,32 +52,32 @@ public class HBaseDao {
         return null;
     }
 
-    public List<ClusteringAttribute> getClustering(String region, String time, byte[] colName) {
-        List<ClusteringAttribute> clusteringAttributeList = new ArrayList<>();
+    public List<PeopleInAttribute> getClustering(String region, String time, byte[] colName) {
+        List<PeopleInAttribute> peopleInAttributeList = new ArrayList<>();
         Table clusteringInfoTable = HBaseHelper.getTable(ClusteringTable.TABLE_ClUSTERINGINFO);
         Get get = new Get(Bytes.toBytes(time + "-" + region));
         try {
             Result result = clusteringInfoTable.get(get);
             byte[] bytes = result.getValue(ClusteringTable.ClUSTERINGINFO_COLUMNFAMILY, colName);
             if (bytes != null) {
-                clusteringAttributeList = (List<ClusteringAttribute>) ObjectUtil.byteToObject(bytes);
+                peopleInAttributeList = JSONUtil.toArray(Bytes.toString(bytes), PeopleInAttribute.class);
             } else {
                 log.info("No clustering in the database to be delete");
-                return clusteringAttributeList;
+                return peopleInAttributeList;
             }
         } catch (IOException e) {
             log.info(e.getMessage());
             e.printStackTrace();
         }
-        return clusteringAttributeList;
+        return peopleInAttributeList;
     }
 
-    public boolean putClustering(String region, String time, byte[] colName, List<ClusteringAttribute> clusteringAttributeList) {
+    public boolean putClustering(String region, String time, byte[] colName, List<PeopleInAttribute> peopleInAttributeList) {
         Table clusteringInfoTable = HBaseHelper.getTable(ClusteringTable.TABLE_ClUSTERINGINFO);
         Put put = new Put(Bytes.toBytes(time + "-" + region));
         try {
-            byte[] clusteringInfoByte = ObjectUtil.objectToByte(clusteringAttributeList);
-            put.addColumn(ClusteringTable.ClUSTERINGINFO_COLUMNFAMILY, colName, clusteringInfoByte);
+            String peopleInJson = JSONUtil.toJson(peopleInAttributeList);
+            put.addColumn(ClusteringTable.ClUSTERINGINFO_COLUMNFAMILY, colName, Bytes.toBytes(peopleInJson));
             clusteringInfoTable.put(put);
             return true;
         } catch (IOException e) {

@@ -1,13 +1,13 @@
 package com.hzgc.service.clustering.service;
 
 import com.hzgc.common.collect.bean.FaceObject;
-import com.hzgc.common.faceclustering.ClusteringAttribute;
+import com.hzgc.common.faceclustering.PeopleInAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.service.bean.PeopleManagerCount;
-import com.hzgc.common.util.empty.IsEmpty;
-import com.hzgc.service.clustering.bean.export.ClusteringInfo;
+import com.hzgc.service.clustering.bean.export.PeopleInHistoryRecord;
+import com.hzgc.service.clustering.bean.export.PeopleInResult;
 import com.hzgc.service.clustering.bean.param.SortParam;
 import com.hzgc.service.clustering.dao.HBaseDao;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * 告警聚类结果查询接口实现(彭聪)
+ * 迁入人口结果查询接口实现
  */
 @Service
 @Slf4j
@@ -29,7 +29,7 @@ public class PeopleInSearchService {
     @Autowired
     private HBaseDao hBaseDao;
 
-    @Autowired(required = false)
+    @Autowired
     private DeviceQueryService deviceQueryService;
 
 
@@ -42,11 +42,11 @@ public class PeopleInSearchService {
      * @param sortParam 排序参数（默认按出现次数排序）
      * @return 聚类列表
      */
-    public ClusteringInfo searchClustering(String region, String time, int start, int limit, String sortParam) {
+    public PeopleInResult searchAllClustering(String region, String time, int start, int limit, String sortParam) {
         //查询不忽略的对象
-        List<ClusteringAttribute> listNotIgnore = hBaseDao.getClustering(region, time, ClusteringTable.ClUSTERINGINFO_COLUMN_YES);
+        List<PeopleInAttribute> listNotIgnore = hBaseDao.getClustering(region, time, ClusteringTable.ClUSTERINGINFO_COLUMN_YES);
         //查询忽略的对象
-        List<ClusteringAttribute> listIgnore = hBaseDao.getClustering(region, time, ClusteringTable.ClUSTERINGINFO_COLUMN_NO);
+        List<PeopleInAttribute> listIgnore = hBaseDao.getClustering(region, time, ClusteringTable.ClUSTERINGINFO_COLUMN_NO);
         if (!StringUtils.isBlank(sortParam)) {
             SortParam sortParams = ListUtils.getOrderStringBySort(sortParam);
             ListUtils.sort(listNotIgnore, sortParams.getSortNameArr(), sortParams.getIsAscArr());
@@ -54,57 +54,86 @@ public class PeopleInSearchService {
         }
         int totalYes = listNotIgnore==null? 0:listNotIgnore.size();
         int totalNo = listIgnore==null? 0:listIgnore.size();
-        int total = 0;
-        ClusteringInfo clusteringInfo = new ClusteringInfo();
+        int total = totalYes + totalNo;
+        PeopleInResult peopleInResult = new PeopleInResult();
         //优先返回不忽略的聚类
-        if (start > -1 && start <= totalYes) {
-            if ((start + limit - 1) <= totalYes) {
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, start + limit - 1));
-                log.info("[PeopleInSearchService] searchClustering attributes not ignored num : " + limit);
-                total = limit;
-            } else if((start + limit - 1) > totalYes && (start + limit - 1) <= (totalYes + totalNo)){
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, totalYes));
-                clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, start + limit - totalYes - 1));
-                log.info("[PeopleInSearchService] searchClustering attributes not ignored num : " + (totalYes - start + 1));
-                log.info("[PeopleInSearchService] searchClustering attributes ignored num : " + (start + limit - totalYes - 1));
-                total = limit;
+        log.info("totalYes="+totalYes+",totalNo="+totalNo+",total="+total);
+        if(start < total && total > 0) {
+            if(totalYes > 0) {
+                if((start + limit) <= totalYes) {
+                    peopleInResult.setPeopleInAttributeList(listNotIgnore.subList(start, start + limit));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes not ignored index range : [" + start + "," + (start + limit) + ")");
+                } else if((start + limit) > totalYes && start<=totalYes ) {
+                    peopleInResult.setPeopleInAttributeList(listNotIgnore.subList(start, totalYes));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes not ignored index range : [" + start + "," + (totalYes) + ")");
+                    if((start + limit) <= total) {
+                        peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(0, start + limit - totalYes));
+                        log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + 0 +"," + (start + limit - totalYes) + ")");
+                    } else {
+                        peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(0, totalNo));
+                        log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + start + "," + (totalNo) + ")");
+                    }
+                } else if(start > totalYes && (start + limit - totalYes) <= totalNo) {
+                    peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(start + limit - totalYes, start + limit - totalYes + limit));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + (start + limit - totalYes) + "," + (start + limit - totalYes + limit) + ")");
+                } else {
+                    peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(start - totalYes, totalNo));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + (start - totalYes) + "," + (totalNo) + ")");
+                }
             } else {
-                clusteringInfo.setClusteringAttributeList(listNotIgnore.subList(start - 1, totalYes));
-                clusteringInfo.setClusteringAttributeList_ignore(listIgnore.subList(0, totalNo));
-                log.info("[PeopleInSearchService] searchClustering attributes not ignored num : " + (totalYes - start + 1));
-                log.info("[PeopleInSearchService] searchClustering attributes ignored num : " + (totalNo));
-                total = totalNo + totalYes - start;
+                if((start + limit) <= totalNo) {
+                    peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(start, start + limit));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + start + "," + (start + limit) + ")");
+                } else {
+                    peopleInResult.setPeopleInAttributeList_ignore(listIgnore.subList(start, totalNo));
+                    log.info("[PeopleInSearchService] searchAllClustering attributes ignored index range : [" + start + "," + (totalNo) + ")");
+                }
             }
         } else {
-            log.info("[PeopleInSearchService] searchClustering start or limit out of index ");
+            log.info("[PeopleInSearchService] searchAllClustering start out of index or not data");
         }
-        clusteringInfo.setTotalClustering(total);
+        peopleInResult.setTotalCount(total);
         //ipcId转ipcName
-        List<Long> ipcIds = new ArrayList<>();
-        List<ClusteringAttribute> clusteringAttributeList = new ArrayList<>();
-        for(ClusteringAttribute attribute : clusteringInfo.getClusteringAttributeList()) {
-            ipcIds.add(Long.valueOf(attribute.getFirstIpcId()));
-            ipcIds.add(Long.valueOf(attribute.getLastIpcId()));
+        HashSet<String> ipcIdSet = new HashSet<>();
+        List<PeopleInAttribute> peopleInAttributeList = new ArrayList<>();
+        List<PeopleInAttribute> peopleInAttributeList_ignore = new ArrayList<>();
+        if(peopleInResult.getPeopleInAttributeList() != null) {
+            for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList()) {
+                ipcIdSet.add(attribute.getFirstIpcId());
+                ipcIdSet.add(attribute.getLastIpcId());
+            }
         }
-        for(ClusteringAttribute attribute : clusteringInfo.getClusteringAttributeList_ignore()) {
-            ipcIds.add(Long.valueOf(attribute.getFirstIpcId()));
-            ipcIds.add(Long.valueOf(attribute.getLastIpcId()));
+        if(peopleInResult.getPeopleInAttributeList_ignore() != null) {
+            for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList_ignore()) {
+                ipcIdSet.add(attribute.getFirstIpcId());
+                ipcIdSet.add(attribute.getLastIpcId());
+            }
         }
-        Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchId(ipcIds);
-        for(ClusteringAttribute attribute : clusteringInfo.getClusteringAttributeList()) {
-            attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
-            attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
-            clusteringAttributeList.add(attribute);
+        ArrayList<String> ipcIds = new ArrayList<>(ipcIdSet);
+
+        log.info("==========================ipcIds="+ipcIds);
+        Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchIpc(ipcIds);
+        if(peopleInResult.getPeopleInAttributeList() != null) {
+            for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList()) {
+                attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
+                attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
+                attribute.setLastAppearTime(attribute.getLastAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                peopleInAttributeList.add(attribute);
+            }
+            peopleInResult.setPeopleInAttributeList(peopleInAttributeList);
         }
-        clusteringInfo.setClusteringAttributeList(clusteringAttributeList);
-        clusteringAttributeList.clear();
-        for(ClusteringAttribute attribute : clusteringInfo.getClusteringAttributeList_ignore()) {
-            attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
-            attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
-            clusteringAttributeList.add(attribute);
+        if(peopleInResult.getPeopleInAttributeList_ignore() != null) {
+            for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList_ignore()) {
+                attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
+                attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
+                attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                attribute.setLastAppearTime(attribute.getLastAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                peopleInAttributeList_ignore.add(attribute);
+            }
+            peopleInResult.setPeopleInAttributeList_ignore(peopleInAttributeList_ignore);
         }
-        clusteringInfo.setClusteringAttributeList_ignore(clusteringAttributeList);
-        return clusteringInfo;
+        return peopleInResult;
     }
 
 
@@ -116,21 +145,63 @@ public class PeopleInSearchService {
      * @param limit     查询条数
      * @return 返回该类下面所以告警信息
      */
-    public List<FaceObject> historyRecordSearch(List<String> rowKeys, int start, int limit) {
+    public List<PeopleInHistoryRecord> historyRecordSearch(List<String> rowKeys, int start, int limit) {
 
-        List<Long> ipcIds = new ArrayList<>();
-        List<FaceObject> faceObjectList = new ArrayList<>();
+        HashSet<String> ipcIdSet = new HashSet<>();
+        List<PeopleInHistoryRecord> peopleInHistoryRecordList = new ArrayList<>();
         for(String rowKey : rowKeys) {
-            ipcIds.add(Long.valueOf(rowKey.split("_")[0]));
+            ipcIdSet.add(rowKey.split("_")[0]);
         }
-        Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchId(ipcIds);
-        List<FaceObject> faceObjects = hBaseDao.getAlarmInfo(rowKeys.subList(start, start + limit));
+        ArrayList<String> ipcIds = new ArrayList<>(ipcIdSet);
+        log.info("[PeopleInSearchService] historyRecordSearch ipcIds="+ipcIds);
+        Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchIpc(ipcIds);
+        List<FaceObject> faceObjects;
+        if((start + limit) <= rowKeys.size()) {
+            faceObjects = hBaseDao.getAlarmInfo(rowKeys.subList(start, start + limit));
+        } else {
+            faceObjects = hBaseDao.getAlarmInfo(rowKeys.subList(start, rowKeys.size()));
+        }
         for(FaceObject faceObject : faceObjects) {
+            PeopleInHistoryRecord record = new PeopleInHistoryRecord();
             String ipcName = deviceInfo.get(faceObject.getIpcId()).getName();
-            faceObject.setIpcId(ipcName);
-            faceObjectList.add(faceObject);
+
+            record.setIpcName(ipcName);
+            record.setRecordTime(faceObject.getStartTime());
+            record.setSurl(faceObject.getSurl());
+            record.setBurl(faceObject.getBurl());
+            peopleInHistoryRecordList.add(record);
         }
-        return faceObjectList;
+        return peopleInHistoryRecordList;
+    }
+
+    /**
+     * 查询单个聚类
+     *
+     * @param time 时间月份
+     * @param region 区域ID
+     * @param clusterId 聚类ID
+     * @param flag 忽略聚类标志
+     * @return 单个聚类信息
+     */
+    public PeopleInAttribute searchClustering(String time, String region, String clusterId, String flag) {
+        byte[] colName;
+        if (flag.toLowerCase().equals("yes")) {
+            colName = ClusteringTable.ClUSTERINGINFO_COLUMN_NO;
+        } else if (flag.toLowerCase().equals("no")) {
+            colName = ClusteringTable.ClUSTERINGINFO_COLUMN_YES;
+        } else {
+            log.info("[PeopleInSearchService] searchClustering Param flag is error, it must be yes or no");
+            return null;
+        }
+        List<PeopleInAttribute> peopleInAttributeList = hBaseDao.getClustering(region, time, colName);
+        if(peopleInAttributeList != null) {
+            for(PeopleInAttribute attribute : peopleInAttributeList) {
+                if(clusterId.equals(attribute.getClusteringId()))
+                    return attribute;
+            }
+        }
+        return null;
+
     }
 
     /**
@@ -152,16 +223,16 @@ public class PeopleInSearchService {
             log.info("[PeopleInSearchService] deleteClustering Param flag is error, it must be yes or no");
             return false;
         }
-        List<ClusteringAttribute> clusteringAttributeList = hBaseDao.getClustering(region, time, colName);
-        Iterator<ClusteringAttribute> iterator = clusteringAttributeList.iterator();
-        ClusteringAttribute clusteringAttribute;
+        List<PeopleInAttribute> peopleInAttributeList = hBaseDao.getClustering(region, time, colName);
+        Iterator<PeopleInAttribute> iterator = peopleInAttributeList.iterator();
+        PeopleInAttribute peopleInAttribute;
         while (iterator.hasNext()) {
-            clusteringAttribute = iterator.next();
-            if (clusterId.equals(clusteringAttribute.getClusteringId())) {
+            peopleInAttribute = iterator.next();
+            if (clusterId.equals(peopleInAttribute.getClusteringId())) {
                 iterator.remove();
             }
         }
-        return hBaseDao.putClustering(region, time, colName, clusteringAttributeList);
+        return hBaseDao.putClustering(region, time, colName, peopleInAttributeList);
 
     }
 
@@ -188,15 +259,15 @@ public class PeopleInSearchService {
             log.info("[PeopleInSearchService] ignoreClustering Param flag is error, it must be yes or no");
             return false;
         }
-        List<ClusteringAttribute> listSrc = hBaseDao.getClustering(region, time, colNameSrc);
-        List<ClusteringAttribute> listDes = hBaseDao.getClustering(region, time, colNameDes);
-        Iterator<ClusteringAttribute> iterator = listSrc.iterator();
-        ClusteringAttribute clusteringAttribute;
+        List<PeopleInAttribute> listSrc = hBaseDao.getClustering(region, time, colNameSrc);
+        List<PeopleInAttribute> listDes = hBaseDao.getClustering(region, time, colNameDes);
+        Iterator<PeopleInAttribute> iterator = listSrc.iterator();
+        PeopleInAttribute peopleInAttribute;
         while (iterator.hasNext()) {
-            clusteringAttribute = iterator.next();
-            if (clusterId.equals(clusteringAttribute.getClusteringId())) {
-                clusteringAttribute.setFlag(flag);
-                listDes.add(clusteringAttribute);
+            peopleInAttribute = iterator.next();
+            if (clusterId.equals(peopleInAttribute.getClusteringId())) {
+                peopleInAttribute.setFlag(flag);
+                listDes.add(peopleInAttribute);
                 iterator.remove();
             }
         }
@@ -206,66 +277,4 @@ public class PeopleInSearchService {
 
     }
 
-    /**
-     *  统计时间段内，每个月份的聚类数量
-     * @param startTime 查询起始时间
-     * @param endTime 查询结束时间
-     * @return 每个月份的聚类数量
-     */
-    public List<PeopleManagerCount> getTotleNum(String startTime, String endTime){
-        HBaseDao hBaseDao = new HBaseDao();
-        List<PeopleManagerCount> statisticsList = new ArrayList<>();
-        //起止时间处理
-        startTime = startTime.substring(0 , startTime.lastIndexOf("-"));
-        endTime = endTime.substring(0 , endTime.lastIndexOf("-"));
-        //查询每个rowkey对应的聚类（不忽略）数量
-        Map<String, Integer> map = hBaseDao.getTotleNum(startTime, endTime + "-" + "zzzzzzzzzzzzzzzz");
-        //获取时间段内的所有月份
-        List<String> timeList = getMonthesInRange(startTime, endTime);
-        //循环计算每个月的所有聚类数量
-        for(String time : timeList){
-            PeopleManagerCount statistics = new PeopleManagerCount();
-            int num = 0;
-            for(String key : map.keySet()){
-                if(key.startsWith(time)){
-                    num += map.get(key);
-                }
-            }
-            statistics.setMonth(time);
-            statistics.setAddPeople(num);
-            statisticsList.add(statistics);
-        }
-        return statisticsList;
-    }
-
-    /**
-     *  返回时间区域内所有月份
-     * @param startTime 起始时间
-     * @param endTime 结束时间
-     * @return 所有月份
-     */
-    private static List<String> getMonthesInRange(String startTime, String endTime){
-        List<String> timeList = new ArrayList<>();
-
-        DateFormat df = new SimpleDateFormat("yyyy-MM");
-        try {
-            Calendar start = Calendar.getInstance();
-            start.setTime(df.parse(startTime));
-            Calendar end = Calendar.getInstance();
-            end.setTime(df.parse(endTime));
-            Long startTimeL = start.getTimeInMillis();
-            Long endTimeL = end.getTimeInMillis();
-            while (startTimeL <= endTimeL) {
-                Date everyTime = new Date(startTimeL);
-                timeList.add(df.format(everyTime));
-
-                start.add(Calendar.MONTH, 1);
-                startTimeL = start.getTimeInMillis();
-            }
-            return timeList;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return timeList;
-    }
 }
