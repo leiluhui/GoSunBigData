@@ -23,9 +23,6 @@ public class PeopleInParam implements Serializable {
     @ApiModelProperty(value = "忽略聚类(yes or no)")
     private String flag;
 
-    @ApiModelProperty(value = "抓拍历史记录")
-    private List<String> rowKeys;
-
     @ApiModelProperty(value = "分页起始位置")
     private int start;
 
