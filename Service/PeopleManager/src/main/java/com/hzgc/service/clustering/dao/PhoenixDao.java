@@ -268,10 +268,12 @@ public class PhoenixDao implements Serializable {
                     ipcIdList.add(ipcId);
                 }
                 Map<String,DeviceDTO> ipcMap = deviceQueryService.getDeviceInfoByBatchIpc(ipcIdList);
-                for (FaceObject faceObject : list){
-                    for (String key : ipcMap.keySet()){
-                        if (faceObject.getIpcId().equals(key)){
-                            faceObject.setIpcId(String.valueOf(ipcMap.get(key)));
+                if (ipcMap != null) {
+                    for (FaceObject faceObject : list) {
+                        for (String key : ipcMap.keySet()) {
+                            if (faceObject.getIpcId().equals(key)) {
+                                faceObject.setIpcId(String.valueOf(ipcMap.get(key)));
+                            }
                         }
                     }
                 }

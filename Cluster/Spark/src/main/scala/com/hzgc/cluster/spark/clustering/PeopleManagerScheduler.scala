@@ -108,7 +108,7 @@ object PeopleManagerScheduler extends Serializable {
             val burl = faceobj.getBurl
             val alarm_time = df.format(new Date())
             val ipcid = obj._3
-            val rowkey = ipcid + "_" + alarm_time
+            val rowkey = ipcid + "_" + alarm_time.replaceAll("[^\\d]+","")
             val hostname = faceobj.getHostname
             val feature = faceobj.getAttribute.getFeature
             val put: Put = new Put(Bytes.toBytes(rowkey))
