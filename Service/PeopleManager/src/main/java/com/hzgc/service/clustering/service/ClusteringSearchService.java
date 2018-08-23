@@ -46,6 +46,9 @@ public class ClusteringSearchService {
     @Autowired
     private static PeopleManagerProducer peopleManagerProducer;
 
+    @Autowired
+    private  ResidentHandlerTool residentHandlerTool;
+
 
     /**
      * get detail Clustering from HBase
@@ -298,7 +301,8 @@ public class ClusteringSearchService {
             personObject.setLocation(sqlRowSet.getString(PeopleManagerTable.LOCATION));
             personObjectList.add(personObject);
         }
-        return personObjectList;
+        List<PersonObject> personObjectLists = residentHandlerTool.formatTheResidentSearchResult(personObjectList,param.getStart(),param.getLimit());
+        return personObjectLists;
     }
 
     /**

@@ -109,8 +109,11 @@ public class PeopleInSearchService {
 
         log.info("==========================ipcIds="+ipcIds);
         Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchIpc(ipcIds);
+        log.info("IPCID is : " + deviceInfo);
+        log.info("ipcid's size is : " + deviceInfo.size());
         if(peopleInResult.getPeopleInAttributeList() != null) {
             for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList()) {
+                log.info("The firstipcid is : " + attribute.getFirstIpcId());
                 attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
                 attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
                 attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
