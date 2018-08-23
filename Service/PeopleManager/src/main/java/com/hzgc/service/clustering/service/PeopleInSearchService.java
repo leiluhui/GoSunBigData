@@ -5,6 +5,7 @@ import com.hzgc.common.faceclustering.PeopleInAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
+import com.hzgc.common.service.bean.PeopleManagerCount;
 import com.hzgc.service.clustering.bean.export.PeopleInHistoryRecord;
 import com.hzgc.service.clustering.bean.export.PeopleInResult;
 import com.hzgc.service.clustering.bean.param.SortParam;
@@ -14,6 +15,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -109,25 +113,30 @@ public class PeopleInSearchService {
 
         log.info("==========================ipcIds="+ipcIds);
         Map<String, DeviceDTO> deviceInfo = deviceQueryService.getDeviceInfoByBatchIpc(ipcIds);
-        log.info("IPCID is : " + deviceInfo);
-        log.info("ipcid's size is : " + deviceInfo.size());
-        if(peopleInResult.getPeopleInAttributeList() != null) {
+        if(peopleInResult.getPeopleInAttributeList() != null && deviceInfo != null) {
             for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList()) {
-                log.info("The firstipcid is : " + attribute.getFirstIpcId());
-                attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
+                if(deviceInfo.get(attribute.getFirstIpcId()) != null) {
+                    attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
+                }
+                if(deviceInfo.get(attribute.getLastIpcId()) != null) {
+                    attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
+                }
                 attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
-                attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
                 attribute.setLastAppearTime(attribute.getLastAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
                 peopleInAttributeList.add(attribute);
             }
             peopleInResult.setPeopleInAttributeList(peopleInAttributeList);
         }
-        if(peopleInResult.getPeopleInAttributeList_ignore() != null) {
+        if(peopleInResult.getPeopleInAttributeList_ignore() != null && deviceInfo != null) {
             for (PeopleInAttribute attribute : peopleInResult.getPeopleInAttributeList_ignore()) {
-                attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
-                attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
-                attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                if(deviceInfo.get(attribute.getFirstIpcId()) != null) {
+                    attribute.setFirstIpcId(deviceInfo.get(attribute.getFirstIpcId()).getName());
+                }
+                if(deviceInfo.get(attribute.getLastIpcId()) != null) {
+                    attribute.setLastIpcId(deviceInfo.get(attribute.getLastIpcId()).getName());
+                }
                 attribute.setLastAppearTime(attribute.getLastAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
+                attribute.setFirstAppearTime(attribute.getFirstAppearTime().replaceAll("(\\d{4})(\\d{2})(\\d{2})(\\d{2})(\\d{2})(\\d{2})","$1-$2-$3 $4:$5:$6"));
                 peopleInAttributeList_ignore.add(attribute);
             }
             peopleInResult.setPeopleInAttributeList_ignore(peopleInAttributeList_ignore);
@@ -162,9 +171,10 @@ public class PeopleInSearchService {
         }
         for(FaceObject faceObject : faceObjects) {
             PeopleInHistoryRecord record = new PeopleInHistoryRecord();
-            String ipcName = deviceInfo.get(faceObject.getIpcId()).getName();
-
-            record.setIpcName(ipcName);
+            if(deviceInfo != null && deviceInfo.get(faceObject.getIpcId()) != null) {
+                String ipcName = deviceInfo.get(faceObject.getIpcId()).getName();
+                record.setIpcName(ipcName);
+            }
             record.setRecordTime(faceObject.getStartTime());
             record.setSurl(faceObject.getSurl());
             record.setBurl(faceObject.getBurl());
