@@ -64,6 +64,7 @@ object PeopleManagerScheduler extends Serializable {
 //            .getTotalList).asScala
         val totalList = JavaConverters
                   .asScalaBufferConverter(ResidentUtil.getInstance(jdbcUrlBroadCast.value).getTotalList).asScala
+        LOG.info("The ResidentUtil's Size is : " + totalList.size)
         val faceObj = message._2
         LOG.info("The big url of the faceObject is " + faceObj.getBurl)
         val ipcID = faceObj.getIpcId
@@ -75,15 +76,21 @@ object PeopleManagerScheduler extends Serializable {
         while (resultScanner.iterator().hasNext) {
           val result = resultScanner.iterator().next()
           val regionId = result.getRow
+          LOG.info("regionId is : " + Bytes.toString(regionId))
           val get = new Get(regionId)
           val regionResult = regionTable.get(get)
           val ipcidStr = Bytes.toString(regionResult.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS))
+          LOG.info("ipcStr is : " + ipcidStr)
           //          val ipcidList = JSONUtil.toObject(ipcidStr, util.Arrays.asList[String]().getClass)
           val ipcidList = JSONUtil.toObject(ipcidStr, new util.ArrayList[String]().getClass)
+          LOG.info("IpcIDList is : " + ipcidList)
+          LOG.info("IPCID is : " + ipcID)
           if (ipcidList.contains(ipcID)) {
             val sim = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)).toInt
+            LOG.info("sim is : " + sim)
             totalList.foreach(record => {
               val threshold = FaceFunction.featureCompare(record(2).asInstanceOf[Array[Float]], faceObj.getAttribute.getFeature)
+              LOG.info("Threshold is : " + threshold)
               if (threshold > sim) {
                 filterResult += Json(record(0).asInstanceOf[String], record(1).asInstanceOf[String], threshold)
               }
