@@ -392,7 +392,7 @@ public class PhoenixDao implements Serializable {
                                 log.info("count is : " +count);
                                 locus2.setCount(count);
                                 String time = locus1.getTime();
-                                if (simpleDateFormat.parse(faceTime).getTime() < simpleDateFormat.parse(time).getTime()) {
+                                if (simpleDateFormat.parse(faceTime).getTime() > simpleDateFormat.parse(time).getTime()) {
                                     locus2.setTime(faceTime);
                                 }else {
                                     locus2.setTime(time);

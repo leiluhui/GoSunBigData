@@ -103,10 +103,10 @@ object PeopleManagerScheduler extends Serializable {
       })
 
     val putToHBase = jsonResult.foreachRDD(forRDD => {
+      val ftpRegisterClient = new FtpRegisterClient(zkAddressBroadCast.value)
       forRDD.foreachPartition(parRDD => {
         val hbaseTableAdd: Table = HBaseHelper.getTable(ClusteringTable.TABLE_PEOPLECOMPARE)
         val hbaseTableReco: Table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME)
-        val ftpRegisterClient = new FtpRegisterClient(zkAddressBroadCast.value)
         val df: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val list = new util.ArrayList[String]()
         LOG.info("time  is ++++++++++++++++++++")
