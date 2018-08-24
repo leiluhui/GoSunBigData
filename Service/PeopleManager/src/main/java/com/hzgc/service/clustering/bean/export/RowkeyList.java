@@ -10,4 +10,8 @@ import java.util.List;
 public class RowkeyList implements Serializable{
     @ApiModelProperty(value = "rowkeylist")
     private List<String> rowkeyList;
+    @ApiModelProperty(value = "起始位置")
+    private int start;
+    @ApiModelProperty(value = "截止位置")
+    private int limit;
 }

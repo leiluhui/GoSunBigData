@@ -303,8 +303,8 @@ public class ResidentController {
         if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture history, but the rowkeyList is null!");
         }
-        log.info("Start to get capture history, param is : " + rowkeylist);
-        Map<String,List<FaceObject>> map = clusteringSearchService.getCaptureHistory(rowkeylist);
+        log.info("Start to get capture history, param is : " + rowkeyList);
+        Map<String,List<FaceObject>> map = clusteringSearchService.getCaptureHistory(rowkeyList);
         return ResponseResult.init(map);
     }
 }

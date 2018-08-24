@@ -258,7 +258,7 @@ public class ClusteringSearchService {
      * @param rowkeylist 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+    public Map<String, List<FaceObject>> getCaptureHistory(RowkeyList rowkeylist) {
         return phoenixDao.getCaptureHistory(rowkeylist);
     }
 

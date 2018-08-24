@@ -8,6 +8,7 @@ import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.clustering.bean.export.Resident;
+import com.hzgc.service.clustering.bean.export.RowkeyList;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
 import com.hzgc.service.clustering.bean.param.ResidentParam;
 import com.hzgc.service.clustering.service.ParseByOption;
@@ -248,12 +249,13 @@ public class PhoenixDao implements Serializable {
     /**
      * 抓拍历史查询
      *
-     * @param rowkeylist 常驻人口库ID的list
+     * @param rowkeyList 常驻人口库ID的list
      * @return 返回一个人的抓拍历史
      */
-    public Map<String, List<FaceObject>> getCaptureHistory(List<String> rowkeylist) {
+    public Map<String, List<FaceObject>> getCaptureHistory(RowkeyList rowkeyList) {
         Map<String, List<FaceObject>> map = new HashMap<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
+        List<String> rowkeylist = rowkeyList.getRowkeyList();
         log.info("rowkeyList is : " + rowkeylist);
         for (String rowkey : rowkeylist) {
             Get get = new Get(Bytes.toBytes(rowkey));
@@ -282,7 +284,23 @@ public class PhoenixDao implements Serializable {
                 e.printStackTrace();
             }
         }
-        return map;
+        Map<String, List<FaceObject>> mapResult = new HashMap<>();
+        int start = rowkeyList.getStart();
+        int limit = rowkeyList.getLimit();
+        Set set = map.keySet();
+        Iterator iterator = set.iterator();
+       while (iterator.hasNext()){
+           String key = (String)iterator.next();
+           List<FaceObject> newValue = new ArrayList<>();
+           List<FaceObject> value = (List<FaceObject>)map.get(key);
+           if ((start + limit) > value.size()){
+               newValue = value.subList(start,value.size());
+           }else {
+               newValue = value.subList(start,start+limit);
+           }
+           mapResult.put(key,newValue);
+       }
+        return mapResult;
     }
 
     public SqlRowSet searchResident(GetResidentParam param) {
