@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -30,6 +31,7 @@ public class ResidentController {
 
     @Autowired
     private ClusteringSearchService clusteringSearchService;
+
     /**
      * 计划保存
      *
@@ -237,13 +239,13 @@ public class ResidentController {
      * 获取常驻人口库照片
      *
      * @param objectID 对象ID
-     * return byte[]
+     *                 return byte[]
      */
-    @ApiOperation(value = "获取常驻人口库照片",produces = "image/jpeg")
-    @ApiImplicitParam(name = "objectID",value = "对象ID",dataType = "String",paramType = "query")
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_GETRESIDENTPICTURE,method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getResidentPhoto(String objectID){
-        if (StringUtils.isBlank(objectID)){
+    @ApiOperation(value = "获取常驻人口库照片", produces = "image/jpeg")
+    @ApiImplicitParam(name = "objectID", value = "对象ID", dataType = "String", paramType = "query")
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_GETRESIDENTPICTURE, method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getResidentPhoto(String objectID) {
+        if (StringUtils.isBlank(objectID)) {
             log.error("Start to get object photo,but the objectID is null!");
             return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
         }
@@ -258,16 +260,23 @@ public class ResidentController {
      * @param param 查询条件封装
      * @return
      */
-    @ApiOperation(value = "对象查询",response = ResidentSearchResult.class)
-    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_RESIDENTSEARCH,method = RequestMethod.POST)
-    public ResponseResult<List> searchResident(@RequestBody @ApiParam(value = "查询条件")GetResidentParam param){
-        if (param == null){
+    @ApiOperation(value = "对象查询", response = ResidentSearchResult.class)
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_RESIDENTSEARCH, method = RequestMethod.POST)
+    public ResponseResult<List> searchResident(@RequestBody @ApiParam(value = "查询条件") GetResidentParam param) {
+        if (param == null) {
             log.error("Start get resident,but param is null!");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询人口对象参数为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询人口对象参数为空，请检查！");
         }
         log.info("Start get resident,param is : " + JSONUtil.toJson(param));
-        List<PersonObject> resultList = clusteringSearchService.searchResident(param);
-        return ResponseResult.init(resultList);
+        Map<List<PersonObject>,Integer> result = clusteringSearchService.searchResident(param);
+        Set<List<PersonObject>> set = result.keySet();
+        List<PersonObject> personObjects = null;
+        int count = 0;
+        for (List<PersonObject> list : set){
+            personObjects = list;
+            count = result.get(list);
+        }
+        return ResponseResult.init(personObjects, count);
     }
 
 
@@ -279,7 +288,7 @@ public class ResidentController {
      */
     @ApiOperation(value = "根据id查询抓拍次数", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURECOUNT, method = RequestMethod.POST)
-    public ResponseResult<Map> getCaptureCount(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
+    public ResponseResult<Map> getCaptureCount(@RequestBody @ApiParam(value = "id列表") RowkeyList rowkeyList) {
         List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture count, but the rowkeyList is null!");
@@ -298,14 +307,28 @@ public class ResidentController {
      */
     @ApiOperation(value = "根据id查询抓拍历史", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTUREHISTORY, method = RequestMethod.POST)
-    public ResponseResult<Map> getCaptureHistory(@RequestBody @ApiParam(value = "id列表")RowkeyList rowkeyList) {
+    public ResponseResult<Map> getCaptureHistory(@RequestBody @ApiParam(value = "id列表") RowkeyList rowkeyList) {
         List<String> rowkeylist = rowkeyList.getRowkeyList();
         if (rowkeylist == null || rowkeylist.size() == 0) {
             log.error("Start to get capture history, but the rowkeyList is null!");
         }
         log.info("Start to get capture history, param is : " + rowkeyList);
-        Map<String,List<FaceObject>> map = clusteringSearchService.getCaptureHistory(rowkeyList);
+        Map<String, List<FaceObject>> map = clusteringSearchService.getCaptureHistory(rowkeyList);
         return ResponseResult.init(map);
+    }
+
+    /**
+     * 抓拍历史轨迹
+     */
+    @ApiOperation(value = "根据id查询抓拍历史轨迹",response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.PEOPLEMANAGER_CAPTURELOCUS,method = RequestMethod.POST)
+    public ResponseResult<List> getCaptureLocus(@RequestBody @ApiParam(value = "id")RowkeyList rowkeyList){
+        List<String> rowkeylist = rowkeyList.getRowkeyList();
+        if (rowkeylist == null || rowkeylist.size() == 0) {
+            log.error("Start to get capture locus, but the rowkeyList is null!");
+        }
+        List<CapatureLocus> capatureLocusList = clusteringSearchService.getCaptureLocus(rowkeylist);
+        return ResponseResult.init(capatureLocusList);
     }
 }
 

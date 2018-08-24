@@ -5,8 +5,11 @@ import com.hzgc.common.faceclustering.table.PeopleManagerTable;
 import com.hzgc.common.faceclustering.table.PeopleRecognizeTable;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.service.api.bean.DeviceDTO;
+import com.hzgc.common.service.api.bean.WebgisMapPointDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.service.clustering.bean.export.CapatureLocus;
+import com.hzgc.service.clustering.bean.export.Locus;
 import com.hzgc.service.clustering.bean.export.Resident;
 import com.hzgc.service.clustering.bean.export.RowkeyList;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
@@ -23,6 +26,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.Connection;
@@ -265,11 +269,11 @@ public class PhoenixDao implements Serializable {
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 List<FaceObject> list = JSONUtil.toArray(listString, FaceObject.class);
                 List<String> ipcIdList = new ArrayList<>();
-                for (FaceObject faceObject : list){
+                for (FaceObject faceObject : list) {
                     String ipcId = faceObject.getIpcId();
                     ipcIdList.add(ipcId);
                 }
-                Map<String,DeviceDTO> ipcMap = deviceQueryService.getDeviceInfoByBatchIpc(ipcIdList);
+                Map<String, DeviceDTO> ipcMap = deviceQueryService.getDeviceInfoByBatchIpc(ipcIdList);
                 if (ipcMap != null) {
                     for (FaceObject faceObject : list) {
                         for (String key : ipcMap.keySet()) {
@@ -289,17 +293,17 @@ public class PhoenixDao implements Serializable {
         int limit = rowkeyList.getLimit();
         Set set = map.keySet();
         Iterator iterator = set.iterator();
-       while (iterator.hasNext()){
-           String key = (String)iterator.next();
-           List<FaceObject> newValue = new ArrayList<>();
-           List<FaceObject> value = (List<FaceObject>)map.get(key);
-           if ((start + limit) > value.size()){
-               newValue = value.subList(start,value.size());
-           }else {
-               newValue = value.subList(start,start+limit);
-           }
-           mapResult.put(key,newValue);
-       }
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            List<FaceObject> newValue;
+            List<FaceObject> value = map.get(key);
+            if ((start + limit) > value.size()) {
+                newValue = value.subList(start, value.size());
+            } else {
+                newValue = value.subList(start, start + limit);
+            }
+            mapResult.put(key, newValue);
+        }
         return mapResult;
     }
 
@@ -334,6 +338,83 @@ public class PhoenixDao implements Serializable {
             log.info("Start to get the object photo successfully!");
         }
         return photo;
+    }
+
+    public List<CapatureLocus> getCaptureLocus(List<String> rowkeylist) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<CapatureLocus> capatureLocusList = new ArrayList<>();
+        Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
+        for (String rowkey : rowkeylist) {
+            CapatureLocus capatureLocus = new CapatureLocus();
+            capatureLocus.setRowkey(rowkey);
+            Get get = new Get(Bytes.toBytes(rowkey));
+            try {
+                Result result = table.get(get);
+                log.info("rowkey is : " + rowkey);
+                String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
+                List<FaceObject> faceObjectList = JSONUtil.toArray(listString, FaceObject.class);
+                log.info("faceobjectList is : " + faceObjectList);
+                List<Locus> locusList = new ArrayList<>();
+                List<Long> deviceIdList = new ArrayList<>();
+                for (FaceObject faceObject : faceObjectList) {
+                    log.info("locusList is : " + locusList);
+                    if (locusList != null) {
+                        for (Locus locus : locusList) {
+                            deviceIdList.add(locus.getDeviceId());
+                        }
+                    }
+                    log.info("deviceIdList is : " + deviceIdList);
+                    List<Long> deviceIds = new ArrayList<>();
+                    Locus locus = new Locus();
+                    Long id = Long.valueOf(deviceQueryService.getDeviceInfoByIpc(faceObject.getIpcId()).getId());
+                    log.info("deviceid is : " + id);
+                    deviceIds.add(id);
+                    Map<Long, WebgisMapPointDTO> map = deviceQueryService.getDeviceInfoByBatchIdByDevice(deviceIds);
+                    WebgisMapPointDTO w = map.get(id);
+                    log.info("webgis is : " + w);
+                    log.info("boolean is : " + deviceIdList.contains(id));
+                    if (!deviceIdList.contains(id)) {
+                        locus.setDeviceId(id);
+                        locus.setMarsLongitude(w.getMarsLongitude());
+                        locus.setMarsLatitude(w.getMarsLatitude());
+                        locus.setCount(1);
+                        locus.setTime(faceObject.getStartTime());
+                        log.info("The first locus is : " + locus);
+                        locusList.add(locus);
+                    } else {
+                        String faceTime = faceObject.getStartTime();
+                        for (Locus locus1 : locusList) {
+                            if (Objects.equals(locus1.getDeviceId(), id)) {
+                                Locus locus2 = new Locus();
+                                log.info("The second locus is : " + locus1);
+                                log.info("the second locus's count is : " + locus1.getCount());
+                                int count = locus1.getCount() + 1;
+                                log.info("count is : " +count);
+                                locus2.setCount(count);
+                                String time = locus1.getTime();
+                                if (simpleDateFormat.parse(faceTime).getTime() < simpleDateFormat.parse(time).getTime()) {
+                                    locus2.setTime(faceTime);
+                                }else {
+                                    locus2.setTime(time);
+                                }
+                                locus2.setMarsLatitude(locus1.getMarsLatitude());
+                                locus2.setMarsLongitude(locus1.getMarsLongitude());
+                                locus2.setDeviceId(locus1.getDeviceId());
+                                log.info("The third locul is : " + locus2);
+                                locusList.remove(locus1);
+                                locusList.add(locus2);
+                            }
+                        }
+                    }
+                }
+                capatureLocus.setLocusList(locusList);
+                capatureLocusList.add(capatureLocus);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        log.info("captureLocusList is : " + capatureLocusList);
+        return capatureLocusList;
     }
 }
 

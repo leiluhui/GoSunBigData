@@ -268,12 +268,13 @@ public class ClusteringSearchService {
      * @param param 搜索参数的封装
      * @return 返回搜索所需要的结果封装成的对象，包含搜索id，成功与否标志，记录数，记录信息，照片id
      */
-    public List<PersonObject> searchResident(GetResidentParam param) {
+    public Map<List<PersonObject>,Integer> searchResident(GetResidentParam param) {
+        Map<List<PersonObject>,Integer> map =new HashMap<>();
         List<PersonObject> personObjectList = new ArrayList<>();
         SqlRowSet sqlRowSet = phoenixDao.searchResident(param);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (sqlRowSet == null) {
-            return personObjectList;
+            return map;
         }
         while (sqlRowSet.next()) {
             Timestamp createTime = sqlRowSet.getTimestamp(PeopleManagerTable.CREATETIME);
@@ -302,7 +303,8 @@ public class ClusteringSearchService {
             personObjectList.add(personObject);
         }
         List<PersonObject> personObjectLists = residentHandlerTool.formatTheResidentSearchResult(personObjectList,param.getStart(),param.getLimit());
-        return personObjectLists;
+        map.put(personObjectLists,personObjectList.size());
+        return map;
     }
 
     /**
@@ -313,6 +315,10 @@ public class ClusteringSearchService {
      */
     public byte[] getResidentPhoto(String objectID) {
         return phoenixDao.getResidentPhoto(objectID);
+    }
+
+    public List<CapatureLocus> getCaptureLocus(List<String> rowkeylist) {
+        return phoenixDao.getCaptureLocus(rowkeylist);
     }
 }
 
