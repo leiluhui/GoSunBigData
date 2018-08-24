@@ -34,7 +34,7 @@ object KMeans2Clustering {
     * @param startDate 开始日期（yyyyMM）
     * @param endDate  结束日期（yyyyMM）
     */
-  def kmeansClustering(region:String, ipcIds:java.util.List[String], appearCount:Int, startDate:String, endDate:String): Unit = {
+  def kmeansClustering(region:String, ipcIds:java.util.List[String], appearCount:Int, startDate:String, endDate:String,sc:SparkContext): Unit = {
 
     log.info("kmeansClustering param : region="+region+",ipcIds="+ipcIds+",appearCount="+appearCount+",startDate="+startDate+",endDate="+endDate)
     if(StringUtils.isBlank(region) || StringUtils.isBlank(startDate) || StringUtils.isBlank(endDate)
@@ -49,9 +49,9 @@ object KMeans2Clustering {
     val iteratorNum = properties.getProperty("job.clustering.iterator.number")
     val similarityThreshold = properties.getProperty("job.clustering.similarity.Threshold").toDouble
     val center_similarityThreshold: Double = properties.getProperty("job.clustering.similarity.center.Threshold").toDouble
-
-    val sparkConf = new SparkConf().setAppName(appName)
-    val sc = new SparkContext(sparkConf)
+    log.info("appName="+appName+",clusterNum="+clusterNum+",iteratorNum="+iteratorNum+",similarityThreshold="+similarityThreshold+",center_similarityThreshold="+center_similarityThreshold)
+//    val sparkConf = new SparkConf().setAppName(appName)
+//    val sc = new SparkContext(sparkConf)
 
     //union data
     var rddSet:Set[RDD[(ImmutableBytesWritable, Result)]] = Set()
@@ -69,6 +69,7 @@ object KMeans2Clustering {
     val clusterMap: ConcurrentHashMap[Int, Int] = new ConcurrentHashMap[Int, Int]()
     val numClusters = if (clusterNum == null || "".equals(clusterNum)) Math.sqrt(unionData.count.toDouble/2).toInt else clusterNum.toInt
     val numIterations = if (iteratorNum == null || "".equals(iteratorNum)) 10000 else iteratorNum.toInt
+    log.info("==================numClusters="+numClusters+",numIterations="+numIterations)
     val KMeansModel: KMeansModel = KMeans.train(featureData.map(_._2), numClusters, numIterations)
     clusteringMerger(clusterMap, KMeansModel, center_similarityThreshold)
 
@@ -111,7 +112,7 @@ object KMeans2Clustering {
       fromTable.close()
       toTable.close()
     }
-    sc.stop()
+//    sc.stop()
 
   }
 

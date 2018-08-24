@@ -24,6 +24,7 @@ object Discover extends Serializable {
     var startDate = properties.getProperty("kmeans.start.date")
     var endDate = properties.getProperty("kmeans.end.date")
     val appName = properties.getProperty("job.discover.appName")
+    val jdbcUrl = properties.getProperty("phoenix.jdbc.url")
     val sc = SparkSession.builder().appName(appName).getOrCreate().sparkContext
     val schedulerTable = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME)
     val regionTable = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME)
@@ -49,6 +50,7 @@ object Discover extends Serializable {
     if (startDate == null) startDate = startYear + startMonthStr
     if (endDate == null) endDate = endYear + endMonthStr
 
+    val realNameServiceUtil = new RealNameServiceUtil
     val resultScanner = schedulerTable.getScanner(scan)
     val iterator = resultScanner.iterator()
     if (iterator.hasNext){
@@ -64,27 +66,18 @@ object Discover extends Serializable {
       val moveInLast = simpleDateFormat.parse(moveInLastRunTime).getTime
       val inter = day * 24 * 60 * 60 * 1000
       if ((now - moveInLast) > inter){
-        KMeans2Clustering.kmeansClustering(regionID,ipcidList,Integer.parseInt(moveInCount),startDate,endDate)
+        KMeans2Clustering.kmeansClustering(regionID,ipcidList,Integer.parseInt(moveInCount),startDate,endDate,sc)
       }
-      moveOut(moveOutDays)
+      val updateTimeInterval = moveOutDays.toLong * 24 * 60 * 60 * 1000
+      val idList = realNameServiceUtil.getOfflineAlarm(jdbcUrl,updateTimeInterval)
+      val iterator1 = idList.iterator()
+      if (iterator1.hasNext){
+        val id = iterator1.next()
+        realNameServiceUtil.upsertStatus(jdbcUrl,id)
+      }
     }
     sc.stop()
   }
-
-  def moveOut(str: String):Unit = {
-    val properties = PropertiesUtil.getProperties
-    val jdbcUrl = properties.getProperty("phoenix.jdbc.url")
-    val updateTimeInterval = str.toLong * 24 * 60 * 60 * 1000
-    val realNameServiceUtil = new RealNameServiceUtil
-    val idList = realNameServiceUtil.getOfflineAlarm(jdbcUrl,updateTimeInterval)
-    val iterator = idList.iterator()
-    if (iterator.hasNext){
-      val id = iterator.next()
-      realNameServiceUtil.upsertStatus(jdbcUrl,id)
-    }
-
-  }
-
 }
 
 
