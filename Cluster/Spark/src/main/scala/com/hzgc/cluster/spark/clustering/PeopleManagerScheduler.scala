@@ -114,8 +114,8 @@ object PeopleManagerScheduler extends Serializable {
           val finalList = obj._4
           if (finalList.isEmpty) {
             val faceobj = obj._2
-            val surl = faceobj.getSurl
-            val burl = faceobj.getBurl
+            faceobj.setSurl(getFtpUrl(faceobj.getSurl,ftpRegisterClient))
+            faceobj.setBurl(getFtpUrl(faceobj.getBurl,ftpRegisterClient))
             val alarm_time = df.format(new Date())
             val ipcid = obj._3
             val rowkey = ipcid + "_" + alarm_time.replaceAll("[^\\d]+","")
