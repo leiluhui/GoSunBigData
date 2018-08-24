@@ -198,6 +198,7 @@ ${SPARK_LIB_DIR}/common-facestarepo-1.0.jar,\
 ${SPARK_LIB_DIR}/common-facedispatch-1.0.jar,\
 ${SPARK_LIB_DIR}/common-rocketmq-1.0.jar,\
 ${SPARK_LIB_DIR}/common-faceclustering-1.0.jar,\
+${SPARK_LIB_DIR}/common-zookeeper-1.0.jar,\
 ${SPARK_LIB_DIR}/transport-5.5.0.jar,\
 ${SPARK_LIB_DIR}/lucene-core-6.6.0.jar,\
 ${SPARK_LIB_DIR}/lucene-highlighter-6.6.0.jar,\

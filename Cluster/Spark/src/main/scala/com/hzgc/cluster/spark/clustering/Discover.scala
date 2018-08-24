@@ -50,8 +50,9 @@ object Discover extends Serializable {
     if (endDate == null) endDate = endYear + endMonthStr
 
     val resultScanner = schedulerTable.getScanner(scan)
-    if (resultScanner.iterator().hasNext){
-      val result = resultScanner.next()
+    val iterator = resultScanner.iterator()
+    if (iterator.hasNext){
+      val result = iterator.next()
       val moveInLastRunTime = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY,PeopleSchedulerTable.MOVEINLASTRUNTIME))
       val moveInCount = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY,PeopleSchedulerTable.MOVEINCOUNT))
       val moveOutDays = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY,PeopleSchedulerTable.MOVEOUTDAYS))
@@ -76,8 +77,9 @@ object Discover extends Serializable {
     val updateTimeInterval = str.toLong * 24 * 60 * 60 * 1000
     val realNameServiceUtil = new RealNameServiceUtil
     val idList = realNameServiceUtil.getOfflineAlarm(jdbcUrl,updateTimeInterval)
-    if (idList.iterator().hasNext){
-      val id = idList.iterator().next()
+    val iterator = idList.iterator()
+    if (iterator.hasNext){
+      val id = iterator.next()
       realNameServiceUtil.upsertStatus(jdbcUrl,id)
     }
 

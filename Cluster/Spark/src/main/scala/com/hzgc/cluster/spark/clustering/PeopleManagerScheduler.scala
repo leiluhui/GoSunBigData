@@ -42,6 +42,7 @@ object PeopleManagerScheduler extends Serializable {
     val ssc = new StreamingContext(conf, timeInterval)
     val kafkaBootStrapBroadCast = ssc.sparkContext.broadcast(properties.getProperty("kafka.metadata.broker.list"))
     val jdbcUrlBroadCast = ssc.sparkContext.broadcast(properties.getProperty("phoenix.jdbc.url"))
+    val zkAddressBroadCast = ssc.sparkContext.broadcast(properties.getProperty("job.zookeeper.address"))
     val kafkaGroupId = properties.getProperty("kafka.people.manager.group.id")
     val topics = Set(properties.getProperty("kafka.topic.name"))
     val brokers = properties.getProperty("kafka.metadata.broker.list")
@@ -73,8 +74,9 @@ object PeopleManagerScheduler extends Serializable {
         val regionTable = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME)
         val scan = new Scan()
         val resultScanner = table.getScanner(scan)
-        while (resultScanner.iterator().hasNext) {
-          val result = resultScanner.iterator().next()
+        val iterator = resultScanner.iterator()
+        while (iterator.hasNext) {
+          val result = iterator.next()
           val regionId = result.getRow
           LOG.info("regionId is : " + Bytes.toString(regionId))
           val get = new Get(regionId)
@@ -104,6 +106,7 @@ object PeopleManagerScheduler extends Serializable {
       forRDD.foreachPartition(parRDD => {
         val hbaseTableAdd: Table = HBaseHelper.getTable(ClusteringTable.TABLE_PEOPLECOMPARE)
         val hbaseTableReco: Table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME)
+        val ftpRegisterClient = new FtpRegisterClient(zkAddressBroadCast.value)
         val df: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val list = new util.ArrayList[String]()
         LOG.info("time  is ++++++++++++++++++++")
@@ -127,8 +130,9 @@ object PeopleManagerScheduler extends Serializable {
             finalList.foreach(message => {
               val scan: Scan = new Scan()
               val rs = hbaseTableReco.getScanner(scan)
-              while (rs.iterator().hasNext) {
-                val result = rs.iterator().next()
+              val iterator = rs.iterator()
+              while (iterator.hasNext) {
+                val result = iterator.next()
                 val rowkey = Bytes.toString(result.getRow)
                 list.add(rowkey)
               }
@@ -139,8 +143,8 @@ object PeopleManagerScheduler extends Serializable {
                 //                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
                 val list1: util.ArrayList[FaceObject] = JSONUtil.toObject(listString, new util.ArrayList[FaceObject]().getClass)
                 val faceObject = obj._2
-                faceObject.setSurl(getFtpUrl(faceObject.getSurl))
-                faceObject.setBurl(getFtpUrl(faceObject.getBurl))
+                faceObject.setSurl(getFtpUrl(faceObject.getSurl,ftpRegisterClient))
+                faceObject.setBurl(getFtpUrl(faceObject.getBurl,ftpRegisterClient))
                 faceObject.setAttribute(null)
                 list1.add(faceObject)
                 val put = new Put(Bytes.toBytes(message.staticID))
@@ -150,8 +154,8 @@ object PeopleManagerScheduler extends Serializable {
                 val put = new Put(Bytes.toBytes(message.staticID))
                 val peopleList = new util.ArrayList[FaceObject]()
                 val faceObject = obj._2
-                faceObject.setSurl(getFtpUrl(faceObject.getSurl))
-                faceObject.setBurl(getFtpUrl(faceObject.getBurl))
+                faceObject.setSurl(getFtpUrl(faceObject.getSurl,ftpRegisterClient))
+                faceObject.setBurl(getFtpUrl(faceObject.getBurl,ftpRegisterClient))
                 faceObject.setAttribute(null)
                 peopleList.add(faceObject)
                 put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(peopleList)))
@@ -170,10 +174,7 @@ object PeopleManagerScheduler extends Serializable {
     ssc.awaitTermination()
   }
 
-  def getFtpUrl(ftpurl:String):String={
-    val properties = PropertiesUtil.getProperties
-    val zkAddress = properties.getProperty("job.zookeeper.address")
-    val ftpRegisterClient = new FtpRegisterClient(zkAddress)
+  def getFtpUrl(ftpurl:String,ftpRegisterClient:FtpRegisterClient):String={
     val hostname = ftpurl.substring(ftpurl.indexOf("/")+ 2,ftpurl.lastIndexOf(":"))
     val ftpServerIP = ftpRegisterClient.getFtpIpMapping.get(hostname)
     if (IsEmpty.strIsRight(ftpServerIP)){
