@@ -51,13 +51,9 @@ object PeopleManagerScheduler extends Serializable {
     LOG.info("appName" + appName)
     val kafkaDynamicPhoto = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topics)
     LOG.info("topics :" + topics)
-    LOG.info("kafkaboot is : ============" + kafkaBootStrapBroadCast.value)
-    LOG.info("jdbcUrl is : ==================" + jdbcUrlBroadCast.value)
     val jsonResult = kafkaDynamicPhoto.map(data => (data._1, FaceObjectUtil.jsonToObject(data._2)))
       .filter(obj => obj._2.getAttribute.getFeature != null && obj._2.getAttribute.getFeature.length == 512)
       .map(message => {
-        LOG.info("kafkaboot is : +++++++++++++++" + kafkaBootStrapBroadCast.value)
-        LOG.info("jdbcUrl is : +++++++++++++++++" + jdbcUrlBroadCast.value)
         val totalList = JavaConverters
                   .asScalaBufferConverter(ResidentUtil.getInstance(jdbcUrlBroadCast.value).getTotalList).asScala
         LOG.info("The ResidentUtil's Size is : " + totalList.size)
@@ -77,16 +73,11 @@ object PeopleManagerScheduler extends Serializable {
           val get = new Get(regionId)
           val regionResult = regionTable.get(get)
           val ipcidStr = Bytes.toString(regionResult.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS))
-          LOG.info("ipcStr is : " + ipcidStr)
           val ipcidList = JSONUtil.toObject(ipcidStr, new util.ArrayList[String]().getClass)
-          LOG.info("IpcIDList is : " + ipcidList)
-          LOG.info("IPCID is : " + ipcID)
           if (ipcidList.contains(ipcID)) {
             val sim = Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)).toInt
-            LOG.info("sim is : " + sim)
             totalList.foreach(record => {
               val threshold = FaceFunction.featureCompare(record(2).asInstanceOf[Array[Float]], faceObj.getAttribute.getFeature)
-              LOG.info("Threshold is : " + threshold)
               if (threshold > sim) {
                 filterResult += Json(record(0).asInstanceOf[String], record(1).asInstanceOf[String], threshold)
               }
@@ -102,7 +93,6 @@ object PeopleManagerScheduler extends Serializable {
         val hbaseTableReco: Table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME)
         val df: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val list = new util.ArrayList[String]()
-        LOG.info("time  is ++++++++++++++++++++")
         parRDD.foreach(obj => {
           val finalList = obj._4
           if (finalList.isEmpty) {
@@ -113,7 +103,7 @@ object PeopleManagerScheduler extends Serializable {
             val hostname = faceobj.getHostname
             val feature = faceobj.getAttribute.getFeature
             val put: Put = new Put(Bytes.toBytes(rowkey))
-            LOG.info("rowkey is : ++++++++++++++++" + rowkey)
+            LOG.info("rowkey is : " + rowkey)
             put.addColumn(ClusteringTable.PEOPELCOMPARE_COLUMNFAMILY, ClusteringTable.PEOPELCOMPARE_COLUMNDATA, Bytes.toBytes(JSONUtil.toJson(faceobj)))
             hbaseTableAdd.put(put)
           } else {
@@ -150,8 +140,6 @@ object PeopleManagerScheduler extends Serializable {
               }
               updateTimeList.add(message.staticID)
             })
-//            StaticRepoUtil
-//              .getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value).updateObjectInfoTime(updateTimeList)
             ResidentUtil.getInstance(jdbcUrlBroadCast.value).updatePeopleManagerTime(updateTimeList)
           }
         })
