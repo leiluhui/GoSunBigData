@@ -35,14 +35,12 @@ object PeopleManagerScheduler extends Serializable {
     val deviceUtil = new DeviceUtilImpl
     val properties = PropertiesUtil.getProperties
     val appName = properties.getProperty("job.people.manager.appName")
-//    val itemNum = properties.getProperty("job.recognizeAlarm.items.num").toInt
     val timeInterval = Durations.seconds(properties.getProperty("job.people.manager.timeInterval").toLong)
     val jdbcUrl = properties.getProperty("phoenix.jdbc.url")
     val conf = new SparkConf().setAppName(appName)
     val ssc = new StreamingContext(conf, timeInterval)
     val kafkaBootStrapBroadCast = ssc.sparkContext.broadcast(properties.getProperty("kafka.metadata.broker.list"))
     val jdbcUrlBroadCast = ssc.sparkContext.broadcast(properties.getProperty("phoenix.jdbc.url"))
-    val zkAddressBroadCast = ssc.sparkContext.broadcast(properties.getProperty("job.zookeeper.address"))
     val kafkaGroupId = properties.getProperty("kafka.people.manager.group.id")
     val topics = Set(properties.getProperty("kafka.topic.name"))
     val brokers = properties.getProperty("kafka.metadata.broker.list")
@@ -60,9 +58,6 @@ object PeopleManagerScheduler extends Serializable {
       .map(message => {
         LOG.info("kafkaboot is : +++++++++++++++" + kafkaBootStrapBroadCast.value)
         LOG.info("jdbcUrl is : +++++++++++++++++" + jdbcUrlBroadCast.value)
-//        val totalList = JavaConverters
-//          .asScalaBufferConverter(StaticRepoUtil.getInstance(kafkaBootStrapBroadCast.value, jdbcUrlBroadCast.value)
-//            .getTotalList).asScala
         val totalList = JavaConverters
                   .asScalaBufferConverter(ResidentUtil.getInstance(jdbcUrlBroadCast.value).getTotalList).asScala
         LOG.info("The ResidentUtil's Size is : " + totalList.size)
@@ -83,7 +78,6 @@ object PeopleManagerScheduler extends Serializable {
           val regionResult = regionTable.get(get)
           val ipcidStr = Bytes.toString(regionResult.getValue(PersonRegionTable.COLUMNFAMILY, PersonRegionTable.REGION_IPCIDS))
           LOG.info("ipcStr is : " + ipcidStr)
-          //          val ipcidList = JSONUtil.toObject(ipcidStr, util.Arrays.asList[String]().getClass)
           val ipcidList = JSONUtil.toObject(ipcidStr, new util.ArrayList[String]().getClass)
           LOG.info("IpcIDList is : " + ipcidList)
           LOG.info("IPCID is : " + ipcID)
@@ -103,7 +97,6 @@ object PeopleManagerScheduler extends Serializable {
       })
 
     val putToHBase = jsonResult.foreachRDD(forRDD => {
-      val ftpRegisterClient = new FtpRegisterClient(zkAddressBroadCast.value)
       forRDD.foreachPartition(parRDD => {
         val hbaseTableAdd: Table = HBaseHelper.getTable(ClusteringTable.TABLE_PEOPLECOMPARE)
         val hbaseTableReco: Table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME)
@@ -114,8 +107,6 @@ object PeopleManagerScheduler extends Serializable {
           val finalList = obj._4
           if (finalList.isEmpty) {
             val faceobj = obj._2
-            faceobj.setSurl(getFtpUrl(faceobj.getSurl,ftpRegisterClient))
-            faceobj.setBurl(getFtpUrl(faceobj.getBurl,ftpRegisterClient))
             val alarm_time = df.format(new Date())
             val ipcid = obj._3
             val rowkey = ipcid + "_" + alarm_time.replaceAll("[^\\d]+","")
@@ -143,8 +134,6 @@ object PeopleManagerScheduler extends Serializable {
                 //                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
                 val list1: util.ArrayList[FaceObject] = JSONUtil.toObject(listString, new util.ArrayList[FaceObject]().getClass)
                 val faceObject = obj._2
-                faceObject.setSurl(getFtpUrl(faceObject.getSurl,ftpRegisterClient))
-                faceObject.setBurl(getFtpUrl(faceObject.getBurl,ftpRegisterClient))
                 faceObject.setAttribute(null)
                 list1.add(faceObject)
                 val put = new Put(Bytes.toBytes(message.staticID))
@@ -154,8 +143,6 @@ object PeopleManagerScheduler extends Serializable {
                 val put = new Put(Bytes.toBytes(message.staticID))
                 val peopleList = new util.ArrayList[FaceObject]()
                 val faceObject = obj._2
-                faceObject.setSurl(getFtpUrl(faceObject.getSurl,ftpRegisterClient))
-                faceObject.setBurl(getFtpUrl(faceObject.getBurl,ftpRegisterClient))
                 faceObject.setAttribute(null)
                 peopleList.add(faceObject)
                 put.addColumn(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT, Bytes.toBytes(JSONUtil.toJson(peopleList)))
@@ -172,15 +159,6 @@ object PeopleManagerScheduler extends Serializable {
     })
     ssc.start()
     ssc.awaitTermination()
-  }
-
-  def getFtpUrl(ftpurl:String,ftpRegisterClient:FtpRegisterClient):String={
-    val hostname = ftpurl.substring(ftpurl.indexOf("/")+ 2,ftpurl.lastIndexOf(":"))
-    val ftpServerIP = ftpRegisterClient.getFtpIpMapping.get(hostname)
-    if (IsEmpty.strIsRight(ftpServerIP)){
-      return ftpurl.replace(hostname,ftpServerIP)
-    }
-    return ftpurl
   }
 }
 

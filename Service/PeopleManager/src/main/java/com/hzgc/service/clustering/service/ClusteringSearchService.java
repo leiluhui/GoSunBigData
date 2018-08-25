@@ -44,9 +44,6 @@ public class ClusteringSearchService {
     private  PhoenixDao phoenixDao;
 
     @Autowired
-    private static PeopleManagerProducer peopleManagerProducer;
-
-    @Autowired
     private  ResidentHandlerTool residentHandlerTool;
 
 

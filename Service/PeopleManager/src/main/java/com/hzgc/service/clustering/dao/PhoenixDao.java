@@ -14,6 +14,7 @@ import com.hzgc.service.clustering.bean.export.Resident;
 import com.hzgc.service.clustering.bean.export.RowkeyList;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
 import com.hzgc.service.clustering.bean.param.ResidentParam;
+import com.hzgc.service.clustering.service.ClusteringServiceHelper;
 import com.hzgc.service.clustering.service.ParseByOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.Get;
@@ -50,6 +51,10 @@ public class PhoenixDao implements Serializable {
     @Autowired
     @SuppressWarnings("unused")
     private DeviceQueryService deviceQueryService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private ClusteringServiceHelper clusteringServiceHelper;
 
     public List<String> getAllObjectIdcard() {
         List<String> idcardList = new ArrayList<>();
@@ -268,6 +273,10 @@ public class PhoenixDao implements Serializable {
                 log.info("Result's size is :" + result.size());
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 List<FaceObject> list = JSONUtil.toArray(listString, FaceObject.class);
+                for (FaceObject faceObject : list){
+                    faceObject.setSurl(clusteringServiceHelper.getFtpUrl(faceObject.getSurl()));
+                    faceObject.setBurl(clusteringServiceHelper.getFtpUrl(faceObject.getBurl()));
+                }
                 List<String> ipcIdList = new ArrayList<>();
                 for (FaceObject faceObject : list) {
                     String ipcId = faceObject.getIpcId();
@@ -344,8 +353,8 @@ public class PhoenixDao implements Serializable {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<CapatureLocus> capatureLocusList = new ArrayList<>();
         Table table = HBaseHelper.getTable(PeopleRecognizeTable.TABLE_NAME);
+        CapatureLocus capatureLocus = new CapatureLocus();
         for (String rowkey : rowkeylist) {
-            CapatureLocus capatureLocus = new CapatureLocus();
             capatureLocus.setRowkey(rowkey);
             Get get = new Get(Bytes.toBytes(rowkey));
             try {
@@ -402,17 +411,19 @@ public class PhoenixDao implements Serializable {
                                 locus2.setDeviceId(locus1.getDeviceId());
                                 log.info("The third locul is : " + locus2);
                                 locusList.remove(locus1);
+                                log.info("after remove the locusList is : " + locusList);
                                 locusList.add(locus2);
+                                log.info("after add the locusList is : " + locusList);
                             }
                         }
                     }
+                    capatureLocus.setLocusList(locusList);
                 }
-                capatureLocus.setLocusList(locusList);
-                capatureLocusList.add(capatureLocus);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        capatureLocusList.add(capatureLocus);
         log.info("captureLocusList is : " + capatureLocusList);
         return capatureLocusList;
     }
