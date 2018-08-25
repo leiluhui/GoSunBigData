@@ -121,7 +121,6 @@ object PeopleManagerScheduler extends Serializable {
                 val get = new Get(Bytes.toBytes(message.staticID))
                 val r = hbaseTableReco.get(get)
                 val listString = Bytes.toString(r.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT))
-                //                var list1 = JSONUtil.toObject(listString, util.Arrays.asList[FaceObject]().getClass)
                 val list1: util.ArrayList[FaceObject] = JSONUtil.toObject(listString, new util.ArrayList[FaceObject]().getClass)
                 val faceObject = obj._2
                 faceObject.setAttribute(null)
