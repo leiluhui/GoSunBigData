@@ -3,23 +3,19 @@ package com.hzgc.service.clustering.dao;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.faceclustering.table.PeopleManagerTable;
 import com.hzgc.common.faceclustering.table.PeopleRecognizeTable;
+import com.hzgc.common.faceclustering.table.PersonRegionTable;
 import com.hzgc.common.hbase.HBaseHelper;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.bean.WebgisMapPointDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.service.clustering.bean.export.CapatureLocus;
-import com.hzgc.service.clustering.bean.export.Locus;
-import com.hzgc.service.clustering.bean.export.Resident;
-import com.hzgc.service.clustering.bean.export.RowkeyList;
+import com.hzgc.service.clustering.bean.export.*;
 import com.hzgc.service.clustering.bean.param.GetResidentParam;
 import com.hzgc.service.clustering.bean.param.ResidentParam;
 import com.hzgc.service.clustering.service.ClusteringServiceHelper;
 import com.hzgc.service.clustering.service.ParseByOption;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,9 +23,11 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -272,7 +270,7 @@ public class PhoenixDao implements Serializable {
                 log.info("Result's size is :" + result.size());
                 String listString = Bytes.toString(result.getValue(PeopleRecognizeTable.COLUMNFAMILY, PeopleRecognizeTable.FACEOBJECT));
                 List<FaceObject> list = JSONUtil.toArray(listString, FaceObject.class);
-                for (FaceObject faceObject : list){
+                for (FaceObject faceObject : list) {
                     faceObject.setSurl(clusteringServiceHelper.getFtpUrl(faceObject.getSurl()));
                     faceObject.setBurl(clusteringServiceHelper.getFtpUrl(faceObject.getBurl()));
                 }
@@ -397,12 +395,12 @@ public class PhoenixDao implements Serializable {
                                 log.info("The second locus is : " + locus1);
                                 log.info("the second locus's count is : " + locus1.getCount());
                                 int count = locus1.getCount() + 1;
-                                log.info("count is : " +count);
+                                log.info("count is : " + count);
                                 locus2.setCount(count);
                                 String time = locus1.getTime();
                                 if (simpleDateFormat.parse(faceTime).getTime() > simpleDateFormat.parse(time).getTime()) {
                                     locus2.setTime(faceTime);
-                                }else {
+                                } else {
                                     locus2.setTime(time);
                                 }
                                 locus2.setMarsLatitude(locus1.getMarsLatitude());
@@ -425,6 +423,33 @@ public class PhoenixDao implements Serializable {
         capatureLocusList.add(capatureLocus);
         log.info("captureLocusList is : " + capatureLocusList);
         return capatureLocusList;
+    }
+
+    /**
+     * 判断规则表中是否存在这个小区
+     *
+     * @param regular
+     * @return
+     */
+    public Boolean isExists_region(Regular regular) {
+        Table table = HBaseHelper.getTable(PersonRegionTable.TABLE_NAME);
+        Scan scan = new Scan();
+        List<String> stringList = new ArrayList<>();
+        try {
+            ResultScanner results = table.getScanner(scan);
+            for (Result result : results) {
+                String rowkey = Bytes.toString(result.getRow());
+                stringList.add(rowkey);
+            }
+            if (stringList.contains(regular.getRegionID())) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
 

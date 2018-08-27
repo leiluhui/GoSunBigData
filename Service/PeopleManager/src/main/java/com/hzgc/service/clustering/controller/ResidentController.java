@@ -51,7 +51,10 @@ public class ResidentController {
             log.error("Start save plan, but the param is error!");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "Param is empty or error");
         }
-
+        Boolean isExists_region = clusteringSearchService.isExists_region(regular);
+        if (!isExists_region){
+            log.error("Start save plan, but the region id is exists,please check params!!!");
+        }
         log.info("Starting realname param : " + JSONUtil.toJson(regular));
         Integer succeed = clusteringSearchService.saveRegular(regular);
         if (succeed == 0) {

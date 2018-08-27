@@ -317,6 +317,10 @@ public class ClusteringSearchService {
     public List<CapatureLocus> getCaptureLocus(List<String> rowkeylist) {
         return phoenixDao.getCaptureLocus(rowkeylist);
     }
+
+    public Boolean isExists_region(Regular regular) {
+        return phoenixDao.isExists_region(regular);
+    }
 }
 
 @Data
