@@ -178,25 +178,25 @@
         </fileSet>
         <!--Clustering目录-->
         <fileSet>
-            <directory>../Service/Clustering/target</directory>
+            <directory>../Service/PeopleManager/target</directory>
             <includes>
-                <include>clustering-${project.parent.version}.jar</include>
+                <include>peoplemanager-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/clustering/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Clustering/bin</directory>
+            <directory>../Service/PeopleManager/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/clustering/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Clustering/src/main/resources</directory>
+            <directory>../Service/PeopleManager/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/clustering/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/conf</outputDirectory>
         </fileSet>
         <!--Dispatch目录-->
         <fileSet>

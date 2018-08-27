@@ -27,3 +27,21 @@ create table objectType(
       addtime TIMESTAMP,
       updatetime TIMESTAMP,
       ignore_region integer);
+
+create table peoplemanager(
+            id char(32) not null primary key,
+            name varchar,
+            region varchar,
+            idcard varchar,
+            sex integer,
+            photo varbinary,
+            feature float[],
+            reason varchar,
+            creator varchar,
+            cphone varchar,
+            createtime TIMESTAMP,
+            updatetime TIMESTAMP,
+            important integer,
+            care integer,
+            status integer,
+            location varchar);

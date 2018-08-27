@@ -31,9 +31,9 @@ LOCALIP=`hostname -i`
 
 COMPONENT_HOME=${ROOT_HOME}/component
 cd ${COMPONENT_HOME}
-## 判断GosunBigData目录是否存在
-if [[ ! -e GosunBigData ]]; then
-    echo "GosunBigData 目录不存在"
+## 判断GoSunBigData目录是否存在
+if [[ ! -e GoSunBigData ]]; then
+    echo "GoSunBigData 目录不存在"
     exit 1
 fi
 
@@ -43,8 +43,8 @@ if [[ ! -e Collect ]]; then
     exit 1
 fi
 
-cd GosunBigData
-## GosunBigData 目录
+cd GoSunBigData
+## GoSunBigData 目录
 GOSUN_HOME=`pwd`
 GOSUNINSTALL_HOME=/opt/GoSunBigData
 ## common模块目录
@@ -89,13 +89,13 @@ ALARM_BIN_DIR=${ALARM_DIR}/bin                           ##alarm模块脚本存�
 ALARM_START_FILE=${ALARM_BIN_DIR}/start-alarm.sh       ##alarm模块启动脚本
 ALARM_CONF_DIR=${ALARM_DIR}/conf                       ##alarm模块conf目录
 ALARM_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##alarm模块配置文件
-## clustering模块部署目录
-CLUSTERING_DIR=${SERVICE_DIR}/face/clustering
-CLUSTERING_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/clustering
-CLUSTERING_BIN_DIR=${CLUSTERING_DIR}/bin                                ##clustering模块脚本存放目录
-CLUSTERING_START_FILE=${CLUSTERING_BIN_DIR}/start-clustering.sh         ##clustering模块启动脚本
-CLUSTERING_CONF_DIR=${CLUSTERING_DIR}/conf                              ##clustering模块conf目录
-CLUSTERING_PRO_FILE=${CLUSTERING_CONF_DIR}/application-pro.properties   ##clustering模块配置文件
+## peoplemanager模块部署目录
+CLUSTERING_DIR=${SERVICE_DIR}/face/peoplemanager
+CLUSTERING_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/peoplemanager
+CLUSTERING_BIN_DIR=${CLUSTERING_DIR}/bin                                ##peoplemanager模块脚本存放目录
+CLUSTERING_START_FILE=${CLUSTERING_BIN_DIR}/start-peoplemanager.sh         ##peoplemanager模块启动脚本
+CLUSTERING_CONF_DIR=${CLUSTERING_DIR}/conf                              ##peoplemanager模块conf目录
+CLUSTERING_PRO_FILE=${CLUSTERING_CONF_DIR}/application-pro.properties   ##peoplemanager模块配置文件
 ## dispatch模块部署目录
 DISPATCH_DIR=${SERVICE_DIR}/face/dispatch
 DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dispatch
@@ -234,15 +234,15 @@ function distribute_service()
       echo "${hostname}上分发alarm完毕........" | tee -a ${SERVICE_LOG_FILE}
     done
 
-    ##开始分发clustering
-    CLUSTERING_HOST_LISTS=$(grep clustering_distribution ${CONF_FILE} | cut -d '=' -f2)
+    ##开始分发peoplemanager
+    CLUSTERING_HOST_LISTS=$(grep peoplemanager_distribution ${CONF_FILE} | cut -d '=' -f2)
     CLUSTERING_HOST_ARRAY=(${CLUSTERING_HOST_LISTS//;/ })
     for hostname in ${CLUSTERING_HOST_ARRAY[@]}
     do
       ssh root@${hostname} "if [ ! -x "${CLUSTERING_INSTALL_DIR}" ];then mkdir -p "${CLUSTERING_INSTALL_DIR}"; fi"
       rsync -rvl ${CLUSTERING_DIR} root@${hostname}:${CLUSTERING_INSTALL_DIR} >/dev/null
       ssh root@${hostname} "chmod -R 755 ${CLUSTERING_INSTALL_DIR}"
-      echo "${hostname}上分发clustering完毕......." | tee -a ${SERVICE_LOG_FILE}
+      echo "${hostname}上分发peoplemanager完毕......." | tee -a ${SERVICE_LOG_FILE}
     done
 
     ##开始分发dispatch
@@ -395,16 +395,16 @@ function config_sparkjob()
     #替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^rocketmq.nameserver=.*#rocketmq.nameserver=${rockpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
-    # 根据job_clustering_mysql_alarm_url字段设置常驻人口管理告警信息MYSQL数据库地址
-    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.clustering.mysql.alarm.url  | awk '{print $1}') ]
-    value=$(grep job_clustering_mysql_alarm_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-    value="job.clustering.mysql.alarm.url=${value}"
+    # 根据job_peoplemanager_mysql_alarm_url字段设置常驻人口管理告警信息MYSQL数据库地址
+    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.alarm.url  | awk '{print $1}') ]
+    value=$(grep job_peoplemanager_mysql_alarm_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
+    value="job.peoplemanager.mysql.alarm.url=${value}"
     sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
 
-     # 根据job_clustering_mysql_device_url字段设置常驻人口管理告警信息MYSQL数据库地址
-    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.clustering.mysql.device.url  | awk '{print $1}') ]
-    value=$(grep job_clustering_mysql_device_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-    value="job.clustering.mysql.device.url==${value}"
+     # 根据job_peoplemanager_mysql_device_url字段设置常驻人口管理告警信息MYSQL数据库地址
+    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.device.url  | awk '{print $1}') ]
+    value=$(grep job_peoplemanager_mysql_device_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
+    value="job.peoplemanager.mysql.device.url==${value}"
     sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     echo "配置完毕......"  | tee  -a  ${SPARK_LOG_FILE}
@@ -454,6 +454,10 @@ function config_service()
     sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${STAREPO_START_FILE}
     echo "start-starepo.sh脚本配置kafka完成......"
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${CLUSTERING_START_FILE}
+    echo "start-peoplemanager.sh脚本配置eureka_node完成......."
+
     #配置es.hosts:
     #从project-conf.properties中读取es所需配置IP
     #根据字段es，查找配置文件，这些值以分号分隔
@@ -472,7 +476,7 @@ function config_service()
     #####################ES_HOST#########################
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CLUSTERING_START_FILE}
-    echo "start-clustering.sh脚本配置es完成......"
+    echo "start-peoplemanager.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${DYNREPO_START_FILE}
@@ -486,7 +490,7 @@ function config_service()
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${VISUAL_START_FILE}
     echo "start-visual.sh脚本配置es完成......"
 
-        #替换模块启动脚本中：key=value(替换key字段的值value)
+    #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置es完成......"
 
@@ -520,6 +524,10 @@ function config_service()
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置zookeeper完成......"
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CLUSTERING_START_FILE}
+    echo "start-peoplemanager.sh脚本配置eureka_node完成......."
+
 
     #####################EUREKA_IP#########################
     #配置eureka_node:
@@ -540,7 +548,7 @@ function config_service()
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${CLUSTERING_START_FILE}
-    echo "start-clustering.sh脚本配置eureka_node完成......."
+    echo "start-peoplemanager.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${DISPATCH_START_FILE}
@@ -579,7 +587,7 @@ function config_service()
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CLUSTERING_START_FILE}
-    echo "start-clustering.sh脚本配置eureka_port完成......."
+    echo "start-peoplemanager.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_START_FILE}
@@ -629,23 +637,7 @@ function copy_xml_to_service()
     cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $DISPATCH_CONF_DIR
 }
 
-##############################################################################
-# 函数名： ditribute_common
-# 描述： 分发common模块
-# 参数： N/A
-# 返回值： N/A
-# 其他： N/A
-##############################################################################
-function ditribute_common()
-{
-    for node in ${CLUSTERNODE}
-    do
-     ssh root@${node} "if [ ! -x "${COMMON_INSTALL_DIR}" ];then mkdir -p "${COMMON_INSTALL_DIR}"; fi"
-      rsync -rvl ${COMMON_DIR} root@${node}:${COMMON_INSTALL_DIR} >/dev/null
-      ssh root@${node} "chmod -R 755 ${ADDRESS_DIR}"
-      echo "${node}上分发common完毕........"
-    done
-}
+
 
 ##############################################################################
 # 函数名： main
