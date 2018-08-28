@@ -441,6 +441,8 @@ public class PhoenixDao implements Serializable {
                 String rowkey = Bytes.toString(result.getRow());
                 stringList.add(rowkey);
             }
+            log.info("StringList is : " + stringList);
+            log.info("Regular's regionid is : " + regular.getRegionID());
             if (stringList.contains(regular.getRegionID())) {
                 return true;
             } else {
