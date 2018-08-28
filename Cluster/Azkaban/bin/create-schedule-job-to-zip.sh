@@ -18,6 +18,7 @@ AZKABAN_DIR=`pwd`  ###azkaban目录
 LOG_DIR=${AZKABAN_DIR}/logs  ###集群log日志目录
 LOG_FILE=${LOG_DIR}/create-schedule-job-to-zip.log  ##log日志文件
 SCHEMA_FILE="schema-merge-parquet-file.sh"
+DISCOVER_FILE="discover.sh"
 OFFLINE_FILE="start-face-offline-alarm-job.sh"
 DYNAMICSHOW_TABLE="get-dynamicshow-table-run.sh"
 
@@ -57,13 +58,23 @@ else
    echo "command=sh \${cluster_home}/start-face-offline-alarm-job.sh" >> start-face-offline-alarm-job.job
 fi
 
+if [ ! -f "$DISCOVER_FILE" ]; then
+   echo "The discover.sh is not exist!!!"
+else
+   touch discover-one-day.job       ##创建discover-one-day.job文件
+   echo "type=command" >> discover-one-day.job
+   echo "cluster_home=${CLUSTER_BIN_DIR}" >> discover-one-day.job
+   echo "command=sh \${cluster_home}/discover.sh"  >> discover-one-day.job
+fi
+
 cd ${CLUSTER_BIN_DIR}
 mv mid_table-one-hour.job person_table-one-hour.job  schema-parquet-one-hour
 zip schema-parquet-one-hour.zip schema-parquet-one-hour/*
+zip discover-one-day.zip discover-one-day.job
 zip person_table_one-day.job.zip person_table_one-day.job
 zip start-face-offline-alarm-job_oneday.job.zip start-face-offline-alarm-job.job
-rm -rf person_table_one-day.job start-face-offline-alarm-job.job schema-parquet-one-hour
+rm -rf person_table_one-day.job start-face-offline-alarm-job.job schema-parquet-one-hour discover-one-day.job
 
 cd ${AZKABAN_DIR}
 mkdir -p zip
-mv ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip zip
+mv  ${CLUSTER_BIN_DIR}/discover-one-day.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip zip
