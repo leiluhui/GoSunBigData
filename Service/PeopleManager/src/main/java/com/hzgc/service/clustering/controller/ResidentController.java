@@ -49,11 +49,13 @@ public class ResidentController {
         if (regular.getRegionID() == null || regular.getRegionName() == null || regular.getSim() == null || regular.getMoveInCount() == null
                 || regular.getMoveOutDays() == null) {
             log.error("Start save plan, but the param is error!");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "Param is empty or error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "Param is empty or error!!!");
         }
         Boolean isExists_region = clusteringSearchService.isExists_region(regular);
-        if (!isExists_region){
+        log.info("The isExists_region is : " + isExists_region);
+        if (isExists_region){
             log.error("Start save plan, but the region id is exists,please check params!!!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"the region is exists in table,please check out!!!");
         }
         log.info("Starting realname param : " + JSONUtil.toJson(regular));
         Integer succeed = clusteringSearchService.saveRegular(regular);
