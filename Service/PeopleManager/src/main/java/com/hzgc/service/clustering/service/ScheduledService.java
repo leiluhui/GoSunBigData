@@ -27,7 +27,7 @@ public class ScheduledService {
     @Autowired
     private DeviceQueryService deviceQueryService;
 
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "* */5 * * * *")
     public void UpdateRegion(){
         log.info("Start to update the region tables!!!");
         Table peoplescheduler = HBaseHelper.getTable(PeopleSchedulerTable.TABLE_NAME);
@@ -53,11 +53,7 @@ public class ScheduledService {
     }
 
     public  List<String> getIpcIds(Long areaId) {
-        log.info("aaaaaaaaaaaaaa");
-        log.info("bbbbbbbbbbbbbb");
-        log.info("areaId is : " + areaId);
         List<Long> deviceIdList = deviceQueryService.query_device_id(areaId, "area");
-        log.info("DeviceIdList's size is  : " + deviceIdList.size());
         List<String> ipcIdList = new ArrayList<>();
         if (!deviceIdList.isEmpty()) {
             Map<String, DeviceDTO> deviceDTOMap = deviceQueryService.getDeviceInfoByBatchId(deviceIdList);
@@ -68,7 +64,6 @@ public class ScheduledService {
                 }
             }
         }
-        log.info("IpcIdList is : " + ipcIdList);
         return ipcIdList;
     }
 }
