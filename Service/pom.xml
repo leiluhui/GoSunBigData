@@ -98,6 +98,11 @@
             </dependency>
             <dependency>
                 <groupId>com.hzgc.common</groupId>
+                <artifactId>common-seemmo</artifactId>
+                <version>${bigdata-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzgc.common</groupId>
                 <artifactId>common-util</artifactId>
                 <version>${bigdata-common.version}</version>
             </dependency>
@@ -139,16 +144,6 @@
             <dependency>
                 <groupId>com.hzgc.common</groupId>
                 <artifactId>common-service</artifactId>
-                <version>${bigdata-common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hzgc.common</groupId>
-                <artifactId>common-personattirbute</artifactId>
-                <version>${bigdata-common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hzgc.common</groupId>
-                <artifactId>common-seemmo</artifactId>
                 <version>${bigdata-common.version}</version>
             </dependency>
         </dependencies>

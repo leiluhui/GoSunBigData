@@ -1,5 +1,7 @@
 package com.hzgc.service.face.controller;
 
+import com.hzgc.common.carattribute.bean.CarAttribute;
+import com.hzgc.common.carattribute.service.CarAttributeService;
 import com.hzgc.common.faceattribute.bean.Attribute;
 import com.hzgc.common.faceattribute.service.AttributeService;
 import com.hzgc.common.personattribute.bean.PersonAttribute;
@@ -7,11 +9,11 @@ import com.hzgc.common.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.jni.CarPictureData;
 import com.hzgc.jni.PersonPictureData;
 
 import com.hzgc.jni.PictureData;
+import com.hzgc.service.face.service.CarExtractService;
 import com.hzgc.service.face.service.FaceExtractService;
 import com.hzgc.service.face.service.PersonExtractService;
 import io.swagger.annotations.*;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class FaceController {
     @SuppressWarnings("unused")
     private AttributeService attributeService;
 
-
+    @Autowired
     @SuppressWarnings("unused")
     private PersonExtractService personExtractService;
 
@@ -46,6 +47,13 @@ public class FaceController {
     @SuppressWarnings("unused")
     private PersonAttributeService personAttributeService;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    private CarExtractService carExtractService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private CarAttributeService carAttributeService;
 
     //特征值获取
     @ApiOperation(value = "图片的特征值提取", response = ResponseResult.class)
@@ -71,7 +79,7 @@ public class FaceController {
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
     public ResponseResult<PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
-        if ( null == image ){
+        if (null == image) {
             log.error("Start extract person feature by binary, image is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
@@ -111,12 +119,12 @@ public class FaceController {
      */
     @ApiOperation(value = "行人属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<PersonAttribute>> getPersonAttribute(){
+    public ResponseResult<List<PersonAttribute>> getPersonAttribute() {
         List<PersonAttribute> attributeList = personAttributeService.getPersonAttribute();
-        if (null !=attributeList) {
+        if (null != attributeList) {
             log.info("AttributeList acquire is succeed");
-            return  ResponseResult.init(attributeList);
-        }else {
+            return ResponseResult.init(attributeList);
+        } else {
             log.error("AttributeList is null");
             return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
         }
@@ -138,8 +146,8 @@ public class FaceController {
     //图片数组提取特征值
     @ApiIgnore
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BYTES, method = RequestMethod.POST)
-    public PictureData getFeatureExtract(@RequestBody byte[] bytes){
-        if (null != bytes){
+    public PictureData getFeatureExtract(@RequestBody byte[] bytes) {
+        if (null != bytes) {
             return faceExtractService.featureExtractByImage(bytes);
         }
         log.info("Bytes param is null");
@@ -161,8 +169,7 @@ public class FaceController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        CarPictureData carPictureData = faceExtractService.carExtractByImage(imageBin);
-
+        CarPictureData carPictureData = carExtractService.carExtractByImage(imageBin);
         return ResponseResult.init(carPictureData);
     }
 
@@ -173,12 +180,12 @@ public class FaceController {
      */
     @ApiOperation(value = "车属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAR_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<Attribute>> getCarAttribute(){
-        List<Attribute> attributeList = attributeService.getCarAttribute();
-        if (null !=attributeList) {
+    public ResponseResult<List<CarAttribute>> getCarAttribute() {
+        List<CarAttribute> attributeList = carAttributeService.getCarAttribute();
+        if (null != attributeList) {
             log.info("AttributeList acquire is succeed");
-            return  ResponseResult.init(attributeList);
-        }else {
+            return ResponseResult.init(attributeList);
+        } else {
             log.error("AttributeList is null");
             return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
         }

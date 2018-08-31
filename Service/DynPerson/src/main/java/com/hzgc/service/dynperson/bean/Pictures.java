@@ -1,6 +1,6 @@
 package com.hzgc.service.dynperson.bean;
 
-import com.hzgc.jni.PersonAttribute;
+import com.hzgc.jniface.PersonAttribute;
 import lombok.Data;
 
 import java.io.Serializable;

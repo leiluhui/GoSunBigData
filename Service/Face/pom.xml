@@ -41,30 +41,21 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-faceattribute</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>
-
             <artifactId>common-personattribute</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-carattribute</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-seemmo</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.hzgc.common</groupId>
-            <artifactId>common-personattribute</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.hzgc.common</groupId>
-            <artifactId>common-personattribute</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
