@@ -5,6 +5,8 @@ import com.hzgc.common.faceattribute.service.AttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
+import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.jni.CarPictureData;
 import com.hzgc.jni.PictureData;
 import com.hzgc.service.face.service.FaceExtractService;
 import io.swagger.annotations.*;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,8 +29,11 @@ public class FaceController {
     @SuppressWarnings("unused")
     private FaceExtractService faceExtractService;
 
+    @Autowired
     @SuppressWarnings("unused")
-    private AttributeService attributeService = new AttributeService();
+    private AttributeService attributeService;
+
+
 
     //特征值获取
     @ApiOperation(value = "图片的特征值提取", response = ResponseResult.class)
@@ -89,5 +95,43 @@ public class FaceController {
         }
         log.info("Bytes param is null");
         return null;
+    }
+
+
+    //获取车辆属性
+    @ApiOperation(value = "获取车辆属性", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
+    public ResponseResult<CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+        byte[] imageBin = null;
+        if (image == null) {
+            log.error("Start car extract by binary, image is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
+        }
+        try {
+            imageBin = image.getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        CarPictureData carPictureData = faceExtractService.carExtractByImage(imageBin);
+
+        return ResponseResult.init(carPictureData);
+    }
+
+    /**
+     * 车属性查询
+     *
+     * @return List<Attribute>
+     */
+    @ApiOperation(value = "车属性查询", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.CAR_ATTRIBUTE, method = RequestMethod.GET)
+    public ResponseResult<List<Attribute>> getCarAttribute(){
+        List<Attribute> attributeList = attributeService.getCarAttribute();
+        if (null !=attributeList) {
+            log.info("AttributeList acquire is succeed");
+            return  ResponseResult.init(attributeList);
+        }else {
+            log.error("AttributeList is null");
+            return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
+        }
     }
 }

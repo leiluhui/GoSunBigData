@@ -42,6 +42,11 @@
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-faceattribute</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
+            <artifactId>common-seemmo</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
