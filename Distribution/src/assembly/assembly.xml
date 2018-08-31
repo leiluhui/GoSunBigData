@@ -242,6 +242,52 @@
             </includes>
             <outputDirectory>component/GoSunBigData/Service/face/dynRepo/conf</outputDirectory>
         </fileSet>
+        <!--Dynperson目录-->
+        <fileSet>
+            <directory>../Service/DynPerson/target</directory>
+            <includes>
+                <include>dynperson-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/DynPerson/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/DynPerson/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/conf</outputDirectory>
+        </fileSet>
+
+        <!--Dyncar目录-->
+        <fileSet>
+            <directory>../Service/DynCar/target</directory>
+            <includes>
+                <include>dyncar-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynCar/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/DynCar/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynCar/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/DynCar/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/face/dynCar/conf</outputDirectory>
+        </fileSet>
+
         <!--Face目录-->
         <fileSet>
             <directory>../Service/Face/target</directory>

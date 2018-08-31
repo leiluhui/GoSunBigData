@@ -2,11 +2,15 @@ package com.hzgc.service.face.controller;
 
 import com.hzgc.common.faceattribute.bean.Attribute;
 import com.hzgc.common.faceattribute.service.AttributeService;
+import com.hzgc.common.personattribute.bean.PersonAttribute;
+import com.hzgc.common.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
+import com.hzgc.jni.PersonPictureData;
 import com.hzgc.jni.PictureData;
 import com.hzgc.service.face.service.FaceExtractService;
+import com.hzgc.service.face.service.PersonExtractService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +30,18 @@ public class FaceController {
     @SuppressWarnings("unused")
     private FaceExtractService faceExtractService;
 
+    @Autowired
     @SuppressWarnings("unused")
-    private AttributeService attributeService = new AttributeService();
+    private PersonExtractService personExtractService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private AttributeService attributeService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PersonAttributeService personAttributeService;
+
 
     //特征值获取
     @ApiOperation(value = "图片的特征值提取", response = ResponseResult.class)
@@ -47,6 +61,25 @@ public class FaceController {
         return ResponseResult.init(pictureData);
     }
 
+
+    //行人属性获取
+    @ApiOperation(value = "行人的特征值提取", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
+    public ResponseResult<PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+        byte[] imageBin = null;
+        if ( null == image ){
+            log.error("Start extract person feature by binary, image is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
+        }
+        try {
+            imageBin = image.getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PersonPictureData personPictureData = personExtractService.featureExtractByImage(imageBin);
+        return ResponseResult.init(personPictureData);
+    }
+
     /**
      * 人/车属性查询
      *
@@ -63,6 +96,24 @@ public class FaceController {
             return ResponseResult.init(attributeList);
         } else {
             log.error("AttributeList acquires is null");
+            return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
+        }
+    }
+
+    /**
+     * 获取行人属性
+     *
+     * @return List<Attribute>
+     */
+    @ApiOperation(value = "行人属性查询", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.PERSON_ATTRIBUTE, method = RequestMethod.GET)
+    public ResponseResult<List<PersonAttribute>> getPersonAttribute(){
+        List<PersonAttribute> attributeList = personAttributeService.getPersonAttribute();
+        if (null !=attributeList) {
+            log.info("AttributeList acquire is succeed");
+            return  ResponseResult.init(attributeList);
+        }else {
+            log.error("AttributeList is null");
             return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
         }
     }
