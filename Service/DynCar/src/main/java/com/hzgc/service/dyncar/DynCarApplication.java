@@ -1,6 +1,7 @@
 package com.hzgc.service.dyncar;
 
 import com.hzgc.common.service.api.config.EnableDeviceQueryService;
+import com.hzgc.common.service.auth.config.EnableAuthSynchronize;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -11,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableHystrix
 @EnableSwagger2
-//@EnableAuthSynchronize
+@EnableAuthSynchronize
 @EnableDeviceQueryService
 public class DynCarApplication {
     public static void main(String[] args) {

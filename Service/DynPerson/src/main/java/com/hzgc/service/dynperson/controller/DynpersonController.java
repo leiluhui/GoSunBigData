@@ -39,10 +39,10 @@ public class DynpersonController {
     private DynpersonHistoryService dynpersonHistoryService;
 
 
-    @ApiOperation(value = "抓拍历史查询", response = ResponseResult.class, responseContainer = "List")
+    @ApiOperation(value = "行人抓拍历史查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAPTURE_HISTORY, method = RequestMethod.POST)
     public ResponseResult<CaptureResult> getCaptureHistory(
-            @RequestBody @ApiParam(value = "抓拍查询入参") CaptureOption captureOption){
+            @RequestBody @ApiParam(value = "行人抓拍查询入参") CaptureOption captureOption){
         if (null == captureOption){
             log.info("CaptrueOption is null,please check");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
