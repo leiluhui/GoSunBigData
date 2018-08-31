@@ -20,6 +20,7 @@
         <module>Visual</module>
         <module>Dispatch</module>
         <module>PeopleManager</module>
+        <module>DynCar</module>
     </modules>
 
     <dependencies>
