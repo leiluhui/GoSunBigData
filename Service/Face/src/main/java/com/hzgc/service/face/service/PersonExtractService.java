@@ -25,7 +25,7 @@ public class PersonExtractService {
         PersonPictureData personPictureData = new PersonPictureData();
         personPictureData.setImageID(UuidUtil.getUuid());
         personPictureData.setImageData(imageBin);
-        ImageResult imageResult = ImageToData.getImageResult(environment.getProperty("url"),imageBin,environment.getProperty("tag"));
+        ImageResult imageResult = ImageToData.getImageResult(environment.getProperty("person.url"),imageBin,environment.getProperty("person.tag"));
         List<Person> list = imageResult.getPersonList();
         log.info(""+list.size());
 
@@ -37,7 +37,7 @@ public class PersonExtractService {
             personAttribute.setBag(person.getBag_code());
             personAttribute.setBottomColor(person.getBottomcolor_code());
             personAttribute.setBottomType(person.getBottomtype_code());
-            personAttribute.setCatType(person.getCar_type());
+            personAttribute.setCarType(person.getCar_type());
             personAttribute.setHat(person.getHat_code());
             personAttribute.setKnapSack(person.getKnapsack_code());
             personAttribute.setMessengerBag(person.getMessengerbag_code());

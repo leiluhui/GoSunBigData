@@ -13,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@PropertySource("application.properties")
 @EnableEurekaClient
 @EnableSwagger2
 @EnableAuthSynchronize
