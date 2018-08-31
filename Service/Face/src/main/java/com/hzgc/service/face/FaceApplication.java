@@ -1,5 +1,6 @@
 package com.hzgc.service.face;
 
+import com.hzgc.common.carattribute.service.CarAttributeService;
 import com.hzgc.common.faceattribute.service.AttributeService;
 import com.hzgc.common.service.auth.config.EnableAuthSynchronize;
 import com.hzgc.service.face.controller.FaceController;
@@ -35,5 +36,10 @@ public class FaceApplication {
     @Bean
     PersonAttributeService personAttributeService(){
         return new PersonAttributeService();
+    }
+
+    @Bean
+    CarAttributeService carAttributeService(){
+        return new CarAttributeService();
     }
 }
