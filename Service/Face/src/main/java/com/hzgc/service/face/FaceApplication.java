@@ -1,6 +1,9 @@
 package com.hzgc.service.face;
 
 import com.hzgc.common.faceattribute.service.AttributeService;
+import com.hzgc.common.service.auth.config.EnableAuthSynchronize;
+import com.hzgc.service.face.controller.FaceController;
+import com.hzgc.service.face.service.FaceExtractService;
 import com.hzgc.common.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.api.config.EnableDeviceQueryService;
 import com.hzgc.common.service.auth.config.EnableAuthSynchronize;
@@ -25,8 +28,8 @@ public class FaceApplication {
     }
 
     @Bean
-    AttributeService attributeService(){
-        return new AttributeService();
+    public AttributeService attributeService(){
+        return  new AttributeService();
     }
 
     @Bean
