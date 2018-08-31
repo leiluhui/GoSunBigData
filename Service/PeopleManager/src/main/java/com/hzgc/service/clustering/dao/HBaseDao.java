@@ -7,12 +7,15 @@ import com.hzgc.common.faceclustering.PeopleInAttribute;
 import com.hzgc.common.faceclustering.table.ClusteringTable;
 import com.hzgc.common.faceclustering.table.PeopleSchedulerTable;
 import com.hzgc.common.hbase.HBaseHelper;
+import com.hzgc.common.service.api.bean.RegionDTO;
+import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.common.util.object.ObjectUtil;
 import com.hzgc.service.clustering.bean.export.Regular;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -22,6 +25,10 @@ import java.util.*;
 @Slf4j
 @Repository
 public class HBaseDao {
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private DeviceQueryService deviceQueryService;
 
 
     public HBaseDao() {
@@ -158,8 +165,13 @@ public class HBaseDao {
                 ResultScanner resultScanner = peoplescheduler.getScanner(scan);
                 for (Result result : resultScanner) {
                     Regular regular = new Regular();
-                    regular.setRegionID(Bytes.toString(result.getRow()));
-                    regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
+                    String regionid = Bytes.toString(result.getRow());
+                    List<Long> regionidList = new ArrayList<>();
+                    regionidList.add(Long.valueOf(regionid));
+                    regular.setRegionID(regionid);
+                    Map<Long,RegionDTO> regionNameMap = deviceQueryService.getRegionNameByRegionId(regionidList);
+                    String regionName = regionNameMap.get(Long.valueOf(regionid)).getName();
+                    regular.setRegionName(regionName);
                     regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
                     regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
                     regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));
@@ -174,8 +186,13 @@ public class HBaseDao {
                 Result result = peoplescheduler.get(get);
                 if (result.size() > 0) {
                     Regular regular = new Regular();
-                    regular.setRegionID(Bytes.toString(result.getRow()));
-                    regular.setRegionName(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.REGIONNAME)));
+                    String regionid = Bytes.toString(result.getRow());
+                    List<Long> regionidList = new ArrayList<>();
+                    regionidList.add(Long.valueOf(regionid));
+                    regular.setRegionID(regionid);
+                    Map<Long,RegionDTO> regionNameMap = deviceQueryService.getRegionNameByRegionId(regionidList);
+                    String regionName = regionNameMap.get(Long.valueOf(regionid)).getName();
+                    regular.setRegionName(regionName);
                     regular.setSim(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.SIM)));
                     regular.setMoveInCount(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEINCOUNT)));
                     regular.setMoveOutDays(Bytes.toString(result.getValue(PeopleSchedulerTable.COLUMNFAMILY, PeopleSchedulerTable.MOVEOUTDAYS)));

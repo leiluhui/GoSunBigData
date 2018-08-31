@@ -384,11 +384,11 @@ public class PhoenixDao implements Serializable {
                         locus.setMarsLongitude(w.getMarsLongitude());
                         locus.setMarsLatitude(w.getMarsLatitude());
                         locus.setCount(1);
-                        locus.setTime(faceObject.getStartTime());
+                        locus.setTime(faceObject.getTimeStamp());
                         log.info("The first locus is : " + locus);
                         locusList.add(locus);
                     } else {
-                        String faceTime = faceObject.getStartTime();
+                        String faceTime = faceObject.getTimeStamp();
                         for (Locus locus1 : locusList) {
                             if (Objects.equals(locus1.getDeviceId(), id)) {
                                 Locus locus2 = new Locus();
