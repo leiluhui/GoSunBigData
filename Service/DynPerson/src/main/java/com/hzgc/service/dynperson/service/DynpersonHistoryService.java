@@ -175,7 +175,7 @@ public class DynpersonHistoryService {
         personAttribute.setBag((String) hit.getSource().get(PersonTable.BAG));
         personAttribute.setBottomColor((String) hit.getSource().get(PersonTable.BOTTOMCOLOR));
         personAttribute.setBottomType((String) hit.getSource().get(PersonTable.BOTTOMTYPE));
-        personAttribute.setCatType((String) hit.getSource().get(PersonTable.CTYPE));
+        personAttribute.setCarType((String) hit.getSource().get(PersonTable.CTYPE));
         personAttribute.setHat((String) hit.getSource().get(PersonTable.HAT));
         personAttribute.setKnapSack((String) hit.getSource().get(PersonTable.KNAPSACK));
         personAttribute.setMessengerBag((String) hit.getSource().get(PersonTable.MESSENGERBAG));
