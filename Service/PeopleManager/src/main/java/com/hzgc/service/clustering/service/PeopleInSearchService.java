@@ -189,7 +189,7 @@ public class PeopleInSearchService {
                     } else {
                         record.setIpcName(faceObject.getIpcId());
                     }
-                    record.setRecordTime(faceObject.getStartTime());
+                    record.setRecordTime(faceObject.getTimeStamp());
                     record.setSurl(clusteringServiceHelper.getFtpUrl(faceObject.getSurl()));
                     record.setBurl(clusteringServiceHelper.getFtpUrl(faceObject.getBurl()));
                     peopleInHistoryRecordList.add(record);
