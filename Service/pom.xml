@@ -21,6 +21,7 @@
         <module>Dispatch</module>
         <module>DynPerson</module>
         <module>PeopleManager</module>
+        <module>DynCar</module>
     </modules>
 
     <dependencies>
