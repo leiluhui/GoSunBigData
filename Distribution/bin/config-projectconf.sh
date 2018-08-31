@@ -80,7 +80,7 @@ function distribute_service()
     done
 
     ##开始分发clustering
-    CLUSTERING_HOST_LISTS=$(grep clustering_distribution ${CONF_FILE} | cut -d '=' -f2)
+    CLUSTERING_HOST_LISTS=$(grep peoplemanager_distribution ${CONF_FILE} | cut -d '=' -f2)
     CLUSTERING_HOST_ARRAY=(${CLUSTERING_HOST_LISTS//;/ })
     for hostname in ${CLUSTERING_HOST_ARRAY[@]}
     do
