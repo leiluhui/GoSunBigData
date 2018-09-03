@@ -19,7 +19,9 @@
         <module>Address</module>
         <module>Visual</module>
         <module>Dispatch</module>
+        <module>DynPerson</module>
         <module>PeopleManager</module>
+        <module>DynCar</module>
     </modules>
 
     <dependencies>
@@ -92,6 +94,11 @@
             <dependency>
                 <groupId>com.hzgc.common</groupId>
                 <artifactId>common-faceattribute</artifactId>
+                <version>${bigdata-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzgc.common</groupId>
+                <artifactId>common-seemmo</artifactId>
                 <version>${bigdata-common.version}</version>
             </dependency>
             <dependency>

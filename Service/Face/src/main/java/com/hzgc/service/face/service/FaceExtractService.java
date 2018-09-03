@@ -1,10 +1,10 @@
 package com.hzgc.service.face.service;
 
+import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.jni.FaceAttribute;
 import com.hzgc.jni.FaceFunction;
 import com.hzgc.jni.NativeFunction;
 import com.hzgc.jni.PictureData;
-import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.service.face.util.FtpDownloadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class FaceExtractService {
-
     @Autowired
-    FaceExtractService faceExtractService;
+    @SuppressWarnings("unused")
+    private FaceExtractService faceExtractService;
 
-    private FaceExtractService() {
+    public FaceExtractService() {
         try {
             log.info("Start NativeFunction init....");
             NativeFunction.init();

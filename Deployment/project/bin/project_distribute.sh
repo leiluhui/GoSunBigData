@@ -132,6 +132,22 @@ VISUAL_START_FILE=${VISUAL_BIN_DIR}/start-visual.sh       ##visual模块启动�
 VISUAL_CONF_DIR=${VISUAL_DIR}/conf                       ##visual模块conf目录
 VISUAL_PRO_FILE=${VISUAL_CONF_DIR}/application-pro.properties   ##visual模块配置文件
 
+## person模块部署目录
+PERSON_DIR=${SERVICE_DIR}/face/alarm
+PERSON_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynPerson
+PERSON_BIN_DIR=${ALARM_DIR}/bin                           ##person模块脚本存放目录
+PERSON_START_FILE=${ALARM_BIN_DIR}/start-dynperson.sh       ##person模块启动脚本
+PERSON_CONF_DIR=${ALARM_DIR}/conf                       ##person模块conf目录
+PERSON_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##person模块配置文件
+
+## car模块部署目录
+CAR_DIR=${SERVICE_DIR}/face/alarm
+CAR_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynCar
+CAR_BIN_DIR=${ALARM_DIR}/bin                           ##car模块脚本存放目录
+CAR_START_FILE=${ALARM_BIN_DIR}/start-dyncar.sh       ##car模块启动脚本
+CAR_CONF_DIR=${ALARM_DIR}/conf                       ##car模块conf目录
+CAR_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##car模块配置文件
+
 
 ## 安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep install_homedir ${CONF_FILE}|cut -d '=' -f2)
@@ -298,6 +314,28 @@ function distribute_service()
        rsync -rvl ${VISUAL_DIR} root@${hostname}:${VISUAL_INSTALL_DIR} >/dev/null
        ssh root@${hostname} "chmod -R 755 ${VISUAL_INSTALL_DIR}"
        echo "${hostname}上分发visual完毕........" | tee -a ${SERVICE_LOG_FILE}
+     done
+
+      ##开始分发person
+     PERSON_HOST_LISTS=$(grep person_distribution ${CONF_FILE} | cut -d '=' -f2)
+     PERSON_HOST_ARRAY=(${VISUAL_HOST_LISTS//;/ })
+     for hostname in ${PERSON_HOST_ARRAY[@]}
+     do
+       ssh root@${hostname} "if [ ! -x "${PERSON_INSTALL_DIR}" ];then mkdir -p "${PERSON_INSTALL_DIR}";fi"
+       rsync -rvl ${PERSON_DIR} root@${hostname}:${PERSON_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${PERSON_INSTALL_DIR}"
+       echo "${hostname}上分发person完毕........" | tee -a ${SERVICE_LOG_FILE}
+     done
+
+      ##开始分发car
+     CAR_HOST_LISTS=$(grep car_distribution ${CONF_FILE} | cut -d '=' -f2)
+     CAR_HOST_ARRAY=(${CAR_HOST_LISTS//;/ })
+     for hostname in ${CAR_HOST_ARRAY[@]}
+     do
+       ssh root@${hostname} "if [ ! -x "${CAR_INSTALL_DIR}" ];then mkdir -p "${CAR_INSTALL_DIR}";fi"
+       rsync -rvl ${CAR_DIR} root@${hostname}:${CAR_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${CAR_INSTALL_DIR}"
+       echo "${hostname}上分发car完毕........" | tee -a ${SERVICE_LOG_FILE}
      done
      ## 拷贝GoSun到opt目录下
      cp -r ${GOSUN_HOME} /opt
@@ -494,6 +532,14 @@ function config_service()
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置es完成......"
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PERSON_START_FILE}
+    echo "start-dynperson.sh脚本配置es完成......"
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CAR_START_FILE}
+    echo "start-dyncar.sh脚本配置es完成......"
+
 
     #####################ZOOKEEPER_HOST#########################
     #配置zookeeper：
@@ -527,6 +573,14 @@ function config_service()
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CLUSTERING_START_FILE}
     echo "start-peoplemanager.sh脚本配置eureka_node完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${PERSON_START_FILE}
+    echo "start-dynperson.sh脚本配置eureka_node完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CAR_START_FILE}
+    echo "start-dyncar.sh脚本配置eureka_node完成......."
 
 
     #####################EUREKA_IP#########################
@@ -574,6 +628,14 @@ function config_service()
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置eureka_node完成......."
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PERSON_START_FILE}
+    echo "start-dynperson.sh脚本配置eureka_node完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${CAR_START_FILE}
+    echo "start-dyncar.sh脚本配置eureka_node完成......."
+
 
     #####################EUREKA_PORT#########################
     #配置eureka_port:
@@ -613,6 +675,14 @@ function config_service()
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置eureka_port完成......."
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PERSON_START_FILE}
+    echo "start-dynperson.sh脚本配置eureka_port完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CAR_START_FILE}
+    echo "start-dyncar.sh脚本配置eureka_port完成......."
+
 }
 
 ################################################################################
@@ -629,12 +699,14 @@ function copy_xml_to_service()
     echo "" | tee -a ${SERVICE_LOG_FILE}
     echo "开始将配置文件拷贝至需要的模块下......" | tee -a ${SERVICE_LOG_FILE}
 
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $ADDRESS_CONF_DIR
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $DYNREPO_CONF_DIR
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $STAREPO_CONF_DIR
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $CLUSTERING_CONF_DIR
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $VISUAL_CONF_DIR
-    cp -r $CORE_FILE $HDFS_FILE $HBASE_FILE $DISPATCH_CONF_DIR
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${ADDRESS_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DYNREPO_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${STAREPO_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${CLUSTERING_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${VISUAL_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DISPATCH_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${PERSON_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${CAR_CONF_DIR}
 }
 
 
