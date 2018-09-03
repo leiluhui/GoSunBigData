@@ -124,14 +124,14 @@ public class ElasticSearchDao {
             String identify = attribute.getIdentify().toLowerCase();
             List<PersonAttributeValue> attributeValues = attribute.getValues();
             String logic = String.valueOf(attribute.getPersonLogistic());
-            BoolQueryBuilder shuxingBuilder = QueryBuilders.boolQuery();
+            BoolQueryBuilder attributeBuilder = QueryBuilders.boolQuery();
             for (PersonAttributeValue attributeValue : attributeValues) {
-                String attr = attributeValue.getCode();
-                if (attr != "0") {
-                    shuxingBuilder.should(QueryBuilders.matchQuery(identify, attr));
+                String attr = String.valueOf(attributeValue.getCode());
+                if (!attr.equals("0")) {
+                    attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
                 }
             }
-            boolQueryBuilder.must(shuxingBuilder);
+            boolQueryBuilder.must(attributeBuilder);
         }
         return boolQueryBuilder;
     }
