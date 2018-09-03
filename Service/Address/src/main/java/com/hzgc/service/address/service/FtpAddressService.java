@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class FtpAddressService implements Serializable {
@@ -21,15 +20,29 @@ public class FtpAddressService implements Serializable {
      *
      * @return ftp相关配置参数
      */
-    public Map<String, String> getProperties() {
+    public Map<String, String> getProperties(String ftpType) {
         Map<String, String> map = new HashMap<>();
-        FtpRegisterInfo registerInfo = register.getFtpRegisterInfoList().get(0);
-        if (registerInfo != null) {
-            map.put("ip", registerInfo.getProxyIP());
-            map.put("port", registerInfo.getProxyPort());
-            map.put("username", registerInfo.getFtpAccountName());
-            map.put("password", registerInfo.getFtpPassword());
-            map.put("pathRule", registerInfo.getPathRule());
+        List<FtpRegisterInfo> list = null;
+        if ("face".equals(ftpType)){
+            list = register.getFaceFtpRegisterInfoList();
+        }
+        if ("person".equals(ftpType)){
+            list = register.getPersonFtpRegisterInfoList();
+        }
+        if ("car".equals(ftpType)){
+            list = register.getCarFtpRegisterInfoList();
+        }
+        if (list != null && list.size() >0){
+            FtpRegisterInfo registerInfo = list.get((int) (Math.random() * list.size()));
+            if (registerInfo != null) {
+                map.put("ftpIp", registerInfo.getFtpIPAddress());
+                map.put("ftpPort", registerInfo.getFtpPort());
+                map.put("proxyIP", registerInfo.getProxyIP());
+                map.put("proxyPort", registerInfo.getProxyPort());
+                map.put("username", registerInfo.getFtpAccountName());
+                map.put("password", registerInfo.getFtpPassword());
+                map.put("pathRule", registerInfo.getPathRule());
+            }
         }
         return map;
     }
