@@ -126,7 +126,7 @@ public class ElasticSearchDao {
             String logic = String.valueOf(attribute.getPersonLogistic());
             BoolQueryBuilder shuxingBuilder = QueryBuilders.boolQuery();
             for (PersonAttributeValue attributeValue : attributeValues) {
-                String attr = attributeValue.getCode();
+                String attr = String.valueOf(attributeValue.getCode());
                 if (attr != "0") {
                     shuxingBuilder.should(QueryBuilders.matchQuery(identify, attr));
                 }
