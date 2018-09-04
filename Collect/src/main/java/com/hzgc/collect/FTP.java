@@ -125,7 +125,7 @@ public class FTP extends ClusterOverFtp implements Serializable {
 
     public static void main(String args[]) throws Exception {
         FTP ftp = new FTP();
-        //ftp.detector();
+        ftp.detector();
         ftp.loadConfig();
         ftp.startFtpServer();
         LOG.info("\n" + FtpLogo.getLogo());

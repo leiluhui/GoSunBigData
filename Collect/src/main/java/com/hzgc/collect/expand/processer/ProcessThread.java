@@ -56,9 +56,7 @@ public class ProcessThread implements Runnable {
                 List<String> ftpTypes = Arrays.asList(CollectProperties.getFtpType().split(","));
                 if (ftpTypes.contains("face")) {
                     ArrayList<SmallImage> smallImageList = FaceFunction.bigPictureCheck(bytes, PictureFormat.JPG);
-                    LOG.info("smallImageList " + JSONUtil.toJson(smallImageList));
                     if (smallImageList != null && smallImageList.size() > 0) {
-                        LOG.info("555555555555555555");
                         int index = 1;
                         for (SmallImage smallImage : smallImageList) {
                             if (smallImage.getPictureStream() == null || smallImage.getPictureStream().length == 0) {
@@ -84,50 +82,45 @@ public class ProcessThread implements Runnable {
                         }
                     }
                 }
-                ImageResult result = null;
+                List<Person> personList = null;
+                List<Vehicle> vehicleList = null;
                 if (ftpTypes.contains("person") || ftpTypes.contains("car")) {
-                    LOG.info("111111111111111");
-                    result = ImageToData.getImageResult("http://172.18.18.139:8000/?cmd=recogPic", bytes, "66");
-                    LOG.info("25151515  " + JSONUtil.toJson(result));
-                }
-                if (result != null) {
-                    List<Person> personList = result.getPersonList();
-                    LOG.info("personList " + JSONUtil.toJson(personList));
-                    List<Vehicle> vehicleList = result.getVehicleList();
-                    LOG.info("vehicleList " + JSONUtil.toJson(vehicleList));
-                    if (ftpTypes.contains("person") && personList != null && personList.size() > 0) {
-                        LOG.info("3333333333333333");
-                        int index = 1;
-                        for (Person person : personList) {
-                            if (person.getCar_data() == null || person.getCar_data().length == 0) {
-                                LOG.info("Person small image are not extracted, fileName: " + event.getFileAbsolutePath());
-                                continue;
-                            }
-                            String smallImagePath = FtpPathParse.path_b2s(event.getFileAbsolutePath(), PERSON, index);
-                            boolean boo = ImageUtil.save(smallImagePath, person.getCar_data());
-                            if (boo) {
-                                this.sendKafka(event, person, PERSON, index);
-                                this.sendRocketMQ(event, PERSON, index, CollectProperties.getRocketmqPersonTopic());
-                            }
-                            index++;
-                        }
+                    ImageResult result = ImageToData.getImageResult(CollectProperties.getSeemmoUrl(), bytes, "66");
+                    if (result != null) {
+                        personList = result.getPersonList();
+                        vehicleList = result.getVehicleList();
                     }
-                    if (ftpTypes.contains("car") && vehicleList != null && vehicleList.size() > 0) {
-                        LOG.info("444444444444444");
-                        int index = 1;
-                        for (Vehicle vehicle : vehicleList) {
-                            if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
-                                LOG.info("Vehicle small image are not extracted, fileName: " + event.getFileAbsolutePath());
-                                continue;
-                            }
-                            String smallImagePath = FtpPathParse.path_b2s(event.getFileAbsolutePath(), CAR, index);
-                            boolean boo = ImageUtil.save(smallImagePath, vehicle.getVehicle_data());
-                            if (boo) {
-                                this.sendKafka(event, vehicle, CAR, index);
-                                this.sendRocketMQ(event, CAR, index, CollectProperties.getRocketmqCarTopic());
-                            }
-                            index++;
+                }
+                if (ftpTypes.contains("person") && personList != null && personList.size() > 0) {
+                    int index = 1;
+                    for (Person person : personList) {
+                        if (person.getCar_data() == null || person.getCar_data().length == 0) {
+                            LOG.info("Person small image are not extracted, fileName: " + event.getFileAbsolutePath());
+                            continue;
                         }
+                        String smallImagePath = FtpPathParse.path_b2s(event.getFileAbsolutePath(), PERSON, index);
+                        boolean boo = ImageUtil.save(smallImagePath, person.getCar_data());
+                        if (boo) {
+                            this.sendKafka(event, person, PERSON, index);
+                            this.sendRocketMQ(event, PERSON, index, CollectProperties.getRocketmqPersonTopic());
+                        }
+                        index++;
+                    }
+                }
+                if (ftpTypes.contains("car") && vehicleList != null && vehicleList.size() > 0) {
+                    int index = 1;
+                    for (Vehicle vehicle : vehicleList) {
+                        if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
+                            LOG.info("Vehicle small image are not extracted, fileName: " + event.getFileAbsolutePath());
+                            continue;
+                        }
+                        String smallImagePath = FtpPathParse.path_b2s(event.getFileAbsolutePath(), CAR, index);
+                        boolean boo = ImageUtil.save(smallImagePath, vehicle.getVehicle_data());
+                        if (boo) {
+                            this.sendKafka(event, vehicle, CAR, index);
+                            this.sendRocketMQ(event, CAR, index, CollectProperties.getRocketmqCarTopic());
+                        }
+                        index++;
                     }
                 }
             }

@@ -39,6 +39,7 @@ public class CollectProperties implements Serializable {
     private static String ftpAccount;
     private static String ftpPassword;
     private static String homeDirs;
+    private static String seemmoUrl;
     private static float diskUsageRate;
     private static long period;
 
@@ -88,6 +89,7 @@ public class CollectProperties implements Serializable {
             setFtpAccount(props.getProperty("ftp.account"));
             setFtpPassword(props.getProperty("ftp.password"));
             setHomeDirs(props.getProperty("homeDirs"));
+            setSeemmoUrl(props.getProperty("seemmo.url"));
             setDiskUsageRate(Float.parseFloat(props.getProperty("diskUsageRate")));
             setPeriod(Long.parseLong(props.getProperty("period")));
         } catch (IOException e) {
@@ -302,6 +304,14 @@ public class CollectProperties implements Serializable {
 
     private static void setHomeDirs(String homeDirs) {
         CollectProperties.homeDirs = homeDirs;
+    }
+
+    public static String getSeemmoUrl() {
+        return seemmoUrl;
+    }
+
+    public static void setSeemmoUrl(String seemmoUrl) {
+        CollectProperties.seemmoUrl = seemmoUrl;
     }
 
     public static float getDiskUsageRate() {
