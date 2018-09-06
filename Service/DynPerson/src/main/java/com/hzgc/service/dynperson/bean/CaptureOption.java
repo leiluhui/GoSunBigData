@@ -1,6 +1,6 @@
 package com.hzgc.service.dynperson.bean;
 
-import com.hzgc.common.personattribute.bean.PersonAttribute;
+import com.hzgc.common.personattribute.bean.PersonAttributes;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -45,7 +45,7 @@ public class CaptureOption implements Serializable {
 
     //参数筛选选项
     @ApiModelProperty(value ="参数筛选选项")
-    private List<PersonAttribute> attributes;
+    private List<PersonAttributes> attributes;
 
     //搜索的设备IPC列表
     @ApiModelProperty(value ="搜索的设备IPC列表")

@@ -44,7 +44,7 @@ do
     ssh root@$name "sed -i \"s;enforcing;disabled;g\" /etc/selinux/config "
     ssh root@$name 'service iptables stop'
     ssh root@$name 'chkconfig iptables off'
-    echo "关闭防火 $name 的防火墙成功。"  | tee -a $LOG_FILE 
+    echo "关闭防火 ${name} 的防火墙成功。"  | tee -a $LOG_FILE
 done
 
 

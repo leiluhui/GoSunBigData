@@ -2,9 +2,8 @@ package com.hzgc.service.dynperson.dao;
 
 import com.hzgc.common.es.ElasticSearchHelper;
 import com.hzgc.common.facedynrepo.PersonTable;
-import com.hzgc.common.personattribute.bean.PersonAttribute;
+import com.hzgc.common.personattribute.bean.PersonAttributes;
 import com.hzgc.common.personattribute.bean.PersonAttributeValue;
-import com.hzgc.common.facedynrepo.PersonTable;
 import com.hzgc.service.dynperson.bean.CaptureOption;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -117,10 +116,10 @@ public class ElasticSearchDao {
         return deviceIdBQ;
     }
 
-    private BoolQueryBuilder setAttribute(BoolQueryBuilder totalBQ, List<PersonAttribute> attributes) {
+    private BoolQueryBuilder setAttribute(BoolQueryBuilder totalBQ, List<PersonAttributes> attributes) {
         // 筛选行人属性
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        for (PersonAttribute attribute : attributes) {
+        for (PersonAttributes attribute : attributes) {
             String identify = attribute.getIdentify().toLowerCase();
             List<PersonAttributeValue> attributeValues = attribute.getValues();
             String logic = String.valueOf(attribute.getPersonLogistic());

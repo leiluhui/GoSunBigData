@@ -4,7 +4,7 @@ import com.hzgc.common.carattribute.bean.CarAttribute;
 import com.hzgc.common.carattribute.service.CarAttributeService;
 import com.hzgc.common.faceattribute.bean.Attribute;
 import com.hzgc.common.faceattribute.service.AttributeService;
-import com.hzgc.common.personattribute.bean.PersonAttribute;
+import com.hzgc.common.personattribute.bean.PersonAttributes;
 import com.hzgc.common.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
@@ -119,8 +119,8 @@ public class FaceController {
      */
     @ApiOperation(value = "行人属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<PersonAttribute>> getPersonAttribute() {
-        List<PersonAttribute> attributeList = personAttributeService.getPersonAttribute();
+    public ResponseResult<List<PersonAttributes>> getPersonAttribute() {
+        List<PersonAttributes> attributeList = personAttributeService.getPersonAttribute();
         if (null != attributeList) {
             log.info("AttributeList acquire is succeed");
             return ResponseResult.init(attributeList);
