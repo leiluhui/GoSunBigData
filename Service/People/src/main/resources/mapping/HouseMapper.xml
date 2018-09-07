@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.people.dao.HouseMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.House" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="houseid" property="houseid" jdbcType="VARCHAR" />
+    <result column="house" property="house" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, houseid, house
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_house
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.hzgc.service.people.model.House" >
+    insert into t_house (id, houseid, house
+      )
+    values (#{id,jdbcType=INTEGER}, #{houseid,jdbcType=VARCHAR}, #{house,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.House" >
+    insert into t_house
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="houseid != null" >
+        houseid,
+      </if>
+      <if test="house != null" >
+        house,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="houseid != null" >
+        #{houseid,jdbcType=VARCHAR},
+      </if>
+      <if test="house != null" >
+        #{house,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.House" >
+    update t_house
+    <set >
+      <if test="houseid != null" >
+        houseid = #{houseid,jdbcType=VARCHAR},
+      </if>
+      <if test="house != null" >
+        house = #{house,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.House" >
+    update t_house
+    set houseid = #{houseid,jdbcType=VARCHAR},
+      house = #{house,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
