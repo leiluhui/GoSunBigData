@@ -22,6 +22,7 @@
         <module>DynPerson</module>
         <module>PeopleManager</module>
         <module>DynCar</module>
+        <module>People</module>
     </modules>
 
     <dependencies>

@@ -1,6 +1,7 @@
 package com.hzgc.collect;
 
-import com.hzgc.collect.expand.processer.ProducerKafka;
+import com.hzgc.collect.expand.processer.KafkaProducer;
+import com.hzgc.collect.expand.processer.RocketMQProducer;
 import com.hzgc.collect.expand.util.FtpLogo;
 import com.hzgc.collect.ftp.ClusterOverFtp;
 import com.hzgc.collect.ftp.ConnectionConfigFactory;
@@ -16,8 +17,7 @@ import com.hzgc.collect.expand.util.CollectProperties;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
-import com.hzgc.jni.NativeFunction;
-import com.hzgc.common.rocketmq.RocketMQProducer;
+import com.hzgc.jniface.FaceFunction;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -30,7 +30,6 @@ public class FTP extends ClusterOverFtp implements Serializable {
 
     @Override
     public void startFtpServer() {
-
         //使用带CommonConf对象的有参构造器可以构造带有expand模块的FtpServerContext
         FtpServerFactory serverFactory = new FtpServerFactory();
         LOG.info("Create " + FtpServerFactory.class + " successful");
@@ -76,15 +75,19 @@ public class FTP extends ClusterOverFtp implements Serializable {
         ftpHomeDir.periodicallyCheckCurrentRootDir();
 
         // 初始化 kafka producer
-        ProducerKafka.getInstance();
+        KafkaProducer.getInstance();
 
         // 初始化 rocketMQ producer
-        RocketMQProducer.getInstance(CollectProperties.getRocketmqAddress(),
-                CollectProperties.getRocketmqCaptureTopic(),
-                CollectProperties.getRokcetmqCaptureGroup());
+        RocketMQProducer.getInstance();
 
         // ftp动态注册到ZK
         FtpRegisterClient ftpRegister = new FtpRegisterClient(CollectProperties.getZookeeperAddress());
+        String ftpType;
+        if (CollectProperties.getFtpType().contains(",")){
+            ftpType = CollectProperties.getFtpType().split(",")[0];
+        }else {
+            ftpType = CollectProperties.getFtpType();
+        }
         ftpRegister.createNode(
                 new FtpRegisterInfo(
                         CollectProperties.getProxyIpAddress(),
@@ -95,7 +98,7 @@ public class FTP extends ClusterOverFtp implements Serializable {
                         CollectProperties.getFtpIp(),
                         CollectProperties.getHostname(),
                         String.valueOf(CollectProperties.getFtpPort()),
-                        CollectProperties.getFtpType()));
+                        ftpType));
 
         // ftp抓拍订阅功能
         new FtpSubscribeClient(CollectProperties.getZookeeperAddress());
@@ -112,10 +115,10 @@ public class FTP extends ClusterOverFtp implements Serializable {
         int detectorNum = CollectProperties.getFaceDetectorNumber();
         LOG.info("Init face detector, number is " + detectorNum);
         if (detectorNum == 0) {
-            NativeFunction.init();
+            FaceFunction.init();
         }else {
             for (int i = 0; i < detectorNum; i++) {
-                NativeFunction.init();
+                FaceFunction.init();
             }
         }
     }

@@ -3,9 +3,11 @@ package com.hzgc.collect.ftp.command.impl;
 import com.hzgc.collect.expand.parser.FtpPathMetaData;
 import com.hzgc.collect.expand.parser.FtpPathParse;
 import com.hzgc.collect.expand.receiver.Event;
+import com.hzgc.collect.expand.util.CollectProperties;
 import com.hzgc.collect.ftp.command.AbstractCommand;
 import com.hzgc.collect.ftp.ftplet.*;
 import com.hzgc.collect.ftp.impl.*;
+import com.hzgc.common.util.json.JSONUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +100,12 @@ public class STOR extends AbstractCommand {
             OutputStream outStream = null;
             long transSz = 0L;
             try {
+                fileName = file.getAbsolutePath();
+                LOG.info(fileName + "    " + file.getSize()/1024 + "KB");
+                boolean isReceive = FtpPathParse.isParse(fileName);
+                if (!isReceive){
+                    return;
+                }
                 outStream = file.createOutputStream(skipLen);
                 transSz = dataConnection.transferFromClient(session.getFtpletSession(), outStream);
 
@@ -138,28 +146,25 @@ public class STOR extends AbstractCommand {
                 }
                 //此处获取到的路径是图片上传路径,不是文件系统的绝对路径
                 fileName = file.getAbsolutePath();
-                LOG.info(fileName + "    " + file.getSize()/1000 + "KB");
+                //LOG.info(fileName + "    " + file.getSize()/1024 + "KB");
                 // 判断当前上传路径是否需要解析
                 boolean isParser = FtpPathParse.isParse(fileName);
                 if (isParser) {
                     // 解析上传路径
                     FtpPathMetaData metaData = FtpPathParse.parse(fileName);
                     if (metaData != null) {
-                        //拼装ftpUrl (ftp://hostname/)
-                        String ftpHostNameUrl = FtpPathParse.ftpPath2HostNameUrl(file.getAbsolutePath());
-                        String bigPicHostNameUrl = FtpPathParse.surlToBurl(ftpHostNameUrl);
-                        //获取ftpUrl (ftp://ip/)
-                        String ftpIpUrl = FtpPathParse.hostNameUrl2IpUrl(ftpHostNameUrl);
-                        Event event = new Event();
-                        event.setRelativePath(file.getAbsolutePath());
-                        event.setTimeStamp(metaData.getTimeStamp());
-                        event.setAbsolutePath(file.getFileAbsolutePa());
-                        event.setFtpHostNameUrlPath(ftpHostNameUrl);
-                        event.setFtpIpUrlPath(ftpIpUrl);
-                        event.setBigPicurl(bigPicHostNameUrl);
-                        event.setIpcId(metaData.getIpcid());
-                        event.setDate(metaData.getDate());
-                        event.setTimeSlot(metaData.getTimeslot());
+                        Event event = Event.builder()
+                                .setIpcId(metaData.getIpcid())
+                                .setTimeStamp(metaData.getTimeStamp())
+                                .setDate(metaData.getDate())
+                                .setTimeSlot(metaData.getTimeslot())
+                                .setFtpUrl_hostname(FtpPathParse.getFtpUrl_hostname(fileName))
+                                .setFtpUrl_ip(FtpPathParse.getFtpUrl_ip(fileName))
+                                .setFileAbsolutePath(file.getFileAbsolutePa())
+                                .setFtpAbsolutePath(file.getAbsolutePath())
+                                .setIp(CollectProperties.getFtpIp())
+                                .setHostname(CollectProperties.getHostname());
+                        LOG.info("Event = " + JSONUtil.toJson(event));
                         context.getScheduler().putData(event);
                     }
                 }

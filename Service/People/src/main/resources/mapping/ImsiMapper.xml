@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.people.dao.ImsiMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Imsi" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="imsiid" property="imsiid" jdbcType="BIGINT" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, imsiid, imsi
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_imsi
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" parameterType="com.hzgc.service.people.model.Imsi" >
+    insert into t_imsi (id, imsiid, imsi
+      )
+    values (#{id,jdbcType=BIGINT}, #{imsiid,jdbcType=BIGINT}, #{imsi,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Imsi" >
+    insert into t_imsi
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="imsiid != null" >
+        imsiid,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="imsiid != null" >
+        #{imsiid,jdbcType=BIGINT},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Imsi" >
+    update t_imsi
+    <set >
+      <if test="imsiid != null" >
+        imsiid = #{imsiid,jdbcType=BIGINT},
+      </if>
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Imsi" >
+    update t_imsi
+    set imsiid = #{imsiid,jdbcType=BIGINT},
+      imsi = #{imsi,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

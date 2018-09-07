@@ -13,7 +13,7 @@ public class BoxParser implements Parser {
             return false;
         }
         String tmpStr = path.substring(path.lastIndexOf("_") + 1, path.lastIndexOf("."));
-        return Integer.parseInt(tmpStr) > 0;
+        return Integer.parseInt(tmpStr) == 0;
     }
 
     /**
@@ -24,8 +24,8 @@ public class BoxParser implements Parser {
      */
     @Override
     public FtpPathMetaData parse(String path) {
+        FtpPathMetaData message = new FtpPathMetaData();
         if (canParse(path)) {
-            FtpPathMetaData message = new FtpPathMetaData();
             String ipcID = path.substring(1, path.indexOf("/", 1));
             String timeStr = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("_")).replace("_", "");
 
@@ -50,17 +50,30 @@ public class BoxParser implements Parser {
             message.setTimeStamp(time.toString());
             message.setDate(date.toString());
             message.setTimeslot(Integer.parseInt(sj.toString()));
-            return message;
         }
-        return null;
+        return message;
     }
 
     @Override
     public String surlToBurl(String surl) {
-        StringBuilder burl = new StringBuilder();
-        String s1 = surl.substring(0, surl.lastIndexOf("_") + 1);
-        String s2 = surl.substring(surl.lastIndexOf("."));
-        burl.append(s1).append(0).append(s2);
-        return burl.toString();
+        return surl.substring(0, surl.lastIndexOf("_") + 1)
+                + 0
+                + surl.substring(surl.lastIndexOf("."));
+    }
+
+    @Override
+    public String ftpUrl_b2s(String burl, String type, int index) {
+        return burl.substring(0, burl.lastIndexOf("_") + 1)
+                + type
+                + index
+                + burl.substring(burl.lastIndexOf("."));
+    }
+
+    @Override
+    public String path_b2s(String burl, String type, int index) {
+        return burl.substring(0, burl.lastIndexOf("_") + 1)
+                + type
+                + index
+                + burl.substring(burl.lastIndexOf("."));
     }
 }
