@@ -1,7 +1,9 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Phone;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface PhoneMapper {
 
     int insert(Phone record);

@@ -1,7 +1,9 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.People;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface PeopleMapper {
 
     int insert(People record);

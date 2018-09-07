@@ -1,5 +1,6 @@
 package com.hzgc.service.people.param;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * 前端入参
  */
+@ApiModel(value = "前端入参封装类")
 @Data
 public class PeopleDTO implements Serializable {
 
