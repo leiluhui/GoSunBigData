@@ -1,5 +1,6 @@
 package com.hzgc.service.people.param;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * 后台返回
  */
+@ApiModel(value = "后台返回封装类")
 @Data
 public class PeopleVO implements Serializable {
     private Long id;
