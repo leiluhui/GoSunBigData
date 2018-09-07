@@ -8,7 +8,7 @@ public interface HouseMapper {
 
     int insertSelective(House record);
 
-    House selectByPrimaryKey(Integer id);
+    House selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(House record);
 

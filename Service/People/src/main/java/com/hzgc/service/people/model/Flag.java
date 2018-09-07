@@ -1,26 +1,26 @@
 package com.hzgc.service.people.model;
 
 public class Flag {
-    private Integer id;
+    private Long id;
 
-    private String flagid;
+    private Long flagid;
 
     private Integer flag;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getFlagid() {
+    public Long getFlagid() {
         return flagid;
     }
 
-    public void setFlagid(String flagid) {
-        this.flagid = flagid == null ? null : flagid.trim();
+    public void setFlagid(Long flagid) {
+        this.flagid = flagid;
     }
 
     public Integer getFlag() {

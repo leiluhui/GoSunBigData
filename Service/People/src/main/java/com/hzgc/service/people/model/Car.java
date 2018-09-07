@@ -1,26 +1,26 @@
 package com.hzgc.service.people.model;
 
 public class Car {
-    private Integer id;
+    private Long id;
 
-    private String carid;
+    private Long carid;
 
     private String car;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getCarid() {
+    public Long getCarid() {
         return carid;
     }
 
-    public void setCarid(String carid) {
-        this.carid = carid == null ? null : carid.trim();
+    public void setCarid(Long carid) {
+        this.carid = carid;
     }
 
     public String getCar() {

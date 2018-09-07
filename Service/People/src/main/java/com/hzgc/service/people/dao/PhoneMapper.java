@@ -8,7 +8,7 @@ public interface PhoneMapper {
 
     int insertSelective(Phone record);
 
-    Phone selectByPrimaryKey(Integer id);
+    Phone selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Phone record);
 

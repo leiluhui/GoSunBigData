@@ -2,23 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.HouseMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.House" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="houseid" property="houseid" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="houseid" property="houseid" jdbcType="BIGINT" />
     <result column="house" property="house" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, houseid, house
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_house
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.House" >
     insert into t_house (id, houseid, house
       )
-    values (#{id,jdbcType=INTEGER}, #{houseid,jdbcType=VARCHAR}, #{house,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{houseid,jdbcType=BIGINT}, #{house,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.House" >
@@ -36,10 +36,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="houseid != null" >
-        #{houseid,jdbcType=VARCHAR},
+        #{houseid,jdbcType=BIGINT},
       </if>
       <if test="house != null" >
         #{house,jdbcType=VARCHAR},
@@ -50,18 +50,18 @@
     update t_house
     <set >
       <if test="houseid != null" >
-        houseid = #{houseid,jdbcType=VARCHAR},
+        houseid = #{houseid,jdbcType=BIGINT},
       </if>
       <if test="house != null" >
         house = #{house,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.House" >
     update t_house
-    set houseid = #{houseid,jdbcType=VARCHAR},
+    set houseid = #{houseid,jdbcType=BIGINT},
       house = #{house,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -1,48 +1,48 @@
 package com.hzgc.service.people.model;
 
 public class Picture {
-    private Integer id;
+    private Long id;
 
-    private Integer peopleid;
+    private Long peopleid;
 
-    private String idcardpicid;
+    private Long idcardpicid;
 
-    private String capturepicid;
+    private Long capturepicid;
 
     private String feature;
 
     private String bitfeature;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getPeopleid() {
+    public Long getPeopleid() {
         return peopleid;
     }
 
-    public void setPeopleid(Integer peopleid) {
+    public void setPeopleid(Long peopleid) {
         this.peopleid = peopleid;
     }
 
-    public String getIdcardpicid() {
+    public Long getIdcardpicid() {
         return idcardpicid;
     }
 
-    public void setIdcardpicid(String idcardpicid) {
-        this.idcardpicid = idcardpicid == null ? null : idcardpicid.trim();
+    public void setIdcardpicid(Long idcardpicid) {
+        this.idcardpicid = idcardpicid;
     }
 
-    public String getCapturepicid() {
+    public Long getCapturepicid() {
         return capturepicid;
     }
 
-    public void setCapturepicid(String capturepicid) {
-        this.capturepicid = capturepicid == null ? null : capturepicid.trim();
+    public void setCapturepicid(Long capturepicid) {
+        this.capturepicid = capturepicid;
     }
 
     public String getFeature() {

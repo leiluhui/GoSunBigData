@@ -1,4 +1,4 @@
-package com.hzgc.service.people.attribute;
+package com.hzgc.service.people.fields;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;

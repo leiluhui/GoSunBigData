@@ -8,7 +8,7 @@ public interface CarMapper {
 
     int insertSelective(Car record);
 
-    Car selectByPrimaryKey(Integer id);
+    Car selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Car record);
 

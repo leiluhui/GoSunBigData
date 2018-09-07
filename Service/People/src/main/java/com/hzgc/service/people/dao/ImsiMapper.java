@@ -8,7 +8,7 @@ public interface ImsiMapper {
 
     int insertSelective(Imsi record);
 
-    Imsi selectByPrimaryKey(Integer id);
+    Imsi selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Imsi record);
 

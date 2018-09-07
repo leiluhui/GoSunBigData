@@ -1,26 +1,26 @@
 package com.hzgc.service.people.model;
 
 public class Phone {
-    private Integer id;
+    private Long id;
 
-    private String phoneid;
+    private Long phoneid;
 
     private String phone;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getPhoneid() {
+    public Long getPhoneid() {
         return phoneid;
     }
 
-    public void setPhoneid(String phoneid) {
-        this.phoneid = phoneid == null ? null : phoneid.trim();
+    public void setPhoneid(Long phoneid) {
+        this.phoneid = phoneid;
     }
 
     public String getPhone() {

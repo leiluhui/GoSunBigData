@@ -8,7 +8,7 @@ public interface FlagMapper {
 
     int insertSelective(Flag record);
 
-    Flag selectByPrimaryKey(Integer id);
+    Flag selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(Flag record);
 

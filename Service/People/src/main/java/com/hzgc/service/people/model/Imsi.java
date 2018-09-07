@@ -1,26 +1,26 @@
 package com.hzgc.service.people.model;
 
 public class Imsi {
-    private Integer id;
+    private Long id;
 
-    private String imsiid;
+    private Long imsiid;
 
     private String imsi;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getImsiid() {
+    public Long getImsiid() {
         return imsiid;
     }
 
-    public void setImsiid(String imsiid) {
-        this.imsiid = imsiid == null ? null : imsiid.trim();
+    public void setImsiid(Long imsiid) {
+        this.imsiid = imsiid;
     }
 
     public String getImsi() {

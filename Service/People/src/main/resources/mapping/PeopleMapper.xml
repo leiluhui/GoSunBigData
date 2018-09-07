@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.PeopleMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.People" >
-    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="idcard" property="idcard" jdbcType="VARCHAR" />
     <result column="region" property="region" jdbcType="BIGINT" />
@@ -14,15 +14,15 @@
     <result column="politic" property="politic" jdbcType="INTEGER" />
     <result column="edulevel" property="edulevel" jdbcType="INTEGER" />
     <result column="job" property="job" jdbcType="INTEGER" />
-    <result column="birthplace" property="birthplace" jdbcType="INTEGER" />
+    <result column="birthplace" property="birthplace" jdbcType="VARCHAR" />
     <result column="community" property="community" jdbcType="BIGINT" />
-    <result column="flag" property="flag" jdbcType="VARCHAR" />
-    <result column="idcardpic" property="idcardpic" jdbcType="VARCHAR" />
-    <result column="capturepic" property="capturepic" jdbcType="VARCHAR" />
-    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
-    <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="house" property="house" jdbcType="VARCHAR" />
-    <result column="car" property="car" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="BIGINT" />
+    <result column="idcardpic" property="idcardpic" jdbcType="BIGINT" />
+    <result column="capturepic" property="capturepic" jdbcType="BIGINT" />
+    <result column="imsi" property="imsi" jdbcType="BIGINT" />
+    <result column="phone" property="phone" jdbcType="BIGINT" />
+    <result column="house" property="house" jdbcType="BIGINT" />
+    <result column="car" property="car" jdbcType="BIGINT" />
     <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -31,11 +31,11 @@
     job, birthplace, community, flag, idcardpic, capturepic, imsi, phone, house, car, 
     createtime, updatetime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_people
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.People" >
     insert into t_people (id, name, idcard, 
@@ -46,13 +46,13 @@
       capturepic, imsi, phone, 
       house, car, createtime, 
       updatetime)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
       #{region,jdbcType=BIGINT}, #{household,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{sex,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{birthday,jdbcType=DATE}, #{politic,jdbcType=INTEGER}, 
-      #{edulevel,jdbcType=INTEGER}, #{job,jdbcType=INTEGER}, #{birthplace,jdbcType=INTEGER}, 
-      #{community,jdbcType=BIGINT}, #{flag,jdbcType=VARCHAR}, #{idcardpic,jdbcType=VARCHAR}, 
-      #{capturepic,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{house,jdbcType=VARCHAR}, #{car,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{edulevel,jdbcType=INTEGER}, #{job,jdbcType=INTEGER}, #{birthplace,jdbcType=VARCHAR}, 
+      #{community,jdbcType=BIGINT}, #{flag,jdbcType=BIGINT}, #{idcardpic,jdbcType=BIGINT}, 
+      #{capturepic,jdbcType=BIGINT}, #{imsi,jdbcType=BIGINT}, #{phone,jdbcType=BIGINT}, 
+      #{house,jdbcType=BIGINT}, #{car,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.People" >
@@ -130,7 +130,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
@@ -166,31 +166,31 @@
         #{job,jdbcType=INTEGER},
       </if>
       <if test="birthplace != null" >
-        #{birthplace,jdbcType=INTEGER},
+        #{birthplace,jdbcType=VARCHAR},
       </if>
       <if test="community != null" >
         #{community,jdbcType=BIGINT},
       </if>
       <if test="flag != null" >
-        #{flag,jdbcType=VARCHAR},
+        #{flag,jdbcType=BIGINT},
       </if>
       <if test="idcardpic != null" >
-        #{idcardpic,jdbcType=VARCHAR},
+        #{idcardpic,jdbcType=BIGINT},
       </if>
       <if test="capturepic != null" >
-        #{capturepic,jdbcType=VARCHAR},
+        #{capturepic,jdbcType=BIGINT},
       </if>
       <if test="imsi != null" >
-        #{imsi,jdbcType=VARCHAR},
+        #{imsi,jdbcType=BIGINT},
       </if>
       <if test="phone != null" >
-        #{phone,jdbcType=VARCHAR},
+        #{phone,jdbcType=BIGINT},
       </if>
       <if test="house != null" >
-        #{house,jdbcType=VARCHAR},
+        #{house,jdbcType=BIGINT},
       </if>
       <if test="car != null" >
-        #{car,jdbcType=VARCHAR},
+        #{car,jdbcType=BIGINT},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -237,31 +237,31 @@
         job = #{job,jdbcType=INTEGER},
       </if>
       <if test="birthplace != null" >
-        birthplace = #{birthplace,jdbcType=INTEGER},
+        birthplace = #{birthplace,jdbcType=VARCHAR},
       </if>
       <if test="community != null" >
         community = #{community,jdbcType=BIGINT},
       </if>
       <if test="flag != null" >
-        flag = #{flag,jdbcType=VARCHAR},
+        flag = #{flag,jdbcType=BIGINT},
       </if>
       <if test="idcardpic != null" >
-        idcardpic = #{idcardpic,jdbcType=VARCHAR},
+        idcardpic = #{idcardpic,jdbcType=BIGINT},
       </if>
       <if test="capturepic != null" >
-        capturepic = #{capturepic,jdbcType=VARCHAR},
+        capturepic = #{capturepic,jdbcType=BIGINT},
       </if>
       <if test="imsi != null" >
-        imsi = #{imsi,jdbcType=VARCHAR},
+        imsi = #{imsi,jdbcType=BIGINT},
       </if>
       <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=BIGINT},
       </if>
       <if test="house != null" >
-        house = #{house,jdbcType=VARCHAR},
+        house = #{house,jdbcType=BIGINT},
       </if>
       <if test="car != null" >
-        car = #{car,jdbcType=VARCHAR},
+        car = #{car,jdbcType=BIGINT},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
@@ -270,7 +270,7 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.People" >
     update t_people
@@ -285,17 +285,17 @@
       politic = #{politic,jdbcType=INTEGER},
       edulevel = #{edulevel,jdbcType=INTEGER},
       job = #{job,jdbcType=INTEGER},
-      birthplace = #{birthplace,jdbcType=INTEGER},
+      birthplace = #{birthplace,jdbcType=VARCHAR},
       community = #{community,jdbcType=BIGINT},
-      flag = #{flag,jdbcType=VARCHAR},
-      idcardpic = #{idcardpic,jdbcType=VARCHAR},
-      capturepic = #{capturepic,jdbcType=VARCHAR},
-      imsi = #{imsi,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      house = #{house,jdbcType=VARCHAR},
-      car = #{car,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=BIGINT},
+      idcardpic = #{idcardpic,jdbcType=BIGINT},
+      capturepic = #{capturepic,jdbcType=BIGINT},
+      imsi = #{imsi,jdbcType=BIGINT},
+      phone = #{phone,jdbcType=BIGINT},
+      house = #{house,jdbcType=BIGINT},
+      car = #{car,jdbcType=BIGINT},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

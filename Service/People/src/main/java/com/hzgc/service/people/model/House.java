@@ -1,26 +1,26 @@
 package com.hzgc.service.people.model;
 
 public class House {
-    private Integer id;
+    private Long id;
 
-    private String houseid;
+    private Long houseid;
 
     private String house;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getHouseid() {
+    public Long getHouseid() {
         return houseid;
     }
 
-    public void setHouseid(String houseid) {
-        this.houseid = houseid == null ? null : houseid.trim();
+    public void setHouseid(Long houseid) {
+        this.houseid = houseid;
     }
 
     public String getHouse() {

@@ -3,7 +3,7 @@ package com.hzgc.service.people.model;
 import java.util.Date;
 
 public class People {
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -27,33 +27,33 @@ public class People {
 
     private Integer job;
 
-    private Integer birthplace;
+    private String birthplace;
 
     private Long community;
 
-    private String flag;
+    private Long flag;
 
-    private String idcardpic;
+    private Long idcardpic;
 
-    private String capturepic;
+    private Long capturepic;
 
-    private String imsi;
+    private Long imsi;
 
-    private String phone;
+    private Long phone;
 
-    private String house;
+    private Long house;
 
-    private String car;
+    private Long car;
 
     private Date createtime;
 
     private Date updatetime;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -145,12 +145,12 @@ public class People {
         this.job = job;
     }
 
-    public Integer getBirthplace() {
+    public String getBirthplace() {
         return birthplace;
     }
 
-    public void setBirthplace(Integer birthplace) {
-        this.birthplace = birthplace;
+    public void setBirthplace(String birthplace) {
+        this.birthplace = birthplace == null ? null : birthplace.trim();
     }
 
     public Long getCommunity() {
@@ -161,60 +161,60 @@ public class People {
         this.community = community;
     }
 
-    public String getFlag() {
+    public Long getFlag() {
         return flag;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag == null ? null : flag.trim();
+    public void setFlag(Long flag) {
+        this.flag = flag;
     }
 
-    public String getIdcardpic() {
+    public Long getIdcardpic() {
         return idcardpic;
     }
 
-    public void setIdcardpic(String idcardpic) {
-        this.idcardpic = idcardpic == null ? null : idcardpic.trim();
+    public void setIdcardpic(Long idcardpic) {
+        this.idcardpic = idcardpic;
     }
 
-    public String getCapturepic() {
+    public Long getCapturepic() {
         return capturepic;
     }
 
-    public void setCapturepic(String capturepic) {
-        this.capturepic = capturepic == null ? null : capturepic.trim();
+    public void setCapturepic(Long capturepic) {
+        this.capturepic = capturepic;
     }
 
-    public String getImsi() {
+    public Long getImsi() {
         return imsi;
     }
 
-    public void setImsi(String imsi) {
-        this.imsi = imsi == null ? null : imsi.trim();
+    public void setImsi(Long imsi) {
+        this.imsi = imsi;
     }
 
-    public String getPhone() {
+    public Long getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setPhone(Long phone) {
+        this.phone = phone;
     }
 
-    public String getHouse() {
+    public Long getHouse() {
         return house;
     }
 
-    public void setHouse(String house) {
-        this.house = house == null ? null : house.trim();
+    public void setHouse(Long house) {
+        this.house = house;
     }
 
-    public String getCar() {
+    public Long getCar() {
         return car;
     }
 
-    public void setCar(String car) {
-        this.car = car == null ? null : car.trim();
+    public void setCar(Long car) {
+        this.car = car;
     }
 
     public Date getCreatetime() {

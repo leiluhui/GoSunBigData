@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.PictureMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Picture" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="peopleid" property="peopleid" jdbcType="INTEGER" />
-    <result column="idcardpicid" property="idcardpicid" jdbcType="VARCHAR" />
-    <result column="capturepicid" property="capturepicid" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="peopleid" property="peopleid" jdbcType="BIGINT" />
+    <result column="idcardpicid" property="idcardpicid" jdbcType="BIGINT" />
+    <result column="capturepicid" property="capturepicid" jdbcType="BIGINT" />
     <result column="feature" property="feature" jdbcType="VARCHAR" />
     <result column="bitfeature" property="bitfeature" jdbcType="VARCHAR" />
   </resultMap>
@@ -19,20 +19,20 @@
   <sql id="Blob_Column_List" >
     idcardpic, capturepic
   </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from t_picture
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.PictureWithBLOBs" >
     insert into t_picture (id, peopleid, idcardpicid, 
       capturepicid, feature, bitfeature, 
       idcardpic, capturepic)
-    values (#{id,jdbcType=INTEGER}, #{peopleid,jdbcType=INTEGER}, #{idcardpicid,jdbcType=VARCHAR}, 
-      #{capturepicid,jdbcType=VARCHAR}, #{feature,jdbcType=VARCHAR}, #{bitfeature,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=BIGINT}, #{idcardpicid,jdbcType=BIGINT}, 
+      #{capturepicid,jdbcType=BIGINT}, #{feature,jdbcType=VARCHAR}, #{bitfeature,jdbcType=VARCHAR}, 
       #{idcardpic,jdbcType=LONGVARBINARY}, #{capturepic,jdbcType=LONGVARBINARY})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.PictureWithBLOBs" >
@@ -65,16 +65,16 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="peopleid != null" >
-        #{peopleid,jdbcType=INTEGER},
+        #{peopleid,jdbcType=BIGINT},
       </if>
       <if test="idcardpicid != null" >
-        #{idcardpicid,jdbcType=VARCHAR},
+        #{idcardpicid,jdbcType=BIGINT},
       </if>
       <if test="capturepicid != null" >
-        #{capturepicid,jdbcType=VARCHAR},
+        #{capturepicid,jdbcType=BIGINT},
       </if>
       <if test="feature != null" >
         #{feature,jdbcType=VARCHAR},
@@ -94,13 +94,13 @@
     update t_picture
     <set >
       <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=INTEGER},
+        peopleid = #{peopleid,jdbcType=BIGINT},
       </if>
       <if test="idcardpicid != null" >
-        idcardpicid = #{idcardpicid,jdbcType=VARCHAR},
+        idcardpicid = #{idcardpicid,jdbcType=BIGINT},
       </if>
       <if test="capturepicid != null" >
-        capturepicid = #{capturepicid,jdbcType=VARCHAR},
+        capturepicid = #{capturepicid,jdbcType=BIGINT},
       </if>
       <if test="feature != null" >
         feature = #{feature,jdbcType=VARCHAR},
@@ -115,26 +115,26 @@
         capturepic = #{capturepic,jdbcType=LONGVARBINARY},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.service.people.model.PictureWithBLOBs" >
     update t_picture
-    set peopleid = #{peopleid,jdbcType=INTEGER},
-      idcardpicid = #{idcardpicid,jdbcType=VARCHAR},
-      capturepicid = #{capturepicid,jdbcType=VARCHAR},
+    set peopleid = #{peopleid,jdbcType=BIGINT},
+      idcardpicid = #{idcardpicid,jdbcType=BIGINT},
+      capturepicid = #{capturepicid,jdbcType=BIGINT},
       feature = #{feature,jdbcType=VARCHAR},
       bitfeature = #{bitfeature,jdbcType=VARCHAR},
       idcardpic = #{idcardpic,jdbcType=LONGVARBINARY},
       capturepic = #{capturepic,jdbcType=LONGVARBINARY}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Picture" >
     update t_picture
-    set peopleid = #{peopleid,jdbcType=INTEGER},
-      idcardpicid = #{idcardpicid,jdbcType=VARCHAR},
-      capturepicid = #{capturepicid,jdbcType=VARCHAR},
+    set peopleid = #{peopleid,jdbcType=BIGINT},
+      idcardpicid = #{idcardpicid,jdbcType=BIGINT},
+      capturepicid = #{capturepicid,jdbcType=BIGINT},
       feature = #{feature,jdbcType=VARCHAR},
       bitfeature = #{bitfeature,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

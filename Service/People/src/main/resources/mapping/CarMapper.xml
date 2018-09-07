@@ -2,24 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.CarMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Car" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="carid" property="carid" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="carid" property="carid" jdbcType="BIGINT" />
     <result column="car" property="car" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, carid, car
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_car
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.Car" >
-    insert into t_car (id, carid, car
-      )
-    values (#{id,jdbcType=INTEGER}, #{carid,jdbcType=VARCHAR}, #{car,jdbcType=VARCHAR}
-      )
+    insert into t_car (id, carid, car)
+    values (#{id,jdbcType=BIGINT}, #{carid,jdbcType=BIGINT}, #{car,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Car" >
     insert into t_car
@@ -36,10 +34,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="carid != null" >
-        #{carid,jdbcType=VARCHAR},
+        #{carid,jdbcType=BIGINT},
       </if>
       <if test="car != null" >
         #{car,jdbcType=VARCHAR},
@@ -50,18 +48,18 @@
     update t_car
     <set >
       <if test="carid != null" >
-        carid = #{carid,jdbcType=VARCHAR},
+        carid = #{carid,jdbcType=BIGINT},
       </if>
       <if test="car != null" >
         car = #{car,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Car" >
     update t_car
-    set carid = #{carid,jdbcType=VARCHAR},
+    set carid = #{carid,jdbcType=BIGINT},
       car = #{car,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

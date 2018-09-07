@@ -2,23 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.FlagMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Flag" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="flagid" property="flagid" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="flagid" property="flagid" jdbcType="BIGINT" />
     <result column="flag" property="flag" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, flagid, flag
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_flag
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.Flag" >
     insert into t_flag (id, flagid, flag
       )
-    values (#{id,jdbcType=INTEGER}, #{flagid,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}
+    values (#{id,jdbcType=BIGINT}, #{flagid,jdbcType=BIGINT}, #{flag,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Flag" >
@@ -36,10 +36,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="flagid != null" >
-        #{flagid,jdbcType=VARCHAR},
+        #{flagid,jdbcType=BIGINT},
       </if>
       <if test="flag != null" >
         #{flag,jdbcType=INTEGER},
@@ -50,18 +50,18 @@
     update t_flag
     <set >
       <if test="flagid != null" >
-        flagid = #{flagid,jdbcType=VARCHAR},
+        flagid = #{flagid,jdbcType=BIGINT},
       </if>
       <if test="flag != null" >
         flag = #{flag,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Flag" >
     update t_flag
-    set flagid = #{flagid,jdbcType=VARCHAR},
+    set flagid = #{flagid,jdbcType=BIGINT},
       flag = #{flag,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -9,7 +9,7 @@ public interface PictureMapper {
 
     int insertSelective(PictureWithBLOBs record);
 
-    PictureWithBLOBs selectByPrimaryKey(Integer id);
+    PictureWithBLOBs selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(PictureWithBLOBs record);
 
