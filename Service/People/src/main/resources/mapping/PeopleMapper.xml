@@ -37,7 +37,7 @@
     from t_people
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.People" >
+  <insert id="insert" parameterType="com.hzgc.service.people.model.People" useGeneratedKeys="true" keyProperty="id">
     insert into t_people (id, name, idcard, 
       region, household, address, 
       sex, age, birthday, politic, 
@@ -55,7 +55,7 @@
       #{house,jdbcType=BIGINT}, #{car,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
       #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.People" >
+  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.People" useGeneratedKeys="true" keyProperty="id">>
     insert into t_people
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
