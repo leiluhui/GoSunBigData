@@ -13,16 +13,15 @@
     <packaging>pom</packaging>
     <modules>
         <module>Alarm</module>
-        <module>DynRepo</module>
-        <module>StaRepo</module>
-        <module>Face</module>
-        <module>Address</module>
+        <module>Collect</module>
         <module>Visual</module>
-        <module>Dispatch</module>
-        <module>DynPerson</module>
         <module>PeopleManager</module>
-        <module>DynCar</module>
         <module>People</module>
+        <module>Face-Dispatch</module>
+        <module>Face-Dynrepo</module>
+        <module>Imsi-Dynrepo</module>
+        <module>Person-Dynrepo</module>
+        <module>Vehicle-Dynrepo</module>
     </modules>
 
     <dependencies>
