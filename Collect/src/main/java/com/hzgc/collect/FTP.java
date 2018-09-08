@@ -17,6 +17,7 @@ import com.hzgc.collect.expand.util.CollectProperties;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
+import com.hzgc.jniface.FaceFunction;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
