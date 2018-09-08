@@ -11,7 +11,7 @@ public class DaHuaParser_GongChengJi implements Parser {
             return false;
         }
         String tmpStr = path.substring(path.lastIndexOf("[") + 1, path.lastIndexOf("]"));
-        return Integer.parseInt(tmpStr) > 0;
+        return Integer.parseInt(tmpStr) == 0;
     }
 
     /**
@@ -21,9 +21,9 @@ public class DaHuaParser_GongChengJi implements Parser {
     public FtpPathMetaData parse(String path) {
         FtpPathMetaData message = new FtpPathMetaData();
         if (canParse(path)) {
-            String ipcID =  path.substring(path.indexOf("/", 1))
-                    .substring(1,path.substring(path.indexOf("/", 1)).indexOf("/", 1));
-            String dateStr = path.split("/")[3].replace("-","");
+            String ipcID = path.substring(path.indexOf("/", 1))
+                    .substring(1, path.substring(path.indexOf("/", 1)).indexOf("/", 1));
+            String dateStr = path.split("/")[3].replace("-", "");
             String year = dateStr.substring(0, 4);
             String month = dateStr.substring(4, 6);
             String day = dateStr.substring(6, 8);
@@ -58,8 +58,24 @@ public class DaHuaParser_GongChengJi implements Parser {
      */
     @Override
     public String surlToBurl(String surl) {
-        String frontStr = surl.substring(0, surl.lastIndexOf("[") + 1);
-        String backStr = surl.substring(surl.lastIndexOf("[") + 2, surl.length());
-        return frontStr + 0 + backStr;
+        return surl.substring(0, surl.lastIndexOf("[") + 1)
+                + 0
+                + surl.substring(surl.lastIndexOf("[") + 2, surl.length());
+    }
+
+    @Override
+    public String ftpUrl_b2s(String burl, String type, int index) {
+        return burl.substring(0, burl.lastIndexOf("[") + 1)
+                + type
+                + index
+                + burl.substring(burl.lastIndexOf("[") + 2, burl.length());
+    }
+
+    @Override
+    public String path_b2s(String burl, String type, int index) {
+        return burl.substring(0, burl.lastIndexOf("[") + 1)
+                + type
+                + index
+                + burl.substring(burl.lastIndexOf("[") + 2, burl.length());
     }
 }

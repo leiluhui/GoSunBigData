@@ -4,14 +4,16 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.log4j.Logger;
 
-public class ProcessCallBack implements Callback {
+import java.io.Serializable;
 
-    private static Logger LOG = Logger.getLogger(ProcessCallBack.class);
+public class KafkaCallBack implements Callback,Serializable {
+
+    private static Logger LOG = Logger.getLogger(KafkaCallBack.class);
 
     private String  elapsedTime;
     private String key;
 
-    ProcessCallBack(String key, String time) {
+    KafkaCallBack(String key, String time) {
         this.key = key;
         this.elapsedTime = time;
     }

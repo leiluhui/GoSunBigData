@@ -23,8 +23,12 @@ public class CollectProperties implements Serializable {
     private static String zookeeperAddress;
     private static boolean ftpSubscribeSwitch;
     private static String kafkaFaceObjectTopic;
+    private static String kafkaPersonObjectTopic;
+    private static String kafkaCarObjectTopic;
     private static String rocketmqAddress;
-    private static String rocketmqCaptureTopic;
+    private static String rocketmqFaceTopic;
+    private static String rocketmqPersonTopic;
+    private static String rocketmqCarTopic;
     private static String rokcetmqCaptureGroup;
     private static String hostname;
     private static String ftpVersion;
@@ -35,6 +39,7 @@ public class CollectProperties implements Serializable {
     private static String ftpAccount;
     private static String ftpPassword;
     private static String homeDirs;
+    private static String seemmoUrl;
     private static float diskUsageRate;
     private static long period;
 
@@ -68,8 +73,12 @@ public class CollectProperties implements Serializable {
             setZookeeperAddress(props.getProperty("zookeeper.address"));
             setFtpSubscribeSwitch(Boolean.parseBoolean(props.getProperty("ftp.subscribe.switch")));
             setKafkaFaceObjectTopic(props.getProperty("kafka.faceobject.topic"));
+            setKafkaPersonObjectTopic(props.getProperty("kafka.personobject.topic"));
+            setKafkaCarObjectTopic(props.getProperty("kafka.carobject.topic"));
             setRocketmqAddress(props.getProperty("rocketmq.address"));
-            setRocketmqCaptureTopic(props.getProperty("rocketmq.capture.topic"));
+            setRocketmqFaceTopic(props.getProperty("rocketmq.face.topic"));
+            setRocketmqPersonTopic(props.getProperty("rocketmq.person.topic"));
+            setRocketmqCarTopic(props.getProperty("rocketmq.car.topic"));
             setRokcetmqCaptureGroup(props.getProperty("rocketmq.capture.group"));
             setHostname(InetAddress.getLocalHost().getHostName());
             setFtpVersion(props.getProperty("ftp.version"));
@@ -80,6 +89,7 @@ public class CollectProperties implements Serializable {
             setFtpAccount(props.getProperty("ftp.account"));
             setFtpPassword(props.getProperty("ftp.password"));
             setHomeDirs(props.getProperty("homeDirs"));
+            setSeemmoUrl(props.getProperty("seemmo.url"));
             setDiskUsageRate(Float.parseFloat(props.getProperty("diskUsageRate")));
             setPeriod(Long.parseLong(props.getProperty("period")));
         } catch (IOException e) {
@@ -228,6 +238,22 @@ public class CollectProperties implements Serializable {
         CollectProperties.kafkaFaceObjectTopic = kafkaFaceObjectTopic;
     }
 
+    public static String getKafkaPersonObjectTopic() {
+        return kafkaPersonObjectTopic;
+    }
+
+    public static void setKafkaPersonObjectTopic(String kafkaPersonObjectTopic) {
+        CollectProperties.kafkaPersonObjectTopic = kafkaPersonObjectTopic;
+    }
+
+    public static String getKafkaCarObjectTopic() {
+        return kafkaCarObjectTopic;
+    }
+
+    public static void setKafkaCarObjectTopic(String kafkaCarObjectTopic) {
+        CollectProperties.kafkaCarObjectTopic = kafkaCarObjectTopic;
+    }
+
     public static String getRocketmqAddress() {
         return rocketmqAddress;
     }
@@ -236,12 +262,28 @@ public class CollectProperties implements Serializable {
         CollectProperties.rocketmqAddress = rocketmqAddress;
     }
 
-    public static String getRocketmqCaptureTopic() {
-        return rocketmqCaptureTopic;
+    public static String getRocketmqFaceTopic() {
+        return rocketmqFaceTopic;
     }
 
-    private static void setRocketmqCaptureTopic(String rocketmqCaptureTopic) {
-        CollectProperties.rocketmqCaptureTopic = rocketmqCaptureTopic;
+    public static void setRocketmqFaceTopic(String rocketmqFaceTopic) {
+        CollectProperties.rocketmqFaceTopic = rocketmqFaceTopic;
+    }
+
+    public static String getRocketmqPersonTopic() {
+        return rocketmqPersonTopic;
+    }
+
+    public static void setRocketmqPersonTopic(String rocketmqPersonTopic) {
+        CollectProperties.rocketmqPersonTopic = rocketmqPersonTopic;
+    }
+
+    public static String getRocketmqCarTopic() {
+        return rocketmqCarTopic;
+    }
+
+    public static void setRocketmqCarTopic(String rocketmqCarTopic) {
+        CollectProperties.rocketmqCarTopic = rocketmqCarTopic;
     }
 
     public static String getRokcetmqCaptureGroup() {
@@ -262,6 +304,14 @@ public class CollectProperties implements Serializable {
 
     private static void setHomeDirs(String homeDirs) {
         CollectProperties.homeDirs = homeDirs;
+    }
+
+    public static String getSeemmoUrl() {
+        return seemmoUrl;
+    }
+
+    public static void setSeemmoUrl(String seemmoUrl) {
+        CollectProperties.seemmoUrl = seemmoUrl;
     }
 
     public static float getDiskUsageRate() {

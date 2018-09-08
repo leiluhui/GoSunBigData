@@ -7,4 +7,8 @@ public interface Parser {
     FtpPathMetaData parse(String path);
     // 小图ftpUrl转大图ftpUrl
     String surlToBurl(String surl);
+    // 大图ftpUrl转小图ftpUrl(带ip,hostname的ftpUrl都可以转)
+    String ftpUrl_b2s(String burl, String type, int index);
+    // 大图路径转小图路径(绝对路径和ftp相对路径都可以转)
+    String path_b2s(String burl, String type, int index);
 }
