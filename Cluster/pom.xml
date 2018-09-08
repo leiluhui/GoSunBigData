@@ -15,5 +15,18 @@
         <module>Spark</module>
         <module>Phoenix-udf</module>
         <module>Spark-udf</module>
+        <module>PeopleManager-cluster</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Edgware.SR3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
