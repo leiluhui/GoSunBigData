@@ -1,5 +1,7 @@
 package com.hzgc.common.collect.bean;
 
+import com.hzgc.jniface.FaceAttribute;
+
 import java.io.Serializable;
 
 public class FaceObject implements Serializable {
