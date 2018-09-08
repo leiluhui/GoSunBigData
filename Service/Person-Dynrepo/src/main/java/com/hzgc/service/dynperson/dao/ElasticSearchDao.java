@@ -34,9 +34,9 @@ public class ElasticSearchDao {
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(queryBuilder)
                 .setFrom(captureOption.getStart())
-                .setSize(captureOption.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
-                        Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+                .setSize(captureOption.getLimit());
+//                .addSort( PersonTable.TIMESTAMP,
+//                        Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
 
@@ -46,9 +46,9 @@ public class ElasticSearchDao {
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(queryBuilder)
                 .setFrom(captureOption.getStart())
-                .setSize(captureOption.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
-                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+                .setSize(captureOption.getLimit());
+//                .addSort( PersonTable.TIMESTAMP,
+//                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
 
@@ -58,9 +58,8 @@ public class ElasticSearchDao {
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(boolQueryBuilder)
                 .setFrom(option.getStart())
-                .setSize(option.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
-                        Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+                .setSize(option.getLimit());
+//                .addSort( PersonTable.TagertParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
 

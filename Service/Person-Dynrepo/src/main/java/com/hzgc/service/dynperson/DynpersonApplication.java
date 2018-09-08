@@ -14,6 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class DynpersonApplication {
     public static void main(String[] args) {
-        SpringApplication.run(com.hzgc.service.dynperson.DynpersonApplication.class,args);
+        SpringApplication.run(DynpersonApplication.class,args);
     }
 }

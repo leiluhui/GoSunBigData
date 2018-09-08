@@ -6,7 +6,7 @@ public class SmallImage {
     //人特整整及属性
     private FaceAttribute faceAttribute;
     //行人特征及属性
-    private PersonAttribute personAttribute;
+    private PersonAttributes personAttributes;
     //车辆特征及属性
     private CarAttribute carAttribute;
     //图片类型
@@ -31,12 +31,12 @@ public class SmallImage {
         this.faceAttribute = faceAttribute;
     }
 
-    public PersonAttribute getPersonAttribute() {
-        return personAttribute;
+    public PersonAttributes getPersonAttributes() {
+        return personAttributes;
     }
 
-    public void setPersonAttribute(PersonAttribute personAttribute) {
-        this.personAttribute = personAttribute;
+    public void setPersonAttributes(PersonAttributes personAttributes) {
+        this.personAttributes = personAttributes;
     }
 
     public CarAttribute getCarAttribute() {
