@@ -1,6 +1,5 @@
 package com.hzgc.service.dyncar.bean;
 
-import com.hzgc.jniface.CarAttribute;
 import lombok.Data;
 
 import java.io.Serializable;
