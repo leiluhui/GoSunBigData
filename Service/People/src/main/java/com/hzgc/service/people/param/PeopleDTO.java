@@ -34,7 +34,7 @@ public class PeopleDTO implements Serializable {
 
     private Integer edulevel;
 
-    private Integer job;
+    private String job;
 
     private String birthplace;
 

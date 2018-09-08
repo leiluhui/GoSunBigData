@@ -13,7 +13,7 @@
     <result column="birthday" property="birthday" jdbcType="DATE" />
     <result column="politic" property="politic" jdbcType="INTEGER" />
     <result column="edulevel" property="edulevel" jdbcType="INTEGER" />
-    <result column="job" property="job" jdbcType="INTEGER" />
+    <result column="job" property="job" jdbcType="VARCHAR" />
     <result column="birthplace" property="birthplace" jdbcType="VARCHAR" />
     <result column="community" property="community" jdbcType="BIGINT" />
     <result column="flag" property="flag" jdbcType="BIGINT" />
@@ -49,7 +49,7 @@
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
       #{region,jdbcType=BIGINT}, #{household,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{sex,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{birthday,jdbcType=DATE}, #{politic,jdbcType=INTEGER}, 
-      #{edulevel,jdbcType=INTEGER}, #{job,jdbcType=INTEGER}, #{birthplace,jdbcType=VARCHAR}, 
+      #{edulevel,jdbcType=INTEGER}, #{job,jdbcType=VARCHAR}, #{birthplace,jdbcType=VARCHAR}, 
       #{community,jdbcType=BIGINT}, #{flag,jdbcType=BIGINT}, #{idcardpic,jdbcType=BIGINT}, 
       #{capturepic,jdbcType=BIGINT}, #{imsi,jdbcType=BIGINT}, #{phone,jdbcType=BIGINT}, 
       #{house,jdbcType=BIGINT}, #{car,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
@@ -163,7 +163,7 @@
         #{edulevel,jdbcType=INTEGER},
       </if>
       <if test="job != null" >
-        #{job,jdbcType=INTEGER},
+        #{job,jdbcType=VARCHAR},
       </if>
       <if test="birthplace != null" >
         #{birthplace,jdbcType=VARCHAR},
@@ -234,7 +234,7 @@
         edulevel = #{edulevel,jdbcType=INTEGER},
       </if>
       <if test="job != null" >
-        job = #{job,jdbcType=INTEGER},
+        job = #{job,jdbcType=VARCHAR},
       </if>
       <if test="birthplace != null" >
         birthplace = #{birthplace,jdbcType=VARCHAR},
@@ -284,7 +284,7 @@
       birthday = #{birthday,jdbcType=DATE},
       politic = #{politic,jdbcType=INTEGER},
       edulevel = #{edulevel,jdbcType=INTEGER},
-      job = #{job,jdbcType=INTEGER},
+      job = #{job,jdbcType=VARCHAR},
       birthplace = #{birthplace,jdbcType=VARCHAR},
       community = #{community,jdbcType=BIGINT},
       flag = #{flag,jdbcType=BIGINT},

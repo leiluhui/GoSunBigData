@@ -19,29 +19,29 @@ public class PeopleVO implements Serializable {
 
     private String idCard;
 
-    private Long region;
+    private String region;
 
     private String household;
 
     private String address;
 
-    private Integer sex;
+    private String sex;
 
     private Integer age;
 
-    private Date birthday;
+    private String birthday;
 
-    private Integer politic;
+    private String politic;
 
-    private Integer eduLevel;
+    private String eduLevel;
 
-    private Integer job;
+    private String job;
 
     private String birthplace;
 
-    private Long community;
+    private String community;
 
-    private List<Integer> flag;
+    private List<String> flag;
 
     private List<byte[]> idCardPic;
 
@@ -55,7 +55,7 @@ public class PeopleVO implements Serializable {
 
     private List<String> car;
 
-    private Date createTime;
+    private String createTime;
 
-    private Date updateTime;
+    private String updateTime;
 }
