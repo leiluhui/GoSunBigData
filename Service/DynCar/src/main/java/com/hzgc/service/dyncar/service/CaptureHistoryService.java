@@ -3,7 +3,6 @@ package com.hzgc.service.dyncar.service;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.compare.SortParam;
-import com.hzgc.jniface.CarAttribute;
 import com.hzgc.service.dyncar.bean.*;
 import com.hzgc.service.dyncar.dao.ElasticSearchDao;
 import com.hzgc.service.dyncar.dao.EsSearchParam;

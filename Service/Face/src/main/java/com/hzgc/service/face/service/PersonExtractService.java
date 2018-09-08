@@ -2,7 +2,6 @@ package com.hzgc.service.face.service;
 
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.jni.*;
-import com.hzgc.jniface.PersonAttribute;
 import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.service.ImageToData;

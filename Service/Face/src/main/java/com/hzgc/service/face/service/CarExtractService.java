@@ -2,7 +2,6 @@ package com.hzgc.service.face.service;
 
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.jni.CarPictureData;
-import com.hzgc.jniface.CarAttribute;
 import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.service.ImageToData;

@@ -1,4 +1,4 @@
-package com.hzgc.jni;
+package com.hzgc.jniface;
 
 import java.io.Serializable;
 import java.util.List;

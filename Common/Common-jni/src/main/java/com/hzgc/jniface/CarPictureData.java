@@ -1,4 +1,4 @@
-package com.hzgc.jni;
+package com.hzgc.jniface;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,7 +8,7 @@ public class CarPictureData implements Serializable {
     private byte[] imageData;                        // 车辆大图
     private List<CarAttribute> attributeList;       // 属性
 
-    public  CarPictureData(){
+    public CarPictureData(){
     }
 
     public String getImageID() {
