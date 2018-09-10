@@ -1,7 +1,9 @@
 package com.hzgc.service.people.param;
 
+import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import org.apache.commons.lang.math.RandomUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -34,7 +36,7 @@ public class PeopleDTO implements Serializable {
 
     private Integer edulevel;
 
-    private Integer job;
+    private String job;
 
     private String birthplace;
 
@@ -53,4 +55,50 @@ public class PeopleDTO implements Serializable {
     private List<String> house;
 
     private List<String> car;
+
+    public People peopleDTOShift(PeopleDTO peopleDTO){
+        if (peopleDTO == null){
+            return null;
+        }
+        People people = new People();
+        people.setName(peopleDTO.name);
+        people.setIdcard(peopleDTO.idcard);
+        people.setRegion(peopleDTO.region);
+        people.setHousehold(peopleDTO.household);
+        people.setAddress(peopleDTO.address);
+        people.setSex(peopleDTO.sex);
+        people.setAge(peopleDTO.age);
+        people.setBirthday(peopleDTO.birthday);
+        people.setPolitic(peopleDTO.politic);
+        people.setEdulevel(peopleDTO.edulevel);
+        people.setJob(peopleDTO.job);
+        people.setBirthplace(peopleDTO.birthplace);
+        people.setCommunity(peopleDTO.community);
+        long randomLong = RandomUtils.nextLong();
+        if (peopleDTO.getFlag()!= null && peopleDTO.getFlag().size() > 0){
+            people.setFlag(randomLong);
+        }
+        if (peopleDTO.getIdCardPic()!= null && peopleDTO.getIdCardPic().size() > 0){
+            people.setIdcardpic(randomLong);
+        }
+        if (peopleDTO.getCapturePic()!= null && peopleDTO.getCapturePic().size() > 0){
+            people.setCapturepic(randomLong);
+        }
+        if (peopleDTO.getImsi()!= null && peopleDTO.getImsi().size() > 0){
+            people.setImsi(randomLong);
+        }
+        if (peopleDTO.getPhone()!= null && peopleDTO.getPhone().size() > 0){
+            people.setPhone(randomLong);
+        }
+        if (peopleDTO.getHouse()!= null && peopleDTO.getHouse().size() > 0){
+            people.setHouse(randomLong);
+        }
+        if (peopleDTO.getCar()!= null && peopleDTO.getCar().size() > 0){
+            people.setCar(randomLong);
+        }
+        Date createTime = new Date();
+        people.setCreatetime(createTime);
+        people.setUpdatetime(createTime);
+        return people;
+    }
 }

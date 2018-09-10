@@ -3,6 +3,7 @@ package com.hzgc.common.carattribute.service;
 import com.hzgc.common.carattribute.bean.CarAttribute;
 import com.hzgc.common.carattribute.bean.CarAttributeValue;
 import com.hzgc.common.carattribute.bean.CarLogistic;
+import com.hzgc.seemmo.bean.carbean.CarData;
 import com.hzgc.seemmo.service.ReadCarInfo;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class CarAttributeService {
         objectType.setDesc("对象类型");
         objectType.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> objectTypeValueList = new ArrayList<>();
-        Map<Integer, String> vehicle_object_type = vehicleMap.get("vehicle_object_type");
+        Map<Integer, String> vehicle_object_type = vehicleMap.get(CarData.VEHICLE_BOJECT_TYPE);
         for (Integer key : vehicle_object_type.keySet()) {
             String value = vehicle_object_type.get(key);
             CarAttributeValue objectTypeValue = new CarAttributeValue();
@@ -44,7 +45,7 @@ public class CarAttributeService {
         plateTypeCode.setDesc("车辆特征");
         plateTypeCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> plateTypeCodeValueList = new ArrayList<>();
-        Map<Integer, String> plate_type_code = vehicleMap.get("plate_type_code");
+        Map<Integer, String> plate_type_code = vehicleMap.get(CarData.PLATE_TYPE_CODE);
         for (Integer key : plate_type_code.keySet()) {
             String value = plate_type_code.get(key);
             CarAttributeValue plateTypeCodeValue = new CarAttributeValue();
@@ -60,7 +61,7 @@ public class CarAttributeService {
         plateColorCode.setDesc("车牌颜色");
         plateColorCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> plateColorCodeValueList = new ArrayList<>();
-        Map<Integer, String> plate_color_code = vehicleMap.get("plate_color_code");
+        Map<Integer, String> plate_color_code = vehicleMap.get(CarData.PLATE_COLER_CODE);
         for (Integer key : plate_color_code.keySet()) {
             String value = plate_color_code.get(key);
             CarAttributeValue plateColorCodeValue = new CarAttributeValue();
@@ -76,7 +77,7 @@ public class CarAttributeService {
         plateFlagCode.setDesc("车牌状况");
         plateFlagCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> plateFlagCodeValueList = new ArrayList<>();
-        Map<Integer, String> plate_flag_code = vehicleMap.get("plate_flag_code");
+        Map<Integer, String> plate_flag_code = vehicleMap.get(CarData.PLATE_FLAG_CODE);
         for (Integer key : plate_flag_code.keySet()) {
             String value = plate_flag_code.get(key);
             CarAttributeValue plateFlagCodeValue = new CarAttributeValue();
@@ -92,7 +93,7 @@ public class CarAttributeService {
         vehicleColor.setDesc("车颜色");
         vehicleColor.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> vehicleColorValueList = new ArrayList<>();
-        Map<Integer, String> vehicle_color = vehicleMap.get("vehicle_color");
+        Map<Integer, String> vehicle_color = vehicleMap.get(CarData.VEHICLE_COLOR);
         for (Integer key : vehicle_color.keySet()) {
             String value = vehicle_color.get(key);
             CarAttributeValue vehicleColorValue = new CarAttributeValue();
@@ -108,7 +109,7 @@ public class CarAttributeService {
         vehicleType.setDesc("车辆类型");
         vehicleType.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> vehicleTypeValueList = new ArrayList<>();
-        Map<Integer, String> vehicle_type = vehicleMap.get("vehicle_type");
+        Map<Integer, String> vehicle_type = vehicleMap.get(CarData.VEHICLE_TYPE);
         for (Integer key : vehicle_type.keySet()) {
             String value = vehicle_type.get(key);
             CarAttributeValue vehicleTypeValue = new CarAttributeValue();
@@ -124,7 +125,7 @@ public class CarAttributeService {
         mistakeCode.setDesc("车辆行驶方向");
         mistakeCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> mistakeCodeValueList = new ArrayList<>();
-        Map<Integer, String> mistake_code = vehicleMap.get("mistake_code");
+        Map<Integer, String> mistake_code = vehicleMap.get(CarData.MISTAKE_CODE);
         for (Integer key : mistake_code.keySet()) {
             String value = mistake_code.get(key);
             CarAttributeValue vehicleTypeValue = new CarAttributeValue();
@@ -141,7 +142,7 @@ public class CarAttributeService {
         sunroofCode.setLogistic(CarLogistic.AND);
 
         List<CarAttributeValue> sunroofCodeValueList = new ArrayList<>();
-        Map<Integer, String> sunroof_code = vehicleMap.get("sunroof_code");
+        Map<Integer, String> sunroof_code = vehicleMap.get(CarData.SUNROOF_CODE);
         for (Integer key : sunroof_code.keySet()) {
             String value = sunroof_code.get(key);
             CarAttributeValue vsunroofCodeValue = new CarAttributeValue();

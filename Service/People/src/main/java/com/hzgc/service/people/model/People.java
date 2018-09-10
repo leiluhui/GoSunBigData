@@ -25,7 +25,7 @@ public class People {
 
     private Integer edulevel;
 
-    private Integer job;
+    private String job;
 
     private String birthplace;
 
@@ -137,12 +137,12 @@ public class People {
         this.edulevel = edulevel;
     }
 
-    public Integer getJob() {
+    public String getJob() {
         return job;
     }
 
-    public void setJob(Integer job) {
-        this.job = job;
+    public void setJob(String job) {
+        this.job = job == null ? null : job.trim();
     }
 
     public String getBirthplace() {

@@ -1,5 +1,7 @@
 package com.hzgc.seemmo.service;
 
+import com.hzgc.seemmo.bean.carbean.CarData;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,22 +10,22 @@ public class ReadCarInfo {
     private final Map<String, Map<Integer, String>> vehicleMap = new HashMap<>();
 
     public ReadCarInfo() {
-        vehicleMap.put("vehicle_object_type", ReadCarInfo.objectTypeInfo());
-        vehicleMap.put("belt_maindriver", ReadCarInfo.otherProperties());
-        vehicleMap.put("belt_codriver", ReadCarInfo.otherProperties());
-        vehicleMap.put("call_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("vehicle_color", ReadCarInfo.carColorInfo());
-        vehicleMap.put("crash_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("danger_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("marker_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("plate_schelter_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("plate_flag_code", ReadCarInfo.plateFlagInfo());
-        vehicleMap.put("plate_destain_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("plate_color_code", ReadCarInfo.plateColorInfo());
-        vehicleMap.put("plate_type_code", ReadCarInfo.plateTypeInfo());
-        vehicleMap.put("rack_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("sunroof_code", ReadCarInfo.otherProperties());
-        vehicleMap.put("vehicle_type", ReadCarInfo.carKindInfo());
+        vehicleMap.put(CarData.VEHICLE_BOJECT_TYPE, ReadCarInfo.objectTypeInfo());
+        vehicleMap.put(CarData.BELT_MAINDRIVER, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.BELT_CODRIVER, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.CALL_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.VEHICLE_COLOR, ReadCarInfo.carColorInfo());
+        vehicleMap.put(CarData.CRASH_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.DANGER_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.MISTAKE_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.PLATE_SCHELTER_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.PLATE_FLAG_CODE, ReadCarInfo.plateFlagInfo());
+        vehicleMap.put(CarData.PLATE_DESTAIN_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.PLATE_COLER_CODE, ReadCarInfo.plateColorInfo());
+        vehicleMap.put(CarData.PLATE_TYPE_CODE, ReadCarInfo.plateTypeInfo());
+        vehicleMap.put(CarData.RACK_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.SUNROOF_CODE, ReadCarInfo.otherProperties());
+        vehicleMap.put(CarData.VEHICLE_TYPE, ReadCarInfo.carKindInfo());
     }
 
     public static Map<Integer, String> objectTypeInfo() {
