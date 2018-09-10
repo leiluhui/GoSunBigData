@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigDecimal;
 
+@Deprecated
 public class FaceFunction {
 
     private static final String SPLIT = ":";

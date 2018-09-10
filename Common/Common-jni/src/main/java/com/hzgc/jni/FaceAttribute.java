@@ -2,7 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
+@Deprecated
 public class FaceAttribute implements Serializable {
     private float[] feature;    // 特征值
     private int hairColor;      // 头发颜色
