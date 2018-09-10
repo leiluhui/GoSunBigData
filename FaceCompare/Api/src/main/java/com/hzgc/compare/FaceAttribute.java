@@ -5,13 +5,11 @@ import java.io.Serializable;
 public class FaceAttribute implements Serializable {
     private float[] feature;
     private byte[] feature2;
-    private int hairColor;
-    private int hairStyle;
     private int gender;
-    private int hat;
-    private int tie;
     private int huzi;
     private int eyeglasses;
+    private int age;
+    private int mask;
     private int sharpness;
 
     public FaceAttribute() {
