@@ -2,6 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 
+@Deprecated
 public class CarAttribute implements Serializable {
     //车辆对象类型
     private String vehicle_object_type;

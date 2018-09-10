@@ -5,11 +5,11 @@ import com.hzgc.common.faceattribute.bean.Logistic;
 import java.io.Serializable;
 
 /**
- * 是否戴眼镜：0->无；1->戴眼镜；2->没有戴眼镜；
+ * 是否戴眼镜：0->没有戴眼镜；1->戴眼镜；
  */
 public enum Eyeglasses implements Serializable {
 
-    None(0), Eyeglasses_y(1), Eyeglasses_n(2);
+    Eyeglasses_y(1), Eyeglasses_n(0);
 
     private int value;
 
@@ -44,7 +44,7 @@ public enum Eyeglasses implements Serializable {
                 return eyeglasses;
             }
         }
-        return Eyeglasses.None;
+        return Eyeglasses.Eyeglasses_n;
     }
 
     /**
@@ -54,9 +54,7 @@ public enum Eyeglasses implements Serializable {
      * @return 属性描述信息
      */
     public static String getDesc(Eyeglasses eyeglasses) {
-        if (eyeglasses == Eyeglasses.None) {
-            return "无";
-        } else if (eyeglasses == Eyeglasses.Eyeglasses_y) {
+        if (eyeglasses == Eyeglasses.Eyeglasses_y) {
             return "戴眼镜";
         } else if (eyeglasses == Eyeglasses.Eyeglasses_n) {
             return "没有戴眼镜";

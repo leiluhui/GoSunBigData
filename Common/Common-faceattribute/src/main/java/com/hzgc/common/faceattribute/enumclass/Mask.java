@@ -1,16 +1,15 @@
 package com.hzgc.common.faceattribute.enumclass;
 
-
 import com.hzgc.common.faceattribute.bean.Logistic;
 
 import java.io.Serializable;
 
-/**
- * 是否系领带：0->无；1->系领带；2->没有系领带；
- */
-public enum Tie implements Serializable {
+/*
+* 0 -->没有口罩，1 -->有口罩
+* */
+public enum Mask implements Serializable{
 
-    None(0), Tie_y(1), Tie_n(2);
+    Nomask(0),Hasmask(1);
 
     private int value;
 
@@ -19,7 +18,7 @@ public enum Tie implements Serializable {
      */
     private Logistic logistic = Logistic.OR;
 
-    private Tie(int value) {
+    private Mask(int value) {
         this.value = value;
     }
 
@@ -39,28 +38,26 @@ public enum Tie implements Serializable {
         this.logistic = logistic;
     }
 
-    public static Tie get(int tievalue) {
-        for (Tie tie : Tie.values()) {
-            if (tievalue == tie.getValue()) {
-                return tie;
+    public static Mask get(int maskvalue) {
+        for (Mask mask : Mask.values()) {
+            if (maskvalue == mask.getValue()) {
+                return mask;
             }
         }
-        return Tie.None;
+        return Mask.Nomask;
     }
 
     /**
      * 获取属性描述
      *
-     * @param tie 属性对象
+     * @param mask 属性对象
      * @return 属性描述信息
      */
-    public static String getDesc(Tie tie) {
-        if (tie == Tie.None) {
-            return "无";
-        } else if (tie == Tie.Tie_y) {
-            return "系领带";
-        } else if (tie == Tie.Tie_n) {
-            return "没有系领带";
+    public static String getDesc(Mask mask) {
+        if (mask == Mask.Hasmask) {
+            return "有口罩";
+        } else if (mask == Mask.Nomask) {
+            return "没有口罩";
         }
         return null;
     }

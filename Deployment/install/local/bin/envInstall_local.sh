@@ -35,3 +35,8 @@ sh offIptables_local.sh
 ## 创建log目录
 sh logconfig.sh
 
+sh selinuxStatus.sh
+flag=$?
+if [[ $flag == 1 ]]; then
+    exit 1
+fi

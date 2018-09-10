@@ -1,6 +1,6 @@
 package com.hzgc.jniface;
 
-public class PersonAttribute {
+public class PersonAttributes {
 
     private String age;
 

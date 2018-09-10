@@ -25,15 +25,13 @@ object KafkaToParquet {
   val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
   case class Picture(ftpurl: String, //图片搜索地址
                      //feature：图片特征值 ipcid：设备id timeslot：时间段
-                     feature: Array[Float], ipcid: String, timeslot: Int,
+                     feature_float: Array[Float],feature_byte: Array[Byte], ipcid: String, timeslot: Int,
                      //timestamp:时间戳 pictype：图片类型 date：时间
                      exacttime: Timestamp, date: String,
-                     //人脸属性：眼镜、性别、头发颜色
-                     eyeglasses: Int, gender: Int, haircolor: Int,
-                     //人脸属性：发型、帽子、胡子、领带
-                     hairstyle: Int, hat: Int, huzi: Int, tie: Int,
-                     //清晰度评价
-                     sharpness: Int)
+                     //人脸属性：眼镜、性别、口罩
+                     eyeglasses: Int, gender: Int, mask: Int,
+                     //人脸属性：胡子、清晰度评价
+                     huzi: Int, age: Int, sharpness: Int)
 
   def main(args: Array[String]): Unit = {
 
@@ -78,11 +76,11 @@ object KafkaToParquet {
   def face2es(spark:SparkSession, ssc:StreamingContext, zkClient: ZkClient, kafkaParams:Map[String, String], topics:Set[String], zkHosts:String, zkPath:String, storeAddress:String): Unit = {
     val messages = createCustomDirectKafkaStream(ssc, kafkaParams, zkHosts, zkPath, topics)
     val kafkaDF  = messages.map(data => (data._1, JSONUtil.toObject(data._2, classOf[FaceObject]))).map(faceobject => {
-      (Picture(faceobject._1, faceobject._2.getAttribute.getFeature, faceobject._2.getIpcId,
+      (Picture(faceobject._1, faceobject._2.getAttribute.getFeature,faceobject._2.getAttribute.getBitFeature, faceobject._2.getIpcId,
         faceobject._2.getTimeSlot.toInt, Timestamp.valueOf(faceobject._2.getTimeStamp),
         faceobject._2.getDate, faceobject._2.getAttribute.getEyeglasses, faceobject._2.getAttribute.getGender,
-        faceobject._2.getAttribute.getHairColor, faceobject._2.getAttribute.getHairStyle, faceobject._2.getAttribute.getHat,
-        faceobject._2.getAttribute.getHuzi, faceobject._2.getAttribute.getTie, faceobject._2.getAttribute.getSharpness), faceobject._1, faceobject._2)
+        faceobject._2.getAttribute.getMask, faceobject._2.getAttribute.getAge,
+        faceobject._2.getAttribute.getHuzi, faceobject._2.getAttribute.getSharpness), faceobject._1, faceobject._2)
     }).foreachRDD(rdd => {
       import spark.implicits._
       rdd.map(rdd => rdd._1).repartition(1).toDF().write.mode(SaveMode.Append).parquet(storeAddress)
@@ -179,11 +177,9 @@ object KafkaToParquet {
       "ip"->faceObject.getIp,
       "hostname"->faceObject.getHostname,
 
-      "haircolor"->face.getHairColor ,
-      "hairstyle"->face.getHairStyle ,
+      "age"->face.getAge ,
+      "mask"->face.getMask ,
       "gender"->face.getGender ,
-      "hat"->face.getHat ,
-      "tie"->face.getTie ,
       "huzi"->face.getHuzi ,
       "eyeglasses"->face.getEyeglasses,
       "sharpness"->face.getSharpness
