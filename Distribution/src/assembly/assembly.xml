@@ -131,28 +131,119 @@
             <outputDirectory>component/GoSunBigData/Cluster/azkaban/bin</outputDirectory>
         </fileSet>
 
-        <!--Service目录-->
-        <!--Address目录-->
+        <!--cloudService-->
+        <!--Visual目录-->
         <fileSet>
-            <directory>../Service/Address/target</directory>
+            <directory>../Service/Visual/target</directory>
             <includes>
-                <include>address-${project.parent.version}.jar</include>
+                <include>visual-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/address/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Address/src/main/resources</directory>
+            <directory>../Service/Visual/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/address/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Address/bin</directory>
+            <directory>../Service/Visual/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/address/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/conf</outputDirectory>
+        </fileSet>
+        <!--PeopleManager目录-->
+        <fileSet>
+            <directory>../Service/PeopleManager/target</directory>
+            <includes>
+                <include>peoplemanager-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/PeopleManager/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/PeopleManager/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/conf</outputDirectory>
+        </fileSet>
+        <!--Imsi-Dynrepo目录-->
+        <fileSet>
+            <directory>../Service/Imsi-Dynrepo/target</directory>
+            <includes>
+                <include>imsi-dynrepo-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/imsi-dynrepo/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/Imsi-Dynrepo/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/imsi-dynrepo/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/Imsi-Dynrepo/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/imsi-dynrepo/conf</outputDirectory>
+        </fileSet>
+        <!--People目录-->
+        <fileSet>
+            <directory>../Service/People/target</directory>
+            <includes>
+                <include>people-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/people/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/People/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/people/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/People/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/people/conf</outputDirectory>
+        </fileSet>
+
+
+        <!--huitongService目录-->
+        <!--Collect目录-->
+        <fileSet>
+            <directory>../Service/Collect/target</directory>
+            <includes>
+                <include>collect-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/Collect/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/conf</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Service/Collect/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/bin</outputDirectory>
         </fileSet>
         <!--Alarm目录-->
         <fileSet>
@@ -160,199 +251,109 @@
             <includes>
                 <include>alarm-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/alarm/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/alarm/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/alarm/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/conf</outputDirectory>
         </fileSet>
-        <!--Clustering目录-->
+        <!--Face-Dispatch目录-->
         <fileSet>
-            <directory>../Service/PeopleManager/target</directory>
+            <directory>../Service/Face-Dispatch/target</directory>
             <includes>
-                <include>peoplemanager-${project.parent.version}.jar</include>
+                <include>face-dispatch-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/PeopleManager/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/PeopleManager/src/main/resources</directory>
+            <directory>../Service/Face-Dispatch/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/peoplemanager/conf</outputDirectory>
-        </fileSet>
-        <!--Dispatch目录-->
-        <fileSet>
-            <directory>../Service/Dispatch/target</directory>
-            <includes>
-                <include>dispatch-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dispatch/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Dispatch/bin</directory>
+            <directory>../Service/Face-Dispatch/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dispatch/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/conf</outputDirectory>
+        </fileSet>
+        <!--Face-DynRepo目录-->
+        <fileSet>
+            <directory>../Service/Face-DynRepo/target</directory>
+            <includes>
+                <include>face-dynrepo-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Dispatch/src/main/resources</directory>
+            <directory>../Service/Face-DynRepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dispatch/conf</outputDirectory>
-        </fileSet>
-        <!--DynRepo目录-->
-        <fileSet>
-            <directory>../Service/DynRepo/target</directory>
-            <includes>
-                <include>dynrepo-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/DynRepo/bin</directory>
+            <directory>../Service/Face-DynRepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynRepo/conf</outputDirectory>
+        </fileSet>
+        <!--Person-Dynrepo目录-->
+        <fileSet>
+            <directory>../Service/Person-Dynrepo/target</directory>
+            <includes>
+                <include>person-dynrepo-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/DynRepo/src/main/resources</directory>
+            <directory>../Service/Person-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynRepo/conf</outputDirectory>
-        </fileSet>
-        <!--Dynperson目录-->
-        <fileSet>
-            <directory>../Service/DynPerson/target</directory>
-            <includes>
-                <include>dynperson-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/DynPerson/bin</directory>
+            <directory>../Service/Person-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/conf</outputDirectory>
+        </fileSet>
+        <!--Vehicle-Dynrepo目录-->
+        <fileSet>
+            <directory>../Service/Vehicle-Dynrepo/target</directory>
+            <includes>
+                <include>vehicle-dynrepo-${project.parent.version}.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/DynPerson/src/main/resources</directory>
+            <directory>../Service/Vehicle-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynPerson/conf</outputDirectory>
-        </fileSet>
-
-        <!--Dyncar目录-->
-        <fileSet>
-            <directory>../Service/DynCar/target</directory>
-            <includes>
-                <include>dyncar-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynCar/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/DynCar/bin</directory>
+            <directory>../Service/Vehicle-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynCar/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/DynCar/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/dynCar/conf</outputDirectory>
-        </fileSet>
-
-        <!--Face目录-->
-        <fileSet>
-            <directory>../Service/Face/target</directory>
-            <includes>
-                <include>face-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/face/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Face/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/face/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Face/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/face/conf</outputDirectory>
-        </fileSet>
-        <!--StaRepo目录-->
-        <fileSet>
-            <directory>../Service/StaRepo/target</directory>
-            <includes>
-                <include>starepo-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/staRepo/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/StaRepo/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/staRepo/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/StaRepo/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/face/staRepo/conf</outputDirectory>
-        </fileSet>
-        <!--Visual目录-->
-        <fileSet>
-            <directory>../Service/Visual/target</directory>
-            <includes>
-                <include>visual-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/visual/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Visual/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/visual/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Visual/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/common/visual/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/conf</outputDirectory>
         </fileSet>
 
         <!--Collect相关配置-->
