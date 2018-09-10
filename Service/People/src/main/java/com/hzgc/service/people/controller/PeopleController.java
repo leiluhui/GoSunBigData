@@ -6,7 +6,10 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.people.model.People;
+import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleDTO;
+import com.hzgc.service.people.param.PeopleVO;
+import com.hzgc.service.people.param.SearchParam;
 import com.hzgc.service.people.service.PeopleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Api(value = "/people", tags = "人口库服务")
@@ -134,5 +139,36 @@ public class PeopleController {
         }
         log.info("Insert people info successfully");
         return ResponseResult.init(Integer.valueOf(String.valueOf(peopleId)));
+    }
+
+    /**
+     * 查询对象
+     *
+     * @param param 查询条件参数封装
+     * @return peopleVO 查询返回参数封装
+     */
+    @ApiOperation(value = "对象查询", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
+    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
+
+    public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParam param) {
+        if (param == null) {
+            log.error("Start select people, but param is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
+        }
+        if (param.getRegionId() == null || param.getRegionId() == 0) {
+            log.error("Start select people, but regionID is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,区域ID不能为空,请检查!");
+        }
+        if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 && param.getSearchType() != 3) {
+            log.error("Start select people, but SearchType is error ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,区域ID不能为空,请检查!");
+        }
+        log.info("Start select people, search param: " + JSONUtil.toJson(param));
+        FilterField field = FilterField.SearchParamShift(param);
+        log.info("Start select people, FilterField param: " + JSONUtil.toJson(param));
+        List<PeopleVO> peoples = peopleService.searchPeople(field);
+        log.info("Start select people successfully ,result " + JSONUtil.toJson(peoples));
+        return ResponseResult.init(peoples);
     }
 }

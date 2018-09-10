@@ -5,11 +5,14 @@ import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.*;
+import com.hzgc.service.people.param.FilterField;
+import com.hzgc.service.people.param.PeopleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -163,4 +166,37 @@ public class PeopleService {
         return 1;
     }
 
+    public List<PeopleVO> searchPeople(FilterField field) {
+        List<PeopleVO> list = new ArrayList<>();
+        List<People> peoples = null;
+        if (field.getName() != null || field.getIdcard() != null){
+            peoples = peopleMapper.searchPeople(field);
+        }
+        if (field.getImsi() != null ){
+            List<Imsi> imsis = imsiMapper.selectImsiIdsByImsi(field.getImsi());
+            List<Long> imsiIds = new ArrayList<>();
+            for (Imsi imsi : imsis){
+                imsiIds.add(imsi.getImsiid());
+            }
+            field.setImsiIds(imsiIds);
+            peoples = peopleMapper.searchPeople(field);
+        }
+        if (field.getPhone() != null ){
+            List<Phone> phones = phoneMapper.selectPhoneIdsByPhone(field.getPhone());
+            List<Long> phoneIds = new ArrayList<>();
+            for (Phone phone : phones){
+                phoneIds.add(phone.getPhoneid());
+            }
+            field.setImsiIds(phoneIds);
+            peoples = peopleMapper.searchPeople(field);
+        }
+        if (peoples == null || peoples.size() == 0){
+            return null;
+        }
+        for (People people : peoples){
+            PeopleVO peopleVO = peopleShift(people);
+            list.add(peopleVO);
+        }
+        return list;
+    }
 }

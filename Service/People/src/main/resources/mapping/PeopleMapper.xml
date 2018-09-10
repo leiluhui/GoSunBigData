@@ -37,6 +37,37 @@
     from t_people
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="searchPeople" resultMap="BaseResultMap" parameterType="com.hzgc.service.people.param.FilterField" >
+    select
+    <include refid="Base_Column_List" />
+    from t_people
+    <where>
+      <if test="regionid != null ">
+        region = #{region,jdbcType=BIGINT}
+      </if>
+      <if test="communityid != null ">
+        community = #{community,jdbcType=BIGINT}
+      </if>
+      <if test="name != null and name.length() > 0">
+        and name like "%" #{name,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="idcard != null and idcard.length() > 0">
+        and idcard like "%" #{idcard,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="imsiIds != null and imsiIds.size() > 0">
+        and imsi in
+        <foreach collection="list" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
+      </if>
+      <if test="phoneIds != null and phoneIds.size() > 0">
+        and phone in
+        <foreach collection="list" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
+      </if>
+    </where>
+  </select>
   <insert id="insert" parameterType="com.hzgc.service.people.model.People" useGeneratedKeys="true" keyProperty="id">
     insert into t_people (id, name, idcard, 
       region, household, address, 
