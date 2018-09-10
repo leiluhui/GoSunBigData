@@ -18,11 +18,11 @@ public class FaceExtractService {
 
     public FaceExtractService() {
         try {
-            log.info("Start NativeFunction init....");
+            log.info("Start FaceFunction init....");
              FaceFunction.init();
-            log.info("Init NativeFunction successful!");
+            log.info("Init FaceFunction successful!");
         } catch (Exception e) {
-            log.error("Init NativeFunction failure!");
+            log.error("Init FaceFunction failure!");
             e.printStackTrace();
         }
     }
