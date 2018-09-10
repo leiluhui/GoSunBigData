@@ -1,301 +1,237 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.PeopleMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.People" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="idcard" property="idcard" jdbcType="VARCHAR" />
-    <result column="region" property="region" jdbcType="BIGINT" />
-    <result column="household" property="household" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="sex" property="sex" jdbcType="INTEGER" />
-    <result column="age" property="age" jdbcType="INTEGER" />
-    <result column="birthday" property="birthday" jdbcType="DATE" />
-    <result column="politic" property="politic" jdbcType="INTEGER" />
-    <result column="edulevel" property="edulevel" jdbcType="INTEGER" />
-    <result column="job" property="job" jdbcType="VARCHAR" />
-    <result column="birthplace" property="birthplace" jdbcType="VARCHAR" />
-    <result column="community" property="community" jdbcType="BIGINT" />
-    <result column="flag" property="flag" jdbcType="BIGINT" />
-    <result column="idcardpic" property="idcardpic" jdbcType="BIGINT" />
-    <result column="capturepic" property="capturepic" jdbcType="BIGINT" />
-    <result column="imsi" property="imsi" jdbcType="BIGINT" />
-    <result column="phone" property="phone" jdbcType="BIGINT" />
-    <result column="house" property="house" jdbcType="BIGINT" />
-    <result column="car" property="car" jdbcType="BIGINT" />
-    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
-    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel, 
-    job, birthplace, community, flag, idcardpic, capturepic, imsi, phone, house, car, 
-    createtime, updatetime
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_people
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.People" useGeneratedKeys="true" keyProperty="id">
-    insert into t_people (id, name, idcard, 
-      region, household, address, 
-      sex, age, birthday, politic, 
-      edulevel, job, birthplace, 
-      community, flag, idcardpic, 
-      capturepic, imsi, phone, 
-      house, car, createtime, 
-      updatetime)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, 
-      #{region,jdbcType=BIGINT}, #{household,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{birthday,jdbcType=DATE}, #{politic,jdbcType=INTEGER}, 
-      #{edulevel,jdbcType=INTEGER}, #{job,jdbcType=VARCHAR}, #{birthplace,jdbcType=VARCHAR}, 
-      #{community,jdbcType=BIGINT}, #{flag,jdbcType=BIGINT}, #{idcardpic,jdbcType=BIGINT}, 
-      #{capturepic,jdbcType=BIGINT}, #{imsi,jdbcType=BIGINT}, #{phone,jdbcType=BIGINT}, 
-      #{house,jdbcType=BIGINT}, #{car,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.People" useGeneratedKeys="true" keyProperty="id">>
-    insert into t_people
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="idcard != null" >
-        idcard,
-      </if>
-      <if test="region != null" >
-        region,
-      </if>
-      <if test="household != null" >
-        household,
-      </if>
-      <if test="address != null" >
-        address,
-      </if>
-      <if test="sex != null" >
-        sex,
-      </if>
-      <if test="age != null" >
-        age,
-      </if>
-      <if test="birthday != null" >
-        birthday,
-      </if>
-      <if test="politic != null" >
-        politic,
-      </if>
-      <if test="edulevel != null" >
-        edulevel,
-      </if>
-      <if test="job != null" >
-        job,
-      </if>
-      <if test="birthplace != null" >
-        birthplace,
-      </if>
-      <if test="community != null" >
-        community,
-      </if>
-      <if test="flag != null" >
-        flag,
-      </if>
-      <if test="idcardpic != null" >
-        idcardpic,
-      </if>
-      <if test="capturepic != null" >
-        capturepic,
-      </if>
-      <if test="imsi != null" >
-        imsi,
-      </if>
-      <if test="phone != null" >
-        phone,
-      </if>
-      <if test="house != null" >
-        house,
-      </if>
-      <if test="car != null" >
-        car,
-      </if>
-      <if test="createtime != null" >
-        createtime,
-      </if>
-      <if test="updatetime != null" >
-        updatetime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="idcard != null" >
-        #{idcard,jdbcType=VARCHAR},
-      </if>
-      <if test="region != null" >
-        #{region,jdbcType=BIGINT},
-      </if>
-      <if test="household != null" >
-        #{household,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null" >
-        #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="age != null" >
-        #{age,jdbcType=INTEGER},
-      </if>
-      <if test="birthday != null" >
-        #{birthday,jdbcType=DATE},
-      </if>
-      <if test="politic != null" >
-        #{politic,jdbcType=INTEGER},
-      </if>
-      <if test="edulevel != null" >
-        #{edulevel,jdbcType=INTEGER},
-      </if>
-      <if test="job != null" >
-        #{job,jdbcType=VARCHAR},
-      </if>
-      <if test="birthplace != null" >
-        #{birthplace,jdbcType=VARCHAR},
-      </if>
-      <if test="community != null" >
-        #{community,jdbcType=BIGINT},
-      </if>
-      <if test="flag != null" >
-        #{flag,jdbcType=BIGINT},
-      </if>
-      <if test="idcardpic != null" >
-        #{idcardpic,jdbcType=BIGINT},
-      </if>
-      <if test="capturepic != null" >
-        #{capturepic,jdbcType=BIGINT},
-      </if>
-      <if test="imsi != null" >
-        #{imsi,jdbcType=BIGINT},
-      </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=BIGINT},
-      </if>
-      <if test="house != null" >
-        #{house,jdbcType=BIGINT},
-      </if>
-      <if test="car != null" >
-        #{car,jdbcType=BIGINT},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.People" >
-    update t_people
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="idcard != null" >
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.People" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="idcard" property="idcard" jdbcType="VARCHAR" />
+        <result column="region" property="region" jdbcType="BIGINT" />
+        <result column="household" property="household" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="VARCHAR" />
+        <result column="age" property="age" jdbcType="INTEGER" />
+        <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+        <result column="politic" property="politic" jdbcType="VARCHAR" />
+        <result column="edulevel" property="edulevel" jdbcType="VARCHAR" />
+        <result column="job" property="job" jdbcType="VARCHAR" />
+        <result column="birthplace" property="birthplace" jdbcType="VARCHAR" />
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
+        job, birthplace, createtime, updatetime
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from t_people
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="searchPeople" resultMap="BaseResultMap" parameterType="com.hzgc.service.people.param.FilterField" >
+        select
+        <include refid="Base_Column_List" />
+        from t_people
+        <where>
+            <if test="regionid != null ">
+                region = #{region,jdbcType=BIGINT}
+            </if>
+            <if test="communityid != null ">
+                and community = #{community,jdbcType=BIGINT}
+            </if>
+            <if test="name != null and name.length() > 0">
+                and name like "%" #{name,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="idcard != null and idcard.length() > 0">
+                and idcard like "%" #{idcard,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="peopleIds != null and peopleIds.size() > 0">
+                and id in
+                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+        delete from t_people
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.People" >
+        insert into t_people (id, name, idcard,
+        region, household, address,
+        sex, age, birthday,
+        politic, edulevel, job,
+        birthplace, createtime, updatetime
+        )
+        values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR},
+        #{region,jdbcType=BIGINT}, #{household,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+        #{sex,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{birthday,jdbcType=VARCHAR},
+        #{politic,jdbcType=VARCHAR}, #{edulevel,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR},
+        #{birthplace,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.People" >
+        insert into t_people
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="idcard != null" >
+                idcard,
+            </if>
+            <if test="region != null" >
+                region,
+            </if>
+            <if test="household != null" >
+                household,
+            </if>
+            <if test="address != null" >
+                address,
+            </if>
+            <if test="sex != null" >
+                sex,
+            </if>
+            <if test="age != null" >
+                age,
+            </if>
+            <if test="birthday != null" >
+                birthday,
+            </if>
+            <if test="politic != null" >
+                politic,
+            </if>
+            <if test="edulevel != null" >
+                edulevel,
+            </if>
+            <if test="job != null" >
+                job,
+            </if>
+            <if test="birthplace != null" >
+                birthplace,
+            </if>
+            <if test="createtime != null" >
+                createtime,
+            </if>
+            <if test="updatetime != null" >
+                updatetime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null" >
+                #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null" >
+                #{region,jdbcType=BIGINT},
+            </if>
+            <if test="household != null" >
+                #{household,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null" >
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="birthday != null" >
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="politic != null" >
+                #{politic,jdbcType=VARCHAR},
+            </if>
+            <if test="edulevel != null" >
+                #{edulevel,jdbcType=VARCHAR},
+            </if>
+            <if test="job != null" >
+                #{job,jdbcType=VARCHAR},
+            </if>
+            <if test="birthplace != null" >
+                #{birthplace,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null" >
+                #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null" >
+                #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.People" >
+        update t_people
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null" >
+                idcard = #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null" >
+                region = #{region,jdbcType=BIGINT},
+            </if>
+            <if test="household != null" >
+                household = #{household,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null" >
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="birthday != null" >
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="politic != null" >
+                politic = #{politic,jdbcType=VARCHAR},
+            </if>
+            <if test="edulevel != null" >
+                edulevel = #{edulevel,jdbcType=VARCHAR},
+            </if>
+            <if test="job != null" >
+                job = #{job,jdbcType=VARCHAR},
+            </if>
+            <if test="birthplace != null" >
+                birthplace = #{birthplace,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null" >
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null" >
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.People" >
+        update t_people
+        set name = #{name,jdbcType=VARCHAR},
         idcard = #{idcard,jdbcType=VARCHAR},
-      </if>
-      <if test="region != null" >
         region = #{region,jdbcType=BIGINT},
-      </if>
-      <if test="household != null" >
         household = #{household,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
         address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null" >
-        sex = #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="age != null" >
+        sex = #{sex,jdbcType=VARCHAR},
         age = #{age,jdbcType=INTEGER},
-      </if>
-      <if test="birthday != null" >
-        birthday = #{birthday,jdbcType=DATE},
-      </if>
-      <if test="politic != null" >
-        politic = #{politic,jdbcType=INTEGER},
-      </if>
-      <if test="edulevel != null" >
-        edulevel = #{edulevel,jdbcType=INTEGER},
-      </if>
-      <if test="job != null" >
+        birthday = #{birthday,jdbcType=VARCHAR},
+        politic = #{politic,jdbcType=VARCHAR},
+        edulevel = #{edulevel,jdbcType=VARCHAR},
         job = #{job,jdbcType=VARCHAR},
-      </if>
-      <if test="birthplace != null" >
         birthplace = #{birthplace,jdbcType=VARCHAR},
-      </if>
-      <if test="community != null" >
-        community = #{community,jdbcType=BIGINT},
-      </if>
-      <if test="flag != null" >
-        flag = #{flag,jdbcType=BIGINT},
-      </if>
-      <if test="idcardpic != null" >
-        idcardpic = #{idcardpic,jdbcType=BIGINT},
-      </if>
-      <if test="capturepic != null" >
-        capturepic = #{capturepic,jdbcType=BIGINT},
-      </if>
-      <if test="imsi != null" >
-        imsi = #{imsi,jdbcType=BIGINT},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=BIGINT},
-      </if>
-      <if test="house != null" >
-        house = #{house,jdbcType=BIGINT},
-      </if>
-      <if test="car != null" >
-        car = #{car,jdbcType=BIGINT},
-      </if>
-      <if test="createtime != null" >
         createtime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.People" >
-    update t_people
-    set name = #{name,jdbcType=VARCHAR},
-      idcard = #{idcard,jdbcType=VARCHAR},
-      region = #{region,jdbcType=BIGINT},
-      household = #{household,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=INTEGER},
-      age = #{age,jdbcType=INTEGER},
-      birthday = #{birthday,jdbcType=DATE},
-      politic = #{politic,jdbcType=INTEGER},
-      edulevel = #{edulevel,jdbcType=INTEGER},
-      job = #{job,jdbcType=VARCHAR},
-      birthplace = #{birthplace,jdbcType=VARCHAR},
-      community = #{community,jdbcType=BIGINT},
-      flag = #{flag,jdbcType=BIGINT},
-      idcardpic = #{idcardpic,jdbcType=BIGINT},
-      capturepic = #{capturepic,jdbcType=BIGINT},
-      imsi = #{imsi,jdbcType=BIGINT},
-      phone = #{phone,jdbcType=BIGINT},
-      house = #{house,jdbcType=BIGINT},
-      car = #{car,jdbcType=BIGINT},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>

@@ -1,6 +1,6 @@
 package com.hzgc.service.dynperson.bean;
 
-import com.hzgc.jniface.PersonAttribute;
+import com.hzgc.jniface.PersonAttributes;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,6 +19,6 @@ public class Pictures implements Serializable {
 
     private String time;
 
-    private List<PersonAttribute> personAttributes;
+    private List<PersonAttributes> personAttributes;
 
 }

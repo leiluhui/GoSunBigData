@@ -73,7 +73,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hzgc.service.address.CollectApplication</mainClass>
+                    <mainClass>com.hzgc.service.collect.CollectApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

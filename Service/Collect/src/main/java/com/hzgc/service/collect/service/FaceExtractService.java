@@ -3,7 +3,6 @@ package com.hzgc.service.collect.service;
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.NativeFunction;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.collect.util.FtpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +18,11 @@ public class FaceExtractService {
 
     public FaceExtractService() {
         try {
-            log.info("Start NativeFunction init....");
-             NativeFunction.init();
-            log.info("Init NativeFunction successful!");
+            log.info("Start FaceFunction init....");
+             FaceFunction.init();
+            log.info("Init FaceFunction successful!");
         } catch (Exception e) {
-            log.error("Init NativeFunction failure!");
+            log.error("Init FaceFunction failure!");
             e.printStackTrace();
         }
     }

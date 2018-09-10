@@ -9,7 +9,7 @@ public class PersonPictureData implements Serializable {
 
     private String imageID;
 
-    private List<PersonAttribute> personAttribute;
+    private List<PersonAttributes> personAttributes;
 
     public byte[] getImageData() {
         return imageData;
@@ -27,11 +27,11 @@ public class PersonPictureData implements Serializable {
         this.imageID = imageID;
     }
 
-    public List<PersonAttribute> getPersonAttribute() {
-        return personAttribute;
+    public List<PersonAttributes> getPersonAttributes() {
+        return personAttributes;
     }
 
-    public void setPersonAttribute(List<PersonAttribute> personAttribute) {
-        this.personAttribute = personAttribute;
+    public void setPersonAttributes(List<PersonAttributes> personAttributes) {
+        this.personAttributes = personAttributes;
     }
 }

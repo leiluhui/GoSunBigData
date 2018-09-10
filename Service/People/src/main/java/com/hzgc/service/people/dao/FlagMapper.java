@@ -1,10 +1,9 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Flag;
-import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
 public interface FlagMapper {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Flag record);
 

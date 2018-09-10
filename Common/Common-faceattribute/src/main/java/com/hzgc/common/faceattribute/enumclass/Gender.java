@@ -6,11 +6,11 @@ import com.hzgc.common.faceattribute.bean.Logistic;
 import java.io.Serializable;
 
 /**
- * 性别：0->无；1->男；2->女；
+ * 性别：0->女；1->男；
  */
 public enum Gender implements Serializable {
 
-    None(0), Male(1), Female(2);
+    Male(1), Female(0);
 
     private int value;
 
@@ -45,7 +45,7 @@ public enum Gender implements Serializable {
                 return gender;
             }
         }
-        return Gender.None;
+        return null;
     }
 
     /**
@@ -55,9 +55,7 @@ public enum Gender implements Serializable {
      * @return 属性描述信息
      */
     public static String getDesc(Gender gender) {
-        if (gender == Gender.None) {
-            return "无";
-        } else if (gender == Gender.Male) {
+        if (gender == Gender.Male) {
             return "男";
         } else if (gender == Gender.Female) {
             return "女";

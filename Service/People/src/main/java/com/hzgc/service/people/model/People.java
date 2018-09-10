@@ -3,7 +3,7 @@ package com.hzgc.service.people.model;
 import java.util.Date;
 
 public class People {
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -15,46 +15,30 @@ public class People {
 
     private String address;
 
-    private Integer sex;
+    private String sex;
 
     private Integer age;
 
-    private Date birthday;
+    private String birthday;
 
-    private Integer politic;
+    private String politic;
 
-    private Integer edulevel;
+    private String edulevel;
 
     private String job;
 
     private String birthplace;
 
-    private Long community;
-
-    private Long flag;
-
-    private Long idcardpic;
-
-    private Long capturepic;
-
-    private Long imsi;
-
-    private Long phone;
-
-    private Long house;
-
-    private Long car;
-
     private Date createtime;
 
     private Date updatetime;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
     }
 
     public String getName() {
@@ -97,12 +81,12 @@ public class People {
         this.address = address == null ? null : address.trim();
     }
 
-    public Integer getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Integer sex) {
-        this.sex = sex;
+    public void setSex(String sex) {
+        this.sex = sex == null ? null : sex.trim();
     }
 
     public Integer getAge() {
@@ -113,28 +97,28 @@ public class People {
         this.age = age;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday == null ? null : birthday.trim();
     }
 
-    public Integer getPolitic() {
+    public String getPolitic() {
         return politic;
     }
 
-    public void setPolitic(Integer politic) {
-        this.politic = politic;
+    public void setPolitic(String politic) {
+        this.politic = politic == null ? null : politic.trim();
     }
 
-    public Integer getEdulevel() {
+    public String getEdulevel() {
         return edulevel;
     }
 
-    public void setEdulevel(Integer edulevel) {
-        this.edulevel = edulevel;
+    public void setEdulevel(String edulevel) {
+        this.edulevel = edulevel == null ? null : edulevel.trim();
     }
 
     public String getJob() {
@@ -151,70 +135,6 @@ public class People {
 
     public void setBirthplace(String birthplace) {
         this.birthplace = birthplace == null ? null : birthplace.trim();
-    }
-
-    public Long getCommunity() {
-        return community;
-    }
-
-    public void setCommunity(Long community) {
-        this.community = community;
-    }
-
-    public Long getFlag() {
-        return flag;
-    }
-
-    public void setFlag(Long flag) {
-        this.flag = flag;
-    }
-
-    public Long getIdcardpic() {
-        return idcardpic;
-    }
-
-    public void setIdcardpic(Long idcardpic) {
-        this.idcardpic = idcardpic;
-    }
-
-    public Long getCapturepic() {
-        return capturepic;
-    }
-
-    public void setCapturepic(Long capturepic) {
-        this.capturepic = capturepic;
-    }
-
-    public Long getImsi() {
-        return imsi;
-    }
-
-    public void setImsi(Long imsi) {
-        this.imsi = imsi;
-    }
-
-    public Long getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Long phone) {
-        this.phone = phone;
-    }
-
-    public Long getHouse() {
-        return house;
-    }
-
-    public void setHouse(Long house) {
-        this.house = house;
-    }
-
-    public Long getCar() {
-        return car;
-    }
-
-    public void setCar(Long car) {
-        this.car = car;
     }
 
     public Date getCreatetime() {

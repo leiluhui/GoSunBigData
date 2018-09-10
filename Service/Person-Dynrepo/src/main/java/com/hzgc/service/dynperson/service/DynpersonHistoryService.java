@@ -2,7 +2,7 @@ package com.hzgc.service.dynperson.service;
 
 import com.hzgc.common.facedynrepo.PersonTable;
 import com.hzgc.common.util.uuid.UuidUtil;
-import com.hzgc.jniface.PersonAttribute;
+import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.service.dynperson.bean.*;
 import com.hzgc.service.dynperson.dao.ElasticSearchDao;
 import com.hzgc.service.dynperson.dao.EsSearchParam;
@@ -71,7 +71,7 @@ public class DynpersonHistoryService {
                 pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipcid).getName());
                 pictures.setTime(timestamp);
 
-                List<PersonAttribute> personAttributes = getPersonAttributes(hit);
+                List<PersonAttributes> personAttributes = getPersonAttributes(hit);
 
                 pictures.setPersonAttributes(personAttributes);
                 picturesList.add(pictures);
@@ -104,7 +104,7 @@ public class DynpersonHistoryService {
                 pictures.setDeviceId(captureOption.getIpcMappingDevice().get(ipc).getId());
                 pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipc).getName());
                 pictures.setTime(timestamp);
-                List<PersonAttribute> personAttributes = getPersonAttributes(hit);
+                List<PersonAttributes> personAttributes = getPersonAttributes(hit);
                 pictures.setPersonAttributes(personAttributes);
                 picturesList.add(pictures);
             }
@@ -141,7 +141,7 @@ public class DynpersonHistoryService {
                         pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipc).getName());
                     }
 
-                    List<PersonAttribute> personAttributes = getPersonAttributes(hit);
+                    List<PersonAttributes> personAttributes = getPersonAttributes(hit);
                     pictures.setPersonAttributes(personAttributes);
 
                     pictures.setTime(timestamp);
@@ -166,9 +166,9 @@ public class DynpersonHistoryService {
         return  singleResults;
     }
 
-    private List<PersonAttribute> getPersonAttributes(SearchHit hit) {
-        List<PersonAttribute> personAttributes = new ArrayList<>();
-        PersonAttribute personAttribute = new PersonAttribute();
+    private List<PersonAttributes> getPersonAttributes(SearchHit hit) {
+        List<PersonAttributes> personAttributes = new ArrayList<>();
+        PersonAttributes personAttribute = new PersonAttributes();
         personAttribute.setAge((String) hit.getSource().get(PersonTable.AGE));
         personAttribute.setHair((String) hit.getSource().get(PersonTable.HAIR));
         personAttribute.setBaby((String) hit.getSource().get(PersonTable.BABY));

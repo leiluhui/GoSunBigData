@@ -48,24 +48,20 @@ public class PutDataToEs implements Serializable {
         int timeslot = faceObject.getTimeSlot();
         String date = faceObject.getDate();
         IndexResponse indexResponse = new IndexResponse();
-        Map<String, Object> map = new HashMap<>();
+        Map <String, Object> map = new HashMap <>();
         FaceAttribute faceAttr = faceObject.getAttribute();
-        int haircolor = faceAttr.getHairColor();
-        map.put(DynamicTable.HAIRCOLOR, haircolor);
+        int age = faceAttr.getAge();
+        map.put(DynamicTable.AGE, age);
+        int mask = faceAttr.getMask();
+        map.put(DynamicTable.MASK, mask);
         int eyeglasses = faceAttr.getEyeglasses();
         map.put(DynamicTable.EYEGLASSES, eyeglasses);
         int gender = faceAttr.getGender();
         map.put(DynamicTable.GENDER, gender);
-        int hairstyle = faceAttr.getHairStyle();
-        map.put(DynamicTable.HAIRSTYLE, hairstyle);
-        int hat = faceAttr.getHat();
-        map.put(DynamicTable.HAT, hat);
         int huzi = faceAttr.getHuzi();
         map.put(DynamicTable.HUZI, huzi);
-        int tie = faceAttr.getTie();
         int sharpness = faceAttr.getSharpness();
         map.put(DynamicTable.SHARPNESS, sharpness);
-        map.put(DynamicTable.TIE, tie);
         map.put(DynamicTable.DATE, date);
         map.put(DynamicTable.TIMESTAMP, timestamp);
         map.put(DynamicTable.IPCID, ipcid);
@@ -83,7 +79,7 @@ public class PutDataToEs implements Serializable {
 
     public int upDateDataToEs(String ftpurl, String cluserId, String alarmTime, int alarmId) {
         UpdateResponse updateResponse = new UpdateResponse();
-        Map<String, Object> map = new HashMap<>();
+        Map <String, Object> map = new HashMap <>();
         map.put(DynamicTable.ALARM_ID, alarmId);
         map.put(DynamicTable.ALARM_TIME, alarmTime);
         map.put(DynamicTable.CLUSTERING_ID, cluserId);
@@ -98,7 +94,7 @@ public class PutDataToEs implements Serializable {
         }
     }
 
-    public  int putAlarmDataToEs (String ftpurl, AlarmMessage alarmMessage){
+    public int putAlarmDataToEs(String ftpurl, AlarmMessage alarmMessage) {
         String alarmType = alarmMessage.getAlarmType();
         String alarmTime = alarmMessage.getAlarmTime();
         String ipcId = alarmMessage.getIpcID();
@@ -110,21 +106,21 @@ public class PutDataToEs implements Serializable {
         String staticObjectType = alarmMessage.getObjectType();
         Integer flag = alarmMessage.getFlag();
         Integer confirm = alarmMessage.getConfirm();
-        Map<String,Object> map = new HashMap<>();
-        map.put(AlarmTable.ALARM_TYPE,alarmType);
-        map.put(AlarmTable.ALARM_TIME,alarmTime);
-        map.put(AlarmTable.IPC_ID,ipcId);
-        map.put(AlarmTable.HOST_NAME,hostname);
-        map.put(AlarmTable.BIG_PICTURE_URL,burl);
-        map.put(AlarmTable.SMALL_PICTURE,surl);
-        map.put(AlarmTable.SIMILARITY,sim);
-        map.put(AlarmTable.STATIC_ID,staticId);
-        map.put(AlarmTable.OBJECT_TYPE,staticObjectType);
-        map.put(AlarmTable.FLAG,flag);
-        map.put(AlarmTable.CONFIRM,confirm);
+        Map <String, Object> map = new HashMap <>();
+        map.put(AlarmTable.ALARM_TYPE, alarmType);
+        map.put(AlarmTable.ALARM_TIME, alarmTime);
+        map.put(AlarmTable.IPC_ID, ipcId);
+        map.put(AlarmTable.HOST_NAME, hostname);
+        map.put(AlarmTable.BIG_PICTURE_URL, burl);
+        map.put(AlarmTable.SMALL_PICTURE, surl);
+        map.put(AlarmTable.SIMILARITY, sim);
+        map.put(AlarmTable.STATIC_ID, staticId);
+        map.put(AlarmTable.OBJECT_TYPE, staticObjectType);
+        map.put(AlarmTable.FLAG, flag);
+        map.put(AlarmTable.CONFIRM, confirm);
         IndexResponse indexResponse = new IndexResponse();
         if (ftpurl != null) {
-            indexResponse = esClient.prepareIndex(AlarmTable.INDEX,AlarmTable.REC_TYPE,ftpurl).setSource(map).get();
+            indexResponse = esClient.prepareIndex(AlarmTable.INDEX, AlarmTable.REC_TYPE, ftpurl).setSource(map).get();
         }
         if (indexResponse.getVersion() == 1) {
             return 1;

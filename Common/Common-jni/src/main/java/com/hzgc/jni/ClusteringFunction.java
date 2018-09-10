@@ -2,6 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 
+@Deprecated
 public class ClusteringFunction implements Serializable {
 
     /**

@@ -2,7 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 import java.util.List;
-
+@Deprecated
 public class CarPictureData implements Serializable {
     private String imageID;                          // 车辆大图ID
     private byte[] imageData;                        // 车辆大图

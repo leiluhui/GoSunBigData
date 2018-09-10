@@ -2,6 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 
+@Deprecated
 public class NativeFunction implements Serializable {
 
     /**
@@ -20,6 +21,6 @@ public class NativeFunction implements Serializable {
     public static native float compare(float[] currentFeature, float[] historyFeature);
 
     static {
-        System.loadLibrary("FaceLib");
+        System.loadLibrary("JNILIB");
     }
 }

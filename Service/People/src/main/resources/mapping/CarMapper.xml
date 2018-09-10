@@ -3,11 +3,11 @@
 <mapper namespace="com.hzgc.service.people.dao.CarMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Car" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="carid" property="carid" jdbcType="BIGINT" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
     <result column="car" property="car" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, carid, car
+    id, peopleid, car
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -15,9 +15,15 @@
     from t_car
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_car
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.hzgc.service.people.model.Car" >
-    insert into t_car (id, carid, car)
-    values (#{id,jdbcType=BIGINT}, #{carid,jdbcType=BIGINT}, #{car,jdbcType=VARCHAR})
+    insert into t_car (id, peopleid, car
+      )
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{car,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Car" >
     insert into t_car
@@ -25,8 +31,8 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="carid != null" >
-        carid,
+      <if test="peopleid != null" >
+        peopleid,
       </if>
       <if test="car != null" >
         car,
@@ -36,8 +42,8 @@
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="carid != null" >
-        #{carid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="car != null" >
         #{car,jdbcType=VARCHAR},
@@ -47,8 +53,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Car" >
     update t_car
     <set >
-      <if test="carid != null" >
-        carid = #{carid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="car != null" >
         car = #{car,jdbcType=VARCHAR},
@@ -58,7 +64,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Car" >
     update t_car
-    set carid = #{carid,jdbcType=BIGINT},
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
       car = #{car,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
