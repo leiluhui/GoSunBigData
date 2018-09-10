@@ -11,38 +11,36 @@ public class FaceAttribute implements Serializable {
     //bit类型的特征值
     private byte[] bitFeature;
 
-    //头发颜色
-    private int hairColor;
-
-    /**
-     * 头发类型
-     */
-    private int hairStyle;
-
     /**
      * 性别
+     * 0女性
+     * 1男性
      */
     private int gender;
 
     /**
-     * 是否带帽子
-     */
-    private int hat;
-
-    /**
-     * 是否系领带
-     */
-    private int tie;
-
-    /**
-     * 胡子类型
+     * 是否有胡子
+     * 0没有胡子
+     * 1有胡子
      */
     private int huzi;
 
+    /*
+    * 是否有口罩
+    * 0没有口罩
+    * 1有口罩
+    * */
+    private int mask;
+
     /**
      * 是否戴眼镜
+     * 0没有眼镜
+     * 1有眼镜
      */
     private int eyeglasses;
+
+    //年龄
+    private int age;
 
     /**
      * 清晰度评价,清晰为0，不清晰为1
@@ -73,44 +71,12 @@ public class FaceAttribute implements Serializable {
         this.bitFeature = bitFeature;
     }
 
-    public int getHairColor() {
-        return hairColor;
-    }
-
-    public void setHairColor(int hairColor) {
-        this.hairColor = hairColor;
-    }
-
-    public int getHairStyle() {
-        return hairStyle;
-    }
-
-    public void setHairStyle(int hairStyle) {
-        this.hairStyle = hairStyle;
-    }
-
     public int getGender() {
         return gender;
     }
 
     public void setGender(int gender) {
         this.gender = gender;
-    }
-
-    public int getHat() {
-        return hat;
-    }
-
-    public void setHat(int hat) {
-        this.hat = hat;
-    }
-
-    public int getTie() {
-        return tie;
-    }
-
-    public void setTie(int tie) {
-        this.tie = tie;
     }
 
     public int getHuzi() {
@@ -129,18 +95,32 @@ public class FaceAttribute implements Serializable {
         this.eyeglasses = eyeglasses;
     }
 
+    public int getMask() {
+        return mask;
+    }
+
+    public void setMask(int mask) {
+        this.mask = mask;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
         return "FaceAttribute{" +
                 "feature=" + Arrays.toString(feature) +
-                "bitFeature=" + Arrays.toString(bitFeature) +
-                ", hairColor=" + hairColor +
-                ", hairStyle=" + hairStyle +
+                ", bitFeature=" + Arrays.toString(bitFeature) +
                 ", gender=" + gender +
-                ", hat=" + hat +
-                ", tie=" + tie +
                 ", huzi=" + huzi +
+                ", mask=" + mask +
                 ", eyeglasses=" + eyeglasses +
+                ", age=" + age +
                 ", sharpness=" + sharpness +
                 '}';
     }
