@@ -27,6 +27,10 @@ public class DynamicTable implements Serializable {
     public static final String EYEGLASSES = "eyeglasses";
     //人脸属性-性别 男或女
     public static final String GENDER = "gender";
+    //人脸属性-年龄 1-150
+    public static final String AGE = "age";
+    //人俩属性-是否有口罩
+    public static final String MASK = "mask";
     //人脸属性-头发颜色
     public static final String HAIRCOLOR = "haircolor";
     //人脸属性-头发类型

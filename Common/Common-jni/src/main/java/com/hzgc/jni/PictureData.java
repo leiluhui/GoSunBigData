@@ -2,6 +2,7 @@ package com.hzgc.jni;
 
 import java.io.Serializable;
 
+@Deprecated
 public class PictureData implements Serializable {
     //图片ID
     private String imageID;

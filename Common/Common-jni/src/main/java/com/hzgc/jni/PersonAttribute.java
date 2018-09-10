@@ -1,5 +1,6 @@
 package com.hzgc.jni;
 
+@Deprecated
 public class PersonAttribute {
 
     private String age;
