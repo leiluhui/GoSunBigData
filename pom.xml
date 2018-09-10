@@ -20,6 +20,7 @@
         <module>StaRepoService</module>
         <module>FaceCompare</module>
         <module>Distribution</module>
+        <module>Common</module>
     </modules>
 
     <properties>

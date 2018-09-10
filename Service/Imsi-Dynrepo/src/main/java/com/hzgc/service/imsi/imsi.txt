@@ -1,0 +1,65 @@
+curl -XPUT 's105:9200/imsi?pretty' -H 'Content-Type: application/json' -d'
+{
+    "settings": {
+	    "number_of_shards":5,
+        "number_of_replicas":1,
+        "analysis": {
+            "filter": {
+                "trigrams_filter": {
+                    "type": "ngram",
+                    "min_gram": 2,
+                    "max_gram": 20
+                }
+            },
+            "analyzer": {
+                "trigrams": {
+                    "type":      "custom",
+                    "tokenizer": "standard",
+                    "filter":   [
+                        "lowercase",
+                        "trigrams_filter"
+                    ]
+                }
+            }
+        }
+    },
+    "mappings": {
+         "recognize": {
+         		"properties": {
+         			"sn": {
+         				"type": "keyword"
+         			},
+         			"imsi": {
+         				"type": "keyword"
+         			},
+         			"imei": {
+         				"type": "keyword"
+         			},
+         			"mscId": {
+                        "type": "keyword"
+                    },
+                    "lac": {
+                        "type": "keyword"
+                    },
+                    "cellId": {
+                         "type": "keyword"
+                    },
+                    "freq": {
+                         "type": "keyword"
+                    },
+                    "biscOrPci": {
+                         "type": "keyword"
+                    },
+                    "attach": {
+                          "type": "keyword"
+                    },
+                    "standard": {
+                          "type": "keyword"
+                    },
+                    "time": {
+                          "type": "keyword"
+                    }
+         		}
+         	}
+        }
+    }
