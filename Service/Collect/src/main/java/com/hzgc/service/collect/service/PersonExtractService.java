@@ -1,7 +1,7 @@
 package com.hzgc.service.collect.service;
 
 import com.hzgc.common.util.uuid.UuidUtil;
-import com.hzgc.jniface.PersonAttribute;
+import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.personbean.Person;
@@ -34,11 +34,11 @@ public class PersonExtractService {
         personPictureData.setImageID(UuidUtil.getUuid());
         personPictureData.setImageData(imageBytes);
         List<Person> list = imageResult.getPersonList();
-        List<PersonAttribute> personAttributes = new ArrayList<>();
+        List<PersonAttributes> personAttributes = new ArrayList<>();
         if (list != null && list.size() > 0) {
             for (Person person : list) {
                 if (person != null) {
-                    PersonAttribute personAttribute = new PersonAttribute();
+                    PersonAttributes personAttribute = new PersonAttributes();
                     personAttribute.setAge(person.getAge_code());
                     personAttribute.setBaby(person.getBaby_code());
                     personAttribute.setBag(person.getBag_code());
@@ -59,7 +59,7 @@ public class PersonExtractService {
                 }
             }
         }
-        personPictureData.setPersonAttribute(personAttributes);
+        personPictureData.setPersonAttributes(personAttributes);
         return personPictureData;
     }
 }

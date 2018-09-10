@@ -75,79 +75,81 @@ SPARK_LOG_FILE=${SPARK_LOG_DIR}/config-cluster.log
 mkdir -p ${SPARK_LOG_DIR}
 mkdir -p ${COMMON_LOG_DIR}
 mkdir -p ${SERVICE_LOG_DIR}
-## address模块部署目录
-ADDRESS_DIR=${SERVICE_DIR}/common/address
-ADDRESS_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/address
-ADDRESS_BIN_DIR=${ADDRESS_DIR}/bin                                ##address模块脚本存放目录
-ADDRESS_START_FILE=${ADDRESS_BIN_DIR}/start-address.sh            ##address模块启动脚本
-ADDRESS_CONF_DIR=${ADDRESS_DIR}/conf                              ##address模块conf目录
-ADDRESS_PRO_FILE=${ADDRESS_CONF_DIR}/application-pro.properties   ##address模块配置文件
+
+## clever-eyes服务
 ## alarm模块部署目录
-ALARM_DIR=${SERVICE_DIR}/face/alarm
-ALARM_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/alarm
+ALARM_DIR=${SERVICE_DIR}/Clever-esys/alarm
+ALARM_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-esys/alarm
 ALARM_BIN_DIR=${ALARM_DIR}/bin                           ##alarm模块脚本存放目录
 ALARM_START_FILE=${ALARM_BIN_DIR}/start-alarm.sh       ##alarm模块启动脚本
 ALARM_CONF_DIR=${ALARM_DIR}/conf                       ##alarm模块conf目录
 ALARM_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##alarm模块配置文件
-## peoplemanager模块部署目录
-CLUSTERING_DIR=${SERVICE_DIR}/face/peoplemanager
-CLUSTERING_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/peoplemanager
-CLUSTERING_BIN_DIR=${CLUSTERING_DIR}/bin                                ##peoplemanager模块脚本存放目录
-CLUSTERING_START_FILE=${CLUSTERING_BIN_DIR}/start-peoplemanager.sh         ##peoplemanager模块启动脚本
-CLUSTERING_CONF_DIR=${CLUSTERING_DIR}/conf                              ##peoplemanager模块conf目录
-CLUSTERING_PRO_FILE=${CLUSTERING_CONF_DIR}/application-pro.properties   ##peoplemanager模块配置文件
-## dispatch模块部署目录
-DISPATCH_DIR=${SERVICE_DIR}/face/dispatch
-DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dispatch
-DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin                           ##dispatch模块脚本存放目录
-DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-dispatch.sh       ##dispatch模块启动脚本
-DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##dispatch模块conf目录
-DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##dispatch模块配置文件
-## dynrepo模块部署目录
-DYNREPO_DIR=${SERVICE_DIR}/face/dynRepo
-DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynRepo
+## face-dispatch模块部署目录
+DISPATCH_DIR=${SERVICE_DIR}/Clever-eyes/face-dispatch
+DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/face-dispatch
+DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin                           ##face-dispatch模块脚本存放目录
+DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-face-dispatch.sh       ##face-dispatch模块启动脚本
+DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##face-dispatch模块conf目录
+DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##face-dispatch模块配置文件
+## face-dynrepo模块部署目录
+DYNREPO_DIR=${SERVICE_DIR}/Clever-eyes/face-dynRepo
+DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/face-dynRepo
 DYNREPO_BIN_DIR=${DYNREPO_DIR}/bin                           ##dynrepo模块脚本存放目录
-DYNREPO_START_FILE=${DYNREPO_BIN_DIR}/start-dynrepo.sh       ##dynrepo模块启动脚本
+DYNREPO_START_FILE=${DYNREPO_BIN_DIR}/start-face-dynrepo.sh       ##dynrepo模块启动脚本
 DYNREPO_CONF_DIR=${DYNREPO_DIR}/conf                         ##dynrepo模块conf目录
 DYNREPO_PRO_FILE=${DYNREPO_CONF_DIR}/application-pro.properties   ##dynrepo模块配置文件
-## face模块部署目录
-FACE_DIR=${SERVICE_DIR}/common/face
-FACE_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/face
-FACE_BIN_DIR=${FACE_DIR}/bin                           ##face模块脚本存放目录
-FACE_START_FILE=${FACE_BIN_DIR}/start-face.sh       ##face模块启动脚本
-FACE_CONF_DIR=${FACE_DIR}/conf                         ##face模块conf目录
-FACE_PRO_FILE=${FACE_CONF_DIR}/application-pro.properties   ##face模块配置文件
-## starepo模块目录
-STAREPO_DIR=${SERVICE_DIR}/face/staRepo
-STAREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/staRepo
-STAREPO_BIN_DIR=${STAREPO_DIR}/bin                           ##starepo模块脚本存放目录
-STAREPO_START_FILE=${STAREPO_BIN_DIR}/start-starepo.sh       ##starepo模块启动脚本
-STAREPO_CONF_DIR=${STAREPO_DIR}/conf                         ##starepo模块conf目录
-STAREPO_PRO_FILE=${STAREPO_CONF_DIR}/application-pro.properties   ##starepo模块配置文件
+## collect模块部署目录
+COLLECT_DIR=${SERVICE_DIR}/Clever-eyes/collect
+COLLECT_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/collect
+COLLECT_BIN_DIR=${COLLECT_DIR}/bin                           ##collect模块脚本存放目录
+COLLECT_START_FILE=${COLLECT_BIN_DIR}/start-collect.sh       ##collect模块启动脚本
+COLLECT_CONF_DIR=${COLLECT_DIR}/conf                         ##collect模块conf目录
+COLLECT_PRO_FILE=${COLLECT_CONF_DIR}/application-pro.properties   ##collect模块配置文件
+## person-dynrepo模块目录
+PERSON_DYN_DIR=${SERVICE_DIR}/Clever-eyes/person-dynRepo
+PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/person-dynRepo
+PERSON_DYN_BIN_DIR=${PERSON_DYN_DIR}/bin                           ##person-dynRepo模块脚本存放目录
+PERSON_DYN_START_FILE=${PERSON_DYN_BIN_DIR}/start-person-dynRepo.sh       ##person-dynRepo模块启动脚本
+PERSON_DYN_CONF_DIR=${PERSON_DYN_DIR}/conf                         ##person-dynRepo模块conf目录
+PERSON_DYN_PRO_FILE=${PERSON_DYN_CONF_DIR}/application-pro.properties   ##person-dynRepo模块配置文件
+## vehicle-dynrepo模块部署目录
+CAR_DIR=${SERVICE_DIR}/Clever-eyes/vehicle-dynrepo
+CAR_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/vehicle-dynrepo
+CAR_BIN_DIR=${CAR_DIR}/bin                           ##vehicle-dynrepo模块脚本存放目录
+CAR_START_FILE=${CAR_BIN_DIR}/start-vehicle-dynrepo.sh       ##vehicle-dynrepo模块启动脚本
+CAR_CONF_DIR=${CAR_DIR}/conf                       ##vehicle-dynrepo模块conf目录
+CAR_PRO_FILE=${CAR_CONF_DIR}/application-pro.properties   ##vehicle-dynrepo模块配置文件
+
+## cloud服务
+## imsi-dynrepo模块部署目录
+IMSI_DIR=${SERVICE_DIR}/Cloud/imsi-dynrepo
+IMSI_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/imsi-dynrepo
+IMSI_BIN_DIR=${IMSI_DIR}/bin                                ##imsi模块脚本存放目录
+IMSI_START_FILE=${IMSI_BIN_DIR}/start-imsi-dynrepo.sh         ##imsi模块启动脚本
+IMSI_START_FILE=${IMSI_DIR}/conf                              ##imsi模块conf目录
+IMSI_PRO_FILE=${IMSI_START_FILE}/application-pro.properties   ##imsi模块配置文件
+## peoplemanager模块部署目录
+PEOPLEMANAGER_DIR=${SERVICE_DIR}/Cloud/peoplemanager
+PEOPLEMANAGER_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/peoplemanager
+PEOPLEMANAGER_BIN_DIR=${PEOPLEMANAGER_DIR}/bin                                ##peoplemanager模块脚本存放目录
+PEOPLEMANAGER_START_FILE=${PEOPLEMANAGER_BIN_DIR}/start-peoplemanager.sh         ##peoplemanager模块启动脚本
+PEOPLEMANAGER_CONF_DIR=${PEOPLEMANAGER_DIR}/conf                              ##peoplemanager模块conf目录
+PEOPLEMANAGER_PRO_FILE=${PEOPLEMANAGER_CONF_DIR}/application-pro.properties   ##peoplemanager模块配置文件
 ## visual模块目录
-VISUAL_DIR=${SERVICE_DIR}/common/visual
-VISUAL_INSTALL_DIR=${SERVICE_INSTALL_DIR}/common/visual
+VISUAL_DIR=${SERVICE_DIR}/Cloud/visual
+VISUAL_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/visual
 VISUAL_BIN_DIR=${VISUAL_DIR}/bin                           ##visual模块脚本存放目录
 VISUAL_START_FILE=${VISUAL_BIN_DIR}/start-visual.sh       ##visual模块启动脚本
 VISUAL_CONF_DIR=${VISUAL_DIR}/conf                       ##visual模块conf目录
 VISUAL_PRO_FILE=${VISUAL_CONF_DIR}/application-pro.properties   ##visual模块配置文件
 
-## person模块部署目录
-PERSON_DIR=${SERVICE_DIR}/face/dynPerson
-PERSON_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynPerson
-PERSON_BIN_DIR=${PERSON_DIR}/bin                           ##person模块脚本存放目录
-PERSON_START_FILE=${PERSON_BIN_DIR}/start-dynperson.sh       ##person模块启动脚本
-PERSON_CONF_DIR=${PERSON_DIR}/conf                       ##person模块conf目录
-PERSON_PRO_FILE=${PERSON_CONF_DIR}/application-pro.properties   ##person模块配置文件
-
-## car模块部署目录
-CAR_DIR=${SERVICE_DIR}/face/dynCar
-CAR_INSTALL_DIR=${SERVICE_INSTALL_DIR}/face/dynCar
-CAR_BIN_DIR=${CAR_DIR}/bin                           ##car模块脚本存放目录
-CAR_START_FILE=${CAR_BIN_DIR}/start-dyncar.sh       ##car模块启动脚本
-CAR_CONF_DIR=${CAR_DIR}/conf                       ##car模块conf目录
-CAR_PRO_FILE=${CAR_CONF_DIR}/application-pro.properties   ##car模块配置文件
-
+## people模块部署目录(未完成)
+PEOPLE_DIR=${SERVICE_DIR}/Cloud/person-dynrepo
+PEOPLE_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/person-dynrepo
+PEOPLE_BIN_DIR=${PEOPLE_DIR}/bin                           ##people模块脚本存放目录
+PEOPLE_START_FILE=${PEOPLE_BIN_DIR}/start-person-dynrepo.sh       ##people模块启动脚本
+PEOPLE_CONF_DIR=${PEOPLE_DIR}/conf                       ##people模块conf目录
+PEOPLE_PRO_FILE=${PEOPLE_CONF_DIR}/application-pro.properties   ##people模块配置文件
 
 ## 安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep install_homedir ${CONF_FILE}|cut -d '=' -f2)
@@ -228,17 +230,7 @@ function distribute_service()
     echo "" | tee -a ${SERVICE_LOG_FILE}
     echo "分发service的各个组件......" | tee -a ${SERVICE_LOG_FILE}
 
-    ##开始分发address
-    ADDRESS_HOST_LISTS=$(grep address_distribution ${CONF_FILE} | cut -d '=' -f2)
-    ADDRESS_HOST_ARRAY=(${ADDRESS_HOST_LISTS//;/ })
-    for hostname in ${ADDRESS_HOST_ARRAY[@]}
-    do
-      ssh root@${hostname} "if [ ! -x "${ADDRESS_INSTALL_DIR}" ];then mkdir -p "${ADDRESS_INSTALL_DIR}"; fi"
-      rsync -rvl ${ADDRESS_DIR} root@${hostname}:${ADDRESS_INSTALL_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${ADDRESS_INSTALL_DIR}"
-      echo "${hostname}上分发address完毕........" | tee -a ${SERVICE_LOG_FILE}
-    done
-
+    ##eye
     ##开始分发alarm
     ALARM_HOST_LISTS=$(grep alarm_distribution ${CONF_FILE} | cut -d '=' -f2)
     ALARM_HOST_ARRAY=(${ALARM_HOST_LISTS//;/ })
@@ -250,93 +242,105 @@ function distribute_service()
       echo "${hostname}上分发alarm完毕........" | tee -a ${SERVICE_LOG_FILE}
     done
 
-    ##开始分发peoplemanager
-    CLUSTERING_HOST_LISTS=$(grep peoplemanager_distribution ${CONF_FILE} | cut -d '=' -f2)
-    CLUSTERING_HOST_ARRAY=(${CLUSTERING_HOST_LISTS//;/ })
-    for hostname in ${CLUSTERING_HOST_ARRAY[@]}
-    do
-      ssh root@${hostname} "if [ ! -x "${CLUSTERING_INSTALL_DIR}" ];then mkdir -p "${CLUSTERING_INSTALL_DIR}"; fi"
-      rsync -rvl ${CLUSTERING_DIR} root@${hostname}:${CLUSTERING_INSTALL_DIR} >/dev/null
-      ssh root@${hostname} "chmod -R 755 ${CLUSTERING_INSTALL_DIR}"
-      echo "${hostname}上分发peoplemanager完毕......." | tee -a ${SERVICE_LOG_FILE}
-    done
-
-    ##开始分发dispatch
-    DISPATCH_HOST_LISTS=$(grep dispatch_distribution ${CONF_FILE} | cut -d '=' -f2)
+    ##开始分发face-dispatch
+    DISPATCH_HOST_LISTS=$(grep face_dispatch_distribution ${CONF_FILE} | cut -d '=' -f2)
     DISPATCH_HOST_ARRAY=(${DISPATCH_HOST_LISTS//;/ })
     for hostname in ${DISPATCH_HOST_ARRAY[@]}
     do
       ssh root@${hostname} "if [ ! -x "${DISPATCH_INSTALL_DIR}" ];then mkdir -p "${DISPATCH_INSTALL_DIR}";fi"
       rsync -rvl ${DISPATCH_DIR} root@${hostname}:${DISPATCH_INSTALL_DIR} >/dev/null
       ssh root@${hostname} "chmod -R 755 ${DISPATCH_INSTALL_DIR}"
-      echo "${hostname}上分发dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
+      echo "${hostname}上分发face-dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
     done
 
-    ##开始分发dynrepo
-    DYNREPO_HOST_LISTS=$(grep dynrepo_distribution ${CONF_FILE} | cut -d '=' -f2)
+    ##开始分发face-dynrepo
+    DYNREPO_HOST_LISTS=$(grep face_dynrepo_distribution ${CONF_FILE} | cut -d '=' -f2)
     DYNREPO_HOST_ARRAY=(${DYNREPO_HOST_LISTS//;/ })
     for hostname in ${DYNREPO_HOST_ARRAY[@]}
     do
        ssh root@${hostname} "if [ ! -x "${DYNREPO_INSTALL_DIR}" ];then mkdir -p "${DYNREPO_INSTALL_DIR}";fi"
        rsync -rvl ${DYNREPO_DIR} root@${hostname}:${DYNREPO_INSTALL_DIR} >/dev/null
        ssh root@${hostname} "chmod -R 755 ${DYNREPO_INSTALL_DIR}"
-       echo "${hostname}上分发dynrepo完毕........." | tee -a ${SERVICE_LOG_FILE}
+       echo "${hostname}上分发face-dynrepo完毕........." | tee -a ${SERVICE_LOG_FILE}
     done
 
-     ##开始分发face
-     FACE_HOST_LISTS=$(grep face_distribution ${CONF_FILE} | cut -d '=' -f2)
-     FACE_HOST_ARRAY=(${FACE_HOST_LISTS//;/ })
-     for hostname in ${FACE_HOST_ARRAY[@]}
-     do
-        ssh root@${hostname} "if [ ! -x "${FACE_INSTALL_DIR}" ];then mkdir -p "${FACE_INSTALL_DIR}";fi"
-        rsync -rvl ${FACE_DIR} root@${hostname}:${FACE_INSTALL_DIR} >/dev/null
-        ssh root@${hostname} "chmod -R 755 ${FACE_INSTALL_DIR}"
-        echo "${hostname}上分发face完毕......." | tee -a ${SERVICE_LOG_FILE}
-     done
+    ##开始分发collect
+    FACE_HOST_LISTS=$(grep collect_distribution ${CONF_FILE} | cut -d '=' -f2)
+    FACE_HOST_ARRAY=(${FACE_HOST_LISTS//;/ })
+    for hostname in ${FACE_HOST_ARRAY[@]}
+    do
+       ssh root@${hostname} "if [ ! -x "${COLLECT_INSTALL_DIR}" ];then mkdir -p "${COLLECT_INSTALL_DIR}";fi"
+       rsync -rvl ${COLLECT_DIR} root@${hostname}:${COLLECT_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${COLLECT_INSTALL_DIR}"
+       echo "${hostname}上分发collect完毕......." | tee -a ${SERVICE_LOG_FILE}
+    done
 
-     ##开始分发starepo
-     STAREPO_HOST_LISTS=$(grep starepo_distribution ${CONF_FILE} | cut -d '=' -f2)
-     STAREPO_HOST_ARRAY=(${STAREPO_HOST_LISTS//;/ })
-     for hostname in ${STAREPO_HOST_ARRAY[@]}
-     do
-        ssh root@${hostname} "if [ ! -x "${STAREPO_INSTALL_DIR}" ];then mkdir -p "${STAREPO_INSTALL_DIR}";fi"
-        rsync -rvl ${STAREPO_DIR} root@${hostname}:${STAREPO_INSTALL_DIR} >/dev/null
-        ssh root@${hostname} "chmod -R 755 ${STAREPO_INSTALL_DIR}"
-        echo "${hostname}上分发starepo完毕......." | tee -a ${SERVICE_LOG_FILE}
-     done
+    ##开始分发person-dynrepo
+    PERSON_DYN_HOST_LISTS=$(grep person_dynrepo_distribution ${CONF_FILE} | cut -d '=' -f2)
+    PERSON_DYN_HOST_ARRAY=(${PERSON_DYN_HOST_LISTS//;/ })
+    for hostname in ${PERSON_DYN_HOST_ARRAY[@]}
+    do
+       ssh root@${hostname} "if [ ! -x "${PERSON_DYN_INSTALL_DIR}" ];then mkdir -p "${PERSON_DYN_INSTALL_DIR}";fi"
+       rsync -rvl ${PERSON_DYN_DIR} root@${hostname}:${PERSON_DYN_INSTALL_DIR} >/dev/null
+       ssh root@${hostname} "chmod -R 755 ${PERSON_DYN_INSTALL_DIR}"
+       echo "${hostname}上分发person-dynrepo完毕......." | tee -a ${SERVICE_LOG_FILE}
+    done
 
-     ##开始分发visual
-     VISUAL_HOST_LISTS=$(grep visual_distribution ${CONF_FILE} | cut -d '=' -f2)
-     VISUAL_HOST_ARRAY=(${VISUAL_HOST_LISTS//;/ })
-     for hostname in ${VISUAL_HOST_ARRAY[@]}
-     do
-       ssh root@${hostname} "if [ ! -x "${VISUAL_INSTALL_DIR}" ];then mkdir -p "${VISUAL_INSTALL_DIR}";fi"
-       rsync -rvl ${VISUAL_DIR} root@${hostname}:${VISUAL_INSTALL_DIR} >/dev/null
-       ssh root@${hostname} "chmod -R 755 ${VISUAL_INSTALL_DIR}"
-       echo "${hostname}上分发visual完毕........" | tee -a ${SERVICE_LOG_FILE}
-     done
+     ##开始分发car
+    CAR_HOST_LISTS=$(grep car_dynrepo_distribution ${CONF_FILE} | cut -d '=' -f2)
+    CAR_HOST_ARRAY=(${CAR_HOST_LISTS//;/ })
+    for hostname in ${CAR_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${CAR_INSTALL_DIR}" ];then mkdir -p "${CAR_INSTALL_DIR}";fi"
+      rsync -rvl ${CAR_DIR} root@${hostname}:${CAR_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${CAR_INSTALL_DIR}"
+      echo "${hostname}上分发vehicle-dynrepo完毕........" | tee -a ${SERVICE_LOG_FILE}
+    done
 
-      ##开始分发person
-     PERSON_HOST_LISTS=$(grep person_distribution ${CONF_FILE} | cut -d '=' -f2)
-     PERSON_HOST_ARRAY=(${VISUAL_HOST_LISTS//;/ })
-     for hostname in ${PERSON_HOST_ARRAY[@]}
-     do
-       ssh root@${hostname} "if [ ! -x "${PERSON_INSTALL_DIR}" ];then mkdir -p "${PERSON_INSTALL_DIR}";fi"
-       rsync -rvl ${PERSON_DIR} root@${hostname}:${PERSON_INSTALL_DIR} >/dev/null
-       ssh root@${hostname} "chmod -R 755 ${PERSON_INSTALL_DIR}"
-       echo "${hostname}上分发person完毕........" | tee -a ${SERVICE_LOG_FILE}
-     done
+    ##cloud
+    ##开始分发visual
+    VISUAL_HOST_LISTS=$(grep visual_distribution ${CONF_FILE} | cut -d '=' -f2)
+    VISUAL_HOST_ARRAY=(${VISUAL_HOST_LISTS//;/ })
+    for hostname in ${VISUAL_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${VISUAL_INSTALL_DIR}" ];then mkdir -p "${VISUAL_INSTALL_DIR}";fi"
+      rsync -rvl ${VISUAL_DIR} root@${hostname}:${VISUAL_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${VISUAL_INSTALL_DIR}"
+      echo "${hostname}上分发visual完毕........" | tee -a ${SERVICE_LOG_FILE}
+    done
 
-      ##开始分发car
-     CAR_HOST_LISTS=$(grep car_distribution ${CONF_FILE} | cut -d '=' -f2)
-     CAR_HOST_ARRAY=(${CAR_HOST_LISTS//;/ })
-     for hostname in ${CAR_HOST_ARRAY[@]}
-     do
-       ssh root@${hostname} "if [ ! -x "${CAR_INSTALL_DIR}" ];then mkdir -p "${CAR_INSTALL_DIR}";fi"
-       rsync -rvl ${CAR_DIR} root@${hostname}:${CAR_INSTALL_DIR} >/dev/null
-       ssh root@${hostname} "chmod -R 755 ${CAR_INSTALL_DIR}"
-       echo "${hostname}上分发car完毕........" | tee -a ${SERVICE_LOG_FILE}
-     done
+     ##开始分发people
+    PEOPLE_HOST_LISTS=$(grep people_distribution ${CONF_FILE} | cut -d '=' -f2)
+    PEOPLE_HOST_ARRAY=(${PEOPLE_HOST_LISTS//;/ })
+    for hostname in ${PEOPLE_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${PEOPLE_INSTALL_DIR}" ];then mkdir -p "${PEOPLE_INSTALL_DIR}";fi"
+      rsync -rvl ${PEOPLE_DIR} root@${hostname}:${PEOPLE_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${PEOPLE_INSTALL_DIR}"
+      echo "${hostname}上分发people完毕........" | tee -a ${SERVICE_LOG_FILE}
+    done
+
+    ##开始分发imsi
+    IMSI_HOST_LISTS=$(grep imsi_distribution ${CONF_FILE} | cut -d '=' -f2)
+    IMSI_HOST_ARRAY=(${IMSI_HOST_LISTS//;/ })
+    for hostname in ${IMSI_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${IMSI_INSTALL_DIR}" ];then mkdir -p "${IMSI_INSTALL_DIR}"; fi"
+      rsync -rvl ${IMSI_DIR} root@${hostname}:${IMSI_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${IMSI_INSTALL_DIR}"
+      echo "${hostname}上分发imsi完毕........" | tee -a ${SERVICE_LOG_FILE}
+    done
+
+    ##开始分发peoplemanager
+    PEOPLEMANAGER_HOST_LISTS=$(grep peoplemanager_distribution ${CONF_FILE} | cut -d '=' -f2)
+    PEOPLEMANAGER_HOST_ARRAY=(${PEOPLEMANAGER_HOST_LISTS//;/ })
+    for hostname in ${PEOPLEMANAGER_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${PEOPLEMANAGER_INSTALL_DIR}" ];then mkdir -p "${PEOPLEMANAGER_INSTALL_DIR}"; fi"
+      rsync -rvl ${PEOPLEMANAGER_DIR} root@${hostname}:${PEOPLEMANAGER_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${PEOPLEMANAGER_INSTALL_DIR}"
+      echo "${hostname}上分发peoplemanager完毕......." | tee -a ${SERVICE_LOG_FILE}
+    done
      ## 拷贝GoSun到opt目录下
      cp -r ${GOSUN_HOME} /opt
 
@@ -482,18 +486,18 @@ function config_service()
     kafkapro=${kafkapro%?}
 
     #替换pro文件中的值：
-    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafkapro}#g" ${STAREPO_PRO_FILE}
-    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafka_arr[0]:9092}#g" ${STAREPO_START_FILE}
+    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafkapro}#g" ${PERSON_DYN_PRO_FILE}
+    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafka_arr[0]:9092}#g" ${PERSON_DYN_START_FILE}
     echo "静态库application-pro文件配置完成......"
 
     #####################KAFKA_HOST#########################
     #替换模块启动脚本中KAFKA_HOST：key=value(替换key字段的值value)
     #kafka=`echo ${kafkapro}| cut -d "," -f1`
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${STAREPO_START_FILE}
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PERSON_DYN_START_FILE}
     echo "start-starepo.sh脚本配置kafka完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${CLUSTERING_START_FILE}
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PEOPLEMANAGER_START_FILE}
     echo "start-peoplemanager.sh脚本配置eureka_node完成......."
 
     #配置es.hosts:
@@ -509,37 +513,39 @@ function config_service()
     done
     espro=${espro%?}
 
-
-
     #####################ES_HOST#########################
-    #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CLUSTERING_START_FILE}
-    echo "start-peoplemanager.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${DYNREPO_START_FILE}
-    echo "start-dynrepo.sh脚本配置es完成......"
+    echo "start-face-dynrepo.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${STAREPO_START_FILE}
-    echo "start-starepo.sh脚本配置es完成......"
-
-    #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${VISUAL_START_FILE}
-    echo "start-visual.sh脚本配置es完成......"
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PERSON_DYN_START_FILE}
+    echo "start-persoon-dynrepo.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${ALARM_START_FILE}
     echo "start-alarm.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PERSON_START_FILE}
-    echo "start-dynperson.sh脚本配置es完成......"
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CAR_START_FILE}
+    echo "start-vehicle-dynrepo.sh脚本配置es完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CAR_START_FILE}
-    echo "start-dyncar.sh脚本配置es完成......"
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PEOPLEMANAGER_START_FILE}
+    echo "start-peoplemanager.sh脚本配置es完成......"
 
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${VISUAL_START_FILE}
+    echo "start-visual.sh脚本配置es完成......"
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置es完成......"
+
+#    #替换模块启动脚本中：key=value(替换key字段的值value)
+#    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PEOPLE_START_FILE}
+#    echo "start-people.sh脚本配置es完成......"
 
     #####################ZOOKEEPER_HOST#########################
     #配置zookeeper：
@@ -551,16 +557,12 @@ function config_service()
     zkpro=$zkpro${zk_arr[0]}":2181"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${ADDRESS_START_FILE}
-    echo "start-address.sh脚本配置zookeeper完成......"
-
-    #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${DYNREPO_START_FILE}
-    echo "start-dynrepo.sh脚本配置zookeeper完成......"
+    echo "start-face-dynrepo.sh脚本配置zookeeper完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zk_arr[0]}#g" ${STAREPO_START_FILE}
-    echo "start-starepo.sh脚本配置zookeeper完成......"
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zk_arr[0]}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置zookeeper完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${VISUAL_START_FILE}
@@ -571,16 +573,21 @@ function config_service()
     echo "start-alarm.sh脚本配置zookeeper完成......"
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CLUSTERING_START_FILE}
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${PEOPLEMANAGER_START_FILE}
     echo "start-peoplemanager.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${PERSON_START_FILE}
-    echo "start-dynperson.sh脚本配置eureka_node完成......."
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CAR_START_FILE}
+    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CAR_START_FILE}
-    echo "start-dyncar.sh脚本配置eureka_node完成......."
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${IMSI_START_FILE}
+    echo "start-imsi.sh脚本配置zookeeper完成......"
+
+#    #替换模块启动脚本中：key=value(替换key字段的值value)
+#    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${PEOPLE_START_FILE}
+#    echo "start-people.sh脚本配置eureka_node完成......."
+
 
 
     #####################EUREKA_IP#########################
@@ -597,28 +604,20 @@ function config_service()
     enpro=${enpro%?}
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${ADDRESS_START_FILE}
-    echo "start-address.sh脚本配置eureka_node完成......."
-
-    #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${CLUSTERING_START_FILE}
-    echo "start-peoplemanager.sh脚本配置eureka_node完成......."
-
-    #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${DISPATCH_START_FILE}
-    echo "start-dispatch.sh脚本配置eureka_node完成......."
+    echo "start-face-dispatch.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${DYNREPO_START_FILE}
-    echo "start-dynrepo.sh脚本配置eureka_node完成......."
+    echo "start-face-dynrepo.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${FACE_START_FILE}
-    echo "start-face.sh脚本配置eureka_node完成......."
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${COLLECT_START_FILE}
+    echo "start-collect.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${STAREPO_START_FILE}
-    echo "start-starepo.sh脚本配置eureka_node完成......."
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${VISUAL_START_FILE}
@@ -629,12 +628,20 @@ function config_service()
     echo "start-alarm.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PERSON_START_FILE}
-    echo "start-dynperson.sh脚本配置eureka_node完成......."
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置eureka_node完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${CAR_START_FILE}
-    echo "start-dyncar.sh脚本配置eureka_node完成......."
+    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置eureka_node完成......."
+
+    #替换模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PEOPLEMANAGER_START_FILE}
+    echo "start-peoplemanager.sh脚本配置eureka_node完成......."
 
 
     #####################EUREKA_PORT#########################
@@ -644,28 +651,28 @@ function config_service()
     EUREKA_PORT=$(grep spring_cloud_eureka_port $CONF_FILE | cut -d '=' -f2)
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${ADDRESS_START_FILE}
-    echo "start-address.sh脚本配置eureka_port完成......."
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CLUSTERING_START_FILE}
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PEOPLEMANAGER_START_FILE}
     echo "start-peoplemanager.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_START_FILE}
-    echo "start-dispatch.sh脚本配置eureka_port完成......."
+    echo "start-face-dispatch.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DYNREPO_START_FILE}
-    echo "start-dynrepo.sh脚本配置eureka_port完成......."
+    echo "start-face-dynrepo.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${FACE_START_FILE}
-    echo "start-face.sh脚本配置eureka_port完成......."
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${COLLECT_START_FILE}
+    echo "start-collect.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${STAREPO_START_FILE}
-    echo "start-starepo.sh脚本配置eureka_port完成......."
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${VISUAL_START_FILE}
@@ -676,12 +683,12 @@ function config_service()
     echo "start-alarm.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PERSON_START_FILE}
-    echo "start-dynperson.sh脚本配置eureka_port完成......."
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置eureka_port完成......."
 
     #替换模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CAR_START_FILE}
-    echo "start-dyncar.sh脚本配置eureka_port完成......."
+    echo "start-vehicle-repo.sh脚本配置eureka_port完成......."
 
 }
 
@@ -699,14 +706,13 @@ function copy_xml_to_service()
     echo "" | tee -a ${SERVICE_LOG_FILE}
     echo "开始将配置文件拷贝至需要的模块下......" | tee -a ${SERVICE_LOG_FILE}
 
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${ADDRESS_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${COLLECT_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DYNREPO_CONF_DIR}
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${STAREPO_CONF_DIR}
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${CLUSTERING_CONF_DIR}
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${VISUAL_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${PERSON_DYN_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DISPATCH_CONF_DIR}
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${PERSON_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${CAR_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${VISUAL_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${PEOPLEMANAGER_CONF_DIR}
 }
 
 

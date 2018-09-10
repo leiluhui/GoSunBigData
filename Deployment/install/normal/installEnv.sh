@@ -49,4 +49,9 @@ if  [[ "${ISLOCAL}" == "yes"  ]]; then
     ## 关闭防火墙
     sh offIptables.sh
 
+    sh selinuxStatus.sh
+    flag=$?
+    if [[ $flag == 1 ]]; then
+        exit 1
+    fi
 fi
