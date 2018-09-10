@@ -13,8 +13,7 @@ public class FilterField implements Serializable {
     private String idcard;
     private String imsi;
     private String phone;
-    private List<Long> imsiIds;
-    private List<Long> phoneIds;
+    private List<String> peopleIds;
 
     public static FilterField SearchParamShift(SearchParam param) {
         FilterField field = new FilterField();

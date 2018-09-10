@@ -1,11 +1,11 @@
 package com.hzgc.service.people.model;
 
-public class Flag {
+public class NewPeople {
     private Long id;
 
     private String peopleid;
 
-    private Integer flag;
+    private Long community;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class Flag {
         this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
-    public Integer getFlag() {
-        return flag;
+    public Long getCommunity() {
+        return community;
     }
 
-    public void setFlag(Integer flag) {
-        this.flag = flag;
+    public void setCommunity(Long community) {
+        this.community = community;
     }
 }

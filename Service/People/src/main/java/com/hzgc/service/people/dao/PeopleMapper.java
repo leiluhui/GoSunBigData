@@ -2,18 +2,17 @@ package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.FilterField;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
 public interface PeopleMapper {
+    int deleteByPrimaryKey(String id);
 
     int insert(People record);
 
     int insertSelective(People record);
 
-    People selectByPrimaryKey(Long id);
+    People selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(People record);
 

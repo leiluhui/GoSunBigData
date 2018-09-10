@@ -3,11 +3,7 @@ package com.hzgc.service.people.model;
 public class Picture {
     private Long id;
 
-    private Long peopleid;
-
-    private Long idcardpicid;
-
-    private Long capturepicid;
+    private String peopleid;
 
     private String feature;
 
@@ -21,28 +17,12 @@ public class Picture {
         this.id = id;
     }
 
-    public Long getPeopleid() {
+    public String getPeopleid() {
         return peopleid;
     }
 
-    public void setPeopleid(Long peopleid) {
-        this.peopleid = peopleid;
-    }
-
-    public Long getIdcardpicid() {
-        return idcardpicid;
-    }
-
-    public void setIdcardpicid(Long idcardpicid) {
-        this.idcardpicid = idcardpicid;
-    }
-
-    public Long getCapturepicid() {
-        return capturepicid;
-    }
-
-    public void setCapturepicid(Long capturepicid) {
-        this.capturepicid = capturepicid;
+    public void setPeopleid(String peopleid) {
+        this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
     public String getFeature() {

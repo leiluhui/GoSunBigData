@@ -1,12 +1,11 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Imsi;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
 public interface ImsiMapper {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Imsi record);
 
@@ -18,5 +17,5 @@ public interface ImsiMapper {
 
     int updateByPrimaryKey(Imsi record);
 
-    List<Imsi> selectImsiIdsByImsi(String imsi);
+    List<Imsi> selectPeopleIdsByImsi(String imsi);
 }

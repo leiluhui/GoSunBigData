@@ -3,7 +3,7 @@ package com.hzgc.service.people.model;
 public class House {
     private Long id;
 
-    private Long houseid;
+    private String peopleid;
 
     private String house;
 
@@ -15,12 +15,12 @@ public class House {
         this.id = id;
     }
 
-    public Long getHouseid() {
-        return houseid;
+    public String getPeopleid() {
+        return peopleid;
     }
 
-    public void setHouseid(Long houseid) {
-        this.houseid = houseid;
+    public void setPeopleid(String peopleid) {
+        this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
     public String getHouse() {

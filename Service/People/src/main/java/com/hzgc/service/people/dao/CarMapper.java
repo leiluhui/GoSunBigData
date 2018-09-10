@@ -1,10 +1,9 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Car;
-import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
 public interface CarMapper {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Car record);
 

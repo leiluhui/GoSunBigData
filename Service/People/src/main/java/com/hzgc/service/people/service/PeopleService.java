@@ -44,20 +44,20 @@ public class PeopleService {
     public final static String IDCARD_PIC = "idcardpic";
     public final static String CAPTURE_PIC = "capturepic";
 
-    public Long people(People people, String str) {
+    public Integer people(People people, String str) {
         if (INSERT.equals(str)) {
-            peopleMapper.insertSelective(people);
+            return peopleMapper.insertSelective(people);
         }
         if (UPDATE.equals(str)) {
-            peopleMapper.updateByPrimaryKeySelective(people);
+            return peopleMapper.updateByPrimaryKeySelective(people);
         }
-        return people.getId();
+        return 0;
     }
 
-    public Integer people_flag(Long flagId, List<Integer> flags, String str) {
+    public Integer people_flag(String peopleId, List<Integer> flags, String str) {
         for (Integer i : flags) {
             Flag flag = new Flag();
-            flag.setFlagid(flagId);
+            flag.setPeopleid(peopleId);
             flag.setFlag(i);
             int status = 0;
             if (INSERT.equals(str)) {
@@ -78,16 +78,14 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture(Long peopleId, String picType, Long picid, List<byte[]> pics, String str) {
+    public Integer people_picture(String peopleId, String picType, List<byte[]> pics, String str) {
         for (byte[] b : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
             if (IDCARD_PIC.equals(picType)) {
-                picture.setIdcardpicid(picid);
                 picture.setIdcardpic(b);
             }
             if (CAPTURE_PIC.equals(picType)) {
-                picture.setCapturepicid(picid);
                 picture.setCapturepic(b);
             }
             FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(b, PictureFormat.JPG);
@@ -119,10 +117,10 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_imsi(Long imsiid, List<String> imsis, String str) {
+    public Integer people_imsi(String peopleId, List<String> imsis, String str) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
-            imsi.setImsiid(imsiid);
+            imsi.setPeopleid(peopleId);
             imsi.setImsi(s);
             if (INSERT.equals(str)) {
                 int status = imsiMapper.insertSelective(imsi);
@@ -143,10 +141,10 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_phone(Long phoneid, List<String> phones, String str) {
+    public Integer people_phone(String peopleId, List<String> phones, String str) {
         for (String s : phones) {
             Phone phone = new Phone();
-            phone.setPhoneid(phoneid);
+            phone.setPeopleid(peopleId);
             phone.setPhone(s);
             if (INSERT.equals(str)) {
                 int status = phoneMapper.insertSelective(phone);
@@ -166,10 +164,10 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_house(Long houseid, List<String> houses, String str) {
+    public Integer people_house(String peopleId, List<String> houses, String str) {
         for (String s : houses) {
             House house = new House();
-            house.setHouseid(houseid);
+            house.setPeopleid(peopleId);
             house.setHouse(s);
             if (INSERT.equals(str)) {
                 int status = houseMapper.insertSelective(house);
@@ -190,10 +188,10 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_car(Long carid, List<String> cars, String str) {
+    public Integer people_car(String peopleId, List<String> cars, String str) {
         for (String s : cars) {
             Car car = new Car();
-            car.setCarid(carid);
+            car.setPeopleid(peopleId);
             car.setCar(s);
             if (INSERT.equals(str)) {
                 int status = carMapper.insertSelective(car);
@@ -220,21 +218,21 @@ public class PeopleService {
             peoples = peopleMapper.searchPeople(field);
         }
         if (field.getImsi() != null) {
-            List<Imsi> imsis = imsiMapper.selectImsiIdsByImsi(field.getImsi());
-            List<Long> imsiIds = new ArrayList<>();
+            List<Imsi> imsis = imsiMapper.selectPeopleIdsByImsi(field.getImsi());
+            List<String> peopleIds = new ArrayList<>();
             for (Imsi imsi : imsis) {
-                imsiIds.add(imsi.getImsiid());
+                peopleIds.add(imsi.getPeopleid());
             }
-            field.setImsiIds(imsiIds);
+            field.setPeopleIds(peopleIds);
             peoples = peopleMapper.searchPeople(field);
         }
         if (field.getPhone() != null) {
-            List<Phone> phones = phoneMapper.selectPhoneIdsByPhone(field.getPhone());
-            List<Long> phoneIds = new ArrayList<>();
+            List<Phone> phones = phoneMapper.selectPeopleIdsByPhone(field.getPhone());
+            List<String> peopleIds = new ArrayList<>();
             for (Phone phone : phones) {
-                phoneIds.add(phone.getPhoneid());
+                peopleIds.add(phone.getPeopleid());
             }
-            field.setImsiIds(phoneIds);
+            field.setPeopleIds(peopleIds);
             peoples = peopleMapper.searchPeople(field);
         }
         if (peoples == null || peoples.size() == 0) {

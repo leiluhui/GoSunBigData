@@ -61,20 +61,20 @@ public class PeopleController {
         log.info("Start add people info, DTO :" + JSONUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
         log.info("Start add object info, param is:" + JSONUtil.toJson(people));
-        Long peopleId = peopleService.people(people, PeopleService.INSERT);
-        if (peopleId == null) {
+        Integer status = peopleService.people(people, PeopleService.INSERT);
+        if (status == null || status != 1) {
             log.info("Insert t_people info failed");
             return ResponseResult.error(0, "添加人口对象失败");
         }
         log.info("Insert t_people info successfully");
-        if (people.getFlag() == null && people.getIdcardpic() == null && people.getCapturepic() == null &&
-                people.getImsi() == null && people.getPhone() == null && people.getHouse() == null &&
-                people.getCar() == null) {
+        if (peopleDTO.getFlag() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
+                peopleDTO.getImsi() == null && peopleDTO.getPhone() == null && peopleDTO.getHouse() == null &&
+                peopleDTO.getCar() == null) {
             log.info("Insert people info successfully");
-            return ResponseResult.init(Integer.valueOf(String.valueOf(peopleId)));
+            return ResponseResult.init(status);
         } else {
-            if (people.getFlag() != null) {
-                Integer insertStatus = peopleService.people_flag(people.getFlag(), peopleDTO.getFlag(), PeopleService.INSERT);
+            if (peopleDTO.getFlag() != null && peopleDTO.getFlag().size() > 0) {
+                Integer insertStatus = peopleService.people_flag(people.getId(), peopleDTO.getFlag(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert flag to t_flag successfully");
                 } else {
@@ -82,9 +82,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象标签表失败");
                 }
             }
-            if (people.getIdcardpic() != null) {
-                Integer insertStatus = peopleService.people_picture(peopleId, PeopleService.IDCARD_PIC,
-                        people.getIdcardpic(), peopleDTO.getIdCardPic(), PeopleService.INSERT);
+            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
+                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert idCard pic to t_picture successfully");
                 } else {
@@ -92,9 +92,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象证件照片表失败");
                 }
             }
-            if (people.getCapturepic() != null) {
-                Integer insertStatus = peopleService.people_picture(peopleId, PeopleService.CAPTURE_PIC,
-                        people.getCapturepic(), peopleDTO.getCapturePic(), PeopleService.INSERT);
+            if (peopleDTO.getCapturePic() != null) {
+                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert capture pic to t_picture successfully");
                 } else {
@@ -102,8 +102,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象实采照片表失败");
                 }
             }
-            if (people.getImsi() != null) {
-                Integer insertStatus = peopleService.people_imsi(people.getImsi(), peopleDTO.getImsi(), PeopleService.INSERT);
+            if (peopleDTO.getImsi() != null) {
+                Integer insertStatus = peopleService.people_imsi(people.getId(), peopleDTO.getImsi(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert imsi to t_imsi successfully");
                 } else {
@@ -111,8 +111,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象imsi表失败");
                 }
             }
-            if (people.getPhone() != null) {
-                Integer insertStatus = peopleService.people_phone(people.getPhone(), peopleDTO.getPhone(), PeopleService.INSERT);
+            if (peopleDTO.getPhone() != null) {
+                Integer insertStatus = peopleService.people_phone(people.getId(), peopleDTO.getPhone(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert phone to t_phone successfully");
                 } else {
@@ -120,8 +120,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象联系方式表失败");
                 }
             }
-            if (people.getHouse() != null) {
-                Integer insertStatus = peopleService.people_house(people.getHouse(), peopleDTO.getHouse(), PeopleService.INSERT);
+            if (peopleDTO.getHouse() != null) {
+                Integer insertStatus = peopleService.people_house(people.getId(), peopleDTO.getHouse(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert house to t_house successfully");
                 } else {
@@ -129,8 +129,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象房产信息表失败");
                 }
             }
-            if (people.getCar() != null) {
-                Integer insertStatus = peopleService.people_car(people.getCar(), peopleDTO.getCar(), PeopleService.INSERT);
+            if (peopleDTO.getCar() != null) {
+                Integer insertStatus = peopleService.people_car(people.getId(), peopleDTO.getCar(), PeopleService.INSERT);
                 if (insertStatus == 1) {
                     log.info("Insert car to t_car successfully");
                 } else {
@@ -140,7 +140,7 @@ public class PeopleController {
             }
         }
         log.info("Insert people info successfully");
-        return ResponseResult.init(Integer.valueOf(String.valueOf(peopleId)));
+        return ResponseResult.init(1);
     }
 
     /**
@@ -172,20 +172,20 @@ public class PeopleController {
         log.info("Start Update people info, DTO :" + JSONUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
         log.info("Start Update object info, param is:" + JSONUtil.toJson(people));
-        Long peopleId = peopleService.people(people, PeopleService.UPDATE);
-        if (peopleId == null) {
+        Integer status = peopleService.people(people, PeopleService.UPDATE);
+        if (status == null || status != 1) {
             log.info("Update t_people info failed");
             return ResponseResult.error(0, "修改人口对象失败");
         }
         log.info("Update t_people info successfully");
-        if (people.getFlag() == null && people.getIdcardpic() == null && people.getCapturepic() == null &&
-                people.getImsi() == null && people.getPhone() == null && people.getHouse() == null &&
-                people.getCar() == null) {
+        if (peopleDTO.getFlag() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
+                peopleDTO.getImsi() == null && peopleDTO.getPhone() == null && peopleDTO.getHouse() == null &&
+                peopleDTO.getCar() == null) {
             log.info("Insert people info successfully");
-            return ResponseResult.init(Integer.valueOf(String.valueOf(peopleId)));
+            return ResponseResult.init(status);
         } else {
-            if (people.getFlag() != null) {
-                Integer insertStatus = peopleService.people_flag(people.getFlag(), peopleDTO.getFlag(), PeopleService.UPDATE);
+            if (peopleDTO.getFlag() != null) {
+                Integer insertStatus = peopleService.people_flag(people.getId(), peopleDTO.getFlag(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update flag to t_flag successfully");
                 } else {
@@ -193,9 +193,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象标签表失败");
                 }
             }
-            if (people.getIdcardpic() != null) {
-                Integer insertStatus = peopleService.people_picture(peopleId, PeopleService.IDCARD_PIC,
-                        people.getIdcardpic(), peopleDTO.getIdCardPic(), PeopleService.UPDATE);
+            if (peopleDTO.getIdCardPic() != null) {
+                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update idCard pic to t_picture successfully");
                 } else {
@@ -203,9 +203,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象证件照片表失败");
                 }
             }
-            if (people.getCapturepic() != null) {
-                Integer insertStatus = peopleService.people_picture(peopleId, PeopleService.CAPTURE_PIC,
-                        people.getCapturepic(), peopleDTO.getCapturePic(), PeopleService.UPDATE);
+            if (peopleDTO.getCapturePic() != null) {
+                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update capture pic to t_picture successfully");
                 } else {
@@ -213,8 +213,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象实采照片表失败");
                 }
             }
-            if (people.getImsi() != null) {
-                Integer insertStatus = peopleService.people_imsi(people.getImsi(), peopleDTO.getImsi(), PeopleService.UPDATE);
+            if (peopleDTO.getImsi() != null) {
+                Integer insertStatus = peopleService.people_imsi(people.getId(), peopleDTO.getImsi(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update imsi to t_imsi successfully");
                 } else {
@@ -222,8 +222,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象imsi表失败");
                 }
             }
-            if (people.getPhone() != null) {
-                Integer insertStatus = peopleService.people_phone(people.getPhone(), peopleDTO.getPhone(), PeopleService.UPDATE);
+            if (peopleDTO.getPhone() != null) {
+                Integer insertStatus = peopleService.people_phone(people.getId(), peopleDTO.getPhone(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update phone to t_phone successfully");
                 } else {
@@ -231,8 +231,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象联系方式表失败");
                 }
             }
-            if (people.getHouse() != null) {
-                Integer insertStatus = peopleService.people_house(people.getHouse(), peopleDTO.getHouse(), PeopleService.UPDATE);
+            if (peopleDTO.getHouse() != null) {
+                Integer insertStatus = peopleService.people_house(people.getId(), peopleDTO.getHouse(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update house to t_house successfully");
                 } else {
@@ -240,8 +240,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象房产信息表失败");
                 }
             }
-            if (people.getCar() != null) {
-                Integer insertStatus = peopleService.people_car(people.getCar(), peopleDTO.getCar(), PeopleService.UPDATE);
+            if (peopleDTO.getCar() != null) {
+                Integer insertStatus = peopleService.people_car(people.getId(), peopleDTO.getCar(), PeopleService.UPDATE);
                 if (insertStatus == 1) {
                     log.info("Update car to t_car successfully");
                 } else {
@@ -251,7 +251,7 @@ public class PeopleController {
             }
         }
         log.info("Update people info successfully");
-        return ResponseResult.init(Integer.valueOf(String.valueOf(peopleId)));
+        return ResponseResult.init(1);
     }
 
     /**

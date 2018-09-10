@@ -3,11 +3,11 @@
 <mapper namespace="com.hzgc.service.people.dao.ImsiMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Imsi" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="imsiid" property="imsiid" jdbcType="BIGINT" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
     <result column="imsi" property="imsi" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, imsiid, imsi
+    id, peopleid, imsi
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -15,16 +15,20 @@
     from t_imsi
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectImsiIdsByImsi" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectPeopleIdsByImsi" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from t_imsi
     where imsi like "%" #{imsi,jdbcType=VARCHAR} "%"
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_imsi
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.hzgc.service.people.model.Imsi" >
-    insert into t_imsi (id, imsiid, imsi
+    insert into t_imsi (id, peopleid, imsi
       )
-    values (#{id,jdbcType=BIGINT}, #{imsiid,jdbcType=BIGINT}, #{imsi,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Imsi" >
@@ -33,8 +37,8 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="imsiid != null" >
-        imsiid,
+      <if test="peopleid != null" >
+        peopleid,
       </if>
       <if test="imsi != null" >
         imsi,
@@ -44,8 +48,8 @@
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="imsiid != null" >
-        #{imsiid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null" >
         #{imsi,jdbcType=VARCHAR},
@@ -55,8 +59,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Imsi" >
     update t_imsi
     <set >
-      <if test="imsiid != null" >
-        imsiid = #{imsiid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null" >
         imsi = #{imsi,jdbcType=VARCHAR},
@@ -66,7 +70,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Imsi" >
     update t_imsi
-    set imsiid = #{imsiid,jdbcType=BIGINT},
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
       imsi = #{imsi,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

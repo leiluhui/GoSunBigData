@@ -3,11 +3,11 @@
 <mapper namespace="com.hzgc.service.people.dao.PhoneMapper" >
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Phone" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="phoneid" property="phoneid" jdbcType="BIGINT" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, phoneid, phone
+    id, peopleid, phone
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -15,16 +15,20 @@
     from t_phone
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectPhoneIdsByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectPeopleIdsByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from t_phone
     where phone like "%" #{phone,jdbcType=VARCHAR} "%"
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_phone
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.hzgc.service.people.model.Phone" >
-    insert into t_phone (id, phoneid, phone
+    insert into t_phone (id, peopleid, phone
       )
-    values (#{id,jdbcType=BIGINT}, #{phoneid,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Phone" >
@@ -33,8 +37,8 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="phoneid != null" >
-        phoneid,
+      <if test="peopleid != null" >
+        peopleid,
       </if>
       <if test="phone != null" >
         phone,
@@ -44,8 +48,8 @@
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="phoneid != null" >
-        #{phoneid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="phone != null" >
         #{phone,jdbcType=VARCHAR},
@@ -55,8 +59,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Phone" >
     update t_phone
     <set >
-      <if test="phoneid != null" >
-        phoneid = #{phoneid,jdbcType=BIGINT},
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
       <if test="phone != null" >
         phone = #{phone,jdbcType=VARCHAR},
@@ -66,7 +70,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Phone" >
     update t_phone
-    set phoneid = #{phoneid,jdbcType=BIGINT},
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
