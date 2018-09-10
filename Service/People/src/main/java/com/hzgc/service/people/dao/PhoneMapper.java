@@ -1,10 +1,11 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Phone;
-import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
+import java.util.List;
+
 public interface PhoneMapper {
+    int deleteByPrimaryKey(Long id);
 
     int insert(Phone record);
 
@@ -15,4 +16,6 @@ public interface PhoneMapper {
     int updateByPrimaryKeySelective(Phone record);
 
     int updateByPrimaryKey(Phone record);
+
+    List<Phone> selectPeopleIdsByPhone(String phone);
 }

@@ -3,7 +3,7 @@ package com.hzgc.service.people.model;
 public class Car {
     private Long id;
 
-    private Long carid;
+    private String peopleid;
 
     private String car;
 
@@ -15,12 +15,12 @@ public class Car {
         this.id = id;
     }
 
-    public Long getCarid() {
-        return carid;
+    public String getPeopleid() {
+        return peopleid;
     }
 
-    public void setCarid(Long carid) {
-        this.carid = carid;
+    public void setPeopleid(String peopleid) {
+        this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
     public String getCar() {

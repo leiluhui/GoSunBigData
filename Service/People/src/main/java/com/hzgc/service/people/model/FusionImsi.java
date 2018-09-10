@@ -1,9 +1,15 @@
 package com.hzgc.service.people.model;
 
-public class Imsi {
+import java.util.Date;
+
+public class FusionImsi {
     private Long id;
 
     private String peopleid;
+
+    private Date receivetime;
+
+    private String address;
 
     private String imsi;
 
@@ -21,6 +27,22 @@ public class Imsi {
 
     public void setPeopleid(String peopleid) {
         this.peopleid = peopleid == null ? null : peopleid.trim();
+    }
+
+    public Date getReceivetime() {
+        return receivetime;
+    }
+
+    public void setReceivetime(Date receivetime) {
+        this.receivetime = receivetime;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
     }
 
     public String getImsi() {
