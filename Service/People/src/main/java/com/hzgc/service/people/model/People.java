@@ -29,6 +29,14 @@ public class People {
 
     private String birthplace;
 
+    private Long community;
+
+    private Integer important;
+
+    private Integer care;
+
+    private Date lasttime;
+
     private Date createtime;
 
     private Date updatetime;
@@ -135,6 +143,38 @@ public class People {
 
     public void setBirthplace(String birthplace) {
         this.birthplace = birthplace == null ? null : birthplace.trim();
+    }
+
+    public Long getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Long community) {
+        this.community = community;
+    }
+
+    public Integer getImportant() {
+        return important;
+    }
+
+    public void setImportant(Integer important) {
+        this.important = important;
+    }
+
+    public Integer getCare() {
+        return care;
+    }
+
+    public void setCare(Integer care) {
+        this.care = care;
+    }
+
+    public Date getLasttime() {
+        return lasttime;
+    }
+
+    public void setLasttime(Date lasttime) {
+        this.lasttime = lasttime;
     }
 
     public Date getCreatetime() {

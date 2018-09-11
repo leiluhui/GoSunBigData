@@ -23,7 +23,7 @@ public class Politic implements Serializable {
         model.put(12, "无党派人士");
     }
 
-    public static String getPolitic(int i){
-        return model.get(i);
+    public static Map<Integer, String> getPolitic() {
+        return model;
     }
 }

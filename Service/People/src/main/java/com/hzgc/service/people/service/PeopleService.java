@@ -239,8 +239,8 @@ public class PeopleService {
             return null;
         }
         for (People people : peoples) {
-            PeopleVO peopleVO = peopleShift(people);
-            list.add(peopleVO);
+            /*PeopleVO peopleVO = peopleShift(people);
+            list.add(peopleVO)*/;
         }
         return list;
     }
