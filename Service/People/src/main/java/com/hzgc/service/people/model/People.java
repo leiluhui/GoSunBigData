@@ -44,8 +44,6 @@ public class People {
 
     private List<Integer> flag;
 
-    private List<String> picture;
-
     private List<String> imsi;
 
     private List<String> phone;
@@ -53,6 +51,8 @@ public class People {
     private List<String> house;
 
     private List<String> car;
+
+    private List<Long> picture;
 
     public String getId() {
         return id;
@@ -214,14 +214,6 @@ public class People {
         this.flag = flag;
     }
 
-    public List<String> getPicture() {
-        return picture;
-    }
-
-    public void setPicture(List<String> picture) {
-        this.picture = picture;
-    }
-
     public List<String> getImsi() {
         return imsi;
     }
@@ -252,5 +244,13 @@ public class People {
 
     public void setCar(List<String> car) {
         this.car = car;
+    }
+
+    public List<Long> getPicture() {
+        return picture;
+    }
+
+    public void setPicture(List<Long> picture) {
+        this.picture = picture;
     }
 }

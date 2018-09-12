@@ -1,13 +1,12 @@
 package com.hzgc.service.people.param;
 
-import com.hzgc.service.people.model.Flag;
 import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,11 +43,17 @@ public class PeopleVO implements Serializable {
 
     private String community;
 
+    private Integer important;
+
+    private Integer care;
+
+    private String lastTime;
+
+    private String createTime;
+
+    private String updateTime;
+
     private List<String> flag;
-
-    private String picture;
-
-    private List<byte[]> capturePic;
 
     private List<String> imsi;
 
@@ -58,17 +63,16 @@ public class PeopleVO implements Serializable {
 
     private List<String> car;
 
-    private String createTime;
-
-    private String updateTime;
+    private List<Long> pictureIds;
 
     public static PeopleVO peopleShift(People people) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         PeopleVO peopleVO = new PeopleVO();
         if (people != null){
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
-            //peopleVO.setRegion(people.getRegion());
+            peopleVO.setRegion(people.getRegion());
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
@@ -78,6 +82,12 @@ public class PeopleVO implements Serializable {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
+            peopleVO.setCommunity(people.getCommunity());
+            peopleVO.setImportant(people.getImportant());
+            peopleVO.setCare(people.getCare());
+            peopleVO.setLastTime(sdf.format(people.getLasttime()));
+            peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+            peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
             List<Integer> flags = people.getFlag();
             List<String> list = new ArrayList<>();
             for (Integer i : flags){
@@ -88,7 +98,7 @@ public class PeopleVO implements Serializable {
             peopleVO.setPhone(people.getPhone());
             peopleVO.setHouse(people.getHouse());
             peopleVO.setCar(people.getCar());
-            peopleVO.setPicture(people.getPicture().get(0));
         }
+        return peopleVO;
     }
 }

@@ -20,5 +20,7 @@ public interface PictureMapper {
 
     int updateByPrimaryKey(Picture record);
 
-    List<String> selectPicIdByPeopleId(String peopleid);
+    List<Long> selectPicIdByPeopleId(String peopleid);
+
+    List<PictureWithBLOBs> selectPictureByPeopleId(String peopleid);
 }
