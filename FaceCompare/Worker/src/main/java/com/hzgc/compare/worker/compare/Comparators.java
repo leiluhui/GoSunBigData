@@ -15,24 +15,11 @@ public interface Comparators {
 
     /**
      * 先对内存数据进行过滤，根据参数1和参数2
-     * @param arg1List
-     * @param arg2
      * @param dateStart
      * @param dateEnd
      * @return Record<rowkey, feature>
      */
-     List<Pair<String, byte[]>> filter(List<String> arg1List, String arg2, String dateStart, String dateEnd);
-
-    /**
-     * 先对内存数据进行过滤，根据参数1和参数2的取值范围
-     * @param arg1List
-     * @param arg2RangStart
-     * @param arg2RangEnd
-     * @param dateStart
-     * @param dateEnd
-     * @return
-     */
-    List<Pair<String, byte[]>> filter(List<String> arg1List, String arg2RangStart, String arg2RangEnd, String dateStart, String dateEnd);
+     List<Pair<String, byte[]>> filter(String dateStart, String dateEnd);
 
     /**
      * 若数据量过大则需要第一次对比

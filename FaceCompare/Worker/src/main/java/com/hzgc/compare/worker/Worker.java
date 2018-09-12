@@ -7,20 +7,18 @@ import com.hzgc.compare.worker.comsumer.Comsumer;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.memory.manager.MemoryManager;
-import com.hzgc.compare.worker.persistence.FileManager;
-import com.hzgc.compare.worker.persistence.FileReader;
-import com.hzgc.compare.worker.persistence.HBaseClient;
-import com.hzgc.compare.worker.persistence.LocalFileManager;
+import com.hzgc.compare.worker.persistence.*;
 import com.hzgc.compare.worker.util.HBaseHelper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 
 /**
  * 整合所有组件
  */
-public class Worker<A1, A2, D> {
+public class Worker {
     private static final Logger logger = LoggerFactory.getLogger(Worker.class);
     private Config conf;
     private Comsumer comsumer;
@@ -28,43 +26,68 @@ public class Worker<A1, A2, D> {
     private FileManager fileManager;
     private HBaseClient hBaseClient;
 
-    private void init(){
-        conf = Config.getConf();
+
+    public void init(String workId, String port){
+        Config.WORKER_ID = workId;
+        Config.WORKER_RPC_PORT =  Integer.parseInt(port);
         comsumer = new Comsumer();
-        String workId = conf.getValue(Config.WORKER_ID);
         logger.info("To start worker " + workId);
         logger.info("To init the memory module.");
-        MemoryCacheImpl.<A1, A2, D>getInstance();
-        memoryManager = new MemoryManager<A1, A2, D>();
+        MemoryCacheImpl.getInstance();
+        memoryManager = new MemoryManager();
         logger.info("To init persistence module.");
-        if(Config.SAVE_TO_LOCAL == conf.getValue(Config.WORKER_FILE_SAVE_SYSTEM, 0)){
-            fileManager = new LocalFileManager<A1, A2, D>();
+        int saveParam = Config.WORKER_FILE_SAVE_SYSTEM;
+        if(Config.SAVE_TO_LOCAL == saveParam){
+            fileManager = new LocalFileManager();
+        } else if(Config.SAVE_TO_HDFS == saveParam){
+            fileManager = new HDFSFileManager();
         }
         hBaseClient = new HBaseClient();
-        logger.info("Load data from file System.");
-        FileReader fileReader = new FileReader();
-        fileReader.loadRecordFromLocal();
+        try {
+            logger.info("Load data from file System.");
+            if(Config.SAVE_TO_LOCAL == saveParam){
+                FileReader fileReader = new LocalFileReader();
+                fileReader.loadRecord();
+            } else if(Config.SAVE_TO_HDFS == saveParam){
+                FileReader fileReader = new HDFSFileReader();
+                fileReader.loadRecord();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         HBaseHelper.getTable(FaceInfoTable.TABLE_NAME);
         TaskToHandleQueue.getTaskQueue();
     }
 
-    private void start(){
+
+    public void start(){
         comsumer.start();
         memoryManager.startToCheck();
         memoryManager.toShowMemory();
-        if(conf.getValue(Config.WORKER_FLUSH_PROGRAM, 0) == 0){
+        if(Config.WORKER_FLUSH_PROGRAM == 0){
             memoryManager.timeToCheckFlush();
         }
-        fileManager.checkFile();
+//        fileManager.checkFile();
         fileManager.checkTaskTodo();
-        hBaseClient.timeToWrite2();
+//        fileManager.checkFile();
+        hBaseClient.timeToWrite();
         Thread thread = new Thread(new RPCRegistry());
         thread.start();
     }
 
     public static void main(String args[]){
-        Worker worker = new Worker<String, String, float[]>();
-        worker.init();
+        if(args.length != 4){
+            return;
+        }
+
+        String workerId = args[0];
+        String nodeGroup = args[1];
+        String port = args[2];
+        String taskId = args[3];
+        Worker worker = new Worker();
+        worker.init(workerId, port);
         worker.start();
+        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
+        thread.start();
     }
 }

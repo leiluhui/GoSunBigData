@@ -6,6 +6,7 @@ import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.persistence.HBaseClient;
+import com.hzgc.compare.worker.util.FaceObjectUtil;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class CompareOnePerson extends CompareTask {
 
     @Override
     public SearchResult compare() {
-        List<String> ipcIdList = param.getArg1List();
+        System.out.println(FaceObjectUtil.objectToJson(param));
         byte[] feature1 = param.getFeatures().get(0).getFeature1();
         float[] feature2 = param.getFeatures().get(0).getFeature2();
         float sim = param.getSim();
@@ -48,7 +49,7 @@ public class CompareOnePerson extends CompareTask {
         Comparators comparators = new ComparatorsImpl();
         // 根据条件过滤
         logger.info("To filter the records from memory.");
-        List<Pair<String, byte[]>> dataFilterd =  comparators.<byte[]>filter(ipcIdList, null, dateStart, dateEnd);
+        List<Pair<String, byte[]>> dataFilterd =  comparators.filter(dateStart, dateEnd);
         if(dataFilterd.size() > hbaseReadMax){
             // 若过滤结果太大，则需要第一次对比
             logger.info("The result of filter is too bigger , to compare it first.");

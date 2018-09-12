@@ -11,7 +11,6 @@ public class LocalStreamCache {
     private File file;
 
     private LocalStreamCache() {
-        this.conf = Config.getConf();
     }
 
     public BufferedWriter getWriterStream(File file) {

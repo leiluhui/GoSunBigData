@@ -6,7 +6,6 @@ import com.hzgc.compare.Feature;
 import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
-import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.HBaseClient;
 import javafx.util.Pair;
 import org.slf4j.Logger;
@@ -19,12 +18,11 @@ import java.util.Map;
 public class CompareNotSamePerson implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(CompareNotSamePerson.class);
     private int resultDefaultCount = 20;
-    private Config conf;
     private CompareParam param;
     private String dateStart;
     private String dateEnd;
     private boolean isEnd = false;
-    private int hbaseReacMax = 500;
+    private int hbaseReacMax = 200;
     Map<String, SearchResult> searchResult;
 
     public Map<String, SearchResult> getSearchResult(){
@@ -44,7 +42,6 @@ public class CompareNotSamePerson implements Runnable {
 
     public Map<String, SearchResult> compare() {
         Map<String, SearchResult> result = new HashMap<>();
-        List<String> ipcIdList = param.getArg1List();
         List<Feature> features = param.getFeatures();
         float sim = param.getSim();
         int resultCount = param.getResultCount();
@@ -55,7 +52,7 @@ public class CompareNotSamePerson implements Runnable {
         // 根据条件过滤
         Comparators comparators = new ComparatorsImpl();
         logger.info("To filter the records from memory.");
-        List<Pair<String, byte[]>> dataFilterd =  comparators.filter(ipcIdList, null, dateStart, dateEnd);
+        List<Pair<String, byte[]>> dataFilterd =  comparators.filter(dateStart, dateEnd);
         if(dataFilterd.size() > hbaseReacMax){
             // 若过滤结果太大，则需要第一次对比
             logger.info("The result of filter is too bigger , to compare it first.");

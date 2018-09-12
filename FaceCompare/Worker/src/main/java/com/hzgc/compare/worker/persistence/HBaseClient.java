@@ -1,9 +1,9 @@
 package com.hzgc.compare.worker.persistence;
 
-import com.hzgc.compare.Feature;
-import com.hzgc.compare.worker.common.FaceInfoTable;
 import com.hzgc.compare.FaceObject;
+import com.hzgc.compare.Feature;
 import com.hzgc.compare.SearchResult;
+import com.hzgc.compare.worker.common.FaceInfoTable;
 import com.hzgc.compare.worker.persistence.task.TimeToWrite;
 import com.hzgc.compare.worker.persistence.task.TimeToWrite2;
 import com.hzgc.compare.worker.util.FaceObjectUtil;
@@ -21,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**

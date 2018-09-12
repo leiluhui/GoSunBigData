@@ -1,7 +1,6 @@
 package com.hzgc.compare.worker.comsumer;
 
 
-
 import com.hzgc.compare.FaceObject;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
@@ -12,12 +11,14 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 public class Comsumer extends Thread{
     private static final Logger logger = LoggerFactory.getLogger(Comsumer.class);
     private MemoryCacheImpl memoryCache;
-    private Config conf;
     private KafkaConsumer<String, String> comsumer;
 
     public Comsumer(){
@@ -28,12 +29,11 @@ public class Comsumer extends Thread{
      * 初始化
      */
     private void init(){
-        conf = Config.getConf();
         Properties prop = new Properties();
-        prop.put("bootstrap.servers", conf.getValue(Config.KAFKA_BOOTSTRAP_SERVERS));
-        prop.put("group.id", conf.getValue(Config.KAFKA_GROUP_ID));
-        prop.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        prop.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        prop.put("bootstrap.servers", Config.KAFKA_BOOTSTRAP_SERVERS);
+        prop.put("group.id", Config.KAFKA_GROUP_ID);
+        prop.put("key.deserializer", Config.KAFKA_DESERIALIZER);
+        prop.put("value.deserializer", Config.KAFKA_DESERIALIZER);
         comsumer = new KafkaConsumer<>(prop);
         logger.info("Kafka comsumer is init.");
         memoryCache = MemoryCacheImpl.getInstance();
@@ -42,12 +42,12 @@ public class Comsumer extends Thread{
      * 接收从kafka传来的数据
      */
     private void receiveAndSave(){
-        comsumer.subscribe(Collections.singletonList(conf.getValue(Config.KAFKA_TOPIC)));
+        comsumer.subscribe(Collections.singletonList(Config.KAFKA_TOPIC));
         logger.info("Comsumer is started to accept kafka info.");
         while(true){
             ConsumerRecords<String, String> records =
-                    comsumer.poll(Long.parseLong(conf.getValue(Config.KAFKA_MAXIMUM_TIME)));
-            List<FaceObject> objList = new ArrayList<FaceObject>();
+                    comsumer.poll(Config.KAFKA_MAXIMUM_TIME);
+            List<FaceObject> objList = new ArrayList<>();
             for(ConsumerRecord<String, String> record : records){
                 FaceObject obj = FaceObjectUtil.jsonToObject(record.value());
                 objList.add(obj);

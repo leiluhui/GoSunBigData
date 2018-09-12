@@ -1,9 +1,10 @@
 package com.hzgc.compare.worker;
 
-import com.hzgc.compare.Service;
-import com.hzgc.compare.CompareParam;
 import com.hzgc.common.rpc.client.result.AllReturn;
+import com.hzgc.common.rpc.server.annotation.RpcService;
+import com.hzgc.compare.CompareParam;
 import com.hzgc.compare.SearchResult;
+import com.hzgc.compare.Service;
 import com.hzgc.compare.worker.compare.task.CompareNotSamePerson;
 import com.hzgc.compare.worker.compare.task.CompareOnePerson;
 import com.hzgc.compare.worker.compare.task.CompareSamePerson;
@@ -15,23 +16,23 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
+@RpcService(Service.class)
 public class ServiceImpl implements Service {
     private static final Logger logger = LoggerFactory.getLogger(ServiceImpl.class);
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private ExecutorService pool;
     private int daysPerThread = 2; //分割成的时间段
-    private int daysToComapreMax = 4; //不使用多线程对比的最大时间段
-    private int excutors = 10;
+    private int daysToComapreMax = 10; //不使用多线程对比的最大时间段
 
     public ServiceImpl(){
-        Config conf = Config.getConf();
-        excutors = conf.getValue(Config.WORKER_EXECUTORS_TO_COMPARE, excutors);
-        pool = Executors.newFixedThreadPool(excutors);
+        pool = Executors.newFixedThreadPool(Config.WORKER_EXECUTORS_TO_COMPARE);
     }
 
     @Override
@@ -146,10 +147,11 @@ public class ServiceImpl implements Service {
                 List<String> periods = DateUtil.getPeriod(param.getDateStart(), param.getDateEnd(), daysPerThread);
                 List<CompareNotSamePerson> list = new ArrayList<>();
                 for(String period : periods){
+                    logger.info("Period : " + period);
                     String[] time = period.split(",");
-                    CompareNotSamePerson compareOnePerson2 = new CompareNotSamePerson(param, time[0], time[1]);
-                    pool.submit(compareOnePerson2);
-                    list.add(compareOnePerson2);
+                    CompareNotSamePerson compareOnePerson = new CompareNotSamePerson(param, time[0], time[1]);
+                    pool.submit(compareOnePerson);
+                    list.add(compareOnePerson);
                 }
 
                 while (true){

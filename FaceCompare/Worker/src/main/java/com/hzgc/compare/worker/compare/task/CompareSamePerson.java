@@ -36,7 +36,6 @@ public class CompareSamePerson extends CompareTask {
 
     @Override
     public SearchResult compare() {
-        List<String> ipcIdList = param.getArg1List();
         List<Feature> features = param.getFeatures();
         float sim = param.getSim();
         int resultCount = param.getResultCount();
@@ -54,7 +53,7 @@ public class CompareSamePerson extends CompareTask {
         Comparators comparators = new ComparatorsImpl();
         // 根据条件过滤
         logger.info("To filter the records from memory.");
-        List<Pair<String, byte[]>> dataFilterd =  comparators.<byte[]>filter(ipcIdList, null, dateStart, dateEnd);
+        List<Pair<String, byte[]>> dataFilterd =  comparators.filter(dateStart, dateEnd);
         if(dataFilterd.size() > hbaseReadMax) {
             // 若过滤结果太大，则需要第一次对比
             logger.info("The result of filter is too bigger , to compare it first.");
