@@ -36,7 +36,7 @@ public class PeopleController {
      * 添加人口对象
      *
      * @param peopleDTO 人口对象信息
-     * @return 成功状态【0：插入成功；1：插入失败】
+     * @return 成功状态 1：插入成功, 0：插入失败
      */
     @ApiOperation(value = "添加人口对象", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.ADD_PEOPLE, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -147,7 +147,7 @@ public class PeopleController {
      * 修改人口对象
      *
      * @param peopleDTO 人口对象信息
-     * @return 成功状态【0：修改成功；1：修改失败】
+     * @return 成功状态 1：修改成功, 0：修改失败
      */
     @ApiOperation(value = "修改人口对象", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.UPDATE_PEOPLE, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -271,17 +271,17 @@ public class PeopleController {
         }
         if (param.getRegionId() == null || param.getRegionId() == 0) {
             log.error("Start select people, but regionID is null ");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,区域ID不能为空,请检查!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "区域ID不能为空,请检查!");
         }
         if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 && param.getSearchType() != 3) {
             log.error("Start select people, but SearchType is error ");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,区域ID不能为空,请检查!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
         }
         log.info("Start select people, search param: " + JSONUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
         log.info("Start select people, FilterField param: " + JSONUtil.toJson(param));
         List<PeopleVO> peoples = peopleService.searchPeople(field);
-        log.info("Start select people successfully ,result " + JSONUtil.toJson(peoples));
+        log.info("Start select people successfully, result " + JSONUtil.toJson(peoples));
         return ResponseResult.init(peoples);
     }
 }

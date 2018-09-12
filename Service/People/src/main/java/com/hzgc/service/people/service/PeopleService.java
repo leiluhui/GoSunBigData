@@ -44,6 +44,13 @@ public class PeopleService {
     public final static String IDCARD_PIC = "idcardpic";
     public final static String CAPTURE_PIC = "capturepic";
 
+    /**
+     * 添加、修改 t_people 表
+     *
+     * @param people people对象
+     * @param str    添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people(People people, String str) {
         if (INSERT.equals(str)) {
             return peopleMapper.insertSelective(people);
@@ -54,6 +61,14 @@ public class PeopleService {
         return 0;
     }
 
+    /**
+     * 添加、修改 t_flag 表
+     *
+     * @param peopleId 人员全局ID
+     * @param flags    人员标签
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_flag(String peopleId, List<Integer> flags, String str) {
         for (Integer i : flags) {
             Flag flag = new Flag();
@@ -78,6 +93,15 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_picture 表
+     *
+     * @param peopleId 人员全局ID
+     * @param picType  照片类型
+     * @param pics     照片数据
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_picture(String peopleId, String picType, List<byte[]> pics, String str) {
         for (byte[] b : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
@@ -117,6 +141,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_imsi 表
+     *
+     * @param peopleId 人员全局ID
+     * @param imsis    imsi信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_imsi(String peopleId, List<String> imsis, String str) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
@@ -141,6 +173,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_phone 表
+     *
+     * @param peopleId 人员全局ID
+     * @param phones   phone信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_phone(String peopleId, List<String> phones, String str) {
         for (String s : phones) {
             Phone phone = new Phone();
@@ -164,6 +204,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_house 表
+     *
+     * @param peopleId 人员全局ID
+     * @param houses   house信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_house(String peopleId, List<String> houses, String str) {
         for (String s : houses) {
             House house = new House();
@@ -183,11 +231,18 @@ public class PeopleService {
                     return 0;
                 }
             }
-
         }
         return 1;
     }
 
+    /**
+     * 添加、修改 t_car 表
+     *
+     * @param peopleId 人员全局ID
+     * @param cars     car信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_car(String peopleId, List<String> cars, String str) {
         for (String s : cars) {
             Car car = new Car();
@@ -211,6 +266,12 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 查询对象
+     *
+     * @param field 查询过滤字段封装
+     * @return peopleVO 查询返回参数封装
+     */
     public List<PeopleVO> searchPeople(FilterField field) {
         List<PeopleVO> list = new ArrayList<>();
         List<People> peoples = null;
@@ -240,7 +301,8 @@ public class PeopleService {
         }
         for (People people : peoples) {
             /*PeopleVO peopleVO = peopleShift(people);
-            list.add(peopleVO)*/;
+            list.add(peopleVO)*/
+            ;
         }
         return list;
     }
