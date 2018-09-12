@@ -2,6 +2,8 @@ package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Flag;
 
+import java.util.List;
+
 public interface FlagMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface FlagMapper {
     int updateByPrimaryKeySelective(Flag record);
 
     int updateByPrimaryKey(Flag record);
+
+    List<Integer> selectFlagByPeopleId(String peopleid);
 }

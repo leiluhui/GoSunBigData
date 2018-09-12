@@ -1,6 +1,7 @@
 package com.hzgc.service.people.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class People {
     private String id;
@@ -40,6 +41,18 @@ public class People {
     private Date createtime;
 
     private Date updatetime;
+
+    private List<Integer> flag;
+
+    private List<String> picture;
+
+    private List<String> imsi;
+
+    private List<String> phone;
+
+    private List<String> house;
+
+    private List<String> car;
 
     public String getId() {
         return id;
@@ -191,5 +204,53 @@ public class People {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public List<Integer> getFlag() {
+        return flag;
+    }
+
+    public void setFlag(List<Integer> flag) {
+        this.flag = flag;
+    }
+
+    public List<String> getPicture() {
+        return picture;
+    }
+
+    public void setPicture(List<String> picture) {
+        this.picture = picture;
+    }
+
+    public List<String> getImsi() {
+        return imsi;
+    }
+
+    public void setImsi(List<String> imsi) {
+        this.imsi = imsi;
+    }
+
+    public List<String> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(List<String> phone) {
+        this.phone = phone;
+    }
+
+    public List<String> getHouse() {
+        return house;
+    }
+
+    public void setHouse(List<String> house) {
+        this.house = house;
+    }
+
+    public List<String> getCar() {
+        return car;
+    }
+
+    public void setCar(List<String> car) {
+        this.car = car;
     }
 }

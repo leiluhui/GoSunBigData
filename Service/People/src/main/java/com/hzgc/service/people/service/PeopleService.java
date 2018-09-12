@@ -274,35 +274,12 @@ public class PeopleService {
      */
     public List<PeopleVO> searchPeople(FilterField field) {
         List<PeopleVO> list = new ArrayList<>();
-        List<People> peoples = null;
-        if (field.getName() != null || field.getIdcard() != null) {
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (field.getImsi() != null) {
-            List<Imsi> imsis = imsiMapper.selectPeopleIdsByImsi(field.getImsi());
-            List<String> peopleIds = new ArrayList<>();
-            for (Imsi imsi : imsis) {
-                peopleIds.add(imsi.getPeopleid());
+        List<People> peoples = peopleMapper.searchPeople(field);
+        if (peoples != null && peoples.size() > 0) {
+            for (People people : peoples) {
+                PeopleVO peopleVO = PeopleVO.peopleShift(people);
+                list.add(peopleVO);
             }
-            field.setPeopleIds(peopleIds);
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (field.getPhone() != null) {
-            List<Phone> phones = phoneMapper.selectPeopleIdsByPhone(field.getPhone());
-            List<String> peopleIds = new ArrayList<>();
-            for (Phone phone : phones) {
-                peopleIds.add(phone.getPeopleid());
-            }
-            field.setPeopleIds(peopleIds);
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (peoples == null || peoples.size() == 0) {
-            return null;
-        }
-        for (People people : peoples) {
-            /*PeopleVO peopleVO = peopleShift(people);
-            list.add(peopleVO)*/
-            ;
         }
         return list;
     }

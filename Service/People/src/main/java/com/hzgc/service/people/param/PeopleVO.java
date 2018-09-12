@@ -1,9 +1,12 @@
 package com.hzgc.service.people.param;
 
+import com.hzgc.service.people.model.Flag;
+import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +16,7 @@ import java.util.List;
 @ApiModel(value = "后台返回封装类")
 @Data
 public class PeopleVO implements Serializable {
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -43,7 +46,7 @@ public class PeopleVO implements Serializable {
 
     private List<String> flag;
 
-    private List<byte[]> idCardPic;
+    private String picture;
 
     private List<byte[]> capturePic;
 
@@ -58,4 +61,34 @@ public class PeopleVO implements Serializable {
     private String createTime;
 
     private String updateTime;
+
+    public static PeopleVO peopleShift(People people) {
+        PeopleVO peopleVO = new PeopleVO();
+        if (people != null){
+            peopleVO.setId(people.getId());
+            peopleVO.setName(people.getName());
+            peopleVO.setIdCard(people.getIdcard());
+            //peopleVO.setRegion(people.getRegion());
+            peopleVO.setHousehold(people.getHousehold());
+            peopleVO.setAddress(people.getAddress());
+            peopleVO.setSex(people.getSex());
+            peopleVO.setAge(people.getAge());
+            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setPolitic(people.getPolitic());
+            peopleVO.setEduLevel(people.getEdulevel());
+            peopleVO.setJob(people.getJob());
+            peopleVO.setBirthplace(people.getBirthplace());
+            List<Integer> flags = people.getFlag();
+            List<String> list = new ArrayList<>();
+            for (Integer i : flags){
+                list.add(com.hzgc.service.people.fields.Flag.getFlag(i));
+            }
+            peopleVO.setFlag(list);
+            peopleVO.setImsi(people.getImsi());
+            peopleVO.setPhone(people.getPhone());
+            peopleVO.setHouse(people.getHouse());
+            peopleVO.setCar(people.getCar());
+            peopleVO.setPicture(people.getPicture().get(0));
+        }
+    }
 }

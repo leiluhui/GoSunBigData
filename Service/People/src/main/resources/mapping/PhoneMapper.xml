@@ -1,77 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.service.people.dao.PhoneMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Phone" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="phone" property="phone" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, peopleid, phone
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_phone
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="selectPeopleIdsByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from t_phone
-    where phone like "%" #{phone,jdbcType=VARCHAR} "%"
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_phone
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.Phone" >
-    insert into t_phone (id, peopleid, phone
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Phone" >
-    insert into t_phone
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="peopleid != null" >
-        peopleid,
-      </if>
-      <if test="phone != null" >
-        phone,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="peopleid != null" >
-        #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Phone" >
-    update t_phone
-    <set >
-      <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Phone" >
-    update t_phone
-    set peopleid = #{peopleid,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.hzgc.service.people.dao.PhoneMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Phone">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, peopleid, phone
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_phone
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!-- 用于人口库关联查询语句 -->
+    <select id="selectPhoneByPeopleId" resultMap="java.lang.String" parameterType="java.lang.String">
+        select phone from t_phone where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_phone
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.Phone">
+        insert into t_phone (id, peopleid, phone
+        )
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Phone">
+        insert into t_phone
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="peopleid != null">
+                peopleid,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null">
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Phone">
+        update t_phone
+        <set>
+            <if test="peopleid != null">
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Phone">
+        update t_phone
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

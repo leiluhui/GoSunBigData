@@ -21,4 +21,8 @@ public class Flag implements Serializable{
     public static Map<Integer, String> getFlag(){
         return model;
     }
+
+    public static String getFlag(Integer index){
+        return model.get(index);
+    }
 }
