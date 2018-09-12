@@ -3,6 +3,8 @@ package com.hzgc.service.people.dao;
 import com.hzgc.service.people.model.Picture;
 import com.hzgc.service.people.model.PictureWithBLOBs;
 
+import java.util.List;
+
 public interface PictureMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -17,4 +19,6 @@ public interface PictureMapper {
     int updateByPrimaryKeyWithBLOBs(PictureWithBLOBs record);
 
     int updateByPrimaryKey(Picture record);
+
+    List<String> selectPicIdByPeopleId(String peopleid);
 }

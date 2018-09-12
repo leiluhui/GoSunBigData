@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Edulevel implements Serializable {
 
-    private static final Map<Integer, String> model = new LinkedHashMap<>();
+    private static Map<Integer, String> model = new LinkedHashMap<>();
 
     static {
         model.put(0, "小学");
@@ -21,7 +21,7 @@ public class Edulevel implements Serializable {
         model.put(9, "博士后");
     }
 
-    public static String getEdulevel(int i){
-        return model.get(i);
+    public static Map<Integer, String> getEdulevel() {
+        return model;
     }
 }
