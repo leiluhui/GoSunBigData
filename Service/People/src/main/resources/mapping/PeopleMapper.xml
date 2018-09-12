@@ -84,6 +84,9 @@
             <if test="regionid != null ">
                 region = #{region,jdbcType=BIGINT}
             </if>
+            <if test="communityid != null ">
+                and community = #{community,jdbcType=BIGINT}
+            </if>
             <if test="name != null and name.length() > 0">
                 and name like "%" #{name,jdbcType=VARCHAR} "%"
             </if>
