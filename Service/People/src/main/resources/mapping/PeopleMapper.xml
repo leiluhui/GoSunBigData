@@ -21,6 +21,18 @@
         <result column="lasttime" property="lasttime" jdbcType="TIMESTAMP"/>
         <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
         <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+        <collection property="flag" ofType="java.lang.Integer" column="id"
+                    select="com.hzgc.service.people.dao.FlagMapper.selectFlagByPeopleId"/>
+        <collection property="imsi" ofType="java.lang.String" column="id"
+                    select="com.hzgc.service.people.dao.ImsiMapper.selectImsiByPeopleId"/>
+        <collection property="phone" ofType="java.lang.String" column="id"
+                    select="com.hzgc.service.people.dao.PhoneMapper.selectPhoneByPeopleId"/>
+        <collection property="house" ofType="java.lang.String" column="id"
+                    select="com.hzgc.service.people.dao.HouseMapper.selectHouseByPeopleId"/>
+        <collection property="car" ofType="java.lang.String" column="id"
+                    select="com.hzgc.service.people.dao.CarMapper.selectCarByPeopleId"/>
+        <collection property="picture" ofType="java.lang.Long" column="id"
+                    select="com.hzgc.service.people.dao.PictureMapper.selectPicIdByPeopleId"/>
     </resultMap>
     <resultMap id="CollectionResultMap" type="com.hzgc.service.people.model.People">
         <id column="id" property="id" jdbcType="VARCHAR"/>
@@ -46,7 +58,7 @@
                     select="com.hzgc.service.people.dao.HouseMapper.selectHouseByPeopleId"/>
         <collection property="car" ofType="java.lang.String" column="id"
                     select="com.hzgc.service.people.dao.CarMapper.selectCarByPeopleId"/>
-        <collection property="picture" ofType="java.lang.String" column="id"
+        <collection property="picture" ofType="java.lang.Long" column="id"
                     select="com.hzgc.service.people.dao.PictureMapper.selectPicIdByPeopleId"/>
     </resultMap>
     <sql id="Base_Column_List">

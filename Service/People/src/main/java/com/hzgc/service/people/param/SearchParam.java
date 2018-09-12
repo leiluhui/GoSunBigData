@@ -12,5 +12,7 @@ public class SearchParam implements Serializable {
     private String searchVal ;  // 用户输入的值
     private Long regionId ;     // 省市区选择器ID
     private Long communityId;   // 小区
+    private int start;          // 起始行数
+    private int limit;          // 分页行数
 }
 

@@ -1,5 +1,6 @@
 package com.hzgc.service.people.service;
 
+import com.github.pagehelper.PageHelper;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
@@ -7,6 +8,7 @@ import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
+import com.hzgc.service.people.param.PictureVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -267,17 +269,76 @@ public class PeopleService {
     }
 
     /**
-     * 查询对象
+     * 根据照片ID查询照片
+     *
+     * @param pictureId 照片ID
+     * @return byte[] 照片
+     */
+    public byte[] searchPictureByPicId(Long pictureId) {
+        PictureWithBLOBs picture = pictureMapper.selectByPrimaryKey(pictureId);
+        if (picture != null){
+            byte[] idcardPic = picture.getIdcardpic();
+            if (idcardPic != null && idcardPic.length > 0){
+                return idcardPic;
+            }
+            return picture.getCapturepic();
+        }
+        return null;
+    }
+
+    public PictureVO searchPictureByPeopleId(String peopleId) {
+        PictureVO pictureVO = new PictureVO();
+        List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
+        if(pictures != null && pictures.size() > 0){
+            List<byte[]> idcardPics = new ArrayList<>();
+            List<byte[]> capturePics = new ArrayList<>();
+            for (PictureWithBLOBs picture : pictures){
+                if (picture != null){
+                    byte[] idcardPic = picture.getIdcardpic();
+                    if (idcardPic != null && idcardPic.length > 0){
+                        idcardPics.add(idcardPic);
+                    }else {
+                        capturePics.add(picture.getCapturepic());
+                    }
+                }
+            }
+            pictureVO.setIdcardPics(idcardPics);
+            pictureVO.setCapturePics(capturePics);
+        }
+        return pictureVO;
+    }
+
+    /**
+     * 根据id查询人员
+     *
+     * @param peopleId 人员全局ID
+     * @return peopleVO
+     */
+    public PeopleVO selectByPeopleId(String peopleId) {
+        People people = peopleMapper.selectByPrimaryKey(peopleId);
+        PeopleVO peopleVO = PeopleVO.peopleShift(people);
+        peopleVO.setPictureIds(people.getPicture());
+        return peopleVO;
+    }
+
+    /**
+     * 查询人员对象
      *
      * @param field 查询过滤字段封装
+     * @param start 起始行数
+     * @param limit 分页行数
      * @return peopleVO 查询返回参数封装
      */
-    public List<PeopleVO> searchPeople(FilterField field) {
+    public List<PeopleVO> searchPeople(FilterField field, int start, int limit) {
         List<PeopleVO> list = new ArrayList<>();
+        PageHelper.offsetPage(start, limit);
         List<People> peoples = peopleMapper.searchPeople(field);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = PeopleVO.peopleShift(people);
+                List<Long> picIds = new ArrayList<>();
+                picIds.add(people.getPicture().get(0));
+                peopleVO.setPictureIds(picIds);
                 list.add(peopleVO);
             }
         }

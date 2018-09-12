@@ -6,12 +6,10 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.people.model.People;
-import com.hzgc.service.people.param.FilterField;
-import com.hzgc.service.people.param.PeopleDTO;
-import com.hzgc.service.people.param.PeopleVO;
-import com.hzgc.service.people.param.SearchParam;
+import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Api(value = "/people", tags = "人口库服务")
@@ -255,7 +254,65 @@ public class PeopleController {
     }
 
     /**
-     * 查询对象
+     * 根据id查询人员
+     *
+     * @param peopleId 人员全局ID
+     * @return PeopleVO
+     */
+    @ApiOperation(value = "根据id查询对象", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.OBJECTINFO_GET, method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
+    public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
+            log.error("Start select people info, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询对象ID为空，请检查！");
+        }
+        log.info("Start select people info, param is : " + peopleId);
+        PeopleVO peopleVO = peopleService.selectByPeopleId(peopleId);
+        log.info("Select people info successfully, result : " + JSONUtil.toJson(peopleVO));
+        return ResponseResult.init(peopleVO);
+    }
+
+    /**
+     * 根据照片ID查询照片
+     *
+     * @param pictureId 照片ID
+     * @return byte[] 照片
+     */
+    @ApiOperation(value = "根据照片ID查询照片", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
+    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
+    public ResponseResult<byte[]> searchPictureByPicId(@RequestBody Long pictureId) {
+        if (pictureId != null) {
+            log.error("Start select picture, but picture id is null!");
+        }
+        log.info("Start select picture, search picture id: " + pictureId);
+        byte[] pic = peopleService.searchPictureByPicId(pictureId);
+        log.info("Start select picture successfully");
+        return ResponseResult.init(pic);
+    }
+
+    /**
+     * 根据人员全局ID查询照片
+     *
+     * @param peopleId 人员全局ID
+     * @return PictureVO 照片封装
+     */
+    @ApiOperation(value = "根据人员全局ID查询所以照片", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
+    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
+    public ResponseResult<PictureVO> searchPictureByPeopleId(@RequestBody String peopleId) {
+        if (StringUtils.isBlank(peopleId)){
+            log.error("Start select picture, but people id is null!");
+        }
+        log.info("Start select picture, search people id: " + peopleId);
+        PictureVO pictureVO = peopleService.searchPictureByPeopleId(peopleId);
+        log.info("Start select picture successfully");
+        return ResponseResult.init(pictureVO);
+    }
+
+    /**
+     * 查询人员对象
      *
      * @param param 查询条件参数封装
      * @return peopleVO 查询返回参数封装
@@ -263,7 +320,6 @@ public class PeopleController {
     @ApiOperation(value = "对象查询", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
     @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
-
     public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParam param) {
         if (param == null) {
             log.error("Start select people, but param is null ");
@@ -279,8 +335,8 @@ public class PeopleController {
         }
         log.info("Start select people, search param: " + JSONUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
-        log.info("Start select people, FilterField param: " + JSONUtil.toJson(param));
-        List<PeopleVO> peoples = peopleService.searchPeople(field);
+        log.info("Start select people, FilterField param: " + JSONUtil.toJson(field));
+        List<PeopleVO> peoples = peopleService.searchPeople(field, param.getStart(), param.getLimit());
         log.info("Start select people successfully, result " + JSONUtil.toJson(peoples));
         return ResponseResult.init(peoples);
     }

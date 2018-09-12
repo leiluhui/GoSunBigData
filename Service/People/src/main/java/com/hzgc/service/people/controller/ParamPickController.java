@@ -4,6 +4,7 @@ import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.service.people.service.ParamPickService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -60,7 +61,7 @@ public class ParamPickController {
      *
      * @return map
      */
-    public ResponseResult<Map<Integer, String>> getCityPick(int index) {
+    public ResponseResult<Map<Integer, String>> getCityPick(@RequestBody int index) {
         Map<Integer, String> map =  paramPickService.getCityPick(index);
         return ResponseResult.init(map);
     }
