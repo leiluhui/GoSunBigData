@@ -32,8 +32,13 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
     <!-- 用于人口库关联查询语句 -->
-    <select id="selectPicIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
-        select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR}
+    <select id="selectByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from t_picture
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
     <select id="selectPictureByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
         select

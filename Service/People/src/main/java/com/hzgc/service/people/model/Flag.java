@@ -5,7 +5,7 @@ public class Flag {
 
     private String peopleid;
 
-    private Integer flag;
+    private String flag;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class Flag {
         this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
-    public Integer getFlag() {
+    public String getFlag() {
         return flag;
     }
 
-    public void setFlag(Integer flag) {
-        this.flag = flag;
+    public void setFlag(String flag) {
+        this.flag = flag == null ? null : flag.trim();
     }
 }

@@ -17,5 +17,5 @@ public interface HouseMapper {
 
     int updateByPrimaryKey(House record);
 
-    List<String> selectHouseByPeopleId(String peopleid);
+    List<House> selectByPeopleId(String peopleid);
 }

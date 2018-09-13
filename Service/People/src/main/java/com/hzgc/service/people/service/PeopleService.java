@@ -5,7 +5,9 @@ import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
+import com.hzgc.service.people.fields.*;
 import com.hzgc.service.people.model.*;
+import com.hzgc.service.people.model.Flag;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
 import com.hzgc.service.people.param.PictureVO;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +43,8 @@ public class PeopleService {
 
     @Autowired
     private PictureMapper pictureMapper;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public final static String INSERT = "insert";
     public final static String UPDATE = "update";
@@ -75,7 +80,7 @@ public class PeopleService {
         for (Integer i : flags) {
             Flag flag = new Flag();
             flag.setPeopleid(peopleId);
-            flag.setFlag(i);
+            //flag.setFlag(i);
             int status = 0;
             if (INSERT.equals(str)) {
                 status = flagMapper.insertSelective(flag);
@@ -277,11 +282,11 @@ public class PeopleService {
     public byte[] searchPictureByPicId(Long pictureId) {
         PictureWithBLOBs picture = pictureMapper.selectPictureById(pictureId);
         if (picture != null){
-            byte[] idcardPic = picture.getIdcardpic();
-            if (idcardPic != null && idcardPic.length > 0){
-                return idcardPic;
+            if (picture.getIdcardpic() != null){
+               return picture.getIdcardpic();
+            }else {
+                return picture.getCapturepic();
             }
-            return picture.getCapturepic();
         }
         return null;
     }
@@ -316,8 +321,54 @@ public class PeopleService {
      */
     public PeopleVO selectByPeopleId(String peopleId) {
         People people = peopleMapper.selectByPrimaryKey(peopleId);
-        PeopleVO peopleVO = PeopleVO.peopleShift(people);
-        peopleVO.setPictureIds(people.getPicture());
+        PeopleVO peopleVO = new PeopleVO();
+        if (people != null){
+            peopleVO.setId(people.getId());
+            peopleVO.setName(people.getName());
+            peopleVO.setIdCard(people.getIdcard());
+            peopleVO.setRegion(String.valueOf(people.getRegion()));
+            peopleVO.setHousehold(people.getHousehold());
+            peopleVO.setAddress(people.getAddress());
+            peopleVO.setSex(people.getSex());
+            peopleVO.setAge(people.getAge());
+            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setPolitic(people.getPolitic());
+            peopleVO.setEduLevel(people.getEdulevel());
+            peopleVO.setJob(people.getJob());
+            peopleVO.setBirthplace(people.getBirthplace());
+            peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+            peopleVO.setImportant(people.getImportant());
+            peopleVO.setCare(people.getCare());
+            if (people.getLasttime() != null){
+                peopleVO.setLastTime(sdf.format(people.getLasttime()));
+            }
+            if (people.getCreatetime() != null){
+                peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+            }
+            if (people.getUpdatetime() != null){
+                peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+            }
+            peopleVO.setFlag(people.getFlag());
+            peopleVO.setImsi(people.getImsi());
+            peopleVO.setPhone(people.getPhone());
+            peopleVO.setHouse(people.getHouse());
+            peopleVO.setCar(people.getCar());
+            List<PictureWithBLOBs> pictures = people.getPicture();
+            if (pictures != null && pictures.size() > 0){
+                List<PictureWithBLOBs> idcardPictureList = new ArrayList<>();
+                List<PictureWithBLOBs> capturePictureList = new ArrayList<>();
+                for (PictureWithBLOBs picture : pictures){
+                    byte[] idcardPicture = picture.getIdcardpic();
+                    if (idcardPicture != null){
+                        idcardPictureList.add(picture);
+                    }else {
+                        capturePictureList.add(picture);
+                    }
+                }
+                peopleVO.setIdcardPicture(idcardPictureList);
+                peopleVO.setCapturePicture(capturePictureList);
+            }
+        }
         return peopleVO;
     }
 
@@ -335,14 +386,55 @@ public class PeopleService {
         List<People> peoples = peopleMapper.searchPeople(field);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
-                PeopleVO peopleVO = PeopleVO.peopleShift(people);
-                List<Long> pictureIds = people.getPicture();
-                if (pictureIds != null && pictureIds.size() > 0){
-                    List<Long> picIds = new ArrayList<>();
-                    picIds.add(pictureIds.get(0));
-                    peopleVO.setPictureIds(picIds);
-                }
+                PeopleVO peopleVO = new PeopleVO();
+                if (people != null){
+                    peopleVO.setId(people.getId());
+                    peopleVO.setName(people.getName());
+                    peopleVO.setIdCard(people.getIdcard());
+                    peopleVO.setRegion(String.valueOf(people.getRegion()));
+                    peopleVO.setHousehold(people.getHousehold());
+                    peopleVO.setAddress(people.getAddress());
+                    peopleVO.setSex(people.getSex());
+                    peopleVO.setAge(people.getAge());
+                    peopleVO.setBirthday(people.getBirthday());
+                    peopleVO.setPolitic(people.getPolitic());
+                    peopleVO.setEduLevel(people.getEdulevel());
+                    peopleVO.setJob(people.getJob());
+                    peopleVO.setBirthplace(people.getBirthplace());
+                    peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+                    peopleVO.setImportant(people.getImportant());
+                    peopleVO.setCare(people.getCare());
+                    if (people.getLasttime() != null){
+                        peopleVO.setLastTime(sdf.format(people.getLasttime()));
+                    }
+                    if (people.getCreatetime() != null){
+                        peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+                    }
+                    if (people.getUpdatetime() != null){
+                        peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+                    }
+                    peopleVO.setFlag(people.getFlag());
+                    peopleVO.setImsi(people.getImsi());
+                    peopleVO.setPhone(people.getPhone());
+                    peopleVO.setHouse(people.getHouse());
+                    peopleVO.setCar(people.getCar());
+                    List<PictureWithBLOBs> pictures = people.getPicture();
+                    if (pictures != null && pictures.size() > 0){
+                        List<PictureWithBLOBs> idcardPictureList = new ArrayList<>();
+                        List<PictureWithBLOBs> capturePictureList = new ArrayList<>();
+                        for (PictureWithBLOBs picture : pictures){
+                            byte[] idcardPicture = picture.getIdcardpic();
+                            if (idcardPicture != null){
+                                idcardPictureList.add(picture);
+                            }else {
+                                capturePictureList.add(picture);
+                            }
+                        }
+                        peopleVO.setIdcardPicture(idcardPictureList);
+                        peopleVO.setCapturePicture(capturePictureList);
+                    }
                 list.add(peopleVO);
+                }
             }
         }
         return list;
