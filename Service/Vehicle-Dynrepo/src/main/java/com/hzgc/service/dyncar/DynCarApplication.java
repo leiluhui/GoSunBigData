@@ -12,7 +12,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableHystrix
 @EnableSwagger2
-@EnableAuthSynchronize
 @EnableDeviceQueryService
 public class DynCarApplication {
     public static void main(String[] args) {

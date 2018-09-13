@@ -130,7 +130,7 @@ object KafkaToParquet {
   private def readOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, topic: String): Option[Map[TopicAndPartition, Long]] = {
     log.info("=========================== Read Offsets =============================")
     log.info("Reading offsets from Zookeeper")
-    val stopwatch = new Stopwatch()
+    val stopwatch =Stopwatch.createStarted()
     val (offsetsRangesStrOpt, _) = ZkUtils.readDataMaybeNull(zkClient, zkPath)
     offsetsRangesStrOpt match {
       case Some(offsetsRangesStr) =>
@@ -152,7 +152,7 @@ object KafkaToParquet {
   private def saveOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, rdd: RDD[_]): Unit = {
     log.info("==========================Save Offsets============================")
     log.info("Saving offsets to Zookeeper")
-    val stopwatch = new Stopwatch()
+    val stopwatch = Stopwatch.createStarted()
     val offsetsRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
     offsetsRanges.foreach(offsetRange => log.debug(s"Using $offsetRange"))
     val offsetsRangesStr = offsetsRanges.map(offsetRange => s"${offsetRange.partition}:${offsetRange.fromOffset}")

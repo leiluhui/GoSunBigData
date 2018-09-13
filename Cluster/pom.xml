@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>Spark</module>
-        <module>Phoenix-udf</module>
         <module>Spark-udf</module>
         <module>PeopleManager-cluster</module>
     </modules>

@@ -12,9 +12,7 @@
     <artifactId>service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>Alarm</module>
         <module>Collect</module>
-        <module>Visual</module>
         <module>PeopleManager</module>
         <module>People</module>
         <module>Face-Dispatch</module>

@@ -76,7 +76,7 @@ mkdir -p ${SPARK_LOG_DIR}
 mkdir -p ${COMMON_LOG_DIR}
 mkdir -p ${SERVICE_LOG_DIR}
 
-## clever-eyes服务
+## Basic服务
 ## alarm模块部署目录
 ALARM_DIR=${SERVICE_DIR}/Clever-esys/alarm
 ALARM_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-esys/alarm
@@ -85,36 +85,36 @@ ALARM_START_FILE=${ALARM_BIN_DIR}/start-alarm.sh       ##alarm模块启动脚本
 ALARM_CONF_DIR=${ALARM_DIR}/conf                       ##alarm模块conf目录
 ALARM_PRO_FILE=${ALARM_CONF_DIR}/application-pro.properties   ##alarm模块配置文件
 ## face-dispatch模块部署目录
-DISPATCH_DIR=${SERVICE_DIR}/Clever-eyes/face-dispatch
-DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/face-dispatch
+DISPATCH_DIR=${SERVICE_DIR}/Basic/face-dispatch
+DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dispatch
 DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin                           ##face-dispatch模块脚本存放目录
 DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-face-dispatch.sh       ##face-dispatch模块启动脚本
 DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##face-dispatch模块conf目录
 DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##face-dispatch模块配置文件
 ## face-dynrepo模块部署目录
-DYNREPO_DIR=${SERVICE_DIR}/Clever-eyes/face-dynRepo
-DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/face-dynRepo
+DYNREPO_DIR=${SERVICE_DIR}/Basic/face-dynRepo
+DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dynRepo
 DYNREPO_BIN_DIR=${DYNREPO_DIR}/bin                           ##dynrepo模块脚本存放目录
 DYNREPO_START_FILE=${DYNREPO_BIN_DIR}/start-face-dynrepo.sh       ##dynrepo模块启动脚本
 DYNREPO_CONF_DIR=${DYNREPO_DIR}/conf                         ##dynrepo模块conf目录
 DYNREPO_PRO_FILE=${DYNREPO_CONF_DIR}/application-pro.properties   ##dynrepo模块配置文件
 ## collect模块部署目录
-COLLECT_DIR=${SERVICE_DIR}/Clever-eyes/collect
-COLLECT_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/collect
+COLLECT_DIR=${SERVICE_DIR}/Basic/collect
+COLLECT_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/collect
 COLLECT_BIN_DIR=${COLLECT_DIR}/bin                           ##collect模块脚本存放目录
 COLLECT_START_FILE=${COLLECT_BIN_DIR}/start-collect.sh       ##collect模块启动脚本
 COLLECT_CONF_DIR=${COLLECT_DIR}/conf                         ##collect模块conf目录
 COLLECT_PRO_FILE=${COLLECT_CONF_DIR}/application-pro.properties   ##collect模块配置文件
 ## person-dynrepo模块目录
-PERSON_DYN_DIR=${SERVICE_DIR}/Clever-eyes/person-dynRepo
-PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/person-dynRepo
+PERSON_DYN_DIR=${SERVICE_DIR}/Basic/person-dynRepo
+PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/person-dynRepo
 PERSON_DYN_BIN_DIR=${PERSON_DYN_DIR}/bin                           ##person-dynRepo模块脚本存放目录
 PERSON_DYN_START_FILE=${PERSON_DYN_BIN_DIR}/start-person-dynRepo.sh       ##person-dynRepo模块启动脚本
 PERSON_DYN_CONF_DIR=${PERSON_DYN_DIR}/conf                         ##person-dynRepo模块conf目录
 PERSON_DYN_PRO_FILE=${PERSON_DYN_CONF_DIR}/application-pro.properties   ##person-dynRepo模块配置文件
 ## vehicle-dynrepo模块部署目录
-CAR_DIR=${SERVICE_DIR}/Clever-eyes/vehicle-dynrepo
-CAR_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Clever-eyes/vehicle-dynrepo
+CAR_DIR=${SERVICE_DIR}/Basic/vehicle-dynrepo
+CAR_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/vehicle-dynrepo
 CAR_BIN_DIR=${CAR_DIR}/bin                           ##vehicle-dynrepo模块脚本存放目录
 CAR_START_FILE=${CAR_BIN_DIR}/start-vehicle-dynrepo.sh       ##vehicle-dynrepo模块启动脚本
 CAR_CONF_DIR=${CAR_DIR}/conf                       ##vehicle-dynrepo模块conf目录
