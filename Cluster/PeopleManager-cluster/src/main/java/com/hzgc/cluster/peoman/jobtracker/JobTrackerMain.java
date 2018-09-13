@@ -1,7 +1,7 @@
-package com.hzgc.cluster.peoman.jobtracker;
-
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class JobTrackerMain {
-}
+//package com.hzgc.cluster.peoman.jobtracker;
+//
+//import org.springframework.boot.autoconfigure.SpringBootApplication;
+//
+//@SpringBootApplication
+//public class JobTrackerMain {
+//}
