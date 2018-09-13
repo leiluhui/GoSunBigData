@@ -1,11 +1,14 @@
 package com.hzgc.service.people.fields;
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Component
 public class Flag implements Serializable{
-    private static final Map<Integer, String> model = new LinkedHashMap<>();
+    private static Map<Integer, String> model = new LinkedHashMap<>();
 
     static {
         model.put(0, "矫正人员");
@@ -18,7 +21,11 @@ public class Flag implements Serializable{
         model.put(7, "留守人员");
     }
 
-    public static String getFlag(int i){
-        return model.get(i);
+    public static Map<Integer, String> getFlag(){
+        return model;
+    }
+
+    public static String getFlag(Integer index){
+        return model.get(index);
     }
 }

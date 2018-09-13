@@ -18,6 +18,18 @@ public class BigDataPath {
     public static final String FTP_SUBSCRIPTION_OPEN = "/subscribe_open";
     public static final String FTP_SUBSCRIPTION_CLOSE = "/subscribe_close";
 
+    public static final String PEOPLE_EDULEVEL = "/people_edulevel";
+    public static final String PEOPLE_FLAG = "/people_flag";
+    public static final String PEOPLE_POLITIC = "/people_politic";
+    public static final String PEOPLE_PROVINCES = "/people_provinces";
+    public static final String PEOPLE_CITY = "/people_city";
+    public static final String PEOPLE_INSERT="/people_insert";
+    public static final String PEOPLE_UPDATE="/people_update";
+    public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
+    public static final String PEOPLE_SEARCH_PICTURE_BY_PICID="/search_picture_picid";
+    public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
+    public static final String PEOPLE_SELECT_PEOPLE="/search_people";
+
     /**
      * Clustering模块请求路径
      */

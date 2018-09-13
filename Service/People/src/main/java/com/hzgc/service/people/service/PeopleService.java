@@ -1,5 +1,6 @@
 package com.hzgc.service.people.service;
 
+import com.github.pagehelper.PageHelper;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
@@ -7,6 +8,7 @@ import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
+import com.hzgc.service.people.param.PictureVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,13 @@ public class PeopleService {
     public final static String IDCARD_PIC = "idcardpic";
     public final static String CAPTURE_PIC = "capturepic";
 
+    /**
+     * 添加、修改 t_people 表
+     *
+     * @param people people对象
+     * @param str    添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people(People people, String str) {
         if (INSERT.equals(str)) {
             return peopleMapper.insertSelective(people);
@@ -54,6 +63,14 @@ public class PeopleService {
         return 0;
     }
 
+    /**
+     * 添加、修改 t_flag 表
+     *
+     * @param peopleId 人员全局ID
+     * @param flags    人员标签
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_flag(String peopleId, List<Integer> flags, String str) {
         for (Integer i : flags) {
             Flag flag = new Flag();
@@ -78,6 +95,15 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_picture 表
+     *
+     * @param peopleId 人员全局ID
+     * @param picType  照片类型
+     * @param pics     照片数据
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_picture(String peopleId, String picType, List<byte[]> pics, String str) {
         for (byte[] b : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
@@ -117,6 +143,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_imsi 表
+     *
+     * @param peopleId 人员全局ID
+     * @param imsis    imsi信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_imsi(String peopleId, List<String> imsis, String str) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
@@ -141,6 +175,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_phone 表
+     *
+     * @param peopleId 人员全局ID
+     * @param phones   phone信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_phone(String peopleId, List<String> phones, String str) {
         for (String s : phones) {
             Phone phone = new Phone();
@@ -164,6 +206,14 @@ public class PeopleService {
         return 1;
     }
 
+    /**
+     * 添加、修改 t_house 表
+     *
+     * @param peopleId 人员全局ID
+     * @param houses   house信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_house(String peopleId, List<String> houses, String str) {
         for (String s : houses) {
             House house = new House();
@@ -183,11 +233,18 @@ public class PeopleService {
                     return 0;
                 }
             }
-
         }
         return 1;
     }
 
+    /**
+     * 添加、修改 t_car 表
+     *
+     * @param peopleId 人员全局ID
+     * @param cars     car信息
+     * @param str      添加、修改标识
+     * @return 1：插入成功, 0：插入失败
+     */
     public Integer people_car(String peopleId, List<String> cars, String str) {
         for (String s : cars) {
             Car car = new Car();
@@ -211,36 +268,82 @@ public class PeopleService {
         return 1;
     }
 
-    public List<PeopleVO> searchPeople(FilterField field) {
+    /**
+     * 根据照片ID查询照片
+     *
+     * @param pictureId 照片ID
+     * @return byte[] 照片
+     */
+    public byte[] searchPictureByPicId(Long pictureId) {
+        PictureWithBLOBs picture = pictureMapper.selectPictureById(pictureId);
+        if (picture != null){
+            byte[] idcardPic = picture.getIdcardpic();
+            if (idcardPic != null && idcardPic.length > 0){
+                return idcardPic;
+            }
+            return picture.getCapturepic();
+        }
+        return null;
+    }
+
+    public PictureVO searchPictureByPeopleId(String peopleId) {
+        PictureVO pictureVO = new PictureVO();
+        List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
+        if(pictures != null && pictures.size() > 0){
+            List<byte[]> idcardPics = new ArrayList<>();
+            List<byte[]> capturePics = new ArrayList<>();
+            for (PictureWithBLOBs picture : pictures){
+                if (picture != null){
+                    byte[] idcardPic = picture.getIdcardpic();
+                    if (idcardPic != null && idcardPic.length > 0){
+                        idcardPics.add(idcardPic);
+                    }else {
+                        capturePics.add(picture.getCapturepic());
+                    }
+                }
+            }
+            pictureVO.setIdcardPics(idcardPics);
+            pictureVO.setCapturePics(capturePics);
+        }
+        return pictureVO;
+    }
+
+    /**
+     * 根据id查询人员
+     *
+     * @param peopleId 人员全局ID
+     * @return peopleVO
+     */
+    public PeopleVO selectByPeopleId(String peopleId) {
+        People people = peopleMapper.selectByPrimaryKey(peopleId);
+        PeopleVO peopleVO = PeopleVO.peopleShift(people);
+        peopleVO.setPictureIds(people.getPicture());
+        return peopleVO;
+    }
+
+    /**
+     * 查询人员对象
+     *
+     * @param field 查询过滤字段封装
+     * @param start 起始行数
+     * @param limit 分页行数
+     * @return peopleVO 查询返回参数封装
+     */
+    public List<PeopleVO> searchPeople(FilterField field, int start, int limit) {
         List<PeopleVO> list = new ArrayList<>();
-        List<People> peoples = null;
-        if (field.getName() != null || field.getIdcard() != null) {
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (field.getImsi() != null) {
-            List<Imsi> imsis = imsiMapper.selectPeopleIdsByImsi(field.getImsi());
-            List<String> peopleIds = new ArrayList<>();
-            for (Imsi imsi : imsis) {
-                peopleIds.add(imsi.getPeopleid());
+        PageHelper.offsetPage(start, limit);
+        List<People> peoples = peopleMapper.searchPeople(field);
+        if (peoples != null && peoples.size() > 0) {
+            for (People people : peoples) {
+                PeopleVO peopleVO = PeopleVO.peopleShift(people);
+                List<Long> pictureIds = people.getPicture();
+                if (pictureIds != null && pictureIds.size() > 0){
+                    List<Long> picIds = new ArrayList<>();
+                    picIds.add(pictureIds.get(0));
+                    peopleVO.setPictureIds(picIds);
+                }
+                list.add(peopleVO);
             }
-            field.setPeopleIds(peopleIds);
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (field.getPhone() != null) {
-            List<Phone> phones = phoneMapper.selectPeopleIdsByPhone(field.getPhone());
-            List<String> peopleIds = new ArrayList<>();
-            for (Phone phone : phones) {
-                peopleIds.add(phone.getPeopleid());
-            }
-            field.setPeopleIds(peopleIds);
-            peoples = peopleMapper.searchPeople(field);
-        }
-        if (peoples == null || peoples.size() == 0) {
-            return null;
-        }
-        for (People people : peoples) {
-            PeopleVO peopleVO = peopleShift(people);
-            list.add(peopleVO);
         }
         return list;
     }

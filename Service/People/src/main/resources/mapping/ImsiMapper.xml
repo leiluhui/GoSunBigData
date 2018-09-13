@@ -1,77 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.service.people.dao.ImsiMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Imsi" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, peopleid, imsi
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_imsi
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <select id="selectPeopleIdsByImsi" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from t_imsi
-    where imsi like "%" #{imsi,jdbcType=VARCHAR} "%"
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_imsi
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.Imsi" >
-    insert into t_imsi (id, peopleid, imsi
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Imsi" >
-    insert into t_imsi
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="peopleid != null" >
-        peopleid,
-      </if>
-      <if test="imsi != null" >
-        imsi,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="peopleid != null" >
-        #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="imsi != null" >
-        #{imsi,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Imsi" >
-    update t_imsi
-    <set >
-      <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="imsi != null" >
-        imsi = #{imsi,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Imsi" >
-    update t_imsi
-    set peopleid = #{peopleid,jdbcType=VARCHAR},
-      imsi = #{imsi,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.hzgc.service.people.dao.ImsiMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Imsi">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, peopleid, imsi
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_imsi
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!-- 用于人口库关联查询语句 -->
+    <select id="selectImsiByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
+        select imsi from t_imsi where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_imsi
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.Imsi">
+        insert into t_imsi (id, peopleid, imsi
+        )
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Imsi">
+        insert into t_imsi
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="peopleid != null">
+                peopleid,
+            </if>
+            <if test="imsi != null">
+                imsi,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null">
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="imsi != null">
+                #{imsi,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Imsi">
+        update t_imsi
+        <set>
+            <if test="peopleid != null">
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="imsi != null">
+                imsi = #{imsi,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Imsi">
+        update t_imsi
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        imsi = #{imsi,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

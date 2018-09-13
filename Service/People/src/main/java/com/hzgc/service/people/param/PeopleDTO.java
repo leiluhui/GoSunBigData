@@ -54,9 +54,6 @@ public class PeopleDTO implements Serializable {
     private List<String> car;
 
     public People peopleDTOShift(PeopleDTO peopleDTO){
-        if (peopleDTO == null){
-            return null;
-        }
         People people = new People();
         people.setId(UuidUtil.getUuid().toUpperCase());
         people.setName(peopleDTO.name);

@@ -1,9 +1,12 @@
 package com.hzgc.service.people.fields;
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Component
 public class Politic implements Serializable {
     private static final Map<Integer, String> model = new LinkedHashMap<>();
 
@@ -23,7 +26,7 @@ public class Politic implements Serializable {
         model.put(12, "无党派人士");
     }
 
-    public static String getPolitic(int i){
-        return model.get(i);
+    public static Map<Integer, String> getPolitic() {
+        return model;
     }
 }

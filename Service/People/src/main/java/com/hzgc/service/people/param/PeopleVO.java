@@ -1,19 +1,19 @@
 package com.hzgc.service.people.param;
 
-import io.swagger.annotations.ApiModel;
+import com.hzgc.service.people.model.People;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 后台返回
  */
-@ApiModel(value = "后台返回封装类")
 @Data
 public class PeopleVO implements Serializable {
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -41,11 +41,17 @@ public class PeopleVO implements Serializable {
 
     private String community;
 
+    private Integer important;
+
+    private Integer care;
+
+    private String lastTime;
+
+    private String createTime;
+
+    private String updateTime;
+
     private List<String> flag;
-
-    private List<byte[]> idCardPic;
-
-    private List<byte[]> capturePic;
 
     private List<String> imsi;
 
@@ -55,7 +61,48 @@ public class PeopleVO implements Serializable {
 
     private List<String> car;
 
-    private String createTime;
+    private List<Long> pictureIds;
 
-    private String updateTime;
+    public static PeopleVO peopleShift(People people) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        PeopleVO peopleVO = new PeopleVO();
+        if (people != null){
+            peopleVO.setId(people.getId());
+            peopleVO.setName(people.getName());
+            peopleVO.setIdCard(people.getIdcard());
+            peopleVO.setRegion(String.valueOf(people.getRegion()));
+            peopleVO.setHousehold(people.getHousehold());
+            peopleVO.setAddress(people.getAddress());
+            peopleVO.setSex(people.getSex());
+            peopleVO.setAge(people.getAge());
+            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setPolitic(people.getPolitic());
+            peopleVO.setEduLevel(people.getEdulevel());
+            peopleVO.setJob(people.getJob());
+            peopleVO.setBirthplace(people.getBirthplace());
+            peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+            peopleVO.setImportant(people.getImportant());
+            peopleVO.setCare(people.getCare());
+            if (people.getLasttime() != null){
+                peopleVO.setLastTime(sdf.format(people.getLasttime()));
+            }
+            if (people.getCreatetime() != null){
+                peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+            }
+            if (people.getUpdatetime() != null){
+                peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+            }
+            List<Integer> flags = people.getFlag();
+            List<String> list = new ArrayList<>();
+            for (Integer i : flags){
+                list.add(com.hzgc.service.people.fields.Flag.getFlag(i));
+            }
+            peopleVO.setFlag(list);
+            peopleVO.setImsi(people.getImsi());
+            peopleVO.setPhone(people.getPhone());
+            peopleVO.setHouse(people.getHouse());
+            peopleVO.setCar(people.getCar());
+        }
+        return peopleVO;
+    }
 }

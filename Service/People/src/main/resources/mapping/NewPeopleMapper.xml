@@ -1,71 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.service.people.dao.NewPeopleMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.NewPeople" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="community" property="community" jdbcType="BIGINT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, peopleid, community
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_newpeople
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_newpeople
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.NewPeople" >
-    insert into t_newpeople (id, peopleid, community
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.NewPeople" >
-    insert into t_newpeople
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="peopleid != null" >
-        peopleid,
-      </if>
-      <if test="community != null" >
-        community,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="peopleid != null" >
-        #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="community != null" >
-        #{community,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.NewPeople" >
-    update t_newpeople
-    <set >
-      <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="community != null" >
-        community = #{community,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.NewPeople" >
-    update t_newpeople
-    set peopleid = #{peopleid,jdbcType=VARCHAR},
-      community = #{community,jdbcType=BIGINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.hzgc.service.people.dao.NewPeopleMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.NewPeople">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="community" property="community" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, peopleid, community
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_newpeople
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_newpeople
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.NewPeople">
+        insert into t_newpeople (id, peopleid, community
+        )
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.NewPeople">
+        insert into t_newpeople
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="peopleid != null">
+                peopleid,
+            </if>
+            <if test="community != null">
+                community,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null">
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="community != null">
+                #{community,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.NewPeople">
+        update t_newpeople
+        <set>
+            <if test="peopleid != null">
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="community != null">
+                community = #{community,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.NewPeople">
+        update t_newpeople
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        community = #{community,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

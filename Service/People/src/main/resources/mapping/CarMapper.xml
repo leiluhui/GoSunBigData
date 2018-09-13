@@ -1,71 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.service.people.dao.CarMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Car" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="car" property="car" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, peopleid, car
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_car
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_car
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.Car" >
-    insert into t_car (id, peopleid, car
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{car,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Car" >
-    insert into t_car
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="peopleid != null" >
-        peopleid,
-      </if>
-      <if test="car != null" >
-        car,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="peopleid != null" >
-        #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="car != null" >
-        #{car,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Car" >
-    update t_car
-    <set >
-      <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="car != null" >
-        car = #{car,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Car" >
-    update t_car
-    set peopleid = #{peopleid,jdbcType=VARCHAR},
-      car = #{car,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+<mapper namespace="com.hzgc.service.people.dao.CarMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Car">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="car" property="car" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, peopleid, car
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_car
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!-- 用于人口库关联查询语句 -->
+    <select id="selectCarByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
+        select car from t_car where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_car
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.Car">
+        insert into t_car (id, peopleid, car
+        )
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{car,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Car">
+        insert into t_car
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="peopleid != null">
+                peopleid,
+            </if>
+            <if test="car != null">
+                car,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null">
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="car != null">
+                #{car,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Car">
+        update t_car
+        <set>
+            <if test="peopleid != null">
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="car != null">
+                car = #{car,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Car">
+        update t_car
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        car = #{car,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>
