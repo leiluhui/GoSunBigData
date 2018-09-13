@@ -6,6 +6,7 @@ import com.hzgc.compare.worker.conf.Config;
 
 public class TaskTrackerStart {
     public static void main(String args[]){
+        JobManager.getInstance();
         LoggerFactory.setLoggerAdapter("slf4j");
         TaskTracker taskTracker = new TaskTracker();
         taskTracker.addConfig("zk.client", "zkclient");

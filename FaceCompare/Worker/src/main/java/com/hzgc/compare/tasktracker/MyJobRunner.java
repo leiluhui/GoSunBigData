@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 
 public class MyJobRunner  implements JobRunner{
@@ -18,6 +20,16 @@ public class MyJobRunner  implements JobRunner{
         String workId = job.getParam("workerId");
         String port = job.getParam("port");
         String nodeGroup = jobContext.getJob().getTaskTrackerNodeGroup();
+        Map<Job, Long> jobs = JobManager.getInstance().getJobs();
+        for(Map.Entry<Job, Long> entry : jobs.entrySet()){
+            if(entry.getKey().getTaskId().equals(job.getTaskId())){
+                Long time = System.currentTimeMillis() - entry.getValue();
+                if(time < 1000L * 60 * 2){
+                    logger.info("This job is run not long ago.");
+                    return null;
+                }
+            }
+        }
         ProcessBuilder builder = new ProcessBuilder();
 
         String jarPath = MyJobRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -28,6 +40,7 @@ public class MyJobRunner  implements JobRunner{
         builder.command("sh", parentPath + "/bin/start-worker.sh", workId, nodeGroup, port, job.getTaskId());
         builder.start();
         logger.info("--------------------------------------------------------------------------------");
+        jobs.put(job, System.currentTimeMillis());
         return null;
     }
 

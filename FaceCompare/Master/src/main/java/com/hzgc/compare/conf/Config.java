@@ -16,6 +16,8 @@ public class Config {
     public static int WORKER_NUM_PER_TRACKER;
     public static String CLUSTER_NAME ;
     public static String TASKTRACKER_PATH_ZK;
+    public static long TIME_CHECK_JOB;
+    public static final String TRACKER_PATH = "trackers.txt";
 
     static {
         Properties prop = PropertiesUtil.getProperties();
@@ -28,6 +30,7 @@ public class Config {
         WORKER_NUM_PER_TRACKER = Integer.parseInt(prop.getProperty("worker.num.per.tracker"));
         CLUSTER_NAME = prop.getProperty("cluster.name");
         TASKTRACKER_PATH_ZK = "/LTS/" + CLUSTER_NAME + "/NODES/TASK_TRACKER";
+        TIME_CHECK_JOB = Long.parseLong(prop.getProperty("time.check.job"));
     }
 
 }

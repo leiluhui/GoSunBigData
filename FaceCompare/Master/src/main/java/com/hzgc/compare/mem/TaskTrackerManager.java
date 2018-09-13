@@ -1,9 +1,11 @@
 package com.hzgc.compare.mem;
 
 import com.github.ltsopensource.core.domain.Job;
+import com.hzgc.compare.conf.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +15,9 @@ public class TaskTrackerManager {
     private static final Logger logger = LoggerFactory.getLogger(TaskTrackerManager.class);
     private static TaskTrackerManager taskTrackerManager;
     private List<TaskTracker> trackers;
-    private Map<String, List<Job>> tempMap;
 
     private TaskTrackerManager(){
         trackers = new ArrayList<>();
-        tempMap = new HashMap<>();
     }
 
     public static TaskTrackerManager getInstance(){
@@ -27,40 +27,37 @@ public class TaskTrackerManager {
         return taskTrackerManager;
     }
 
-    public void addTracker(String nodeGroup){
-        logger.info("Add a tracker , the node group is " + nodeGroup);
-        List<Job> jobs = tempMap.get(nodeGroup);
-        if(jobs != null && jobs.size() > 0){
-            logger.info("There are some jobs should be run in the Tracker.");
-            TaskTracker tracker = new TaskTracker(nodeGroup);
-            for(Job job : jobs){
-                tracker.addJob(job);
-                String port = job.getParam("port");
-                tracker.getPorts().remove(port);
-            }
-            trackers.add(tracker);
-            tempMap.remove(nodeGroup);
-        } else {
-            trackers.add(new TaskTracker(nodeGroup));
-        }
+    public void addTrackers(List<TaskTracker> taskTrackers){
+        trackers.addAll(taskTrackers);
     }
 
-    public void removeTracker(String nodeGroup){
-        logger.info("Remove a tracker , the node group is " + nodeGroup);
-        int index = 0;
+    public void addTracker(String nodeGroup){
         for(TaskTracker tracker : trackers){
             if(tracker.getNodeGroup().equals(nodeGroup)){
-                break;
+                return;
             }
-            index ++;
         }
-        trackers.remove(index);
-        List<Job> jobs = trackers.get(index).getJobs();
-        if(jobs.size() > 0){
-            logger.info("There are some job run in the Tracker, save it");
-            tempMap.put(nodeGroup, jobs);
-        }
+        logger.info("Add a tracker , the node group is " + nodeGroup);
+        TaskTracker tracker = new TaskTracker(nodeGroup);
+        trackers.add(tracker);
     }
+
+//    public void removeTracker(String nodeGroup){
+//        logger.info("Remove a tracker , the node group is " + nodeGroup);
+//        int index = 0;
+//        for(TaskTracker tracker : trackers){
+//            if(tracker.getNodeGroup().equals(nodeGroup)){
+//                break;
+//            }
+//            index ++;
+//        }
+//        trackers.remove(index);
+//        List<Job> jobs = trackers.get(index).getJobs();
+//        if(jobs.size() > 0){
+//            logger.info("There are some job run in the Tracker, save it");
+//            tempMap.put(nodeGroup, jobs);
+//        }
+//    }
 
     public TaskTracker choseTaskTracker(){
         TaskTracker taskTracker = null;
@@ -93,6 +90,14 @@ public class TaskTrackerManager {
         return trackers;
     }
 
+    public List<Job> getJobs(){
+        List<Job> res = new ArrayList<>();
+        for(TaskTracker tracker : trackers){
+            res.addAll(tracker.getJobs());
+        }
+        return res;
+    }
+
     public boolean containe(String nodeGroup){
         if(nodeGroup == null){
             return false;
@@ -103,5 +108,32 @@ public class TaskTrackerManager {
             }
         }
         return false;
+    }
+
+    public void loadTackers(){
+        ObjectInputStream ois = null;
+        try {
+            File file = new File(Config.TRACKER_PATH);
+            if(!file.isFile()){
+                return;
+            }
+            ois = new ObjectInputStream(new FileInputStream(Config.TRACKER_PATH));
+            List<TaskTracker> list = (List<TaskTracker>) ois.readObject();
+            ois.close();
+            addTrackers(list);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveTracker(){
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Config.TRACKER_PATH));
+            oos.writeObject(trackers);
+            oos.flush();
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

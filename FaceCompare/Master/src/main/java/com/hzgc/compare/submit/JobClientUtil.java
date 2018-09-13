@@ -3,11 +3,14 @@ package com.hzgc.compare.submit;
 
 import com.github.ltsopensource.jobclient.JobClient;
 import com.hzgc.compare.conf.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JobClientUtil {
+    private static final Logger logger = LoggerFactory.getLogger(JobClientUtil.class);
     private static JobClient client;
 
-    static JobClient getClient(){
+    public static JobClient getClient(){
         if(client == null){
             client = createClient();
         }
@@ -15,6 +18,7 @@ public class JobClientUtil {
     }
 
     private  static JobClient createClient(){
+        logger.info("Create a Job Client.");
         JobClient client = new JobClient();
         client.addConfig("zk.client", "zkclient");
         client.addConfig("lts.remoting", "netty");

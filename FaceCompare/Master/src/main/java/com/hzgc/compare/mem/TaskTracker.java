@@ -3,11 +3,12 @@ package com.hzgc.compare.mem;
 import com.github.ltsopensource.core.domain.Job;
 import com.hzgc.compare.conf.Config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TaskTracker {
+public class TaskTracker implements Serializable{
     private final int maxJobsPerTaskTracker = Config.WORKER_NUM_PER_TRACKER;
     private List<String> ports; //可用的端口号
     private List<Job> jobs;

@@ -9,6 +9,7 @@ import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.memory.manager.MemoryManager;
 import com.hzgc.compare.worker.persistence.*;
 import com.hzgc.compare.worker.util.HBaseHelper;
+import com.hzgc.jniface.FaceFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +74,7 @@ public class Worker {
         hBaseClient.timeToWrite();
         Thread thread = new Thread(new RPCRegistry());
         thread.start();
+        FaceFunction.init();
     }
 
     public static void main(String args[]){

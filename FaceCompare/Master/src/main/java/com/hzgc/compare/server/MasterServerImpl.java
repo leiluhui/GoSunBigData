@@ -27,7 +27,8 @@ public class MasterServerImpl implements MasterServer {
                 String workerId = job.getParam("workerId");
                 String port = job.getParam("port");
                 String taskTrackerNodeGroup = job.getTaskTrackerNodeGroup();
-                res.add("workerId : " + workerId + " , taskTrackerNodeGroup : " + taskTrackerNodeGroup + " , port : " + port);
+                res.add("workerId : " + workerId + " , taskTrackerNodeGroup : " + taskTrackerNodeGroup + " , port : " + port
+                + " , taskId : " + job.getTaskId());
             }
         }
         return new AllReturn<>(res);

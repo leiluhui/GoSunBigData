@@ -14,7 +14,7 @@ public class RpcClientForMaster {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
     private MasterServer server;
     public void createService(String serverAddress){
-        Constant constant = new Constant("/compare", "master");
+        Constant constant = new Constant("/compare/master", "master");
         RpcClient rpcClient = new RpcClient(serverAddress, constant);
         try {
             Thread.sleep(3000);

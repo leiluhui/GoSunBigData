@@ -12,7 +12,7 @@ public class RPCRegistry implements Runnable{
     @Override
     public void run() {
         logger.info("Registry the service.");
-        Constant constant = new Constant("/compare", "worker");
+        Constant constant = new Constant("/compare/worker", "worker");
         ServiceRegistry registry = new ServiceRegistry(Config.ZOOKEEPER_ADDRESS, constant);
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);

@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ZookeeperClient {
     private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
@@ -39,17 +41,17 @@ public class ZookeeperClient {
                 .build();
         zkClient.start();
         try {
+            logger.info("Save TaskTrackers founded on zk.");
             TaskTrackerManager managet = TaskTrackerManager.getInstance();
             List<String> pathes = zkClient.getChildren().forPath(Config.TASKTRACKER_PATH_ZK);
             for(String pathName : pathes){
                 String nodeGroup = analysePath(pathName);
-                logger.info("Add nodeGroup {} to Master." + nodeGroup);
                 if(nodeGroup != null) {
                     managet.addTracker(nodeGroup);
                 }
             }
-//            watchTaskTracker(zkClient);
-            watchJob(zkClient);
+            watchTaskTracker(zkClient);
+//            watchJob(zkClient);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,22 +88,22 @@ public class ZookeeperClient {
             job.setTaskTrackerNodeGroup(taskTracker.getNodeGroup());
             switch (event.getType()) {
                 case CHILD_ADDED:
-                    logger.info("Add job " + workerId + " to Master.");
-                    taskTracker.getPorts().remove(port);
-                    taskTracker.getJobs().add(job);
+//                    logger.info("Add job " + workerId + " to Master.");
+//                    taskTracker.getPorts().remove(port);
+//                    taskTracker.getJobs().add(job);
                     break;
                 case CHILD_REMOVED:
-                    logger.info("Renove job " + workerId + " from Master.");
-                    taskTracker.getPorts().add(port);
-                    List<Job> jobs = taskTracker.getJobs();
-                    Job temp = new Job();
-                    for(Job j : jobs){
-                        if(j.getTaskId().equals(taskId)){
-                            temp = j;
-                        }
-                    }
-                    jobs.remove(temp);
-                    JobSubmit.submitJob(workerId, nodeGroup);
+//                    logger.info("Renove job " + workerId + " from Master.");
+//                    taskTracker.getPorts().add(port);
+//                    List<Job> jobs = taskTracker.getJobs();
+//                    Job temp = new Job();
+//                    for(Job j : jobs){
+//                        if(j.getTaskId().equals(taskId)){
+//                            temp = j;
+//                        }
+//                    }
+//                    jobs.remove(temp);
+//                    JobSubmit.submitJob(job);
                     break;
                 default:
                     break;
@@ -121,32 +123,9 @@ public class ZookeeperClient {
                     event.getData() != null ? event.getData().getPath() : null);
             switch (event.getType()) {
                 case CHILD_ADDED:
-                    List<String> nodeGroupsAdd = new ArrayList<>();
-                    for(ChildData childData : pathCache.getCurrentData()){
-                        String nodeName = childData.getPath().replace(Config.TASKTRACKER_PATH_ZK, "");
-                        String nodeGroup = analysePath(nodeName);
-                        if(!managet.containe(nodeGroup)){
-                            nodeGroupsAdd.add(nodeGroup);
-                        }
-                    }
-                    for(String nodeGroup : nodeGroupsAdd){
+                    String nodeGroup = analysePath(event.getData().getPath());
+                    if(nodeGroup != null && !managet.containe(nodeGroup)){
                         managet.addTracker(nodeGroup);
-                    }
-                    break;
-                case CHILD_REMOVED:
-                    List<String> nodeGroupsRemove = new ArrayList<>();
-                    for(TaskTracker tracker : managet.getTrackers()){
-                        nodeGroupsRemove.add(tracker.getNodeGroup());
-                    }
-                    for(ChildData childData : pathCache.getCurrentData()){
-                        String nodeName = childData.getPath().replace(Config.TASKTRACKER_PATH_ZK, "");
-                        String nodeGroup = analysePath(nodeName);
-                        if(nodeGroupsRemove.contains(nodeGroup)){
-                            nodeGroupsRemove.remove(nodeGroup);
-                        }
-                    }
-                    for(String nodeGroup : nodeGroupsRemove){
-                        managet.removeTracker(nodeGroup);
                     }
                     break;
                 default:
@@ -155,7 +134,7 @@ public class ZookeeperClient {
         });
     }
 
-    public String analysePath(String pathName){
+    private String analysePath(String pathName){
         if(pathName == null || !pathName.contains("clusterName=" + Config.CLUSTER_NAME)){
             return null;
         }
@@ -164,6 +143,69 @@ public class ZookeeperClient {
         return nodeGroup;
     }
 
+    private List<Job> getJobsOnZk(CuratorFramework zkClient) throws Exception {
+        List<String> childPathes = zkClient.getChildren().forPath(Config.JOB_PATH);
+        List<Job> res = new ArrayList<>();
+        for(String path : childPathes){
+            logger.info("Job on zk Path : " + path);
+            String data = new String(zkClient.getData().forPath(Config.JOB_PATH + "/" + path));
+            String workerId = data.split(",")[0];
+            String nodeGroup = data.split(",")[1];
+            String port = data.split(",")[2];
+            String taskId = data.split(",")[3];
+            TaskTracker taskTracker = TaskTrackerManager.getInstance().getTaskTracker(nodeGroup);
+            Job job = new Job();
+            job.setTaskId(taskId);
+            job.setParam("port", port);
+            job.setParam("workerId", workerId);
+            job.setPriority(100);
+            job.setTaskTrackerNodeGroup(taskTracker.getNodeGroup());
+            res.add(job);
+//            taskTracker.getPorts().remove(port);
+//            taskTracker.getJobs().add(job);
+        }
+        return res;
+    }
+
+    /**
+     * 检测内存中的Job是否都存在于ZK上，如果不存在，则启动那个Job
+     * @throws Exception
+     */
+    private void checkJobs() throws Exception {
+        List<Job> jobsOnZk = getJobsOnZk(zkClient);
+        List<Job> jobsOnMem = TaskTrackerManager.getInstance().getJobs();
+        for(Job jobOnMem : jobsOnMem){
+            boolean flag = true;
+            for(Job jobOnZk : jobsOnZk){
+                if(jobOnZk.getTaskId().equals(jobOnMem.getTaskId()) &&
+                        jobOnZk.getTaskTrackerNodeGroup().equals(jobOnMem.getTaskTrackerNodeGroup()) &&
+                        jobOnZk.getParam("workerId").equals(jobOnMem.getParam("workerId"))){
+                    flag = false;
+                }
+            }
+            if(flag){
+                logger.warn("The job is not exist on zk , to start it. workerId : " + jobOnMem.getParam("workerId"));
+                JobSubmit.submitJob(jobOnMem);
+            }
+        }
+    }
+
+    public void startToCheckJob(){
+        new Timer().schedule(new TimeToCheckJob(), 1000 * 30, Config.TIME_CHECK_JOB);
+    }
+
+    class TimeToCheckJob extends TimerTask {
+        @Override
+        public void run() {
+            try {
+                logger.info("To Check jobs done.");
+                checkJobs();
+            } catch (Exception e) {
+                logger.warn(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
     public static void main(String args[]) throws InterruptedException {
         ZookeeperClient client = new ZookeeperClient(Config.ZK_ADDRESS);
     }

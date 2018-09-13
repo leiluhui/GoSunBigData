@@ -1,6 +1,7 @@
 package com.hzgc.compare.worker;
 
 import com.hzgc.compare.worker.conf.Config;
+import jdk.nashorn.internal.ir.BlockLexicalContext;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -42,10 +43,11 @@ public class ZookeeperRegistry implements Runnable{
         try {
             return zkClient.create()
                     .creatingParentContainersIfNeeded()
-                    .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                    .withMode(CreateMode.EPHEMERAL)
                     .forPath(nodePath, data.getBytes());
         } catch (Exception e) {
             logger.error(e.getMessage());
+            System.exit(1);
         }
         return null;
     }
