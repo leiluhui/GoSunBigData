@@ -16,7 +16,7 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
     <!-- 用于人口库关联查询语句 -->
-    <select id="selectFlagByPeopleId" resultMap="java.lang.Integer" parameterType="java.lang.String">
+    <select id="selectFlagByPeopleId" resultType="java.lang.Integer" parameterType="java.lang.String">
         select flag from t_flag where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

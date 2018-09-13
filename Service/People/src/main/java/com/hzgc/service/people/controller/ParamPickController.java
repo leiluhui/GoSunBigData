@@ -1,10 +1,12 @@
 package com.hzgc.service.people.controller;
 
 import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.service.people.service.ParamPickService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -15,12 +17,12 @@ public class ParamPickController {
     @Autowired
     private ParamPickService paramPickService;
 
-
     /**
      * 文化程度选项
      *
      * @return map
      */
+    @RequestMapping(value = BigDataPath.PEOPLE_EDULEVEL, method = RequestMethod.GET)
     public ResponseResult<Map<Integer, String>> getEdulevelPick() {
         Map<Integer, String> map =  paramPickService.getEdulevelPick();
         return ResponseResult.init(map);
@@ -31,6 +33,7 @@ public class ParamPickController {
      *
      * @return map
      */
+    @RequestMapping(value = BigDataPath.PEOPLE_FLAG, method = RequestMethod.GET)
     public ResponseResult<Map<Integer, String>> getFlagPick() {
         Map<Integer, String> map =  paramPickService.getFlagPick();
         return ResponseResult.init(map);
@@ -41,6 +44,7 @@ public class ParamPickController {
      *
      * @return map
      */
+    @RequestMapping(value = BigDataPath.PEOPLE_POLITIC, method = RequestMethod.GET)
     public ResponseResult<Map<Integer, String>> getPoliticPick() {
         Map<Integer, String> map =  paramPickService.getPoliticPick();
         return ResponseResult.init(map);
@@ -51,6 +55,7 @@ public class ParamPickController {
      *
      * @return map
      */
+    @RequestMapping(value = BigDataPath.PEOPLE_PROVINCES, method = RequestMethod.GET)
     public ResponseResult<Map<Integer, String>> getProvincesPick() {
         Map<Integer, String> map =  paramPickService.getProvincesPick();
         return ResponseResult.init(map);
@@ -61,7 +66,8 @@ public class ParamPickController {
      *
      * @return map
      */
-    public ResponseResult<Map<Integer, String>> getCityPick(@RequestBody int index) {
+    @RequestMapping(value = BigDataPath.PEOPLE_CITY, method = RequestMethod.GET)
+    public ResponseResult<Map<Integer, String>> getCityPick(int index) {
         Map<Integer, String> map =  paramPickService.getCityPick(index);
         return ResponseResult.init(map);
     }
