@@ -1,7 +1,6 @@
 package com.hzgc.service.people.param;
 
 import com.hzgc.service.people.model.People;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,7 +11,6 @@ import java.util.List;
 /**
  * 后台返回
  */
-@ApiModel(value = "后台返回封装类")
 @Data
 public class PeopleVO implements Serializable {
     private String id;
@@ -72,7 +70,7 @@ public class PeopleVO implements Serializable {
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
-            peopleVO.setRegion(people.getRegion());
+            peopleVO.setRegion(String.valueOf(people.getRegion()));
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
@@ -82,7 +80,7 @@ public class PeopleVO implements Serializable {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
-            peopleVO.setCommunity(people.getCommunity());
+            peopleVO.setCommunity(String.valueOf(people.getCommunity()));
             peopleVO.setImportant(people.getImportant());
             peopleVO.setCare(people.getCare());
             peopleVO.setLastTime(sdf.format(people.getLasttime()));

@@ -3,26 +3,22 @@ package com.hzgc.service.people.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JSONUtil;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @Api(value = "/people", tags = "人口库服务")
@@ -38,9 +34,8 @@ public class PeopleController {
      * @return 成功状态 1：插入成功, 0：插入失败
      */
     @ApiOperation(value = "添加人口对象", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.ADD_PEOPLE, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
-    public ResponseResult<Integer> insertPeople(@RequestBody @ApiParam(value = "添加人口对象") PeopleDTO peopleDTO) {
+    @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
+    public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start Insert people info, but people is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象信息为空，请检查！");
@@ -149,9 +144,8 @@ public class PeopleController {
      * @return 成功状态 1：修改成功, 0：修改失败
      */
     @ApiOperation(value = "修改人口对象", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.UPDATE_PEOPLE, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
-    public ResponseResult<Integer> updatePeople(@RequestBody @ApiParam(value = "修改人口对象") PeopleDTO peopleDTO) {
+    @RequestMapping(value = BigDataPath.PEOPLE_UPDATE, method = RequestMethod.PUT)
+    public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start Update people info, but people is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象信息为空，请检查！");
@@ -259,9 +253,8 @@ public class PeopleController {
      * @param peopleId 人员全局ID
      * @return PeopleVO
      */
-    @ApiOperation(value = "根据id查询对象", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.OBJECTINFO_GET, method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
+    @ApiOperation(value = "根据id查询对象", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
     public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select people info, but people id is null");
@@ -279,10 +272,9 @@ public class PeopleController {
      * @param pictureId 照片ID
      * @return byte[] 照片
      */
-    @ApiOperation(value = "根据照片ID查询照片", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
-    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
-    public ResponseResult<byte[]> searchPictureByPicId(@RequestBody Long pictureId) {
+    @ApiOperation(value = "根据照片ID查询照片", response = byte[].class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PICID, method = RequestMethod.GET)
+    public ResponseResult<byte[]> searchPictureByPicId(Long pictureId) {
         if (pictureId != null) {
             log.error("Start select picture, but picture id is null!");
         }
@@ -298,10 +290,9 @@ public class PeopleController {
      * @param peopleId 人员全局ID
      * @return PictureVO 照片封装
      */
-    @ApiOperation(value = "根据人员全局ID查询所以照片", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
-    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
-    public ResponseResult<PictureVO> searchPictureByPeopleId(@RequestBody String peopleId) {
+    @ApiOperation(value = "根据人员全局ID查询照片", response = PictureVO.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PEOPLEID, method = RequestMethod.GET)
+    public ResponseResult<PictureVO> searchPictureByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)){
             log.error("Start select picture, but people id is null!");
         }
@@ -317,9 +308,8 @@ public class PeopleController {
      * @param param 查询条件参数封装
      * @return peopleVO 查询返回参数封装
      */
-    @ApiOperation(value = "对象查询", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
-    @PreAuthorize("hasAythority('" + BigDataPermission.OBJECT_VIEW + "')")
+    @ApiOperation(value = "查询人员对象", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
     public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParam param) {
         if (param == null) {
             log.error("Start select people, but param is null ");

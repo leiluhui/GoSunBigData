@@ -25,15 +25,21 @@
         from t_picture
         where id = #{id,jdbcType=BIGINT}
     </select>
+    <select id="selectPictureById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
+        select
+        <include refid="Blob_Column_List"/>
+        from t_picture
+        where id = #{id,jdbcType=BIGINT}
+    </select>
     <!-- 用于人口库关联查询语句 -->
-    <select id="selectPicIdByPeopleId" resultMap="java.lang.Long" parameterType="java.lang.String">
-        select id from t_pciture where peopleid = #{peopleid,jdbcType=VARCHAR}
+    <select id="selectPicIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
     <select id="selectPictureByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
         select
         <include refid="Blob_Column_List"/>
         from t_picture
-        where id in (select id from t_pciture where peopleid = #{peopleid,jdbcType=VARCHAR})
+        where id in (select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR})
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_picture

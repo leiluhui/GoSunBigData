@@ -1,9 +1,12 @@
 package com.hzgc.service.people.fields;
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Component
 public class Edulevel implements Serializable {
 
     private static Map<Integer, String> model = new LinkedHashMap<>();

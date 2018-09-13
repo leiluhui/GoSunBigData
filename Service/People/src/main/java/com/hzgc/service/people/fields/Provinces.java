@@ -1,11 +1,13 @@
 package com.hzgc.service.people.fields;
 
 import com.hzgc.common.util.json.JSONUtil;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Component
 public class Provinces implements Serializable {
 
     private static Map<Integer, Map<String, Map<Integer, String>>> model = new LinkedHashMap<>();
