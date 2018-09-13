@@ -53,7 +53,7 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象区域为空，请检查！");
         }
         log.info("Start add people info, DTO :" + JSONUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift(peopleDTO);
+        People people = peopleDTO.peopleDTOShift(peopleDTO, PeopleService.INSERT);
         log.info("Start add object info, param is:" + JSONUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.INSERT);
         if (status == null || status != 1) {
@@ -150,20 +150,20 @@ public class PeopleController {
             log.error("Start Update people info, but people is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象信息为空，请检查！");
         }
+        if (peopleDTO.getId() == null) {
+            log.error("Start Update people info, but people id is null !");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象ID为空，请检查！");
+        }
         if (StringUtils.isBlank(peopleDTO.getName())) {
             log.error("Start Update people info, but name is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象姓名为空，请检查！");
-        }
-        if (StringUtils.isBlank(peopleDTO.getIdcard())) {
-            log.error("Start Update people info, but idcard is null !");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象身份证为空，请检查！");
         }
         if (peopleDTO.getRegion() == null) {
             log.error("Start Update people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象区域为空，请检查！");
         }
         log.info("Start Update people info, DTO :" + JSONUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift(peopleDTO);
+        People people = peopleDTO.peopleDTOShift(peopleDTO, PeopleService.UPDATE);
         log.info("Start Update object info, param is:" + JSONUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.UPDATE);
         if (status == null || status != 1) {
