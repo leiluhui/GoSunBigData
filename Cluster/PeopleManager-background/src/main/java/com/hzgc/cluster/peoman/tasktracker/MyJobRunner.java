@@ -1,6 +1,7 @@
 package com.hzgc.cluster.peoman.tasktracker;
 
 import com.github.ltsopensource.core.domain.Action;
+import com.github.ltsopensource.spring.boot.annotation.EnableTaskTracker;
 import com.github.ltsopensource.tasktracker.Result;
 import com.github.ltsopensource.tasktracker.runner.JobContext;
 import com.github.ltsopensource.tasktracker.runner.JobRunner;

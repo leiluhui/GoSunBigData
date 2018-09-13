@@ -10,8 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hzgc.cluster</groupId>
-    <artifactId>peoplemanager-cluster</artifactId>
+    <artifactId>peoplemanager-background</artifactId>
+    <packaging>pom</packaging>
     <version>1.0</version>
+
+    <modules>
+        <module>PeopleManager-background-worker</module>
+        <module>PeopleManager-background-client</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -49,17 +55,17 @@
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-spring</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-jobclient</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <version>1.7.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.ltsopensource</groupId>
@@ -80,7 +86,7 @@
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-jobtracker</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -95,7 +101,7 @@
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-tasktracker</artifactId>
-            <version>1.7.2-SNAPSHOT</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.mapdb</groupId>
@@ -134,16 +140,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.hzgc.cluster.peoman.tasktracker.TaskTrackerMain</mainClass>
-                    <mainClass>com.hzgc.cluster.peoman.jobclient.JobCallBack</mainClass>
-                    <!--<mainClass>com.hzgc.cluster.peoman.worker.WorkerMain</mainClass>-->
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                        <configuration>
+                            <layout>ZIP</layout>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

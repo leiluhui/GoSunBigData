@@ -7,6 +7,7 @@ import com.github.ltsopensource.jobclient.JobClientBuilder;
 import com.github.ltsopensource.jobclient.domain.Response;
 import com.hzgc.cluster.peoman.zk.Constant;
 import com.hzgc.cluster.peoman.zk.JobDiscover;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.Connection;
@@ -16,7 +17,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootApplication
 public class JobClientMain {
     //第一次启动task
     public void getJobStart() throws InterruptedException {
@@ -128,5 +128,9 @@ public class JobClientMain {
             }
         }
         return list;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(JobClientMain.class, args);
     }
 }
