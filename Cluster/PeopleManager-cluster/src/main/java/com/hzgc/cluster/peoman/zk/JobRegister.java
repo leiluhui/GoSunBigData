@@ -36,8 +36,14 @@ public class JobRegister implements Serializable {
      *
      * @param registInfo 注册信息
      */
-    public void regist(String registInfo) {
+    public void regist(String registInfo,String Data) throws InterruptedException {
         String registPath = Constant.rootPath + "/" + registInfo;
-        zkClient.createNode(registPath, null, CreateMode.EPHEMERAL);
+        zkClient.createNode(registPath, Data.getBytes(), CreateMode.EPHEMERAL);
+        Thread.sleep(1000000);
+    }
+
+    public void update(String path,String Data) throws Exception{
+        zkClient.setNodeDate(path,Data.getBytes());
+        Thread.sleep(100000);
     }
 }

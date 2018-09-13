@@ -30,7 +30,7 @@ public class JobDiscover implements Serializable {
      *
      * @param callBack 回调对象,其中的run方法封装了具体的业务逻辑
      */
-    public void startListen(final DiscoveCallBack callBack) {
+    public void startListen(final DiscoveCallBack callBack) throws InterruptedException {
         createRootPath();
         final PathChildrenCache pathCache = new PathChildrenCache(zkClient, Constant.rootPath, true);
         try {
@@ -39,13 +39,13 @@ public class JobDiscover implements Serializable {
             pathCache.getListenable().addListener((client, event) -> {
                 switch (event.getType()) {
                     case CHILD_ADDED:
-                        callBack.run(pathCache.getCurrentData());
+                        callBack.run(pathCache.getCurrentData(), event);
                         break;
                     case CHILD_UPDATED:
-                        callBack.run(pathCache.getCurrentData());
+                        callBack.run(pathCache.getCurrentData(), event);
                         break;
                     case CHILD_REMOVED:
-                        callBack.run(pathCache.getCurrentData());
+                        callBack.run(pathCache.getCurrentData(), event);
                         break;
                     default:
                         break;
@@ -54,7 +54,7 @@ public class JobDiscover implements Serializable {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        callBack.run(pathCache.getCurrentData());
+        callBack.run(pathCache.getCurrentData(), null);
     }
 
     /**
@@ -65,5 +65,10 @@ public class JobDiscover implements Serializable {
         if (!curator.nodePathExists(Constant.rootPath)) {
             curator.createNode(Constant.rootPath, null, CreateMode.PERSISTENT);
         }
+    }
+
+    public boolean isExist(String path){
+        boolean stat = curator.nodePathExists(path);
+        return stat;
     }
 }
