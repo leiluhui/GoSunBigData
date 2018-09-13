@@ -24,4 +24,30 @@ public class DateUtil {
         }
         return list;
     }
+
+    /**
+     * 获取本月和上一个月
+     * @return
+     */
+    public static List<String> getMonthes(){
+        List<String> res = new ArrayList<>();
+        //得到本月和上月
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        String ym = sdf.format(date);
+        String [] strings = ym.split("-");
+        Integer m = Integer.valueOf(strings[1]) - 1;
+        String lastMonth = null;
+        if (m > 0 && m < 10){
+            lastMonth = strings[0] + "-0" + m;
+        }
+        if (m == 0) {
+            int year = Integer.valueOf(strings[0]) - 1;
+            lastMonth = String.valueOf(year) + "-" + String.valueOf(12);
+        }
+        long start = System.currentTimeMillis();
+        res.add(lastMonth);
+        res.add(ym);
+        return res;
+    }
 }

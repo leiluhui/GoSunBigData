@@ -14,7 +14,7 @@ public class CompareClient {
     private Service service;
 
     public void createService(String serverAddress){
-        Constant constant = new Constant("/compare", "worker");
+        Constant constant = new Constant("/compare/worker", "worker");
         RpcClient rpcClient = new RpcClient(serverAddress, constant);
         try {
             Thread.sleep(3000);

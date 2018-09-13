@@ -391,7 +391,21 @@
             <outputDirectory>component/FaceCompare/conf</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>../FaceCompare/Master/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/FaceCompare/conf</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>../FaceCompare/Worker/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/FaceCompare/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../FaceCompare/Master/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
@@ -405,7 +419,21 @@
             <outputDirectory>component/FaceCompare/lib</outputDirectory>
         </fileSet>
         <fileSet>
+            <directory>../FaceCompare/Master/target/master-1.0/lib</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>../FaceCompare/Worker/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>component/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../FaceCompare/Master/target</directory>
             <includes>
                 <include>*.jar</include>
             </includes>

@@ -16,5 +16,6 @@
         <module>Client</module>
         <module>Worker</module>
         <module>Api</module>
+        <module>Master</module>
     </modules>
 </project>

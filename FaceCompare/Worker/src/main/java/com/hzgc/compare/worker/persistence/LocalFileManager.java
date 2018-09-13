@@ -1,12 +1,10 @@
 package com.hzgc.compare.worker.persistence;
 
 
-import com.hzgc.compare.worker.common.tuple.Quad;
-import com.hzgc.compare.worker.common.tuple.Quintuple;
+import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.task.TimeToCheckFile;
 import com.hzgc.compare.worker.persistence.task.TimeToCheckTask;
-import com.hzgc.compare.worker.util.FaceObjectUtil;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Encoder;
 
@@ -15,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
+public class LocalFileManager implements FileManager {
     private Config conf;
     private String path = ""; //文件保存目录
     private Long fileSize = 256L * 1024 * 1024L;
@@ -25,15 +23,14 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
     private LocalStreamCache streamCache;
 
     public LocalFileManager() {
-        this.conf = Config.getConf();
         init();
     }
 
     public void init() {
-        path = conf.getValue(Config.WORKER_FILE_PATH, path);
-        work_id = conf.getValue(Config.WORKER_ID);
-        timeToCheckFile = conf.getValue(Config.WORKER_FILE_CHECK_TIME, timeToCheckFile);
-        fileSize = conf.getValue(Config.WORKER_FILE_SIZE, fileSize);
+        path = Config.WORKER_FILE_PATH;
+        work_id = Config.WORKER_ID;
+        timeToCheckFile = Config.WORKER_FILE_CHECK_TIME;
+        fileSize = Config.WORKER_FILE_SIZE;
         streamCache = LocalStreamCache.getInstance();
     }
 
@@ -46,26 +43,27 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
      * 根据workID和月份进行存储
      */
     @Override
-    public void flush(List <Quintuple <A1, A2, String, String, D>> buffer) {
+    public void flush(List<Triplet<String, String, byte[]>> buffer) {
+        LOG.info("Flush records to Local, the num is " + buffer.size());
         BASE64Encoder encoder = new BASE64Encoder();
-        Map<String , List<Quad<A1, String, String, String>>> temp = new Hashtable<>();
-        for(Quintuple <A1, A2, String, String, D> quintuple : buffer){
-            D fea = quintuple.getFifth();
-            String feature = fea instanceof byte[] ? encoder.encode((byte[])fea) : FaceObjectUtil.arrayToJson((float[]) fea);
-            String dateYMD = quintuple.getThird();
+        Map<String , List<Triplet<String, String, String>>> temp = new Hashtable<>();
+        for(Triplet<String, String, byte[]> quintuple : buffer){
+            byte[] fea = quintuple.getThird();
+            String feature = encoder.encode(fea);
+            String dateYMD = quintuple.getFirst();
             String[] strings = dateYMD.split("-");
             String dateYM = strings[0] + "-" + strings[1];
-            List<Quad<A1, String, String, String>> list = temp.get(dateYM);
+            List<Triplet<String, String, String>> list = temp.get(dateYM);
             if(list == null){
                 list = new ArrayList<>();
                 temp.put(dateYM, list);
             }
-            list.add(new Quad<>(quintuple.getFirst(), dateYMD, quintuple.getFourth(), feature));
+            list.add(new Triplet<>(dateYMD, quintuple.getSecond(), feature));
         }
 
-        for(Map.Entry<String , List<Quad<A1, String, String, String>>> entry : temp.entrySet()){
+        for(Map.Entry<String , List<Triplet<String, String, String>>> entry : temp.entrySet()){
             String dateYM = entry.getKey();
-            List<Quad<A1, String, String, String>> datas = entry.getValue();
+            List<Triplet<String, String, String>> datas = entry.getValue();
             try {
                 flushForMonth(dateYM, datas);
             } catch (IOException e) {
@@ -81,7 +79,7 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
      * @param datas 数据
      * @throws IOException
      */
-    private void flushForMonth(String month, List<Quad<A1, String, String, String>> datas) throws IOException {
+    private void flushForMonth(String month, List<Triplet<String, String, String>>  datas) throws IOException {
         File rootPath = new File(path);
         if (!rootPath.exists()) {
             boolean res = rootPath.mkdir();
@@ -139,9 +137,9 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
             }
         }
         long theFileSize = fileToWrite.length();
-        for(Quad<A1, String, String, String>data : datas) {
+        for(Triplet<String, String, String> data : datas) {
             BufferedWriter bufferedWriter = null;
-            String info = data.getFirst() + "_" + data.getSecond() + "_" + data.getThird() + "_" + data.getFourth();
+            String info = data.getFirst() + "_" + data.getSecond() + "_" + data.getThird();
             Integer fileName = Integer.valueOf(fileToWrite.getName().split("\\.")[0]);
             //判断文件大小
             if (theFileSize + info.length() + 2 >= fileSize) {
@@ -161,7 +159,7 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
             bufferedWriter.write(info, 0, info.length());
             bufferedWriter.newLine();
             theFileSize += (info.length() + 2);
-            if(theFileSize > 1024 * 100) {
+            if(theFileSize > 1024 * 64) {
                 bufferedWriter.flush();
                 theFileSize = fileToWrite.length();
             }
@@ -175,6 +173,6 @@ public class LocalFileManager<A1, A2, D> implements FileManager<A1, A2, D> {
     }
 
     public void checkTaskTodo() {
-        new Timer().schedule(new TimeToCheckTask<A1,A2,D>(this), 1000, 1000);
+        new Timer().schedule(new TimeToCheckTask(this), 1000, 1000);
     }
 }
