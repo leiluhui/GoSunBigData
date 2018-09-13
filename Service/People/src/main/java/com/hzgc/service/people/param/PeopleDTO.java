@@ -2,6 +2,7 @@ package com.hzgc.service.people.param;
 
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.service.people.model.People;
+import com.hzgc.service.people.service.PeopleService;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @ApiModel(value = "前端入参封装类")
 @Data
 public class PeopleDTO implements Serializable {
+    private String id;
 
     private String name;
 
@@ -53,9 +55,14 @@ public class PeopleDTO implements Serializable {
 
     private List<String> car;
 
-    public People peopleDTOShift(PeopleDTO peopleDTO){
+    public People peopleDTOShift(PeopleDTO peopleDTO, String str){
         People people = new People();
-        people.setId(UuidUtil.getUuid().toUpperCase());
+        if (PeopleService.INSERT.equals(str)){
+            people.setId(UuidUtil.getUuid().toUpperCase());
+        }
+        if (PeopleService.UPDATE.equals(str)){
+            people.setId(peopleDTO.id);
+        }
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idcard);
         people.setRegion(peopleDTO.region);
