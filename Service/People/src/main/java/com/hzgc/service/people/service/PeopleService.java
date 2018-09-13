@@ -275,7 +275,7 @@ public class PeopleService {
      * @return byte[] 照片
      */
     public byte[] searchPictureByPicId(Long pictureId) {
-        PictureWithBLOBs picture = pictureMapper.selectByPrimaryKey(pictureId);
+        PictureWithBLOBs picture = pictureMapper.selectPictureById(pictureId);
         if (picture != null){
             byte[] idcardPic = picture.getIdcardpic();
             if (idcardPic != null && idcardPic.length > 0){
