@@ -336,9 +336,12 @@ public class PeopleService {
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = PeopleVO.peopleShift(people);
-                List<Long> picIds = new ArrayList<>();
-                picIds.add(people.getPicture().get(0));
-                peopleVO.setPictureIds(picIds);
+                List<Long> pictureIds = people.getPicture();
+                if (pictureIds != null && pictureIds.size() > 0){
+                    List<Long> picIds = new ArrayList<>();
+                    picIds.add(pictureIds.get(0));
+                    peopleVO.setPictureIds(picIds);
+                }
                 list.add(peopleVO);
             }
         }

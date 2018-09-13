@@ -82,10 +82,10 @@
         from t_people
         <where>
             <if test="regionid != null ">
-                region = #{region,jdbcType=BIGINT}
+                region = #{regionid,jdbcType=BIGINT}
             </if>
             <if test="communityid != null ">
-                and community = #{community,jdbcType=BIGINT}
+                and community = #{communityid,jdbcType=BIGINT}
             </if>
             <if test="name != null and name.length() > 0">
                 and name like "%" #{name,jdbcType=VARCHAR} "%"
@@ -93,16 +93,14 @@
             <if test="idcard != null and idcard.length() > 0">
                 and idcard like "%" #{idcard,jdbcType=VARCHAR} "%"
             </if>
-            <if test="imsi != null or  phone != null or peopleIds != null or peopleIds.size() > 0">
-                and id in
-            </if>
             <if test="imsi != null">
-                (select peopleid from t_imsi where imsi like "%" #{imsi,jdbcType=VARCHAR} "%")
+                and id in (select peopleid from t_imsi where imsi like "%" #{imsi,jdbcType=VARCHAR} "%")
             </if>
             <if test="phone != null">
-                (select peopleid from t_phone where phone like "%" #{phone,jdbcType=VARCHAR} "%")
+                and id in (select peopleid from t_phone where phone like "%" #{phone,jdbcType=VARCHAR} "%")
             </if>
             <if test="peopleIds != null and peopleIds.size() > 0">
+                and id in
                 <foreach collection="list" item="model" open="(" close=")" separator=",">
                     #{model}
                 </foreach>

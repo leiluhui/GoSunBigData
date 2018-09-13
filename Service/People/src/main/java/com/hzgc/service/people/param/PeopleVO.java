@@ -83,9 +83,15 @@ public class PeopleVO implements Serializable {
             peopleVO.setCommunity(String.valueOf(people.getCommunity()));
             peopleVO.setImportant(people.getImportant());
             peopleVO.setCare(people.getCare());
-            peopleVO.setLastTime(sdf.format(people.getLasttime()));
-            peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
-            peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+            if (people.getLasttime() != null){
+                peopleVO.setLastTime(sdf.format(people.getLasttime()));
+            }
+            if (people.getCreatetime() != null){
+                peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+            }
+            if (people.getUpdatetime() != null){
+                peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+            }
             List<Integer> flags = people.getFlag();
             List<String> list = new ArrayList<>();
             for (Integer i : flags){
