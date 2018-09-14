@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.people.dao.PictureMapper">
+    <resultMap id="FeatureResultMap" type="com.hzgc.service.people.model.Picture">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="BIGINT"/>
+        <result column="bitfeature" property="bitfeature" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Feature_Column_List">
+        id, peopleid, bitfeature
+    </sql>
+    <select id="selectFeatureByLimit" resultMap="FeatureResultMap">
+        select
+        <include refid="Feature_Column_List"/>
+        from t_picture
+    </select>
+</mapper>

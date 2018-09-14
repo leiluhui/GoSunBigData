@@ -22,6 +22,8 @@ CONF_DIR=${COMPARE_DIR}/conf                                ### conf目录
 LIB_DIR=${COMPARE_DIR}/lib                                  ### lib目录
 LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`
 
+WORK_ID=${1}
+LOG_FILE=${LOG_DIR}/worker-${WORK_ID}.log
 if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi

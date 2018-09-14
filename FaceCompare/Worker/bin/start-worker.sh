@@ -24,6 +24,13 @@ LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`
 
 BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
 
+WORK_ID=${1}
+NODE_GROUP=${2}
+NODE_PORT=${3}
+TASK_ID=${4}
+
+LOG_FILE=${LOG_DIR}/worker-${WORK_ID}.log
+
 if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi
@@ -38,7 +45,7 @@ fi
 function start_worker()
 {
     cp ${BIGDATA_CLUSTER_PATH}/HBase/hbase/conf/hbase-site.xml ${CONF_DIR}
-    nohup java -server -Xms10g -Xmx20g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.Worker > ${LOG_FILE} 2>&1 &
+    nohup java -server -Xms1g -Xmx3g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.Worker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} > ${LOG_FILE} 2>&1 &
     echo "start worker ..."
 }
 

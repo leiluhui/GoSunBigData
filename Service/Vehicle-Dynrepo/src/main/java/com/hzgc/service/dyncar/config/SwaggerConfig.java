@@ -23,7 +23,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("大数据动态库接口文档")
+                .title("大数据车辆动态库接口文档")
                 .version(getApplicationVersion())
                 .build();
     }

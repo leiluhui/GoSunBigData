@@ -1,8 +1,8 @@
 package com.hzgc.compare.worker.persistence.task;
 
-import com.hzgc.compare.worker.common.FaceInfoTable;
 import com.hzgc.compare.FaceObject;
-import com.hzgc.compare.worker.common.tuple.Quintuple;
+import com.hzgc.compare.worker.common.FaceInfoTable;
+import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.util.FaceObjectUtil;
@@ -23,8 +23,7 @@ public class TimeToWrite2 implements Runnable {
     private Long timeToWrite = 1000L; //任务执行时间间隔，默认1秒
 
     public TimeToWrite2(){
-        Config conf = Config.getConf();
-        this.timeToWrite = conf.getValue(Config.WORKER_HBASE_WRITE_TIME, this.timeToWrite);
+        this.timeToWrite = Config.WORKER_HBASE_WRITE_TIME;
     }
 
     @Override
@@ -41,14 +40,14 @@ public class TimeToWrite2 implements Runnable {
 
     public void writeToHBase(){
 //        logger.info("To Write record into HBase");
-        MemoryCacheImpl<String, String, float[]> cache = MemoryCacheImpl.getInstance();
+        MemoryCacheImpl cache = MemoryCacheImpl.getInstance();
         List<FaceObject> recordToHBase = cache.getObjects();
         if(recordToHBase.size() == 0){
             return;
         }
         logger.info("The record num from kafka is :" + recordToHBase.size());
         long start = System.currentTimeMillis();
-        List<Quintuple<String, String, String, String, float[]>> bufferList = new ArrayList<>();
+        List<Triplet<String, String, float[]>> bufferList = new ArrayList<>();
         try {
             List<Put> putList = new ArrayList<>();
             Table table = HBaseHelper.getTable(FaceInfoTable.TABLE_NAME);
@@ -57,14 +56,14 @@ public class TimeToWrite2 implements Runnable {
                 Put put = new Put(Bytes.toBytes(rowkey));
                 put.addColumn(Bytes.toBytes(FaceInfoTable.CLU_FAMILY), Bytes.toBytes(FaceInfoTable.INFO), Bytes.toBytes(FaceObjectUtil.objectToJson(record)));
                 putList.add(put);
-                Quintuple<String, String, String, String, float[]> bufferRecord =
-                        new Quintuple<>(record.getIpcId(), null, record.getDate(), rowkey, record.getAttribute().getFeature());
+                Triplet<String, String, float[]> bufferRecord =
+                        new Triplet<>(record.getDate(), rowkey, record.getAttribute().getFeature());
                 bufferList.add(bufferRecord);
             }
             table.put(putList);
             logger.info("Put records to hbase success.");
             logger.info("The Time Used to write to HBase is : " + (System.currentTimeMillis()  - start));
-            cache.addBuffer(bufferList);
+//            cache.addBuffer(bufferList);
         } catch (IOException e) {
             e.printStackTrace();
             cache.addFaceObjects(recordToHBase);

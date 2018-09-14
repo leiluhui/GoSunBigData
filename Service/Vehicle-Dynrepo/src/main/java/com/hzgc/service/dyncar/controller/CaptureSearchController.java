@@ -43,9 +43,6 @@ public class CaptureSearchController {
     @ApiImplicitParam(name = "searchOption", value = "车辆抓拍历史查询参数", paramType = "body")
     @RequestMapping(value = BigDataPath.DYNCAR_CAPTURE_HISTORY, method = RequestMethod.POST)
     @SuppressWarnings("unused")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.HISTORY_FACE_SEARCH + "') OR " +
-            "hasAuthority('" + BigDataPermission.FACE_CTRL + "') OR " +
-            "hasAuthority('" + BigDataPermission.FEATURE_SEARCH + "')")
     public ResponseResult <SearchResult> getCaptureHistory(
             @RequestBody @ApiParam(value = "车辆属性查询参数") CaptureOption captureOption) {
         if (captureOption == null) {

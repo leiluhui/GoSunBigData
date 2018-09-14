@@ -4,7 +4,7 @@ import java.util.TimerTask;
 
 public class TimeToCheckMemory extends TimerTask {
     private MemoryManager manager;
-    public TimeToCheckMemory(MemoryManager manager){
+    TimeToCheckMemory(MemoryManager manager){
         this.manager = manager;
     }
 
