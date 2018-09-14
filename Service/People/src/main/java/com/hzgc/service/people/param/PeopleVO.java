@@ -6,16 +6,17 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
-@ApiModel(value = "返回对象封装")
+
+@ApiModel(value = "后台返回对象封装")
 @Data
 public class PeopleVO implements Serializable {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "人员全局ID")
     private String id;
     @ApiModelProperty(value = "姓名")
     private String name;
     @ApiModelProperty(value = "身份证")
     private String idCard;
-    @ApiModelProperty(value = "省市区选择器")
+    @ApiModelProperty(value = "区域ID")
     private String region;
     @ApiModelProperty(value = "户籍")
     private String household;
@@ -41,26 +42,26 @@ public class PeopleVO implements Serializable {
     private Integer important;
     @ApiModelProperty(value = "关爱人口")
     private Integer care;
-    @ApiModelProperty(value = "上次信息时间")
+    @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
     @ApiModelProperty(value = "创建时间")
     private String createTime;
     @ApiModelProperty(value = "更新时间")
     private String updateTime;
-    @ApiModelProperty(value = "标签")
+    @ApiModelProperty(value = "标签列表")
     private List<Integer> flag;
-    @ApiModelProperty(value = "帧码")
+    @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
-    @ApiModelProperty(value = "电话")
+    @ApiModelProperty(value = "电话列表")
     private List<String> phone;
-    @ApiModelProperty(value = "房产")
+    @ApiModelProperty(value = "房产列表")
     private List<String> house;
-    @ApiModelProperty(value = "车辆")
+    @ApiModelProperty(value = "车辆列表")
     private List<String> car;
-    @ApiModelProperty(value = "照片")
+    @ApiModelProperty(value = "照片（人口库查询页使用）")
     private byte[] picture;
-    @ApiModelProperty(value = "证件照片")
+    @ApiModelProperty(value = "证件照片列表（根据ID查询详细信息使用）")
     private List<byte[]> idcardPicture;
-    @ApiModelProperty(value = "实采")
+    @ApiModelProperty(value = "实采列表（根据ID查询详细信息使用）")
     private List<byte[]> capturePicture;
 }

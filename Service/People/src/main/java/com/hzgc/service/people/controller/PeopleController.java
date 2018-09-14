@@ -33,7 +33,7 @@ public class PeopleController {
      * @param peopleDTO 人口对象信息
      * @return 成功状态 1：插入成功, 0：插入失败
      */
-    @ApiOperation(value = "添加人口对象", response = ResponseResult.class)
+    @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
     public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
@@ -138,12 +138,12 @@ public class PeopleController {
     }
 
     /**
-     * 修改人口对象
+     * 修改人口信息
      *
      * @param peopleDTO 人口对象信息
      * @return 成功状态 1：修改成功, 0：修改失败
      */
-    @ApiOperation(value = "修改人口对象", response = ResponseResult.class)
+    @ApiOperation(value = "修改人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_UPDATE, method = RequestMethod.PUT)
     public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
@@ -248,12 +248,12 @@ public class PeopleController {
     }
 
     /**
-     * 根据id查询人员
+     * 根据ID查询人口信息
      *
      * @param peopleId 人员全局ID
      * @return PeopleVO
      */
-    @ApiOperation(value = "根据id查询对象", response = PeopleVO.class)
+    @ApiOperation(value = "根据ID查询人口信息", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
     public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
@@ -303,12 +303,12 @@ public class PeopleController {
     }
 
     /**
-     * 查询人员对象
+     * 根据条件查询人员对象
      *
      * @param param 查询条件参数封装
      * @return peopleVO 查询返回参数封装
      */
-    @ApiOperation(value = "查询人员对象", response = PeopleVO.class)
+    @ApiOperation(value = "根据条件查询人员对象", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
     public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParam param) {
         if (param == null) {

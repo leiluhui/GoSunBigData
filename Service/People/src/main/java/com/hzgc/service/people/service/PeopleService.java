@@ -340,7 +340,7 @@ public class PeopleService {
     }
 
     /**
-     * 根据id查询人员
+     * 根据ID查询人口信息
      *
      * @param peopleId 人员全局ID
      * @return peopleVO

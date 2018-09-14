@@ -8,16 +8,17 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+
 @ApiModel(value ="前端入参封装类")
 @Data
 public class PeopleDTO implements Serializable {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "人员全局ID")
     private String id;
     @ApiModelProperty(value = "姓名")
     private String name;
     @ApiModelProperty(value = "身份证")
     private String idCard;
-    @ApiModelProperty(value = "省市区id")
+    @ApiModelProperty(value = "区域ID")
     private Long region;
     @ApiModelProperty(value = "户籍")
     private String household;
@@ -37,19 +38,19 @@ public class PeopleDTO implements Serializable {
     private String job;
     @ApiModelProperty(value = "籍贯")
     private String birthplace;
-    @ApiModelProperty(value = "标签")
+    @ApiModelProperty(value = "标签列表")
     private List<Integer> flagId;
-    @ApiModelProperty(value = "证件照片")
+    @ApiModelProperty(value = "证件照片列表")
     private List<byte[]> idCardPic;
-    @ApiModelProperty(value = "实采照片")
+    @ApiModelProperty(value = "实采照片列表")
     private List<byte[]> capturePic;
-    @ApiModelProperty(value = "帧码")
+    @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
-    @ApiModelProperty(value = "电话")
+    @ApiModelProperty(value = "电话列表")
     private List<String> phone;
-    @ApiModelProperty(value = "房产")
+    @ApiModelProperty(value = "房产列表")
     private List<String> house;
-    @ApiModelProperty(value = "车辆")
+    @ApiModelProperty(value = "车辆列表")
     private List<String> car;
 
     public People peopleDTOShift_insert(PeopleDTO peopleDTO){

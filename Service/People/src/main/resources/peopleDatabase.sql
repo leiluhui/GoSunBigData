@@ -2,7 +2,7 @@ CREATE TABLE t_people(
 id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT '人员全局ID',
 name VARCHAR(10) NOT NULL COMMENT '人员姓名',
 idcard VARCHAR(18) NOT NULL COMMENT '身份证',
-region BIGINT(20) NOT NULL COMMENT '区域(省市区)',
+region BIGINT(20) NOT NULL COMMENT '区域ID(省市区)',
 household VARCHAR(100) COMMENT '户籍',
 address VARCHAR(100) COMMENT '现居地',
 sex VARCHAR(2) DEFAULT 0 COMMENT '性别',
@@ -12,7 +12,7 @@ politic VARCHAR(10) COMMENT '政治面貌',
 edulevel VARCHAR(10) COMMENT '文化程度',
 job VARCHAR(10) COMMENT '职业',
 birthplace VARCHAR(10) COMMENT '籍贯',
-community BIGINT(20) COMMENT '小区id',
+community BIGINT(20) COMMENT '小区ID',
 important INT(2) DEFAULT 0 COMMENT '重点关注',
 care INT(2) DEFAULT 0 COMMENT '关爱人口',
 lasttime TIMESTAMP COMMENT '最后出现时间',
@@ -26,6 +26,7 @@ UNIQUE KEY (idcard)
 CREATE TABLE t_flag(
 id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
 peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
+flagid INT(2) NOT NULL COMMENT '标签ID',
 flag VARCHAR(10) NOT NULL COMMENT '标签',
 UNIQUE KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '标签表';
