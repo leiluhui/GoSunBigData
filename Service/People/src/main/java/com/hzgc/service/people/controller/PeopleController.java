@@ -154,10 +154,6 @@ public class PeopleController {
             log.error("Start Update people info, but people id is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象ID为空，请检查！");
         }
-        if (StringUtils.isBlank(peopleDTO.getName())) {
-            log.error("Start Update people info, but name is null !");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象姓名为空，请检查！");
-        }
         if (peopleDTO.getRegion() == null) {
             log.error("Start Update people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象区域为空，请检查！");
@@ -174,7 +170,7 @@ public class PeopleController {
         if (peopleDTO.getFlagId() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
                 peopleDTO.getImsi() == null && peopleDTO.getPhone() == null && peopleDTO.getHouse() == null &&
                 peopleDTO.getCar() == null) {
-            log.info("Insert people info successfully");
+            log.info("Update people info successfully");
             return ResponseResult.init(status);
         } else {
             if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
