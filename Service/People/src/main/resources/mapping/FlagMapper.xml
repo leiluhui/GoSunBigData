@@ -23,14 +23,13 @@
         from t_flag
         where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
+    <!--查询该人员下所有ID-->
+    <select id="selectIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_flag where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
         delete from t_flag
         where id = #{id,jdbcType=BIGINT}
-    </delete>
-    <!--根据人口库ID删除-->
-    <delete id="deleteByPeopleId" parameterType="java.lang.String" >
-        delete from t_flag
-        where peopleid = #{peopleid,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Flag" >
         insert into t_flag (id, peopleid, flagid, flag)

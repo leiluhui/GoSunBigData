@@ -25,12 +25,6 @@
         from t_picture
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <select id="selectPictureById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
-        select
-        <include refid="Blob_Column_List"/>
-        from t_picture
-        where id = #{id,jdbcType=BIGINT}
-    </select>
     <!-- 用于人口库关联查询语句 -->
     <select id="selectByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
         select
@@ -40,6 +34,18 @@
         from t_picture
         where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
+    <!--查询该人员下所有ID-->
+    <select id="selectIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <!--根据ID获取照片-->
+    <select id="selectPictureById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
+        select
+        <include refid="Blob_Column_List"/>
+        from t_picture
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--根据人口库ID获取照片-->
     <select id="selectPictureByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
         select
         <include refid="Blob_Column_List"/>
@@ -49,11 +55,6 @@
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_picture
         where id = #{id,jdbcType=BIGINT}
-    </delete>
-    <!--根据人口库ID删除-->
-    <delete id="deleteByPeopleId" parameterType="java.lang.String">
-        delete from t_picture
-        where peopleid = #{peopleid,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.PictureWithBLOBs">
         insert into t_picture (id, peopleid, feature,

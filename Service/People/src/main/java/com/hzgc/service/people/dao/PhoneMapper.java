@@ -19,5 +19,5 @@ public interface PhoneMapper {
 
     List<Phone> selectByPeopleId(String peopleid);
 
-    int deleteByPeopleId(String peopleId);
+    List<Long> selectIdByPeopleId(String peopleid);
 }

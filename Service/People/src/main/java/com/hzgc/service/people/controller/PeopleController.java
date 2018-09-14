@@ -57,7 +57,7 @@ public class PeopleController {
         log.info("Start add object info, param is:" + JSONUtil.toJson(people));
         Integer status = peopleService.people_insert(people);
         if (status == null || status != 1) {
-            log.info("Insert t_people info failed");
+            log.info("Insert people to t_people info failed");
             return ResponseResult.error(0, "添加人口对象失败");
         }
         log.info("Insert t_people info successfully");

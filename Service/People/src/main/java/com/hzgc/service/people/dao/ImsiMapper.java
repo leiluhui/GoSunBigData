@@ -19,5 +19,5 @@ public interface ImsiMapper {
 
     List<Imsi> selectByPeopleId(String peopleid);
 
-    int deleteByPeopleId(String peopleId);
+    List<Long> selectIdByPeopleId(String peopleid);
 }

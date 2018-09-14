@@ -19,5 +19,5 @@ public interface HouseMapper {
 
     List<House> selectByPeopleId(String peopleid);
 
-    int deleteByPeopleId(String peopleId);
+    List<Long> selectIdByPeopleId(String peopleid);
 }
