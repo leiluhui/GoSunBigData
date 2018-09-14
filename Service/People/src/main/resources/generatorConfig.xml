@@ -12,7 +12,7 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!-- 数据库 url,用户名,密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.119:4000/people"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.123:4000/people"
                         userId="root" password="">
         </jdbcConnection>
         <javaTypeResolver>
@@ -33,7 +33,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainbjectame是实体类名-->
-        <table tableName="t_people" domainObjectName="People" enableCountByExample="false"
+        <!--<table tableName="t_people" domainObjectName="People" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="t_flag" domainObjectName="Flag" enableCountByExample="false"
@@ -61,6 +61,24 @@
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="t_fusion_imsi" domainObjectName="FusionImsi" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+        <table tableName="t_people_recognize" domainObjectName="PeopleRecognize" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_fusion_imsi" domainObjectName="FusionImsi" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_device_recognize" domainObjectName="DeviceRecognize" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_imsi_blacklist" domainObjectName="ImsiBlackList" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_imsi_filter" domainObjectName="ImsiFilter" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_people_new" domainObjectName="NewPeople" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>

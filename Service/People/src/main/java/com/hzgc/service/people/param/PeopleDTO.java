@@ -3,61 +3,61 @@ package com.hzgc.service.people.param;
 import com.hzgc.common.util.uuid.UuidUtil;
 import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 前端入参
- */
-@ApiModel(value = "前端入参封装类")
+@ApiModel(value ="前端入参封装类")
 @Data
 public class PeopleDTO implements Serializable {
-
+    @ApiModelProperty(value = "人员全局ID")
+    private String id;
+    @ApiModelProperty(value = "姓名")
     private String name;
-
-    private String idcard;
-
+    @ApiModelProperty(value = "身份证")
+    private String idCard;
+    @ApiModelProperty(value = "区域ID")
     private Long region;
-
+    @ApiModelProperty(value = "户籍")
     private String household;
-
+    @ApiModelProperty(value = "现住地")
     private String address;
-
+    @ApiModelProperty(value = "性别")
     private String sex;
-
+    @ApiModelProperty(value = "年龄")
     private Integer age;
-
+    @ApiModelProperty(value = "生日")
     private String birthday;
-
+    @ApiModelProperty(value = "政治面貌")
     private String politic;
-
-    private String edulevel;
-
+    @ApiModelProperty(value = "文化程度")
+    private String eduLevel;
+    @ApiModelProperty(value = "职业")
     private String job;
-
+    @ApiModelProperty(value = "籍贯")
     private String birthplace;
-
-    private List<Integer> flag;
-
+    @ApiModelProperty(value = "标签列表")
+    private List<Integer> flagId;
+    @ApiModelProperty(value = "证件照片列表")
     private List<byte[]> idCardPic;
-
+    @ApiModelProperty(value = "实采照片列表")
     private List<byte[]> capturePic;
-
+    @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
-
+    @ApiModelProperty(value = "电话列表")
     private List<String> phone;
-
+    @ApiModelProperty(value = "房产列表")
     private List<String> house;
-
+    @ApiModelProperty(value = "车辆列表")
     private List<String> car;
 
-    public People peopleDTOShift(PeopleDTO peopleDTO){
+    public People peopleDTOShift_insert(PeopleDTO peopleDTO){
         People people = new People();
         people.setId(UuidUtil.getUuid().toUpperCase());
         people.setName(peopleDTO.name);
-        people.setIdcard(peopleDTO.idcard);
+        people.setIdcard(peopleDTO.idCard);
         people.setRegion(peopleDTO.region);
         people.setHousehold(peopleDTO.household);
         people.setAddress(peopleDTO.address);
@@ -65,7 +65,25 @@ public class PeopleDTO implements Serializable {
         people.setAge(peopleDTO.age);
         people.setBirthday(peopleDTO.birthday);
         people.setPolitic(peopleDTO.politic);
-        people.setEdulevel(peopleDTO.edulevel);
+        people.setEdulevel(peopleDTO.eduLevel);
+        people.setJob(peopleDTO.job);
+        people.setBirthplace(peopleDTO.birthplace);
+        return people;
+    }
+
+    public People peopleDTOShift_update(PeopleDTO peopleDTO) {
+        People people = new People();
+        people.setId(peopleDTO.id);
+        people.setName(peopleDTO.name);
+        people.setIdcard(peopleDTO.idCard);
+        people.setRegion(peopleDTO.region);
+        people.setHousehold(peopleDTO.household);
+        people.setAddress(peopleDTO.address);
+        people.setSex(peopleDTO.sex);
+        people.setAge(peopleDTO.age);
+        people.setBirthday(peopleDTO.birthday);
+        people.setPolitic(peopleDTO.politic);
+        people.setEdulevel(peopleDTO.eduLevel);
         people.setJob(peopleDTO.job);
         people.setBirthplace(peopleDTO.birthplace);
         return people;

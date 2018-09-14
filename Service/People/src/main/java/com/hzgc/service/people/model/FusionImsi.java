@@ -7,9 +7,9 @@ public class FusionImsi {
 
     private String peopleid;
 
-    private Date receivetime;
+    private String deviceid;
 
-    private String address;
+    private Date receivetime;
 
     private String imsi;
 
@@ -29,20 +29,20 @@ public class FusionImsi {
         this.peopleid = peopleid == null ? null : peopleid.trim();
     }
 
+    public String getDeviceid() {
+        return deviceid;
+    }
+
+    public void setDeviceid(String deviceid) {
+        this.deviceid = deviceid == null ? null : deviceid.trim();
+    }
+
     public Date getReceivetime() {
         return receivetime;
     }
 
     public void setReceivetime(Date receivetime) {
         this.receivetime = receivetime;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
     }
 
     public String getImsi() {

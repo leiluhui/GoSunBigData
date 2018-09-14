@@ -17,5 +17,7 @@ public interface FlagMapper {
 
     int updateByPrimaryKey(Flag record);
 
-    List<Integer> selectFlagByPeopleId(String peopleid);
+    List<Flag> selectByPeopleId(String peopleid);
+
+    List<Long> selectIdByPeopleId(String peopleid);
 }

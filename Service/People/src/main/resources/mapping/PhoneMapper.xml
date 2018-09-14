@@ -16,8 +16,15 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
     <!-- 用于人口库关联查询语句 -->
-    <select id="selectPhoneByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
-        select phone from t_phone where peopleid = #{peopleid,jdbcType=VARCHAR}
+    <select id="selectByPeopleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_phone
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <!--查询该人员下所有ID-->
+    <select id="selectIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_phone where peopleid = #{peopleid,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_phone

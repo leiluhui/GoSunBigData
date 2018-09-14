@@ -17,5 +17,7 @@ public interface PhoneMapper {
 
     int updateByPrimaryKey(Phone record);
 
-    List<String> selectPhoneByPeopleId(String peopleid);
+    List<Phone> selectByPeopleId(String peopleid);
+
+    List<Long> selectIdByPeopleId(String peopleid);
 }
