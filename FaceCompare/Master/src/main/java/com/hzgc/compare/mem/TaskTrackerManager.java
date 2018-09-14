@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TaskTrackerManager {
     private static final Logger logger = LoggerFactory.getLogger(TaskTrackerManager.class);
@@ -27,7 +25,7 @@ public class TaskTrackerManager {
         return taskTrackerManager;
     }
 
-    public void addTrackers(List<TaskTracker> taskTrackers){
+    private void addTrackers(List<TaskTracker> taskTrackers){
         trackers.addAll(taskTrackers);
     }
 
@@ -41,23 +39,6 @@ public class TaskTrackerManager {
         TaskTracker tracker = new TaskTracker(nodeGroup);
         trackers.add(tracker);
     }
-
-//    public void removeTracker(String nodeGroup){
-//        logger.info("Remove a tracker , the node group is " + nodeGroup);
-//        int index = 0;
-//        for(TaskTracker tracker : trackers){
-//            if(tracker.getNodeGroup().equals(nodeGroup)){
-//                break;
-//            }
-//            index ++;
-//        }
-//        trackers.remove(index);
-//        List<Job> jobs = trackers.get(index).getJobs();
-//        if(jobs.size() > 0){
-//            logger.info("There are some job run in the Tracker, save it");
-//            tempMap.put(nodeGroup, jobs);
-//        }
-//    }
 
     public TaskTracker choseTaskTracker(){
         TaskTracker taskTracker = null;
@@ -111,7 +92,7 @@ public class TaskTrackerManager {
     }
 
     public void loadTackers(){
-        ObjectInputStream ois = null;
+        ObjectInputStream ois;
         try {
             File file = new File(Config.TRACKER_PATH);
             if(!file.isFile()){

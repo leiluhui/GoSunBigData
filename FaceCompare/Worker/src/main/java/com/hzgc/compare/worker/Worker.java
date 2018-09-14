@@ -21,18 +21,17 @@ import java.io.IOException;
  */
 public class Worker {
     private static final Logger logger = LoggerFactory.getLogger(Worker.class);
-    private Config conf;
     private Comsumer comsumer;
     private MemoryManager memoryManager;
     private FileManager fileManager;
     private HBaseClient hBaseClient;
 
 
-    public void init(String workId, String port){
-        Config.WORKER_ID = workId;
+    public void init(String workerId, String port){
+        Config.WORKER_ID = workerId;
         Config.WORKER_RPC_PORT =  Integer.parseInt(port);
         comsumer = new Comsumer();
-        logger.info("To start worker " + workId);
+        logger.info("To start worker " + workerId);
         logger.info("To init the memory module.");
         MemoryCacheImpl.getInstance();
         memoryManager = new MemoryManager();
@@ -68,13 +67,11 @@ public class Worker {
         if(Config.WORKER_FLUSH_PROGRAM == 0){
             memoryManager.timeToCheckFlush();
         }
-//        fileManager.checkFile();
+        fileManager.checkFile();
         fileManager.checkTaskTodo();
-//        fileManager.checkFile();
+        fileManager.checkFile();
         hBaseClient.timeToWrite();
-        Thread thread = new Thread(new RPCRegistry());
-        thread.start();
-        FaceFunction.init();
+//        FaceFunction.init();
     }
 
     public static void main(String args[]){
@@ -89,7 +86,9 @@ public class Worker {
         Worker worker = new Worker();
         worker.init(workerId, port);
         worker.start();
-        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
+        Thread thread = new Thread(new RPCRegistry(workerId, nodeGroup, port, taskId));
         thread.start();
+//        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
+//        thread.start();
     }
 }

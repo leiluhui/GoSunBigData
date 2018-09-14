@@ -5,6 +5,7 @@ import com.hzgc.compare.conf.Config;
 import com.hzgc.compare.mem.TaskTracker;
 import com.hzgc.compare.mem.TaskTrackerManager;
 import com.hzgc.compare.submit.JobSubmit;
+import com.hzgc.compare.util.JobUtil;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -14,10 +15,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ZookeeperClient {
     private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
@@ -144,15 +142,21 @@ public class ZookeeperClient {
     }
 
     private List<Job> getJobsOnZk(CuratorFramework zkClient) throws Exception {
-        List<String> childPathes = zkClient.getChildren().forPath(Config.JOB_PATH);
+        List<String> childPathes;
         List<Job> res = new ArrayList<>();
+        try {
+            childPathes = zkClient.getChildren().forPath(Config.JOB_PATH);
+        } catch (Exception e){
+            return res;
+        }
         for(String path : childPathes){
             logger.info("Job on zk Path : " + path);
             String data = new String(zkClient.getData().forPath(Config.JOB_PATH + "/" + path));
-            String workerId = data.split(",")[0];
-            String nodeGroup = data.split(",")[1];
-            String port = data.split(",")[2];
-            String taskId = data.split(",")[3];
+            Map param = JobUtil.jsonToMap(data);
+            String workerId = (String) param.get("workerId");
+            String nodeGroup = (String) param.get("nodeGroup");
+            String port = (String) param.get("port");
+            String taskId = (String) param.get("taskId");
             TaskTracker taskTracker = TaskTrackerManager.getInstance().getTaskTracker(nodeGroup);
             Job job = new Job();
             job.setTaskId(taskId);
