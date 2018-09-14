@@ -5,6 +5,8 @@ public class Flag {
 
     private String peopleid;
 
+    private Integer flagid;
+
     private String flag;
 
     public Long getId() {
@@ -21,6 +23,14 @@ public class Flag {
 
     public void setPeopleid(String peopleid) {
         this.peopleid = peopleid == null ? null : peopleid.trim();
+    }
+
+    public Integer getFlagid() {
+        return flagid;
+    }
+
+    public void setFlagid(Integer flagid) {
+        this.flagid = flagid;
     }
 
     public String getFlag() {

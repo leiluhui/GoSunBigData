@@ -18,4 +18,6 @@ public interface PhoneMapper {
     int updateByPrimaryKey(Phone record);
 
     List<Phone> selectByPeopleId(String peopleid);
+
+    int deleteByPeopleId(String peopleId);
 }

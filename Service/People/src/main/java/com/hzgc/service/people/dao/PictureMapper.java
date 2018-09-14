@@ -25,4 +25,6 @@ public interface PictureMapper {
     PictureWithBLOBs selectPictureById(Long id);
 
     List<PictureWithBLOBs> selectPictureByPeopleId(String peopleid);
+
+    int deleteByPeopleId(String peopleId);
 }

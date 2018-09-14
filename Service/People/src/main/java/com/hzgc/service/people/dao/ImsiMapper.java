@@ -18,4 +18,6 @@ public interface ImsiMapper {
     int updateByPrimaryKey(Imsi record);
 
     List<Imsi> selectByPeopleId(String peopleid);
+
+    int deleteByPeopleId(String peopleId);
 }

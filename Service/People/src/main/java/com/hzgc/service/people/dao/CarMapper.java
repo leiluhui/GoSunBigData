@@ -18,4 +18,6 @@ public interface CarMapper {
     int updateByPrimaryKey(Car record);
 
     List<Car> selectByPeopleId(String peopleid);
+
+    int deleteByPeopleId(String peopleId);
 }

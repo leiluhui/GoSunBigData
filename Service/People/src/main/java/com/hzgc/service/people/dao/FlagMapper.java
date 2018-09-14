@@ -18,4 +18,6 @@ public interface FlagMapper {
     int updateByPrimaryKey(Flag record);
 
     List<Flag> selectByPeopleId(String peopleid);
+
+    int deleteByPeopleId(String peopleId);
 }

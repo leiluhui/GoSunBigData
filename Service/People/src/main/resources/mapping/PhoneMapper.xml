@@ -26,6 +26,11 @@
         delete from t_phone
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <!--根据人口库ID删除-->
+    <delete id="deleteByPeopleId" parameterType="java.lang.String">
+        delete from t_phone
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Phone">
         insert into t_phone (id, peopleid, phone
         )
