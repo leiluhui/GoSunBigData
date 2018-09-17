@@ -1,10 +1,10 @@
 package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.facedynrepo.DynamicTable;
+import com.hzgc.common.service.facedynrepo.DynamicTable;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
-import com.hzgc.common.util.empty.IsEmpty;
+import com.hzgc.common.util.basic.IsEmpty;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.dynrepo.bean.*;
 import lombok.extern.slf4j.Slf4j;

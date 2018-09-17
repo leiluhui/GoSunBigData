@@ -4,8 +4,8 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.facedispatch.starepo.bean.GetObjectInfoParam;
 import com.hzgc.service.facedispatch.starepo.bean.ObjectSearchResult;
@@ -84,10 +84,10 @@ public class ObjectInfoController {
                 return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "身份证已存在，请检查！");
             }
         }
-        log.info("Start add object info, DTO :" + JSONUtil.toJson(param));
+        log.info("Start add object info, DTO :" + JacksonUtil.toJson(param));
         ObjectInfo objectInfo = param.objectInfoDTOShift(param);
         objectInfo.setId(UuidUtil.getUuid());
-        log.info("Start add object info, param is:" + JSONUtil.toJson(objectInfo));
+        log.info("Start add object info, param is:" + JacksonUtil.toJson(objectInfo));
         Integer succeed = objectInfoService.addObjectInfo(objectInfo);
         if (succeed == 0) {
             log.info("Add object info successfully");
@@ -112,7 +112,7 @@ public class ObjectInfoController {
             log.error("Start delete object info, but object id list is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除列表为空，请检查！");
         }
-        log.info("Start delete object info, object id list is:" + JSONUtil.toJson(idList));
+        log.info("Start delete object info, object id list is:" + JacksonUtil.toJson(idList));
         Integer status = objectInfoService.deleteObjectInfo(idList);
         if (status == idList.size()) {
             log.info("Delete object info successfully");
@@ -164,9 +164,9 @@ public class ObjectInfoController {
                 return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "身份证已存在，请检查！");
             }
         }
-        log.info("Start update object info, DTO :" + JSONUtil.toJson(param));
+        log.info("Start update object info, DTO :" + JacksonUtil.toJson(param));
         ObjectInfo objectInfo = param.objectInfoDTOShift(param);
-        log.info("Start update object info, param is:" + JSONUtil.toJson(param));
+        log.info("Start update object info, param is:" + JacksonUtil.toJson(param));
         Integer succeed = objectInfoService.updateObjectInfo(objectInfo);
         if (succeed == 1) {
             log.info("Update object info successfully");
@@ -194,7 +194,7 @@ public class ObjectInfoController {
         }
         log.info("Start get object info, param is : " + objectId);
         ObjectInfoVO objectInfoVo = objectInfoService.getObjectInfo(objectId);
-        log.info("Get object info successfully, result : " + JSONUtil.toJson(objectInfoVo));
+        log.info("Get object info successfully, result : " + JacksonUtil.toJson(objectInfoVo));
         return ResponseResult.init(objectInfoVo);
     }
 
@@ -252,7 +252,7 @@ public class ObjectInfoController {
             log.error("Start get object info, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询对象参数为空，请检查！");
         }
-        log.info("Start get object info, param is:" + JSONUtil.toJson(param));
+        log.info("Start get object info, param is:" + JacksonUtil.toJson(param));
         ObjectSearchResult result = faceSearchService.search(param);
         return ResponseResult.init(result);
     }

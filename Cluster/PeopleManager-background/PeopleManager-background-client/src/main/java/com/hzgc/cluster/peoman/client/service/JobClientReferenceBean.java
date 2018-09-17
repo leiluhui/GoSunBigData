@@ -12,6 +12,5 @@ public class JobClientReferenceBean implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
     }
 }

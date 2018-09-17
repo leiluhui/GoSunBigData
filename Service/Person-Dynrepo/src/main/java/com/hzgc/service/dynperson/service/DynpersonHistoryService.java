@@ -1,7 +1,7 @@
 package com.hzgc.service.dynperson.service;
 
-import com.hzgc.common.facedynrepo.PersonTable;
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.service.facedynrepo.PersonTable;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.service.dynperson.bean.*;
 import com.hzgc.service.dynperson.dao.ElasticSearchDao;

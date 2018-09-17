@@ -1,6 +1,6 @@
 package com.hzgc.service.facedispatch.starepo.model;
 
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,8 +83,8 @@ public class ObjectFeature implements Serializable, Comparable<ObjectFeature> {
         list.add(feature1);
         list.add(feature2);
         list.add(feature3);
-        System.out.println(JSONUtil.toJson(list));
+        System.out.println(JacksonUtil.toJson(list));
         Collections.sort(list);
-        System.out.println(JSONUtil.toJson(list));
+        System.out.println(JacksonUtil.toJson(list));
     }
 }

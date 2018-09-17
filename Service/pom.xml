@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>Collect</module>
-        <module>PeopleManager</module>
         <module>People</module>
         <module>Face-Dispatch</module>
         <module>Face-Dynrepo</module>

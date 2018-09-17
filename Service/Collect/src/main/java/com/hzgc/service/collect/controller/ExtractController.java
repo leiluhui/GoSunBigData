@@ -1,11 +1,11 @@
 package com.hzgc.service.collect.controller;
 
-import com.hzgc.common.carattribute.bean.CarAttribute;
-import com.hzgc.common.carattribute.service.CarAttributeService;
-import com.hzgc.common.faceattribute.bean.Attribute;
-import com.hzgc.common.faceattribute.service.AttributeService;
-import com.hzgc.common.personattribute.bean.PersonAttribute;
-import com.hzgc.common.personattribute.service.PersonAttributeService;
+import com.hzgc.common.service.carattribute.bean.CarAttribute;
+import com.hzgc.common.service.carattribute.service.CarAttributeService;
+import com.hzgc.common.service.faceattribute.bean.Attribute;
+import com.hzgc.common.service.faceattribute.service.AttributeService;
+import com.hzgc.common.service.personattribute.bean.PersonAttribute;
+import com.hzgc.common.service.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;

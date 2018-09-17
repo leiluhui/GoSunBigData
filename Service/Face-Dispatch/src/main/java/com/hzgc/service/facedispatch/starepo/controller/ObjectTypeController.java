@@ -4,8 +4,8 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.facedispatch.starepo.model.ObjectType;
 import com.hzgc.service.facedispatch.starepo.model.ObjectTypeDTO;
 import com.hzgc.service.facedispatch.starepo.model.ObjectTypeVO;
@@ -55,10 +55,10 @@ public class ObjectTypeController {
             log.error("Start add object type, but the object type name already exists");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加对象类型名称已存在，请检查！");
         }
-        log.info("Start update object type, DTO : " + JSONUtil.toJson(param));
+        log.info("Start update object type, DTO : " + JacksonUtil.toJson(param));
         ObjectType objectType = param.objectTypeDTOShift(param);
         objectType.setId("type_" + UuidUtil.getUuid().substring(0, 8));
-        log.info("Start add object type, param is:" + JSONUtil.toJson(param));
+        log.info("Start add object type, param is:" + JacksonUtil.toJson(param));
         int add = objectTypeService.addObjectType(objectType);
         return ResponseResult.init(add);
     }
@@ -117,9 +117,9 @@ public class ObjectTypeController {
             log.error("Start update object type, but the object type name already exists");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改对象类型名称已存在，请检查！");
         }
-        log.info("Start update object type, DTO : " + JSONUtil.toJson(param));
+        log.info("Start update object type, DTO : " + JacksonUtil.toJson(param));
         ObjectType objectType = param.objectTypeDTOShift(param);
-        log.info("Start update object type, param is : " + JSONUtil.toJson(objectType));
+        log.info("Start update object type, param is : " + JacksonUtil.toJson(objectType));
         int status = objectTypeService.updateObjectType(objectType);
         if (status == 1) {
             log.info("Update object type successfully");

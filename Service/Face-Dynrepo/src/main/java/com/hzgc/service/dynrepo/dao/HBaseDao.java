@@ -1,8 +1,8 @@
 package com.hzgc.service.dynrepo.dao;
 
-import com.hzgc.common.facedynrepo.SearchResultTable;
-import com.hzgc.common.hbase.HBaseHelper;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.service.facedynrepo.SearchResultTable;
+import com.hzgc.common.util.hbase.HBaseHelper;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.SearchCollection;
 import com.hzgc.service.dynrepo.bean.SearchHisotry;
 import com.hzgc.service.dynrepo.bean.SearchResult;
@@ -46,7 +46,7 @@ public class HBaseDao {
         try {
             Put put = new Put(Bytes.toBytes(collection.getSearchResult().getSearchId()));
             put.setDurability(Durability.SYNC_WAL);
-            byte[] searchMessage = Bytes.toBytes(JSONUtil.toJson(collection));
+            byte[] searchMessage = Bytes.toBytes(JacksonUtil.toJson(collection));
             put.addColumn(SearchResultTable.SEARCHRES_COLUMNFAMILY,
                     SearchResultTable.SEARCHRES_COLUMN_SEARCHMESSAGE, searchMessage);
             put.addColumn(SearchResultTable.SEARCHRES_COLUMNFAMILY,
@@ -104,7 +104,7 @@ public class HBaseDao {
                                 SearchResultTable.SEARCHRES_COLUMN_SEARCHMESSAGE);
                 String jsonCollection = Bytes.toString(searchMessage);
                 if (!StringUtils.isBlank(jsonCollection)){
-                    searchCollection = JSONUtil.toObject(jsonCollection, SearchCollection.class);
+                    searchCollection = JacksonUtil.toObject(jsonCollection, SearchCollection.class);
                     searchResult = searchCollection.getSearchResult();
                     if (searchResult != null) {
                         searchResult.setSearchId(searchId);
@@ -187,7 +187,7 @@ public class HBaseDao {
                             searchHisotry.setSearchTime(new String(CellUtil.cloneValue(cell)));
                         } else if (qualifier.equals(new String(SearchResultTable.SEARCHRES_COLUMN_SEARCHMESSAGE))) {
                             SearchCollection collection =
-                                    JSONUtil.toObject(Bytes.toString(CellUtil.cloneValue(cell)), SearchCollection.class);
+                                    JacksonUtil.toObject(Bytes.toString(CellUtil.cloneValue(cell)), SearchCollection.class);
                             searchHisotry.setAttributes(collection.getSearchOption().getAttributes());
                             searchHisotry.setDeviceIds(collection.getSearchOption().getDeviceIpcs());
                             searchHisotry.setSearchId(new String(CellUtil.cloneRow(cell)));

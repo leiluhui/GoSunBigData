@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>peoman</artifactId>
+    <artifactId>peoman-client</artifactId>
     <version>1.0</version>
 
 

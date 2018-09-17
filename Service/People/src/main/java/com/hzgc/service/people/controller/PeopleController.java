@@ -3,7 +3,7 @@ package com.hzgc.service.people.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
@@ -52,9 +52,9 @@ public class PeopleController {
             log.error("Start Insert people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象区域为空，请检查！");
         }
-        log.info("Start add people info, DTO :" + JSONUtil.toJson(peopleDTO));
+        log.info("Start add people info, DTO :" + JacksonUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
-        log.info("Start add object info, param is:" + JSONUtil.toJson(people));
+        log.info("Start add object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.INSERT);
         if (status == null || status != 1) {
             log.info("Insert t_people info failed");
@@ -162,9 +162,9 @@ public class PeopleController {
             log.error("Start Update people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象区域为空，请检查！");
         }
-        log.info("Start Update people info, DTO :" + JSONUtil.toJson(peopleDTO));
+        log.info("Start Update people info, DTO :" + JacksonUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
-        log.info("Start Update object info, param is:" + JSONUtil.toJson(people));
+        log.info("Start Update object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.UPDATE);
         if (status == null || status != 1) {
             log.info("Update t_people info failed");
@@ -262,7 +262,7 @@ public class PeopleController {
         }
         log.info("Start select people info, param is : " + peopleId);
         PeopleVO peopleVO = peopleService.selectByPeopleId(peopleId);
-        log.info("Select people info successfully, result : " + JSONUtil.toJson(peopleVO));
+        log.info("Select people info successfully, result : " + JacksonUtil.toJson(peopleVO));
         return ResponseResult.init(peopleVO);
     }
 
@@ -323,11 +323,11 @@ public class PeopleController {
             log.error("Start select people, but SearchType is error ");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
         }
-        log.info("Start select people, search param: " + JSONUtil.toJson(param));
+        log.info("Start select people, search param: " + JacksonUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
-        log.info("Start select people, FilterField param: " + JSONUtil.toJson(field));
+        log.info("Start select people, FilterField param: " + JacksonUtil.toJson(field));
         List<PeopleVO> peoples = peopleService.searchPeople(field, param.getStart(), param.getLimit());
-        log.info("Start select people successfully, result " + JSONUtil.toJson(peoples));
+        log.info("Start select people successfully, result " + JacksonUtil.toJson(peoples));
         return ResponseResult.init(peoples);
     }
 }

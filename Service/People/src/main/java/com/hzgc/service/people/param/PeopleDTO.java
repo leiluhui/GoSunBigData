@@ -1,6 +1,6 @@
 package com.hzgc.service.people.param;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;

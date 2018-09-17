@@ -11,38 +11,17 @@
 
     <artifactId>collect-ftp</artifactId>
     <version>1.0</version>
-    <properties>
-        <mina.version>2.0.16</mina.version>
-        <zookeeper.version>3.4.10</zookeeper.version>
-        <kafka.version>1.0.0</kafka.version>
-        <rocketmq.version>4.2.0</rocketmq.version>
-        <jackson.version>2.9.4</jackson.version>
-        <jni.version>1.0</jni.version>
-        <jfiglet.version>0.0.3</jfiglet.version>
-        <slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
-        <bigdata-common.version>1.0</bigdata-common.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.mina</groupId>
             <artifactId>mina-core</artifactId>
-            <version>${mina.version}</version>
+            <version>2.0.16</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>${rocketmq.version}</version>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -58,7 +37,7 @@
         <dependency>
             <groupId>com.github.lalyos</groupId>
             <artifactId>jfiglet</artifactId>
-            <version>${jfiglet.version}</version>
+            <version>0.0.3</version>
         </dependency>
     </dependencies>
 

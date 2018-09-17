@@ -1,12 +1,12 @@
 package com.hzgc.service.dyncar.service;
 
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.util.uuid.UuidUtil;
-import com.hzgc.compare.SortParam;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.CarAttribute;
 import com.hzgc.service.dyncar.bean.*;
 import com.hzgc.service.dyncar.dao.ElasticSearchDao;
 import com.hzgc.service.dyncar.dao.EsSearchParam;
+import com.hzgc.service.dyncar.dao.SortParam;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -36,7 +36,7 @@ public class CaptureHistoryService {
         String sortParam = EsSearchParam.DESC;
         List<SortParam> sortParams = option.getSort()
                 .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        System.out.println(JSONUtil.toJson(sortParams));
+        System.out.println(JacksonUtil.toJson(sortParams));
         for (SortParam s : sortParams) {
             if (s.name().equals(SortParam.TIMEDESC.toString())) {
                 sortParam = EsSearchParam.DESC;
@@ -95,7 +95,7 @@ public class CaptureHistoryService {
         }
         searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
         searchResult.setSearchId(UuidUtil.getUuid());
-        log.info("Capture history results:" + JSONUtil.toJson(groupByIpcs));
+        log.info("Capture history results:" + JacksonUtil.toJson(groupByIpcs));
         return searchResult;
     }
 

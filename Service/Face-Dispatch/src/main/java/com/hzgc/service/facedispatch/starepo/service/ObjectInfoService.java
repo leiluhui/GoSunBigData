@@ -1,6 +1,6 @@
 package com.hzgc.service.facedispatch.starepo.service;
 
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.facedispatch.starepo.dao.ObjectInfoMapper;
@@ -120,7 +120,7 @@ public class ObjectInfoService {
                     starepoKafkaProducer.sendKafkaMessage(
                             StarepoKafkaProducer.TOPIC,
                             StarepoKafkaProducer.ADD,
-                            JSONUtil.toJson(object));
+                            JacksonUtil.toJson(object));
                 } else {
                     return FAILED;
                 }
@@ -187,7 +187,7 @@ public class ObjectInfoService {
             starepoKafkaProducer.sendKafkaMessage(
                     StarepoKafkaProducer.TOPIC,
                     StarepoKafkaProducer.ADD,
-                    JSONUtil.toJson(object));
+                    JacksonUtil.toJson(object));
         }
         return i;
     }

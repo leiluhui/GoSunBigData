@@ -1,6 +1,6 @@
 package com.hzgc.service.dynperson.bean;
 
-import com.hzgc.common.personattribute.bean.PersonAttribute;
+import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

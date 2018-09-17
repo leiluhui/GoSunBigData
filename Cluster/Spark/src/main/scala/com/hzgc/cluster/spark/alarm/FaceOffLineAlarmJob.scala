@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat
 
 import com.google.gson.Gson
 import com.hzgc.cluster.spark.util.PropertiesUtil
-import com.hzgc.common.facestarepo.table.alarm.StarepoServiceUtil
-import com.hzgc.common.facestarepo.table.alarm.StarepoServiceUtil.ObjectInfo
+import com.hzgc.common.service.facestarepo.alarm.StarepoServiceUtil
+import com.hzgc.common.service.facestarepo.alarm.StarepoServiceUtil.ObjectInfo
 import org.apache.spark.{SparkConf, SparkContext}
 import org.elasticsearch.spark.rdd.EsSpark
 

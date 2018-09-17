@@ -6,7 +6,7 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.service.WarnRuleService;
 import com.hzgc.service.facedispatch.dispatch.util.IpcIdsUtil;
@@ -63,7 +63,7 @@ public class WarnRuleController {
         if (null != dispatch) {
             List<String> ipcIDs = new ArrayList<>();
             List<Warn> warnList;
-            log.info("Add rule , param is " + JSONUtil.toJson(dispatch));
+            log.info("Add rule , param is " + JacksonUtil.toJson(dispatch));
             //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
             List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
@@ -95,7 +95,7 @@ public class WarnRuleController {
             }
             //调用大数据接口
             ipcIDs.removeAll(Collections.singleton(null));
-            log.info("Bigdata param , ipcIDs is " + JSONUtil.toJson(ipcIDs) + " warn list is " + JSONUtil.toJson(warnList));
+            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs) + " warn list is " + JacksonUtil.toJson(warnList));
             if (ipcIDs.size() > 0 && null != warnList && warnList.size() > 0) {
                 warnRuleService.configRules(ipcIDs, warnList);
             }
@@ -112,7 +112,7 @@ public class WarnRuleController {
         if (null != dispatch) {
             List<String> ipcIDs = new ArrayList<>();
             List<Warn> warnList;
-            log.info("Update rule , param is " + JSONUtil.toJson(dispatch));
+            log.info("Update rule , param is " + JacksonUtil.toJson(dispatch));
             //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
             List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
@@ -137,7 +137,7 @@ public class WarnRuleController {
             ResponseResult<Boolean> responseResult = warnRuleService.updateRule(dispatch);
             //调用大数据接口
             ipcIDs.removeAll(Collections.singleton(null));
-            log.info("Bigdata param , ipcIDs is " + JSONUtil.toJson(ipcIDs) + " warn list is " + JSONUtil.toJson(warnList));
+            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs) + " warn list is " + JacksonUtil.toJson(warnList));
             if (ipcIDs.size() > 0 && null != warnList && warnList.size() > 0) {
                 warnRuleService.configRules(ipcIDs, warnList);
             }
@@ -161,7 +161,7 @@ public class WarnRuleController {
             }
             ipcIDs.removeAll(Collections.singleton(null));
             //调用大数据接口
-            log.info("Bigdata param , ipcIDs is " + JSONUtil.toJson(ipcIDs));
+            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs));
             warnRuleService.deleteRules(ipcIDs);
             return ResponseResult.init(true);
         }
@@ -179,7 +179,7 @@ public class WarnRuleController {
     @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_VIEW + "')")
     public ResponseResult<List> getRuleList(PageBean pageBean) throws IOException {
         if (null != pageBean) {
-            log.info("Get rule list , param is " + JSONUtil.toJson(pageBean));
+            log.info("Get rule list , param is " + JacksonUtil.toJson(pageBean));
             return warnRuleService.getRuleList(pageBean);
         }
         log.info("Get rule list , param is null");

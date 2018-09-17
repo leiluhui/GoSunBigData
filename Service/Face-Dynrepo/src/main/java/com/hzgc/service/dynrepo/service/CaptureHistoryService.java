@@ -1,7 +1,7 @@
 package com.hzgc.service.dynrepo.service;
 
-import com.hzgc.common.facedynrepo.DynamicTable;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.service.facedynrepo.DynamicTable;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
 import com.hzgc.service.dynrepo.bean.CapturedPicture;
 import com.hzgc.service.dynrepo.bean.SingleCaptureResult;
@@ -122,7 +122,7 @@ public class CaptureHistoryService {
             singleResult.setPictures(capturedPictureList);
             results.add(singleResult);
         }
-        log.info("Capture history results:" + JSONUtil.toJson(results));
+        log.info("Capture history results:" + JacksonUtil.toJson(results));
         return results;
     }
 

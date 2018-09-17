@@ -7,9 +7,9 @@ import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.bean.PersonObject;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
-import com.hzgc.common.util.file.FileUtil;
-import com.hzgc.common.util.file.ImageUtil;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.basic.FileUtil;
+import com.hzgc.common.util.basic.ImageUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.jniface.SmallImage;
@@ -148,7 +148,7 @@ public class ProcessThread implements Runnable {
         KafkaProducer.getInstance().sendKafkaMessage(
                 CollectProperties.getKafkaFaceObjectTopic(),
                 ftpUrl_hostname_s,
-                JSONUtil.toJson(faceObject),
+                JacksonUtil.toJson(faceObject),
                 new KafkaCallBack(ftpUrl_ip_s, sdf.format(System.currentTimeMillis())));
     }
 
@@ -172,7 +172,7 @@ public class ProcessThread implements Runnable {
         KafkaProducer.getInstance().sendKafkaMessage(
                 CollectProperties.getKafkaPersonObjectTopic(),
                 ftpUrl_hostname_s,
-                JSONUtil.toJson(personObject),
+                JacksonUtil.toJson(personObject),
                 new KafkaCallBack(ftpUrl_ip_s, sdf.format(System.currentTimeMillis())));
     }
 
@@ -196,7 +196,7 @@ public class ProcessThread implements Runnable {
         KafkaProducer.getInstance().sendKafkaMessage(
                 CollectProperties.getKafkaCarObjectTopic(),
                 ftpUrl_hostname_s,
-                JSONUtil.toJson(carObject),
+                JacksonUtil.toJson(carObject),
                 new KafkaCallBack(ftpUrl_ip_s, sdf.format(System.currentTimeMillis())));
     }
 
@@ -215,7 +215,7 @@ public class ProcessThread implements Runnable {
                             topic,
                             event.getIpcId(),
                             event.getTimeStamp(),
-                            JSONUtil.toJson(mqMessage).getBytes());
+                            JacksonUtil.toJson(mqMessage).getBytes());
                 }
             }
         } else {

@@ -1,7 +1,7 @@
 package com.hzgc.service.dyncar.dao;
 
-import com.hzgc.common.es.ElasticSearchHelper;
-import com.hzgc.common.facedynrepo.VehicleTable;
+import com.hzgc.common.util.es.ElasticSearchHelper;
+import com.hzgc.common.service.facedynrepo.VehicleTable;
 import com.hzgc.service.dyncar.bean.CaptureOption;
 import com.hzgc.service.dyncar.bean.VehicleAttribute;
 import lombok.extern.slf4j.Slf4j;

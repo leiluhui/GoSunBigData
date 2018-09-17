@@ -1,12 +1,12 @@
 package com.hzgc.service.dynrepo.controller;
 
-import com.hzgc.common.faceattribute.service.AttributeService;
+import com.hzgc.common.service.faceattribute.service.AttributeService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.service.rest.BigDataPermission;
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.dynrepo.bean.*;
 import com.hzgc.service.dynrepo.service.CaptureHistoryService;
 import com.hzgc.service.dynrepo.service.CaptureSearchService;
@@ -82,7 +82,7 @@ public class CaptureSearchController {
         }
         log.info("Start search picture, set search id");
         String searchId = UuidUtil.getUuid();
-        log.info("Start search picture, search option is:" + JSONUtil.toJson(searchOption));
+        log.info("Start search picture, search option is:" + JacksonUtil.toJson(searchOption));
         searchResult = captureSearchService.searchPicture(searchOption, searchId);
         return ResponseResult.init(searchResult);
     }
@@ -201,7 +201,7 @@ public class CaptureSearchController {
             log.error("Start query capture history, deviceIpcs option is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        log.info("Start query capture history, search option is:" + JSONUtil.toJson(captureOption));
+        log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
         List<SingleCaptureResult> searchResultList =
                 captureHistoryService.getCaptureHistory(captureOption);
         return ResponseResult.init(searchResultList);
