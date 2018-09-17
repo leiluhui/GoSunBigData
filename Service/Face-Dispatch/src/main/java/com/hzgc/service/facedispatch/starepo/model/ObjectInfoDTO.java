@@ -1,6 +1,6 @@
 package com.hzgc.service.facedispatch.starepo.model;
 
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.PictureData;
 
 import java.io.Serializable;
@@ -41,7 +41,7 @@ public class ObjectInfoDTO implements Serializable {
             info.setPicture(dto.picture.getImageData());
             if (dto.picture.getFeature() != null) {
                 float[] feature = dto.picture.getFeature().getFeature();
-                info.setFeature(JSONUtil.toJson(feature));
+                info.setFeature(JacksonUtil.toJson(feature));
             }
         }
         return info;

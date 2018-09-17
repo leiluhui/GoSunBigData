@@ -1,6 +1,6 @@
 package com.hzgc.service.collect.service;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureData;

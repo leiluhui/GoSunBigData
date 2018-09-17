@@ -1,7 +1,7 @@
 package com.hzgc.common.collect.facesub;
 
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.zookeeper.Curator;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.zookeeper.Curator;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -41,15 +41,15 @@ public class FtpSubscribeClient implements Serializable {
         if (sessionId != null && sessionId.length() > 0
                 && ipcIdList != null && ipcIdList.size() > 0) {
             String nodePath = ftp_subscribe_path + "/" + sessionId;
-            byte[] nodeData = JSONUtil.toJson(ipcIdList).getBytes();
+            byte[] nodeData = JacksonUtil.toJson(ipcIdList).getBytes();
             if (subscribeClient.nodePathExists(nodePath)) {
                 subscribeClient.setNodeDate(nodePath, nodeData);
                 LOG.info("Update ftp subscribe child node path: " + nodePath
-                        + " successfully, update data: " + JSONUtil.toJson(ipcIdList));
+                        + " successfully, update data: " + JacksonUtil.toJson(ipcIdList));
             } else {
                 subscribeClient.createNode(nodePath, nodeData, CreateMode.PERSISTENT);
                 LOG.info("Create ftp subscribe child node path: " + nodePath
-                        + " successfully, data: " + JSONUtil.toJson(ipcIdList));
+                        + " successfully, data: " + JacksonUtil.toJson(ipcIdList));
             }
         }
     }
@@ -105,10 +105,10 @@ public class FtpSubscribeClient implements Serializable {
             for (ChildData childData : currentData) {
                 String path = childData.getPath();
                 String sessionId = path.replace(ftp_subscribe_path + "/", "");
-                List<String> ipcIds = JSONUtil.toObject(new String(childData.getData()), List.class);
+                List<String> ipcIds = JacksonUtil.toObject(new String(childData.getData()), List.class);
                 sessionMap.put(sessionId, ipcIds);
             }
-            LOG.info("Ftp subscribe info:" + JSONUtil.toJson(sessionMap));
+            LOG.info("Ftp subscribe info:" + JacksonUtil.toJson(sessionMap));
         }
     }
 

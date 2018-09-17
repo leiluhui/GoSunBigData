@@ -6,11 +6,11 @@ import java.util.Date
 import com.google.gson.Gson
 import com.hzgc.cluster.spark.message.AddAlarmMessage
 import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
-import com.hzgc.common.facedispatch.DeviceUtilImpl
-import com.hzgc.common.facedispatch.table.DispatchTable
-import com.hzgc.common.facestarepo.table.alarm.StaticRepoUtil
+import com.hzgc.common.service.facedispatch.table.DispatchTable
+import com.hzgc.common.service.facestarepo.alarm.StaticRepoUtil
 import com.hzgc.jni.FaceFunction
-import com.hzgc.common.rocketmq.RocketMQProducer
+import com.hzgc.common.service.facedispatch.DeviceUtilImpl
+import com.hzgc.common.util.rocketmq.RocketMQProducer
 import kafka.serializer.StringDecoder
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.kafka.KafkaUtils

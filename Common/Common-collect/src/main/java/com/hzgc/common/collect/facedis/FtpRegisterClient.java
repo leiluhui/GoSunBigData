@@ -1,7 +1,7 @@
 package com.hzgc.common.collect.facedis;
 
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.zookeeper.Curator;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.zookeeper.Curator;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -45,13 +45,13 @@ public class FtpRegisterClient implements Serializable {
         if (registerInfo != null && registerInfo.getFtpIPAddress() != null
                 && registerInfo.getFtpIPAddress().length() > 0) {
             String nodePath = ftp_register_path + "/" + registerInfo.getFtpIPAddress();
-            byte[] nodeData = JSONUtil.toJson(registerInfo).getBytes();
+            byte[] nodeData = JacksonUtil.toJson(registerInfo).getBytes();
             if (registerClient.nodePathExists(nodePath)){
                 registerClient.deleteChildNode(nodePath);
             }
             registerClient.createNode(nodePath, nodeData, CreateMode.EPHEMERAL);
             LOG.info("Create ftp register child node path: " + nodePath
-                    + " successfully, data: " + JSONUtil.toJson(registerInfo));
+                    + " successfully, data: " + JacksonUtil.toJson(registerInfo));
         }
     }
 
@@ -94,7 +94,7 @@ public class FtpRegisterClient implements Serializable {
             ftpIpMapping.clear();
             for (ChildData childData : currentData) {
                 FtpRegisterInfo registerInfo =
-                        JSONUtil.toObject(new String(childData.getData()), FtpRegisterInfo.class);
+                        JacksonUtil.toObject(new String(childData.getData()), FtpRegisterInfo.class);
                 ftpRegisterInfoList.add(registerInfo);
                 if (registerInfo != null) {
                     switch (registerInfo.getFtpType()) {
@@ -110,7 +110,7 @@ public class FtpRegisterClient implements Serializable {
                         default:
                             LOG.error("Ftp type error for this ftp register info:"
                                     + registerInfo.getFtpIPAddress() + " = "
-                                    + JSONUtil.toJson(registerInfo));
+                                    + JacksonUtil.toJson(registerInfo));
                             break;
                     }
                     ftpIpMapping.put(registerInfo.getFtpHomeName(), registerInfo.getFtpIPAddress());
@@ -124,7 +124,7 @@ public class FtpRegisterClient implements Serializable {
             LOG.info("Face ftp register info:" + Arrays.toString(faceFtpRegisterInfoList.toArray()));
             LOG.info("Car ftp register info:" + Arrays.toString(carFtpRegisterInfoList.toArray()));
             LOG.info("Person ftp register info:" + Arrays.toString(personFtpRegisterInfoList.toArray()));
-            LOG.info("Ftp ip and hostname mapping:" + JSONUtil.toJson(ftpIpMapping));
+            LOG.info("Ftp ip and hostname mapping:" + JacksonUtil.toJson(ftpIpMapping));
             LOG.info("*************************************************************");
         }
     }

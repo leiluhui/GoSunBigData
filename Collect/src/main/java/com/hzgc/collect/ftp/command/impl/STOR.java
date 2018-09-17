@@ -7,7 +7,7 @@ import com.hzgc.collect.expand.util.CollectProperties;
 import com.hzgc.collect.ftp.command.AbstractCommand;
 import com.hzgc.collect.ftp.ftplet.*;
 import com.hzgc.collect.ftp.impl.*;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +164,7 @@ public class STOR extends AbstractCommand {
                                 .setFtpAbsolutePath(file.getAbsolutePath())
                                 .setIp(CollectProperties.getFtpIp())
                                 .setHostname(CollectProperties.getHostname());
-                        LOG.info("Event = " + JSONUtil.toJson(event));
+                        LOG.info("Event = " + JacksonUtil.toJson(event));
                         context.getScheduler().putData(event);
                     }
                 }

@@ -1,11 +1,11 @@
 package com.hzgc.service.facedispatch.dispatch.dao;
 
 import com.alibaba.fastjson.JSON;
-import com.hzgc.common.facedispatch.table.DispatchTable;
-import com.hzgc.common.hbase.HBaseHelper;
+import com.hzgc.common.service.facedispatch.table.DispatchTable;
+import com.hzgc.common.util.hbase.HBaseHelper;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.util.JsonToMap;
 import lombok.extern.slf4j.Slf4j;
@@ -108,7 +108,7 @@ public class HBaseDao {
                     }
                     //把删除后的离线告警数据存入device表中
                     Put offlinePut = new Put(DispatchTable.OFFLINERK);
-                    String offline = JSONUtil.toJson(offlineMap);
+                    String offline = JacksonUtil.toJson(offlineMap);
                     offlinePut.addColumn(DispatchTable.CF_DEVICE, DispatchTable.OFFLINECOL, Bytes.toBytes(offline));
                     deviceTable.put(offlinePut);
                     log.info("Delete rule is " + offline);
@@ -161,13 +161,13 @@ public class HBaseDao {
                     }
                 }
                 Put offlinePut = new Put(DispatchTable.OFFLINERK);
-                offlineString = JSONUtil.toJson(tempMap);
+                offlineString = JacksonUtil.toJson(tempMap);
                 offlinePut.addColumn(DispatchTable.CF_DEVICE, DispatchTable.OFFLINECOL, Bytes.toBytes(offlineString));
                 deviceTable.put(offlinePut);
             } else {
                 //若hbase的device表中offlineWarnRowKey行键对应的数据为空，直接把offlineMap的值加入到device表
                 Put offlinePut = new Put(DispatchTable.OFFLINERK);
-                offlineString = JSONUtil.toJson(offlineMap);
+                offlineString = JacksonUtil.toJson(offlineMap);
                 offlinePut.addColumn(DispatchTable.CF_DEVICE, DispatchTable.OFFLINECOL, Bytes.toBytes(offlineString));
                 deviceTable.put(offlinePut);
             }
@@ -223,7 +223,7 @@ public class HBaseDao {
                 }
             }
         }
-        return JSONUtil.toJson(commonRule);
+        return JacksonUtil.toJson(commonRule);
     }
 
     /**
@@ -246,7 +246,7 @@ public class HBaseDao {
 
     //添加规则进行判断这个ipcId是不是已经存在，存在的话返回该设备已经绑定了规则，不存在直接进行添加
     public ResponseResult<String> saveOriginData(Map<String, Dispatch> originMap) throws IOException {
-        log.info("Origin map is " + JSONUtil.toJson(originMap));
+        log.info("Origin map is " + JacksonUtil.toJson(originMap));
         String originId;
         String oldId;
         //从Hbase数据库中读dispatchTable表
@@ -293,16 +293,16 @@ public class HBaseDao {
             }
             //把新数据同步到数据库中
             Put put = new Put(DispatchTable.RULE_ID);
-            put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JSONUtil.toJson(hbaseMap)));
+            put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JacksonUtil.toJson(hbaseMap)));
             dispatchTable.put(put);
             log.info("Hbase map " + JSON.toJSONString(hbaseMap));
             return ResponseResult.init("规则添加成功");
         } else {
             //数据库为空表示第一次增加，直接存到数据库中
             Put put = new Put(DispatchTable.RULE_ID);
-            put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JSONUtil.toJson(originMap)));
+            put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JacksonUtil.toJson(originMap)));
             dispatchTable.put(put);
-            log.info("This is first add originMap is " + JSONUtil.toJson(originMap));
+            log.info("This is first add originMap is " + JacksonUtil.toJson(originMap));
             return ResponseResult.init("规则添加成功");
         }
     }
@@ -337,16 +337,16 @@ public class HBaseDao {
         if (null != bytes) {
             String hbaseMapString = Bytes.toString(bytes);
             LinkedHashMap<String, Dispatch> map = JsonToMap.dispatchStringToMap(hbaseMapString);
-            log.info("Before update map is " + JSONUtil.toJson(map));
+            log.info("Before update map is " + JacksonUtil.toJson(map));
             //需要修改的规则id
             String ruleId = dispatch.getRule().getRuleId();
             for (String rule_id : map.keySet()) {
                 if (rule_id.equals(ruleId)) {
                     map.put(rule_id, dispatch);
                     Put put = new Put(DispatchTable.RULE_ID);
-                    put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JSONUtil.toJson(map)));
+                    put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JacksonUtil.toJson(map)));
                     dispatchTable.put(put);
-                    log.info("Later update map is " + JSONUtil.toJson(map));
+                    log.info("Later update map is " + JacksonUtil.toJson(map));
                     return ResponseResult.init(true);
                 }
             }
@@ -368,7 +368,7 @@ public class HBaseDao {
                 List<Long> ids = new ArrayList<>();
                 String hbaseMapString = Bytes.toString(bytes);
                 LinkedHashMap<String, Dispatch> map = JsonToMap.dispatchStringToMap(hbaseMapString);
-                log.info("Before delete map is " + JSONUtil.toJson(map));
+                log.info("Before delete map is " + JacksonUtil.toJson(map));
                 //判断是否存在需要删除的ruleID
                 for (String idType : idsType.getId()) {
                     if (map.containsKey(idType)) {
@@ -382,9 +382,9 @@ public class HBaseDao {
                     }
                 }
                 Put put = new Put(DispatchTable.RULE_ID);
-                put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JSONUtil.toJson(map)));
+                put.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE, Bytes.toBytes(JacksonUtil.toJson(map)));
                 dispatchTable.put(put);
-                log.info("Later delete map is " + JSONUtil.toJson(map));
+                log.info("Later delete map is " + JacksonUtil.toJson(map));
                 return ids;
             }
         }
@@ -408,7 +408,7 @@ public class HBaseDao {
                 Rule rule = map.get(ruleId).getRule();
                 list.add(rule);
             }
-            log.info("Origin data is " + JSONUtil.toJson(list));
+            log.info("Origin data is " + JacksonUtil.toJson(list));
 
             //模糊查询
             List<Rule> likeList = new ArrayList<>();
@@ -421,7 +421,7 @@ public class HBaseDao {
                         }
                     }
                 }
-                log.info("Like query data is " + JSONUtil.toJson(likeList));
+                log.info("Like query data is " + JacksonUtil.toJson(likeList));
                 // 分页
                 if (null != pageBean.getStart() &&
                         null != pageBean.getLimit() &&
@@ -429,7 +429,7 @@ public class HBaseDao {
                         && likeList.size() > pageBean.getStart()
                         && likeList.size() > (pageBean.getStart() + pageBean.getLimit())) {
                     cutList = likeList.subList(pageBean.getStart(), pageBean.getStart() + pageBean.getLimit());
-                    log.info("Cutpage data is " + JSONUtil.toJson(cutList));
+                    log.info("Cutpage data is " + JacksonUtil.toJson(cutList));
                     return ResponseResult.init(cutList, (long) likeList.size());
                 } else if (null != pageBean.getStart() &&
                         null != pageBean.getLimit() &&
@@ -438,7 +438,7 @@ public class HBaseDao {
                         likeList.size() < (pageBean.getStart() + pageBean.getLimit()) ||
                         likeList.size() == (pageBean.getStart() + pageBean.getLimit())) {
                     cutList = likeList.subList(pageBean.getStart(), likeList.size());
-                    log.info("Cutpage data is " + JSONUtil.toJson(cutList));
+                    log.info("Cutpage data is " + JacksonUtil.toJson(cutList));
                     return ResponseResult.init(cutList, (long) likeList.size());
                 } else {
                     log.info("Query data is null");
@@ -462,7 +462,7 @@ public class HBaseDao {
                 log.info("Query data is null");
                 return ResponseResult.init(new ArrayList(), 0L);
             }
-            log.info("Cutpage data is " + JSONUtil.toJson(cutList));
+            log.info("Cutpage data is " + JacksonUtil.toJson(cutList));
             return ResponseResult.init(cutList, (long) list.size());
         }
         log.info("Hbase data is null");
@@ -493,7 +493,7 @@ public class HBaseDao {
     public Map<String, Map<String, String>> getObjectTypeName(String[] strings) {
         if (null != strings && strings.length > 0) {
             Map<String, Map<String, String>> map = restTemplate.postForObject("http://STAREPO/type_search_names", strings, Map.class);
-            log.info("StaRepo return param is " + JSONUtil.toJson(map));
+            log.info("StaRepo return param is " + JacksonUtil.toJson(map));
             return map;
         }
         log.info("Start staRepo param is null");

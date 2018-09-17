@@ -14,7 +14,7 @@
     <modules>
         <module>Spark</module>
         <module>Spark-udf</module>
-        <module>PeopleManager-cluster</module>
+        <module>PeopleManager-background</module>
     </modules>
 
     <dependencyManagement>

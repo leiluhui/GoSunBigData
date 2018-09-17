@@ -1,6 +1,6 @@
 package com.hzgc.service.people.fields;
 
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -574,7 +574,7 @@ public class Provinces implements Serializable {
     }
 
     public static void main(String[] args) {
-        System.out.println(JSONUtil.toJson(getProvince()));
-        System.out.println(JSONUtil.toJson(getCity(3600)));
+        System.out.println(JacksonUtil.toJson(getProvince()));
+        System.out.println(JacksonUtil.toJson(getCity(3600)));
     }
 }

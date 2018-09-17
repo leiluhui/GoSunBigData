@@ -4,7 +4,7 @@ import com.hzgc.common.service.api.bean.DeviceDTO;
 import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.dao.HBaseDao;
 import com.hzgc.service.facedispatch.dispatch.util.IpcIdsUtil;
@@ -56,7 +56,7 @@ public class WarnRuleService {
                 for (int i = 0; i < warnList.size(); i++) {
                     strings[i] = (warnList.get(i)).getObjectType();
                 }
-                log.info("Strings is " + JSONUtil.toJson(strings));
+                log.info("Strings is " + JacksonUtil.toJson(strings));
                 Map<String, Map<String, String>> responseResult = hBaseDao.getObjectTypeName(strings);
                 Map<String, String> m = responseResult.get("restbody");
                 for (Warn warn : warnList) {
@@ -132,7 +132,7 @@ public class WarnRuleService {
                         }
                     }
                 }
-                log.info("Dispatch all info is " + JSONUtil.toJson(dispatch));
+                log.info("Dispatch all info is " + JacksonUtil.toJson(dispatch));
                 return ResponseResult.init(dispatch);
             }
         }

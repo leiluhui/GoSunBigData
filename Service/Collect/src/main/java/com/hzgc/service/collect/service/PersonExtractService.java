@@ -1,6 +1,6 @@
 package com.hzgc.service.collect.service;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.seemmo.bean.ImageResult;

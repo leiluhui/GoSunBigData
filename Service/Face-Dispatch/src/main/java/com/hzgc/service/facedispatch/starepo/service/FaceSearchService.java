@@ -1,6 +1,6 @@
 package com.hzgc.service.facedispatch.starepo.service;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.service.facedispatch.starepo.bean.*;
 import com.hzgc.service.facedispatch.starepo.dao.ObjectInfoMapper;

@@ -1,6 +1,6 @@
 package com.hzgc.service.facedispatch.dispatch.util;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.Device;
 import com.hzgc.service.facedispatch.dispatch.bean.Dispatch;
 import com.hzgc.service.facedispatch.dispatch.bean.Rule;
