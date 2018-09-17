@@ -83,7 +83,6 @@ UNIQUE KEY (id)
 CREATE TABLE t_people_recognize(
 id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT '唯一ID自增',
 peopleid VARCHAR(32) NOT NULL COMMENT '人口库人员全局唯一ID',
-community BIGINT(20) NOT NULL COMMENT '人口库小区ID',
 pictureid BIGINT(20) NOT NULL COMMENT '人口库图片ID',
 deviceid VARCHAR(50) NOT NULL COMMENT '抓拍设备ID',
 capturetime TIMESTAMP NOT NULL COMMENT '抓拍时间',
