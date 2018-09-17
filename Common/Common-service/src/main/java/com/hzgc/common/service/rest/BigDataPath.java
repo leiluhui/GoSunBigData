@@ -30,6 +30,7 @@ public class BigDataPath {
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";
 
+    public static final String COMMUNITY_COUNT = "/count";
     public static final String COMMUNITY_PEOPLE = "/people";
     public static final String COMMUNITY_PEOPLE_STATUS = "/people_status";
     public static final String COMMUNITY_PEOPLE_CARE = "/people_care";

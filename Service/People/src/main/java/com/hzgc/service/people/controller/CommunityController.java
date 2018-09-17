@@ -2,6 +2,8 @@ package com.hzgc.service.people.controller;
 
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
+import com.hzgc.service.people.param.CommunityPeopleCountVO;
+import com.hzgc.service.people.param.CommunityPeopleVO;
 import com.hzgc.service.people.service.CommunityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,21 +18,27 @@ public class CommunityController {
     @Autowired
     private CommunityService communityService;
 
-    @ApiOperation(value = "小区实有人口查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区人口数量统计", response = CommunityPeopleCountVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_COUNT, method = RequestMethod.GET)
+    public ResponseResult<CommunityPeopleCountVO> countCommunityPeople(Long communityId) {
+        return null;
+    }
+
+    @ApiOperation(value = "小区实有人口查询", response = CommunityPeopleVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityPeople() {
+    public ResponseResult<CommunityPeopleVO> searchCommunityPeople(Long communityId) {
         return null;
     }
 
-    @ApiOperation(value = "小区重点人口查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区重点人口查询", response = CommunityPeopleVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_STATUS, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityStatusPeople() {
+    public ResponseResult<CommunityPeopleVO> searchCommunityStatusPeople(Long communityId) {
         return null;
     }
 
-    @ApiOperation(value = "小区关爱人口查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区关爱人口查询", response = CommunityPeopleVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CARE, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityCarePeople() {
+    public ResponseResult<CommunityPeopleVO> searchCommunityCarePeople(Long communityId) {
         return null;
     }
 
