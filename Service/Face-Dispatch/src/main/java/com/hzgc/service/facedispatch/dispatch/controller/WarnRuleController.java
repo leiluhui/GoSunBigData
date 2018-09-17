@@ -5,7 +5,6 @@ import com.hzgc.common.service.api.service.DeviceQueryService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.service.WarnRuleService;
@@ -13,7 +12,6 @@ import com.hzgc.service.facedispatch.dispatch.util.IpcIdsUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +37,6 @@ public class WarnRuleController {
     @ApiOperation(value = "根据规则id获取规则详情", response = ResponseResult.class)
     @ApiImplicitParam(name = "id", value = "规则id", required = true, dataType = "string", paramType = "query")
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_BYID, method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_VIEW + "')")
     public ResponseResult<Dispatch> getRuleInfo(String id) {
         if (null != id) {
             log.info("Get rule info , param is " + id);
@@ -58,7 +55,6 @@ public class WarnRuleController {
 
     @ApiOperation(value = "添加规则", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.DISPATCH_ADD, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_OPERATION + "')")
     public ResponseResult<String> addRule(@RequestBody @ApiParam(value = "规则配置参数", required = true) Dispatch dispatch) throws IOException {
         if (null != dispatch) {
             List<String> ipcIDs = new ArrayList<>();
@@ -107,7 +103,6 @@ public class WarnRuleController {
 
     @ApiOperation(value = "修改规则", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.DISPATCH_MODIFY, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_OPERATION + "')")
     public ResponseResult<Boolean> updateRule(@RequestBody Dispatch dispatch) throws IOException {
         if (null != dispatch) {
             List<String> ipcIDs = new ArrayList<>();
@@ -149,7 +144,6 @@ public class WarnRuleController {
 
     @ApiOperation(value = "删除规则", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DELETE, method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_OPERATION + "')")
     public ResponseResult<Boolean> delRules(@RequestBody IdsType<String> idsType) throws IOException {
         if (null != idsType) {
             log.info("Delete rules , param is " + idsType.toString());
@@ -176,7 +170,6 @@ public class WarnRuleController {
             @ApiImplicitParam(name = "fuzzy_field", value = "模糊查询字段", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "fuzzy_value", value = "模糊查询值", dataType = "string", paramType = "query")})
     @RequestMapping(value = BigDataPath.DISPATCH_CUTPAGE_RULE, method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_VIEW + "')")
     public ResponseResult<List> getRuleList(PageBean pageBean) throws IOException {
         if (null != pageBean) {
             log.info("Get rule list , param is " + JacksonUtil.toJson(pageBean));
@@ -189,7 +182,6 @@ public class WarnRuleController {
     @ApiOperation(value = "获取某个规则绑定的所有设备", response = ResponseResult.class)
     @ApiImplicitParam(name = "rule_id", value = "规则id", required = true, dataType = "string", paramType = "query")
     @RequestMapping(value = "/getdevicelist/{rule_id}", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.RULE_VIEW + "')")
     public ResponseResult<List> getDeviceList(String rule_id) throws IOException {
         if (null != rule_id) {
             log.info("Get device list , param is" + rule_id);

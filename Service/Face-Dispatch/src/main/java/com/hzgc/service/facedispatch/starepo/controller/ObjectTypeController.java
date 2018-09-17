@@ -3,7 +3,6 @@ package com.hzgc.service.facedispatch.starepo.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.facedispatch.starepo.model.ObjectType;
@@ -14,7 +13,6 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +37,6 @@ public class ObjectTypeController {
      */
     @ApiOperation(value = "添加对象类型", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.TYPE_ADD, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> addObjectType(@RequestBody @ApiParam(value = "对象类型") ObjectTypeDTO param) {
         if (param == null) {
             log.error("Start add object type, but param is null");
@@ -71,7 +68,6 @@ public class ObjectTypeController {
      */
     @ApiOperation(value = "删除对象类型", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.TYPE_DELETE, method = RequestMethod.DELETE)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> deleteObjectType(@RequestBody @ApiParam(value = "对象类型key列表") List <String> idList) {
         if (idList == null || idList.size() == 0) {
             log.error("Start delete object type list, but param is null");
@@ -96,7 +92,6 @@ public class ObjectTypeController {
      */
     @ApiOperation(value = "修改对象类型", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.TYPE_UPDATE, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> updateObjectType(@RequestBody @ApiParam(value = "对象类型") ObjectTypeDTO param) {
         if (param == null) {
             log.error("Start update object type, but param is null");
@@ -143,7 +138,6 @@ public class ObjectTypeController {
             @ApiImplicitParam(name = "limit", value = "分页行数", dataType = "Integer", paramType = "query")
     })
     @RequestMapping(value = BigDataPath.TYPE_SEARCH, method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
     public ResponseResult <List <ObjectTypeVO>> searchObjectType(Integer start, Integer limit) {
         log.info("Start search object type, param is : start = " + start + "; end = " + limit);
         List <ObjectTypeVO> list = objectTypeService.searchObjectType(start, limit);
@@ -160,7 +154,6 @@ public class ObjectTypeController {
     @ApiOperation(value = "查询对象类型名称", response = ResponseResult.class)
     @ApiImplicitParam(name = "objectTypeKeys", value = "对象类型key数组", dataType = "List", paramType = "query")
     @RequestMapping(value = BigDataPath.TYPE_SEARCH_NAMES, method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
     public ResponseResult <Map> searchObjectTypeNames(@RequestBody List <String> objectTypeIds) {
         if (objectTypeIds == null || objectTypeIds.size() <= 0) {
             log.error("Start search object type names, but param is null");

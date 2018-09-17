@@ -52,17 +52,12 @@ public class PeopleController {
             log.error("Start Insert people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象区域为空，请检查！");
         }
-<<<<<<< HEAD
+
         log.info("Start add people info, DTO :" + JacksonUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift(peopleDTO);
-        log.info("Start add object info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people(people, PeopleService.INSERT);
-=======
-        log.info("Start add people info, DTO :" + JSONUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
-        log.info("Start add object info, param is:" + JSONUtil.toJson(people));
+        log.info("Start add object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people_insert(people);
->>>>>>> f45d0e24e348081e4ec396e61058b84d7ecb0377
+
         if (status == null || status != 1) {
             log.info("Insert people to t_people info failed");
             return ResponseResult.error(0, "添加人口对象失败");
@@ -165,17 +160,10 @@ public class PeopleController {
             log.error("Start Update people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象区域为空，请检查！");
         }
-<<<<<<< HEAD
         log.info("Start Update people info, DTO :" + JacksonUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift(peopleDTO);
-        log.info("Start Update object info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people(people, PeopleService.UPDATE);
-=======
-        log.info("Start Update people info, DTO :" + JSONUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
-        log.info("Start Update object info, param is:" + JSONUtil.toJson(people));
+        log.info("Start Update object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people_update(people);
->>>>>>> f45d0e24e348081e4ec396e61058b84d7ecb0377
         if (status == null || status != 1) {
             log.info("Update t_people info failed");
             return ResponseResult.error(0, "修改人口对象失败");

@@ -3,7 +3,6 @@ package com.hzgc.service.facedispatch.starepo.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.service.rest.BigDataPermission;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.PictureData;
@@ -23,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +49,6 @@ public class ObjectInfoController {
      */
     @ApiOperation(value = "添加对象", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.OBJECTINFO_ADD, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> addObjectInfo(@RequestBody @ApiParam(value = "添加对象") ObjectInfoDTO param) {
         if (param == null) {
             log.error("Start add object info, but param is null");
@@ -106,7 +103,6 @@ public class ObjectInfoController {
      */
     @ApiOperation(value = "删除对象", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.OBJECTINFO_DELETE, method = RequestMethod.DELETE)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> deleteObjectInfo(@RequestBody @ApiParam(value = "删除列表") List <String> idList) {
         if (idList == null || idList.size() == 0) {
             log.error("Start delete object info, but object id list is null");
@@ -131,7 +127,6 @@ public class ObjectInfoController {
      */
     @ApiOperation(value = "修改对象", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.OBJECTINFO_UPDATE, method = RequestMethod.PUT)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_OPERATION + "')")
     public ResponseResult <Integer> updateObjectInfo(@RequestBody @ApiParam(value = "修改对象") ObjectInfoDTO param) {
         if (param == null) {
             log.error("Start update object info, but param is null");
@@ -186,7 +181,6 @@ public class ObjectInfoController {
     @ApiOperation(value = "根据id查询对象", response = ResponseResult.class)
     @ApiImplicitParam(name = "objectId", value = "对象ID", dataType = "String", paramType = "query")
     @RequestMapping(value = BigDataPath.OBJECTINFO_GET, method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
     public ResponseResult <ObjectInfoVO> getObjectInfo(String objectId) {
         if (StringUtils.isBlank(objectId)) {
             log.error("Start get object info, but object id is null");
@@ -246,7 +240,6 @@ public class ObjectInfoController {
      */
     @ApiOperation(value = "对象查询", response = ObjectSearchResult.class)
     @RequestMapping(value = BigDataPath.OBJECTINFO_SEARCH, method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('" + BigDataPermission.OBJECT_VIEW + "')")
     public ResponseResult <ObjectSearchResult> searchObjectInfo(@RequestBody @ApiParam(value = "查询条件") GetObjectInfoParam param) {
         if (param == null) {
             log.error("Start get object info, but param is null");
