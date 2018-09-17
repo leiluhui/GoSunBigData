@@ -105,6 +105,40 @@
             </if>
         </where>
     </select>
+    <select id="countCommunityPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*) from t_people where community = #{community,jdbcType=BIGINT}
+    </select>
+    <select id="countImportantPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*)
+        from t_people, t_flag
+        where t_people.community = #{community,jdbcType=BIGINT}
+        and t_people.id = t_flag.peopleid
+        and t_flag.flagid = 9
+    </select>
+    <select id="countCarePeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*)
+        from t_people, t_flag
+        where t_people.community = #{community,jdbcType=BIGINT}
+        and t_people.id = t_flag.peopleid
+        and t_flag.flagid = 9
+    </select>
+    <select id="searchCommunityPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select id, name, idcard, lasttime
+        from t_people
+        where community = #{community,jdbcType=BIGINT}
+    </select>
+    <select id="searchImportantPeople"  resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select a.id, a.name, a.idcard, a.lasttime
+        from t_people a, t_flag b
+        where a.community = #{community,jdbcType=BIGINT}
+        and b.flagid = 8
+    </select>
+    <select id="searchCarePeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime
+        from t_people a, t_flag b
+        where a.community = #{community,jdbcType=BIGINT}
+        and b.flagid = 9
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people
         where id = #{id,jdbcType=VARCHAR}
