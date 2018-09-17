@@ -6,6 +6,7 @@ import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.*;
+import com.hzgc.service.people.model.Flag;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
 import com.hzgc.service.people.param.PictureVO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,101 +24,82 @@ import java.util.List;
 public class PeopleService {
     @Autowired
     private CarMapper carMapper;
-
     @Autowired
     private FlagMapper flagMapper;
-
     @Autowired
     private HouseMapper houseMapper;
-
     @Autowired
     private ImsiMapper imsiMapper;
-
     @Autowired
     private PeopleMapper peopleMapper;
-
     @Autowired
     private PhoneMapper phoneMapper;
-
     @Autowired
     private PictureMapper pictureMapper;
 
-    public final static String INSERT = "insert";
-    public final static String UPDATE = "update";
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final static String IDCARD_PIC = "idcardpic";
     public final static String CAPTURE_PIC = "capturepic";
 
-    /**
-     * 添加、修改 t_people 表
-     *
-     * @param people people对象
-     * @param str    添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people(People people, String str) {
-        if (INSERT.equals(str)) {
-            return peopleMapper.insertSelective(people);
-        }
-        if (UPDATE.equals(str)) {
-            return peopleMapper.updateByPrimaryKeySelective(people);
-        }
-        return 0;
+    public Integer people_insert(People people) {
+        return peopleMapper.insertSelective(people);
     }
 
-    /**
-     * 添加、修改 t_flag 表
-     *
-     * @param peopleId 人员全局ID
-     * @param flags    人员标签
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_flag(String peopleId, List<Integer> flags, String str) {
-        for (Integer i : flags) {
+    public Integer people_update(People people) {
+        return peopleMapper.updateByPrimaryKeySelective(people);
+    }
+
+    public Integer people_flag_insert(String peopleId, List<Integer> flags) {
+        for (Integer integer : flags) {
             Flag flag = new Flag();
             flag.setPeopleid(peopleId);
-            flag.setFlag(i);
-            int status = 0;
-            if (INSERT.equals(str)) {
-                status = flagMapper.insertSelective(flag);
-                if (status != 1) {
-                    log.info("Insert t_flag failed");
-                    return 0;
-                }
-            }
-            if (UPDATE.equals(str)) {
-                status = flagMapper.updateByPrimaryKeySelective(flag);
-                if (status != 1) {
-                    log.info("Update t_flag failed");
-                    return 0;
-                }
+            flag.setFlagid(integer);
+            flag.setFlag(com.hzgc.service.people.fields.Flag.getFlag(integer));
+            int status = flagMapper.insertSelective(flag);
+            if (status != 1) {
+                log.info("Insert people, but insert t_flag failed");
+                return 0;
             }
         }
         return 1;
     }
 
-    /**
-     * 添加、修改 t_picture 表
-     *
-     * @param peopleId 人员全局ID
-     * @param picType  照片类型
-     * @param pics     照片数据
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_picture(String peopleId, String picType, List<byte[]> pics, String str) {
-        for (byte[] b : pics) {
+    public Integer people_flag_update(String peopleId, List<Integer> flags) {
+        List<Long> idList = flagMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = flagMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_flag failed, id: " + id);
+                return 0;
+            }
+        }
+        for (Integer integer : flags) {
+            Flag flag = new Flag();
+            flag.setPeopleid(peopleId);
+            flag.setFlagid(integer);
+            flag.setFlag(com.hzgc.service.people.fields.Flag.getFlag(integer));
+            int insertStatus = flagMapper.insertSelective(flag);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert flag to t_flag failed, flag:" + integer);
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    public Integer people_picture_insert(String peopleId, String picType, List<byte[]> pics) {
+        for (byte[] bytes : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
             if (IDCARD_PIC.equals(picType)) {
-                picture.setIdcardpic(b);
+                picture.setIdcardpic(bytes);
             }
             if (CAPTURE_PIC.equals(picType)) {
-                picture.setCapturepic(b);
+                picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(b, PictureFormat.JPG);
+            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.info("Face feature extract failed, insert idCard pic to t_picture failed");
+                log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
             }
             picture.setFeature(FaceFunction.floatArray2string(faceAttribute.getFeature()));
@@ -125,144 +108,192 @@ public class PeopleService {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            if (INSERT.equals(str)) {
-                int status = pictureMapper.insertSelective(picture);
-                if (status != 1) {
-                    log.info("Insert idCard pic to t_picture failed");
-                    return 0;
-                }
-            }
-            if (UPDATE.equals(str)) {
-                int status = pictureMapper.updateByPrimaryKeySelective(picture);
-                if (status != 1) {
-                    log.info("Update idCard pic to t_picture failed");
-                    return 0;
-                }
+            int insertStatus = pictureMapper.insertSelective(picture);
+            if (insertStatus != 1) {
+                log.info("Insert people, but insert picture to t_picture failed");
+                return 0;
             }
         }
         return 1;
     }
 
-    /**
-     * 添加、修改 t_imsi 表
-     *
-     * @param peopleId 人员全局ID
-     * @param imsis    imsi信息
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_imsi(String peopleId, List<String> imsis, String str) {
+    public Integer people_picture_update(String peopleId, String picType, List<byte[]> pics) {
+        List<Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = pictureMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_picture failed, id: " + id);
+                return 0;
+            }
+        }
+        for (byte[] bytes : pics) {
+            PictureWithBLOBs picture = new PictureWithBLOBs();
+            picture.setPeopleid(peopleId);
+            if (IDCARD_PIC.equals(picType)) {
+                picture.setIdcardpic(bytes);
+            }
+            if (CAPTURE_PIC.equals(picType)) {
+                picture.setCapturepic(bytes);
+            }
+            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
+            if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                log.info("Face feature extract failed, insert picture to t_picture failed");
+                return 0;
+            }
+            picture.setFeature(FaceFunction.floatArray2string(faceAttribute.getFeature()));
+            try {
+                picture.setBitfeature(new String(faceAttribute.getBitFeature(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            int insertStatus = pictureMapper.insertSelective(picture);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert picture to t_picture failed");
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    public Integer people_imsi_insert(String peopleId, List<String> imsis) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
             imsi.setPeopleid(peopleId);
             imsi.setImsi(s);
-            if (INSERT.equals(str)) {
-                int status = imsiMapper.insertSelective(imsi);
-                if (status != 1) {
-                    log.info("Insert imsi to t_imsi failed");
-                    return 0;
-                }
+            int status = imsiMapper.insertSelective(imsi);
+            if (status != 1) {
+                log.info("Insert people, but insert imsi to t_imsi failed");
+                return 0;
             }
-            if (UPDATE.equals(str)) {
-                int status = imsiMapper.updateByPrimaryKeySelective(imsi);
-                if (status != 1) {
-                    log.info("Update imsi to t_imsi failed");
-                    return 0;
-                }
-            }
-
         }
         return 1;
     }
 
-    /**
-     * 添加、修改 t_phone 表
-     *
-     * @param peopleId 人员全局ID
-     * @param phones   phone信息
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_phone(String peopleId, List<String> phones, String str) {
+    public Integer people_imsi_update(String peopleId, List<String> imsis) {
+        List<Long> idList = imsiMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = imsiMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_imsi failed, id: " + id);
+                return 0;
+            }
+        }
+        for (String s : imsis) {
+            Imsi imsi = new Imsi();
+            imsi.setPeopleid(peopleId);
+            imsi.setImsi(s);
+            int insertStatus = imsiMapper.insertSelective(imsi);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert imsi to t_imsi failed, imsi: " + s);
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    public Integer people_phone_insert(String peopleId, List<String> phones) {
         for (String s : phones) {
             Phone phone = new Phone();
             phone.setPeopleid(peopleId);
             phone.setPhone(s);
-            if (INSERT.equals(str)) {
-                int status = phoneMapper.insertSelective(phone);
-                if (status != 1) {
-                    log.info("Insert phone to t_phone failed");
-                    return 0;
-                }
-            }
-            if (UPDATE.equals(str)) {
-                int status = phoneMapper.updateByPrimaryKeySelective(phone);
-                if (status != 1) {
-                    log.info("Update phone to t_phone failed");
-                    return 0;
-                }
+            int status = phoneMapper.insertSelective(phone);
+            if (status != 1) {
+                log.info("Insert people, but insert phone to t_phone failed");
+                return 0;
             }
         }
         return 1;
     }
 
-    /**
-     * 添加、修改 t_house 表
-     *
-     * @param peopleId 人员全局ID
-     * @param houses   house信息
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_house(String peopleId, List<String> houses, String str) {
+    public Integer people_phone_update(String peopleId, List<String> phones) {
+        List<Long> idList = phoneMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = phoneMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_phone failed, id: " + id);
+                return 0;
+            }
+        }
+        for (String s : phones) {
+            Phone phone = new Phone();
+            phone.setPeopleid(peopleId);
+            phone.setPhone(s);
+            int insertStatus = phoneMapper.insertSelective(phone);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert phone to t_phone failed, phone: " + s);
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    public Integer people_house_insert(String peopleId, List<String> houses) {
         for (String s : houses) {
             House house = new House();
             house.setPeopleid(peopleId);
             house.setHouse(s);
-            if (INSERT.equals(str)) {
-                int status = houseMapper.insertSelective(house);
-                if (status != 1) {
-                    log.info("Insert house to t_house failed");
-                    return 0;
-                }
-            }
-            if (UPDATE.equals(str)) {
-                int status = houseMapper.updateByPrimaryKeySelective(house);
-                if (status != 1) {
-                    log.info("Update house to t_house failed");
-                    return 0;
-                }
+            int status = houseMapper.insertSelective(house);
+            if (status != 1) {
+                log.info("Insert people, but insert house to t_house failed");
+                return 0;
             }
         }
         return 1;
     }
 
-    /**
-     * 添加、修改 t_car 表
-     *
-     * @param peopleId 人员全局ID
-     * @param cars     car信息
-     * @param str      添加、修改标识
-     * @return 1：插入成功, 0：插入失败
-     */
-    public Integer people_car(String peopleId, List<String> cars, String str) {
+    public Integer people_house_update(String peopleId, List<String> houses) {
+        List<Long> idList = houseMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = houseMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_house failed, id: " + id);
+                return 0;
+            }
+        }
+        for (String s : houses) {
+            House house = new House();
+            house.setPeopleid(peopleId);
+            house.setHouse(s);
+            int insertStatus = houseMapper.insertSelective(house);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert house to t_house failed, house: " + s);
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    public Integer people_car_insert(String peopleId, List<String> cars) {
         for (String s : cars) {
             Car car = new Car();
             car.setPeopleid(peopleId);
             car.setCar(s);
-            if (INSERT.equals(str)) {
-                int status = carMapper.insertSelective(car);
-                if (status != 1) {
-                    log.info("Insert car to t_car failed");
-                    return 0;
-                }
+            int status = carMapper.insertSelective(car);
+            if (status != 1) {
+                log.info("Insert people, but insert car to t_car failed");
+                return 0;
             }
-            if (UPDATE.equals(str)) {
-                int status = carMapper.updateByPrimaryKeySelective(car);
-                if (status != 1) {
-                    log.info("Update car to t_car failed");
-                    return 0;
-                }
+        }
+        return 1;
+    }
+
+    public Integer people_car_update(String peopleId, List<String> cars) {
+        List<Long> idList = carMapper.selectIdByPeopleId(peopleId);
+        for (Long id : idList){
+            int status = carMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                log.info("Update people, but delete t_car failed, id: " + id);
+                return 0;
+            }
+        }
+        for (String s : cars) {
+            Car car = new Car();
+            car.setPeopleid(peopleId);
+            car.setCar(s);
+            int insertStatus = carMapper.insertSelective(car);
+            if (insertStatus != 1) {
+                log.info("Update people, but insert car to t_car failed, car: " + s);
+                return 0;
             }
         }
         return 1;
@@ -277,11 +308,11 @@ public class PeopleService {
     public byte[] searchPictureByPicId(Long pictureId) {
         PictureWithBLOBs picture = pictureMapper.selectPictureById(pictureId);
         if (picture != null){
-            byte[] idcardPic = picture.getIdcardpic();
-            if (idcardPic != null && idcardPic.length > 0){
-                return idcardPic;
+            if (picture.getIdcardpic() != null){
+               return picture.getIdcardpic();
+            }else {
+                return picture.getCapturepic();
             }
-            return picture.getCapturepic();
         }
         return null;
     }
@@ -309,15 +340,85 @@ public class PeopleService {
     }
 
     /**
-     * 根据id查询人员
+     * 根据ID查询人口信息
      *
      * @param peopleId 人员全局ID
      * @return peopleVO
      */
     public PeopleVO selectByPeopleId(String peopleId) {
         People people = peopleMapper.selectByPrimaryKey(peopleId);
-        PeopleVO peopleVO = PeopleVO.peopleShift(people);
-        peopleVO.setPictureIds(people.getPicture());
+        PeopleVO peopleVO = new PeopleVO();
+        if (people != null){
+            peopleVO.setId(people.getId());
+            peopleVO.setName(people.getName());
+            peopleVO.setIdCard(people.getIdcard());
+            peopleVO.setRegion(String.valueOf(people.getRegion()));
+            peopleVO.setHousehold(people.getHousehold());
+            peopleVO.setAddress(people.getAddress());
+            peopleVO.setSex(people.getSex());
+            peopleVO.setAge(people.getAge());
+            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setPolitic(people.getPolitic());
+            peopleVO.setEduLevel(people.getEdulevel());
+            peopleVO.setJob(people.getJob());
+            peopleVO.setBirthplace(people.getBirthplace());
+            peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+            peopleVO.setImportant(people.getImportant());
+            peopleVO.setCare(people.getCare());
+            if (people.getLasttime() != null){
+                peopleVO.setLastTime(sdf.format(people.getLasttime()));
+            }
+            if (people.getCreatetime() != null){
+                peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+            }
+            if (people.getUpdatetime() != null){
+                peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+            }
+            List<Flag> flags = people.getFlag();
+            List<Integer> flagIdList = new ArrayList<>();
+            for (Flag flag : flags){
+                flagIdList.add(flag.getFlagid());
+            }
+            peopleVO.setFlag(flagIdList);
+            List<Imsi> imsis = people.getImsi();
+            List<String> imsiList = new ArrayList<>();
+            for (Imsi imsi : imsis){
+                imsiList.add(imsi.getImsi());
+            }
+            peopleVO.setImsi(imsiList);
+            List<Phone> phones = people.getPhone();
+            List<String> phoneList = new ArrayList<>();
+            for (Phone phone : phones){
+                phoneList.add(phone.getPhone());
+            }
+            peopleVO.setPhone(phoneList);
+            List<House> houses = people.getHouse();
+            List<String> houseList = new ArrayList<>();
+            for (House house : houses){
+                houseList.add(house.getHouse());
+            }
+            peopleVO.setHouse(houseList);
+            List<Car> cars = people.getCar();
+            List<String> carList = new ArrayList<>();
+            for (Car car : cars){
+                carList.add(car.getCar());
+            }
+            peopleVO.setCar(carList);
+            List<PictureWithBLOBs> pictures = people.getPicture();
+            if (pictures != null && pictures.size() > 0){
+                List<byte[]> idcardPictureList = new ArrayList<>();
+                List<byte[]> capturePictureList = new ArrayList<>();
+                for (PictureWithBLOBs picture : pictures){
+                    if (picture.getIdcardpic() != null){
+                        idcardPictureList.add(picture.getIdcardpic());
+                    }else {
+                        capturePictureList.add(picture.getCapturepic());
+                    }
+                }
+                peopleVO.setIdcardPicture(idcardPictureList);
+                peopleVO.setCapturePicture(capturePictureList);
+            }
+        }
         return peopleVO;
     }
 
@@ -335,14 +436,49 @@ public class PeopleService {
         List<People> peoples = peopleMapper.searchPeople(field);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
-                PeopleVO peopleVO = PeopleVO.peopleShift(people);
-                List<Long> pictureIds = people.getPicture();
-                if (pictureIds != null && pictureIds.size() > 0){
-                    List<Long> picIds = new ArrayList<>();
-                    picIds.add(pictureIds.get(0));
-                    peopleVO.setPictureIds(picIds);
-                }
+                PeopleVO peopleVO = new PeopleVO();
+                if (people != null){
+                    peopleVO.setId(people.getId());
+                    peopleVO.setName(people.getName());
+                    peopleVO.setIdCard(people.getIdcard());
+                    peopleVO.setRegion(String.valueOf(people.getRegion()));
+                    peopleVO.setHousehold(people.getHousehold());
+                    peopleVO.setAddress(people.getAddress());
+                    peopleVO.setSex(people.getSex());
+                    peopleVO.setAge(people.getAge());
+                    peopleVO.setBirthday(people.getBirthday());
+                    peopleVO.setPolitic(people.getPolitic());
+                    peopleVO.setEduLevel(people.getEdulevel());
+                    peopleVO.setJob(people.getJob());
+                    peopleVO.setBirthplace(people.getBirthplace());
+                    peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+                    peopleVO.setImportant(people.getImportant());
+                    peopleVO.setCare(people.getCare());
+                    if (people.getLasttime() != null){
+                        peopleVO.setLastTime(sdf.format(people.getLasttime()));
+                    }
+                    if (people.getCreatetime() != null){
+                        peopleVO.setCreateTime(sdf.format(people.getCreatetime()));
+                    }
+                    if (people.getUpdatetime() != null){
+                        peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
+                    }
+                    List<Flag> flags = people.getFlag();
+                    List<Integer> flagIdList = new ArrayList<>();
+                    for (Flag flag : flags){
+                        flagIdList.add(flag.getFlagid());
+                    }
+                    peopleVO.setFlag(flagIdList);
+                    if (people.getPicture() != null && people.getPicture().size() > 0){
+                        PictureWithBLOBs picture = people.getPicture().get(0);
+                        if (picture.getIdcardpic() != null){
+                            peopleVO.setPicture(picture.getIdcardpic());
+                        }else {
+                            peopleVO.setPicture(picture.getCapturepic());
+                        }
+                    }
                 list.add(peopleVO);
+                }
             }
         }
         return list;

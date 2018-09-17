@@ -42,17 +42,17 @@ public class People {
 
     private Date updatetime;
 
-    private List<Integer> flag;
+    private List<Flag> flag;
 
-    private List<String> imsi;
+    private List<Imsi> imsi;
 
-    private List<String> phone;
+    private List<Phone> phone;
 
-    private List<String> house;
+    private List<House> house;
 
-    private List<String> car;
+    private List<Car> car;
 
-    private List<Long> picture;
+    private List<PictureWithBLOBs> picture;
 
     public String getId() {
         return id;
@@ -206,51 +206,51 @@ public class People {
         this.updatetime = updatetime;
     }
 
-    public List<Integer> getFlag() {
+    public List<Flag> getFlag() {
         return flag;
     }
 
-    public void setFlag(List<Integer> flag) {
+    public void setFlag(List<Flag> flag) {
         this.flag = flag;
     }
 
-    public List<String> getImsi() {
+    public List<Imsi> getImsi() {
         return imsi;
     }
 
-    public void setImsi(List<String> imsi) {
+    public void setImsi(List<Imsi> imsi) {
         this.imsi = imsi;
     }
 
-    public List<String> getPhone() {
+    public List<Phone> getPhone() {
         return phone;
     }
 
-    public void setPhone(List<String> phone) {
+    public void setPhone(List<Phone> phone) {
         this.phone = phone;
     }
 
-    public List<String> getHouse() {
+    public List<House> getHouse() {
         return house;
     }
 
-    public void setHouse(List<String> house) {
+    public void setHouse(List<House> house) {
         this.house = house;
     }
 
-    public List<String> getCar() {
+    public List<Car> getCar() {
         return car;
     }
 
-    public void setCar(List<String> car) {
+    public void setCar(List<Car> car) {
         this.car = car;
     }
 
-    public List<Long> getPicture() {
+    public List<PictureWithBLOBs> getPicture() {
         return picture;
     }
 
-    public void setPicture(List<Long> picture) {
+    public void setPicture(List<PictureWithBLOBs> picture) {
         this.picture = picture;
     }
 }

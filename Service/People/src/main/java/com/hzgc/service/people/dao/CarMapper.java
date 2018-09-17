@@ -17,5 +17,7 @@ public interface CarMapper {
 
     int updateByPrimaryKey(Car record);
 
-    List<String> selectCarByPeopleId(String peopleid);
+    List<Car> selectByPeopleId(String peopleid);
+
+    List<Long> selectIdByPeopleId(String peopleid);
 }

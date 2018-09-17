@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 信息来源：http://www.tcmap.com.cn/list/jiancheng_list.html
+ */
 @Component
 public class Provinces implements Serializable {
 

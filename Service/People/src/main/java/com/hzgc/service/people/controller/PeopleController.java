@@ -33,7 +33,7 @@ public class PeopleController {
      * @param peopleDTO 人口对象信息
      * @return 成功状态 1：插入成功, 0：插入失败
      */
-    @ApiOperation(value = "添加人口对象", response = ResponseResult.class)
+    @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
     public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
@@ -44,7 +44,7 @@ public class PeopleController {
             log.error("Start Insert people info, but name is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象姓名为空，请检查！");
         }
-        if (StringUtils.isBlank(peopleDTO.getIdcard())) {
+        if (StringUtils.isBlank(peopleDTO.getIdCard())) {
             log.error("Start Insert people info, but idcard is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象身份证为空，请检查！");
         }
@@ -52,23 +52,30 @@ public class PeopleController {
             log.error("Start Insert people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口对象区域为空，请检查！");
         }
+<<<<<<< HEAD
         log.info("Start add people info, DTO :" + JacksonUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
         log.info("Start add object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.INSERT);
+=======
+        log.info("Start add people info, DTO :" + JSONUtil.toJson(peopleDTO));
+        People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
+        log.info("Start add object info, param is:" + JSONUtil.toJson(people));
+        Integer status = peopleService.people_insert(people);
+>>>>>>> f45d0e24e348081e4ec396e61058b84d7ecb0377
         if (status == null || status != 1) {
-            log.info("Insert t_people info failed");
+            log.info("Insert people to t_people info failed");
             return ResponseResult.error(0, "添加人口对象失败");
         }
         log.info("Insert t_people info successfully");
-        if (peopleDTO.getFlag() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
+        if (peopleDTO.getFlagId() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
                 peopleDTO.getImsi() == null && peopleDTO.getPhone() == null && peopleDTO.getHouse() == null &&
                 peopleDTO.getCar() == null) {
             log.info("Insert people info successfully");
             return ResponseResult.init(status);
         } else {
-            if (peopleDTO.getFlag() != null && peopleDTO.getFlag().size() > 0) {
-                Integer insertStatus = peopleService.people_flag(people.getId(), peopleDTO.getFlag(), PeopleService.INSERT);
+            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
+                Integer insertStatus = peopleService.people_flag_insert(people.getId(), peopleDTO.getFlagId());
                 if (insertStatus == 1) {
                     log.info("Insert flag to t_flag successfully");
                 } else {
@@ -77,8 +84,8 @@ public class PeopleController {
                 }
             }
             if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.IDCARD_PIC,
-                        peopleDTO.getIdCardPic(), PeopleService.INSERT);
+                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic());
                 if (insertStatus == 1) {
                     log.info("Insert idCard pic to t_picture successfully");
                 } else {
@@ -86,9 +93,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象证件照片表失败");
                 }
             }
-            if (peopleDTO.getCapturePic() != null) {
-                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.CAPTURE_PIC,
-                        peopleDTO.getCapturePic(), PeopleService.INSERT);
+            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
+                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic());
                 if (insertStatus == 1) {
                     log.info("Insert capture pic to t_picture successfully");
                 } else {
@@ -96,8 +103,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象实采照片表失败");
                 }
             }
-            if (peopleDTO.getImsi() != null) {
-                Integer insertStatus = peopleService.people_imsi(people.getId(), peopleDTO.getImsi(), PeopleService.INSERT);
+            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
+                Integer insertStatus = peopleService.people_imsi_insert(people.getId(), peopleDTO.getImsi());
                 if (insertStatus == 1) {
                     log.info("Insert imsi to t_imsi successfully");
                 } else {
@@ -105,8 +112,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象imsi表失败");
                 }
             }
-            if (peopleDTO.getPhone() != null) {
-                Integer insertStatus = peopleService.people_phone(people.getId(), peopleDTO.getPhone(), PeopleService.INSERT);
+            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
+                Integer insertStatus = peopleService.people_phone_insert(people.getId(), peopleDTO.getPhone());
                 if (insertStatus == 1) {
                     log.info("Insert phone to t_phone successfully");
                 } else {
@@ -114,8 +121,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象联系方式表失败");
                 }
             }
-            if (peopleDTO.getHouse() != null) {
-                Integer insertStatus = peopleService.people_house(people.getId(), peopleDTO.getHouse(), PeopleService.INSERT);
+            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
+                Integer insertStatus = peopleService.people_house_insert(people.getId(), peopleDTO.getHouse());
                 if (insertStatus == 1) {
                     log.info("Insert house to t_house successfully");
                 } else {
@@ -123,8 +130,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "添加人口对象房产信息表失败");
                 }
             }
-            if (peopleDTO.getCar() != null) {
-                Integer insertStatus = peopleService.people_car(people.getId(), peopleDTO.getCar(), PeopleService.INSERT);
+            if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
+                Integer insertStatus = peopleService.people_car_insert(people.getId(), peopleDTO.getCar());
                 if (insertStatus == 1) {
                     log.info("Insert car to t_car successfully");
                 } else {
@@ -138,47 +145,50 @@ public class PeopleController {
     }
 
     /**
-     * 修改人口对象
+     * 修改人口信息
      *
      * @param peopleDTO 人口对象信息
      * @return 成功状态 1：修改成功, 0：修改失败
      */
-    @ApiOperation(value = "修改人口对象", response = ResponseResult.class)
+    @ApiOperation(value = "修改人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_UPDATE, method = RequestMethod.PUT)
     public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start Update people info, but people is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象信息为空，请检查！");
         }
-        if (StringUtils.isBlank(peopleDTO.getName())) {
-            log.error("Start Update people info, but name is null !");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象姓名为空，请检查！");
-        }
-        if (StringUtils.isBlank(peopleDTO.getIdcard())) {
-            log.error("Start Update people info, but idcard is null !");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象身份证为空，请检查！");
+        if (peopleDTO.getId() == null) {
+            log.error("Start Update people info, but people id is null !");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象ID为空，请检查！");
         }
         if (peopleDTO.getRegion() == null) {
             log.error("Start Update people info, but region is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口对象区域为空，请检查！");
         }
+<<<<<<< HEAD
         log.info("Start Update people info, DTO :" + JacksonUtil.toJson(peopleDTO));
         People people = peopleDTO.peopleDTOShift(peopleDTO);
         log.info("Start Update object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people(people, PeopleService.UPDATE);
+=======
+        log.info("Start Update people info, DTO :" + JSONUtil.toJson(peopleDTO));
+        People people = peopleDTO.peopleDTOShift_update(peopleDTO);
+        log.info("Start Update object info, param is:" + JSONUtil.toJson(people));
+        Integer status = peopleService.people_update(people);
+>>>>>>> f45d0e24e348081e4ec396e61058b84d7ecb0377
         if (status == null || status != 1) {
             log.info("Update t_people info failed");
             return ResponseResult.error(0, "修改人口对象失败");
         }
         log.info("Update t_people info successfully");
-        if (peopleDTO.getFlag() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
+        if (peopleDTO.getFlagId() == null && peopleDTO.getIdCardPic() == null && peopleDTO.getCapturePic() == null &&
                 peopleDTO.getImsi() == null && peopleDTO.getPhone() == null && peopleDTO.getHouse() == null &&
                 peopleDTO.getCar() == null) {
-            log.info("Insert people info successfully");
+            log.info("Update people info successfully");
             return ResponseResult.init(status);
         } else {
-            if (peopleDTO.getFlag() != null) {
-                Integer insertStatus = peopleService.people_flag(people.getId(), peopleDTO.getFlag(), PeopleService.UPDATE);
+            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
+                Integer insertStatus = peopleService.people_flag_update(people.getId(), peopleDTO.getFlagId());
                 if (insertStatus == 1) {
                     log.info("Update flag to t_flag successfully");
                 } else {
@@ -186,9 +196,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象标签表失败");
                 }
             }
-            if (peopleDTO.getIdCardPic() != null) {
-                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.IDCARD_PIC,
-                        peopleDTO.getIdCardPic(), PeopleService.UPDATE);
+            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
+                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic());
                 if (insertStatus == 1) {
                     log.info("Update idCard pic to t_picture successfully");
                 } else {
@@ -196,9 +206,9 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象证件照片表失败");
                 }
             }
-            if (peopleDTO.getCapturePic() != null) {
-                Integer insertStatus = peopleService.people_picture(people.getId(), PeopleService.CAPTURE_PIC,
-                        peopleDTO.getCapturePic(), PeopleService.UPDATE);
+            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
+                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic());
                 if (insertStatus == 1) {
                     log.info("Update capture pic to t_picture successfully");
                 } else {
@@ -206,8 +216,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象实采照片表失败");
                 }
             }
-            if (peopleDTO.getImsi() != null) {
-                Integer insertStatus = peopleService.people_imsi(people.getId(), peopleDTO.getImsi(), PeopleService.UPDATE);
+            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
+                Integer insertStatus = peopleService.people_imsi_update(people.getId(), peopleDTO.getImsi());
                 if (insertStatus == 1) {
                     log.info("Update imsi to t_imsi successfully");
                 } else {
@@ -215,8 +225,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象imsi表失败");
                 }
             }
-            if (peopleDTO.getPhone() != null) {
-                Integer insertStatus = peopleService.people_phone(people.getId(), peopleDTO.getPhone(), PeopleService.UPDATE);
+            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
+                Integer insertStatus = peopleService.people_phone_update(people.getId(), peopleDTO.getPhone());
                 if (insertStatus == 1) {
                     log.info("Update phone to t_phone successfully");
                 } else {
@@ -224,8 +234,8 @@ public class PeopleController {
                     return ResponseResult.error(0, "修改人口对象联系方式表失败");
                 }
             }
-            if (peopleDTO.getHouse() != null) {
-                Integer insertStatus = peopleService.people_house(people.getId(), peopleDTO.getHouse(), PeopleService.UPDATE);
+            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
+                Integer insertStatus = peopleService.people_house_update(people.getId(), peopleDTO.getHouse());
                 if (insertStatus == 1) {
                     log.info("Update house to t_house successfully");
                 } else {
@@ -234,7 +244,7 @@ public class PeopleController {
                 }
             }
             if (peopleDTO.getCar() != null) {
-                Integer insertStatus = peopleService.people_car(people.getId(), peopleDTO.getCar(), PeopleService.UPDATE);
+                Integer insertStatus = peopleService.people_car_update(people.getId(), peopleDTO.getCar());
                 if (insertStatus == 1) {
                     log.info("Update car to t_car successfully");
                 } else {
@@ -248,12 +258,12 @@ public class PeopleController {
     }
 
     /**
-     * 根据id查询人员
+     * 根据ID查询人口信息
      *
      * @param peopleId 人员全局ID
      * @return PeopleVO
      */
-    @ApiOperation(value = "根据id查询对象", response = PeopleVO.class)
+    @ApiOperation(value = "根据ID查询人口信息", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
     public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
@@ -303,12 +313,12 @@ public class PeopleController {
     }
 
     /**
-     * 查询人员对象
+     * 根据条件查询人员对象
      *
      * @param param 查询条件参数封装
      * @return peopleVO 查询返回参数封装
      */
-    @ApiOperation(value = "查询人员对象", response = PeopleVO.class)
+    @ApiOperation(value = "根据条件查询人员对象", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
     public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParam param) {
         if (param == null) {

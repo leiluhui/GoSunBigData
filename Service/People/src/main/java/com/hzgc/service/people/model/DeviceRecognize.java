@@ -1,19 +1,17 @@
 package com.hzgc.service.people.model;
 
-import java.util.Date;
-
-public class Recognize {
+public class DeviceRecognize {
     private Long id;
 
     private String peopleid;
 
     private String deviceid;
 
-    private Date capturetime;
+    private String currenttime;
 
-    private String surl;
+    private Integer count;
 
-    private String burl;
+    private Integer flag;
 
     public Long getId() {
         return id;
@@ -39,27 +37,27 @@ public class Recognize {
         this.deviceid = deviceid == null ? null : deviceid.trim();
     }
 
-    public Date getCapturetime() {
-        return capturetime;
+    public String getCurrenttime() {
+        return currenttime;
     }
 
-    public void setCapturetime(Date capturetime) {
-        this.capturetime = capturetime;
+    public void setCurrenttime(String currenttime) {
+        this.currenttime = currenttime == null ? null : currenttime.trim();
     }
 
-    public String getSurl() {
-        return surl;
+    public Integer getCount() {
+        return count;
     }
 
-    public void setSurl(String surl) {
-        this.surl = surl == null ? null : surl.trim();
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
-    public String getBurl() {
-        return burl;
+    public Integer getFlag() {
+        return flag;
     }
 
-    public void setBurl(String burl) {
-        this.burl = burl == null ? null : burl.trim();
+    public void setFlag(Integer flag) {
+        this.flag = flag;
     }
 }
