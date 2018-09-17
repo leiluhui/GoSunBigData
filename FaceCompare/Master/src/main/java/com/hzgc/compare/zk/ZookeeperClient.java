@@ -9,7 +9,6 @@ import com.hzgc.compare.util.JobUtil;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
@@ -147,10 +146,11 @@ public class ZookeeperClient {
         try {
             childPathes = zkClient.getChildren().forPath(Config.JOB_PATH);
         } catch (Exception e){
+            logger.warn("Get job On zookeeper faild ." + e.getMessage());
             return res;
         }
         for(String path : childPathes){
-            logger.info("Job on zk Path : " + path);
+//            logger.info("Job on zk Path : " + Config.JOB_PATH + "/" + path);
             String data = new String(zkClient.getData().forPath(Config.JOB_PATH + "/" + path));
             Map param = JobUtil.jsonToMap(data);
             String workerId = (String) param.get("workerId");
@@ -178,6 +178,9 @@ public class ZookeeperClient {
     private void checkJobs() throws Exception {
         List<Job> jobsOnZk = getJobsOnZk(zkClient);
         List<Job> jobsOnMem = TaskTrackerManager.getInstance().getJobs();
+        for(Job job : jobsOnZk){
+            logger.debug("Job on zk workerId : " + job.getParam("workerId") + " taskId : " + job.getTaskId() + " nodeGroup : " + job.getTaskTrackerNodeGroup());
+        }
         for(Job jobOnMem : jobsOnMem){
             boolean flag = true;
             for(Job jobOnZk : jobsOnZk){
@@ -202,15 +205,12 @@ public class ZookeeperClient {
         @Override
         public void run() {
             try {
-                logger.info("To Check jobs done.");
+                logger.info("To Check died jobs.");
                 checkJobs();
             } catch (Exception e) {
                 logger.warn(e.getMessage());
                 e.printStackTrace();
             }
         }
-    }
-    public static void main(String args[]) throws InterruptedException {
-        ZookeeperClient client = new ZookeeperClient(Config.ZK_ADDRESS);
     }
 }

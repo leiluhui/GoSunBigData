@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class Config {
     public static String PORTS;
-    public static final String JOB_PATH = "worker_job";
+    public static final String JOB_PATH = "/worker_job";
     public static List<String> WORKER_ID_LIST;
     public static String ZK_ADDRESS;
     public static Integer MASTER_PORT;
