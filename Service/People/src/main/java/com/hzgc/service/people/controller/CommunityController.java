@@ -142,13 +142,13 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区建议迁出查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区疑似迁出查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_OUT, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunitySuggestOut() {
         return null;
     }
 
-    @ApiOperation(value = "小区建议迁入查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区疑似迁入查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_NEW, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunitySuggestNew() {
         return null;
@@ -163,6 +163,30 @@ public class CommunityController {
     @ApiOperation(value = "小区确认迁入操作", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunityAffirmNew() {
+        return null;
+    }
+
+    @ApiOperation(value = "聚焦人员抓拍、电围数据查询", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_1MONTH, method = RequestMethod.GET)
+    public ResponseResult<String> searchCapture1Month(Long peopleId) {
+        return null;
+    }
+
+    @ApiOperation(value = "聚焦人员轨迹查询", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.GET)
+    public ResponseResult<String> searchPeopleTrack1Month(Long peopleId) {
+        return null;
+    }
+
+    @ApiOperation(value = "统计聚焦人员每个设备抓拍次数", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.GET)
+    public ResponseResult<String> countDeviceCaptureNum1Month(Long peopleId) {
+        return null;
+    }
+
+    @ApiOperation(value = "统计聚焦人员每天抓拍次数", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.GET)
+    public ResponseResult<String> countCaptureNum3Month(Long peopleId) {
         return null;
     }
 }
