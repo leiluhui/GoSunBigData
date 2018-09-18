@@ -13,8 +13,6 @@ edulevel VARCHAR(10) COMMENT '文化程度',
 job VARCHAR(10) COMMENT '职业',
 birthplace VARCHAR(10) COMMENT '籍贯',
 community BIGINT(20) COMMENT '小区ID',
-important INT(2) DEFAULT 0 COMMENT '重点关注',
-care INT(2) DEFAULT 0 COMMENT '关爱人口',
 lasttime TIMESTAMP COMMENT '最后出现时间',
 createtime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 updatetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -83,7 +81,6 @@ UNIQUE KEY (id)
 CREATE TABLE t_people_recognize(
 id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT '唯一ID自增',
 peopleid VARCHAR(32) NOT NULL COMMENT '人口库人员全局唯一ID',
-community BIGINT(20) NOT NULL COMMENT '人口库小区ID',
 pictureid BIGINT(20) NOT NULL COMMENT '人口库图片ID',
 deviceid VARCHAR(50) NOT NULL COMMENT '抓拍设备ID',
 capturetime TIMESTAMP NOT NULL COMMENT '抓拍时间',
@@ -135,3 +132,12 @@ deviceid VARCHAR(50) NOT NULL COMMENT '设备ID',
 isconfirm INT(2) NOT NULL COMMENT '是否确认迁入(1:未迁入，2：迁入)',
 flag INT(2) NOT NULL COMMENT '标签(1:预实名, 2:新增)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '建议迁入人口表';
+
+
+CREATE TABLE t_confirm_record(
+id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
+community BIGINT(20) NOT NULL COMMENT '小区ID',
+month VARCHAR(6) NOT NULL COMMENT '确认迁入迁出月份:yyyyMM',
+flag INT(2) NOT NULL COMMENT '标签(1:确认迁入, 2:确认迁出)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '确认迁入迁出记录表';

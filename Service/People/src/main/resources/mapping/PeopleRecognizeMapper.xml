@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.PeopleRecognize" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="community" property="community" jdbcType="BIGINT" />
     <result column="pictureid" property="pictureid" jdbcType="BIGINT" />
     <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
     <result column="capturetime" property="capturetime" jdbcType="TIMESTAMP" />
@@ -13,7 +12,7 @@
     <result column="flag" property="flag" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag
+    id, peopleid, pictureid, deviceid, capturetime, surl, burl, flag
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -26,12 +25,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.hzgc.service.people.model.PeopleRecognize" >
-    insert into t_people_recognize (id, peopleid, community, 
-      pictureid, deviceid, capturetime, 
-      surl, burl, flag)
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT}, 
-      #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP}, 
-      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER})
+    insert into t_people_recognize (id, peopleid, pictureid, 
+      deviceid, capturetime, surl, 
+      burl, flag)
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{pictureid,jdbcType=BIGINT}, 
+      #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP}, #{surl,jdbcType=VARCHAR}, 
+      #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.PeopleRecognize" >
     insert into t_people_recognize
@@ -41,9 +40,6 @@
       </if>
       <if test="peopleid != null" >
         peopleid,
-      </if>
-      <if test="community != null" >
-        community,
       </if>
       <if test="pictureid != null" >
         pictureid,
@@ -71,9 +67,6 @@
       <if test="peopleid != null" >
         #{peopleid,jdbcType=VARCHAR},
       </if>
-      <if test="community != null" >
-        #{community,jdbcType=BIGINT},
-      </if>
       <if test="pictureid != null" >
         #{pictureid,jdbcType=BIGINT},
       </if>
@@ -100,9 +93,6 @@
       <if test="peopleid != null" >
         peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
-      <if test="community != null" >
-        community = #{community,jdbcType=BIGINT},
-      </if>
       <if test="pictureid != null" >
         pictureid = #{pictureid,jdbcType=BIGINT},
       </if>
@@ -127,7 +117,6 @@
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.PeopleRecognize" >
     update t_people_recognize
     set peopleid = #{peopleid,jdbcType=VARCHAR},
-      community = #{community,jdbcType=BIGINT},
       pictureid = #{pictureid,jdbcType=BIGINT},
       deviceid = #{deviceid,jdbcType=VARCHAR},
       capturetime = #{capturetime,jdbcType=TIMESTAMP},
