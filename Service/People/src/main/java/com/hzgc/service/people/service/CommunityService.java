@@ -56,6 +56,18 @@ public class CommunityService {
         return this.shift(peopleList);
     }
 
+    public List<CommunityPeopleVO> searchCommunityNewPeople(CommunityPeopleDTO param) {
+        PageHelper.offsetPage(param.getStart(), param.getLimit());
+        List<People> peopleList = peopleMapper.searchNewPeople(param.getCommunityId());
+        return this.shift(peopleList);
+    }
+
+    public List<CommunityPeopleVO> searchCommunityOutPeople(CommunityPeopleDTO param) {
+        PageHelper.offsetPage(param.getStart(), param.getLimit());
+        List<People> peopleList = peopleMapper.searchOutPeople(param.getCommunityId());
+        return this.shift(peopleList);
+    }
+
     private List<CommunityPeopleVO> shift( List<People> peopleList){
         List<CommunityPeopleVO> voList = new ArrayList<>();
         if (peopleList != null && peopleList.size() > 0) {

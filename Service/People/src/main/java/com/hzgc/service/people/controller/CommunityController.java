@@ -103,13 +103,43 @@ public class CommunityController {
     @ApiOperation(value = "小区新增人口查询（上月确认迁入数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_NEW, method = RequestMethod.GET)
     public ResponseResult<List<CommunityPeopleVO>> searchCommunityNewPeople(CommunityPeopleDTO param) {
-        return null;
+        if (param == null){
+            log.error("Start search community new people ,but param is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
+        }
+        if (param.getCommunityId() == null){
+            log.error("Start search community new people ,but community id is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID不能为空,请检查！");
+        }
+        if (param.getLimit() == 0){
+            log.error("Start search community new people ,but limit is 0 ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"分页行数不能为0,请检查！");
+        }
+        log.info("Start search community new people, param is :"+ JacksonUtil.toJson(param));
+        List<CommunityPeopleVO> voList = communityService.searchCommunityNewPeople(param);
+        log.info("Start search community new people successfully!");
+        return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "小区迁出人口查询（上月确认迁出数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_OUT, method = RequestMethod.GET)
     public ResponseResult<List<CommunityPeopleVO>> searchCommunityOutPeople(CommunityPeopleDTO param) {
-        return null;
+        if (param == null){
+            log.error("Start search community out people ,but param is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
+        }
+        if (param.getCommunityId() == null){
+            log.error("Start search community out people ,but community id is null ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID不能为空,请检查！");
+        }
+        if (param.getLimit() == 0){
+            log.error("Start search community out people ,but limit is 0 ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"分页行数不能为0,请检查！");
+        }
+        log.info("Start search community out people, param is :"+ JacksonUtil.toJson(param));
+        List<CommunityPeopleVO> voList = communityService.searchCommunityOutPeople(param);
+        log.info("Start search community out people successfully!");
+        return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "小区建议迁出查询", response = ResponseResult.class)
