@@ -14,4 +14,8 @@ public interface ConfirmRecordMapper {
     int updateByPrimaryKeySelective(ConfirmRecord record);
 
     int updateByPrimaryKey(ConfirmRecord record);
+
+    int countNewPeople(Long community);
+
+    int countOutPeople(Long community);
 }

@@ -1,6 +1,7 @@
 package com.hzgc.service.people.service;
 
 import com.github.pagehelper.PageHelper;
+import com.hzgc.service.people.dao.ConfirmRecordMapper;
 import com.hzgc.service.people.dao.NewPeopleMapper;
 import com.hzgc.service.people.dao.PeopleMapper;
 import com.hzgc.service.people.model.People;
@@ -22,21 +23,18 @@ public class CommunityService {
     private PeopleMapper peopleMapper;
     @Autowired
     private NewPeopleMapper newPeopleMapper;
+    @Autowired
+    private ConfirmRecordMapper confirmRecordMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public CommunityPeopleCountVO countCommunityPeople(Long communityId) {
         CommunityPeopleCountVO vo = new CommunityPeopleCountVO();
-        int communityPeople = peopleMapper.countCommunityPeople(communityId);
-        int importantPeople = peopleMapper.countImportantPeople(communityId);
-        int carePeople = peopleMapper.countCarePeople(communityId);
-        int newPeople = 0;
-        int outPeople = 0;
-        vo.setCommunityPeoples(communityPeople);
-        vo.setImportantPeoples(importantPeople);
-        vo.setCarePeoples(carePeople);
-        vo.setNewPeoples(newPeople);
-        vo.setOutPeoples(outPeople);
+        vo.setCommunityPeoples(peopleMapper.countCommunityPeople(communityId));
+        vo.setImportantPeoples(peopleMapper.countImportantPeople(communityId));
+        vo.setCarePeoples(peopleMapper.countCarePeople(communityId));
+        vo.setNewPeoples(confirmRecordMapper.countNewPeople(communityId));
+        vo.setOutPeoples(confirmRecordMapper.countOutPeople(communityId));
         return vo;
     }
 

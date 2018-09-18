@@ -137,7 +137,6 @@ flag INT(2) NOT NULL COMMENT '标签(1:预实名, 2:新增)'
 CREATE TABLE t_confirm_record(
 id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
 peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
-community BIGINT(20) NOT NULL COMMENT '小区ID',
 month VARCHAR(6) NOT NULL COMMENT '确认迁入迁出月份:yyyyMM',
 flag INT(2) NOT NULL COMMENT '标签(1:确认迁入, 2:确认迁出)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '确认迁入迁出记录表';
