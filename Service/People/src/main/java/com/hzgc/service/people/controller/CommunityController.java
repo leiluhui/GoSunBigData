@@ -102,13 +102,13 @@ public class CommunityController {
 
     @ApiOperation(value = "小区新增人口查询（上月确认迁入数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_NEW, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityNewPeople() {
+    public ResponseResult<List<CommunityPeopleVO>> searchCommunityNewPeople(CommunityPeopleDTO param) {
         return null;
     }
 
     @ApiOperation(value = "小区迁出人口查询（上月确认迁出数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_OUT, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityOutPeople() {
+    public ResponseResult<List<CommunityPeopleVO>> searchCommunityOutPeople(CommunityPeopleDTO param) {
         return null;
     }
 
