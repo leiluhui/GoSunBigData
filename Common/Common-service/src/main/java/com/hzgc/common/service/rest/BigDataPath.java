@@ -18,6 +18,29 @@ public class BigDataPath {
     public static final String FTP_SUBSCRIPTION_OPEN = "/subscribe_open";
     public static final String FTP_SUBSCRIPTION_CLOSE = "/subscribe_close";
 
+    public static final String PEOPLE_EDULEVEL = "/people_edulevel";
+    public static final String PEOPLE_FLAG = "/people_flag";
+    public static final String PEOPLE_POLITIC = "/people_politic";
+    public static final String PEOPLE_PROVINCES = "/people_provinces";
+    public static final String PEOPLE_CITY = "/people_city";
+    public static final String PEOPLE_INSERT="/people_insert";
+    public static final String PEOPLE_UPDATE="/people_update";
+    public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
+    public static final String PEOPLE_SEARCH_PICTURE_BY_PICID="/search_picture_picid";
+    public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
+    public static final String PEOPLE_SELECT_PEOPLE="/search_people";
+
+    public static final String COMMUNITY_COUNT = "/count";
+    public static final String COMMUNITY_PEOPLE = "/people";
+    public static final String COMMUNITY_PEOPLE_STATUS = "/people_status";
+    public static final String COMMUNITY_PEOPLE_CARE = "/people_care";
+    public static final String COMMUNITY_PEOPLE_NEW = "/people_new";
+    public static final String COMMUNITY_PEOPLE_OUT = "/people_out";
+    public static final String COMMUNITY_SUGGEST_NEW = "/suggest_new";
+    public static final String COMMUNITY_SUGGEST_OUT = "/suggest_out";
+    public static final String COMMUNITY_AFFIRM_NEW = "/affirm_new";
+    public static final String COMMUNITY_AFFIRM_OUT = "/affirm_out";
+
     /**
      * Clustering模块请求路径
      */
@@ -148,12 +171,4 @@ public class BigDataPath {
     public static final String PERSON_ATTRIBUTE= "/person_attribute" ;
     public static final String CAPTURE_HISTORY= "/person_capture_history" ;
     public static final String PERSON_FEATURE_EXTRACT_BIN = "/person_extract_bin";
-
-    /**
-     * People模块请求路径
-     */
-    public static final String ADD_PEOPLE= "/add_people";
-    public static final String UPDATE_PEOPLE= "/update_people";
-
-
 }

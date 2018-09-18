@@ -1,6 +1,6 @@
 package com.hzgc.service.collect.service;
 
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.CarAttribute;
 import com.hzgc.jniface.CarPictureData;
 import com.hzgc.seemmo.bean.ImageResult;

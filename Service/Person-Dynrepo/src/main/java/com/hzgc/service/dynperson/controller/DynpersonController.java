@@ -3,8 +3,8 @@ package com.hzgc.service.dynperson.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.util.json.JSONUtil;
-import com.hzgc.common.util.uuid.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.service.dynperson.bean.CaptureOption;
 import com.hzgc.service.dynperson.bean.CaptureResult;
 import com.hzgc.service.dynperson.bean.SingleResults;
@@ -54,7 +54,7 @@ public class DynpersonController {
             log.error("Start capture history, deviceIpcs option is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        log.info("Start capture history, search option is:" + JSONUtil.toJson(captureOption));
+        log.info("Start capture history, search option is:" + JacksonUtil.toJson(captureOption));
 
         SingleResults searchResultList =
                 dynpersonHistoryService.getCaptureHistory(captureOption);

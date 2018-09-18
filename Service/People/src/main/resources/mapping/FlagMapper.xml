@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzgc.service.people.dao.FlagMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Flag" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
-    <result column="flag" property="flag" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, peopleid, flag
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_flag
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_flag
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.people.model.Flag" >
-    insert into t_flag (id, peopleid, flag
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Flag" >
-    insert into t_flag
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="peopleid != null" >
-        peopleid,
-      </if>
-      <if test="flag != null" >
-        flag,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="peopleid != null" >
-        #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="flag != null" >
-        #{flag,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Flag" >
-    update t_flag
-    <set >
-      <if test="peopleid != null" >
-        peopleid = #{peopleid,jdbcType=VARCHAR},
-      </if>
-      <if test="flag != null" >
-        flag = #{flag,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Flag" >
-    update t_flag
-    set peopleid = #{peopleid,jdbcType=VARCHAR},
-      flag = #{flag,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.Flag" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+        <result column="flagid" property="flagid" jdbcType="INTEGER" />
+        <result column="flag" property="flag" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, peopleid, flagid, flag
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from t_flag
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!-- 用于人口库关联查询语句 -->
+    <select id="selectByPeopleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_flag
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <!--查询该人员下所有ID-->
+    <select id="selectIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_flag where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from t_flag
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.Flag" >
+        insert into t_flag (id, peopleid, flagid, flag)
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{flagid,jdbcType=INTEGER},
+        #{flag,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.Flag" >
+        insert into t_flag
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="peopleid != null" >
+                peopleid,
+            </if>
+            <if test="flagid != null" >
+                flagid,
+            </if>
+            <if test="flag != null" >
+                flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null" >
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="flagid != null" >
+                #{flagid,jdbcType=INTEGER},
+            </if>
+            <if test="flag != null" >
+                #{flag,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.Flag" >
+        update t_flag
+        <set >
+            <if test="peopleid != null" >
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="flagid != null" >
+                flagid = #{flagid,jdbcType=INTEGER},
+            </if>
+            <if test="flag != null" >
+                flag = #{flag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.Flag" >
+        update t_flag
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        flagid = #{flagid,jdbcType=INTEGER},
+        flag = #{flag,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

@@ -1,6 +1,6 @@
 package com.hzgc.service.dynrepo.service;
 
-import com.hzgc.common.util.json.JSONUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.*;
 import com.hzgc.service.dynrepo.dao.ElasticSearchDao;
 import com.hzgc.service.dynrepo.dao.HBaseDao;
@@ -106,7 +106,7 @@ public class CaptureSearchService {
         SearchResult searchResult = null;
         if (resultOption.getSearchId() != null && !"".equals(resultOption.getSearchId())) {
             searchResult = hBaseDao.getSearchRes(resultOption.getSearchId());
-            log.info("Start query searchResult, SearchResultOption is " + JSONUtil.toJson(resultOption));
+            log.info("Start query searchResult, SearchResultOption is " + JacksonUtil.toJson(resultOption));
             if (searchResult != null) {
                 if (resultOption.getSort() != null && resultOption.getSort().size() > 0) {
                     captureServiceHelper.sortByParamsAndPageSplit(searchResult, resultOption);

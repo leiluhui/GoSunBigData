@@ -1,9 +1,9 @@
 package com.hzgc.service.dynperson.dao;
 
-import com.hzgc.common.es.ElasticSearchHelper;
-import com.hzgc.common.facedynrepo.PersonTable;
-import com.hzgc.common.personattribute.bean.PersonAttribute;
-import com.hzgc.common.personattribute.bean.PersonAttributeValue;
+import com.hzgc.common.util.es.ElasticSearchHelper;
+import com.hzgc.common.service.facedynrepo.PersonTable;
+import com.hzgc.common.service.personattribute.bean.PersonAttribute;
+import com.hzgc.common.service.personattribute.bean.PersonAttributeValue;
 import com.hzgc.service.dynperson.bean.CaptureOption;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequestBuilder;

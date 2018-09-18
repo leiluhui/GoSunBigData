@@ -1,6 +1,7 @@
 package com.hzgc.service.people.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class People {
     private String id;
@@ -29,9 +30,29 @@ public class People {
 
     private String birthplace;
 
+    private Long community;
+
+    private Integer important;
+
+    private Integer care;
+
+    private Date lasttime;
+
     private Date createtime;
 
     private Date updatetime;
+
+    private List<Flag> flag;
+
+    private List<Imsi> imsi;
+
+    private List<Phone> phone;
+
+    private List<House> house;
+
+    private List<Car> car;
+
+    private List<PictureWithBLOBs> picture;
 
     public String getId() {
         return id;
@@ -137,6 +158,38 @@ public class People {
         this.birthplace = birthplace == null ? null : birthplace.trim();
     }
 
+    public Long getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Long community) {
+        this.community = community;
+    }
+
+    public Integer getImportant() {
+        return important;
+    }
+
+    public void setImportant(Integer important) {
+        this.important = important;
+    }
+
+    public Integer getCare() {
+        return care;
+    }
+
+    public void setCare(Integer care) {
+        this.care = care;
+    }
+
+    public Date getLasttime() {
+        return lasttime;
+    }
+
+    public void setLasttime(Date lasttime) {
+        this.lasttime = lasttime;
+    }
+
     public Date getCreatetime() {
         return createtime;
     }
@@ -151,5 +204,53 @@ public class People {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public List<Flag> getFlag() {
+        return flag;
+    }
+
+    public void setFlag(List<Flag> flag) {
+        this.flag = flag;
+    }
+
+    public List<Imsi> getImsi() {
+        return imsi;
+    }
+
+    public void setImsi(List<Imsi> imsi) {
+        this.imsi = imsi;
+    }
+
+    public List<Phone> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(List<Phone> phone) {
+        this.phone = phone;
+    }
+
+    public List<House> getHouse() {
+        return house;
+    }
+
+    public void setHouse(List<House> house) {
+        this.house = house;
+    }
+
+    public List<Car> getCar() {
+        return car;
+    }
+
+    public void setCar(List<Car> car) {
+        this.car = car;
+    }
+
+    public List<PictureWithBLOBs> getPicture() {
+        return picture;
+    }
+
+    public void setPicture(List<PictureWithBLOBs> picture) {
+        this.picture = picture;
     }
 }

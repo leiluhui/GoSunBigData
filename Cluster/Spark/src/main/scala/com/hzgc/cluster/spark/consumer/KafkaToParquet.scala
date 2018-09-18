@@ -2,10 +2,11 @@ package com.hzgc.cluster.spark.consumer
 
 import java.sql.Timestamp
 import java.util.Properties
+
 import com.google.common.base.Stopwatch
 import com.hzgc.cluster.spark.util.PropertiesUtil
 import com.hzgc.common.collect.bean.{CarObject, FaceObject, PersonObject}
-import com.hzgc.common.util.json.JSONUtil
+import com.hzgc.common.util.json.JacksonUtil
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
 import kafka.serializer.StringDecoder
@@ -75,9 +76,9 @@ object KafkaToParquet {
 
   def face2es(spark:SparkSession, ssc:StreamingContext, zkClient: ZkClient, kafkaParams:Map[String, String], topics:Set[String], zkHosts:String, zkPath:String, storeAddress:String): Unit = {
     val messages = createCustomDirectKafkaStream(ssc, kafkaParams, zkHosts, zkPath, topics)
-    val kafkaDF  = messages.map(data => (data._1, JSONUtil.toObject(data._2, classOf[FaceObject]))).map(faceobject => {
+    val kafkaDF: Unit = messages.map(data => (data._1, JacksonUtil.toObject(data._2, classOf[FaceObject]))).map(faceobject => {
       (Picture(faceobject._1, faceobject._2.getAttribute.getFeature,faceobject._2.getAttribute.getBitFeature, faceobject._2.getIpcId,
-        faceobject._2.getTimeSlot.toInt, Timestamp.valueOf(faceobject._2.getTimeStamp),
+        faceobject._2.getTimeSlot, Timestamp.valueOf(faceobject._2.getTimeStamp),
         faceobject._2.getDate, faceobject._2.getAttribute.getEyeglasses, faceobject._2.getAttribute.getGender,
         faceobject._2.getAttribute.getMask, faceobject._2.getAttribute.getAge,
         faceobject._2.getAttribute.getHuzi, faceobject._2.getAttribute.getSharpness), faceobject._1, faceobject._2)
@@ -94,7 +95,7 @@ object KafkaToParquet {
   def person2es(ssc:StreamingContext, zkClient: ZkClient, kafkaParams:Map[String, String], topics:Set[String], zkHosts:String, zkPath:String) {
     val messages = createCustomDirectKafkaStream(ssc, kafkaParams, zkHosts, zkPath, topics)
     messages.foreachRDD(rdd => {
-      val rddData = rdd.map(data => personObject2Map(data._1, JSONUtil.toObject(data._2, classOf[PersonObject])))
+      val rddData = rdd.map(data => personObject2Map(data._1, JacksonUtil.toObject(data._2, classOf[PersonObject])))
       EsSpark.saveToEs(rddData, "person/recognize", Map("es.mapping.id"->"ftpurl"))
     })
     messages.foreachRDD(rdd => saveOffsets(zkClient, zkHosts, zkPath, rdd))
@@ -104,7 +105,7 @@ object KafkaToParquet {
   def car2es(ssc:StreamingContext, zkClient: ZkClient, kafkaParams:Map[String, String], topics:Set[String], zkHosts:String, zkPath:String) {
     val messages = createCustomDirectKafkaStream(ssc, kafkaParams, zkHosts, zkPath, topics)
     messages.foreachRDD(rdd => {
-      val rddData = rdd.map(data => carObject2Map(data._1, JSONUtil.toObject(data._2, classOf[CarObject])))
+      val rddData = rdd.map(data => carObject2Map(data._1, JacksonUtil.toObject(data._2, classOf[CarObject])))
       EsSpark.saveToEs(rddData, "car/recognize", Map("es.mapping.id"->"ftpurl"))
     })
     messages.foreachRDD(rdd => saveOffsets(zkClient, zkHosts, zkPath, rdd))
@@ -130,7 +131,7 @@ object KafkaToParquet {
   private def readOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, topic: String): Option[Map[TopicAndPartition, Long]] = {
     log.info("=========================== Read Offsets =============================")
     log.info("Reading offsets from Zookeeper")
-    val stopwatch = new Stopwatch()
+    val stopwatch = Stopwatch.createUnstarted()
     val (offsetsRangesStrOpt, _) = ZkUtils.readDataMaybeNull(zkClient, zkPath)
     offsetsRangesStrOpt match {
       case Some(offsetsRangesStr) =>
@@ -152,7 +153,7 @@ object KafkaToParquet {
   private def saveOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, rdd: RDD[_]): Unit = {
     log.info("==========================Save Offsets============================")
     log.info("Saving offsets to Zookeeper")
-    val stopwatch = new Stopwatch()
+    val stopwatch = Stopwatch.createUnstarted()
     val offsetsRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
     offsetsRanges.foreach(offsetRange => log.debug(s"Using $offsetRange"))
     val offsetsRangesStr = offsetsRanges.map(offsetRange => s"${offsetRange.partition}:${offsetRange.fromOffset}")

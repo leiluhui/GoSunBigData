@@ -1,9 +1,9 @@
 package com.hzgc.service.dynrepo.dao;
 
-import com.hzgc.common.faceattribute.bean.Attribute;
-import com.hzgc.common.faceattribute.bean.Logistic;
-import com.hzgc.common.facedynrepo.DynamicTable;
-import com.hzgc.common.util.empty.IsEmpty;
+import com.hzgc.common.service.faceattribute.bean.Attribute;
+import com.hzgc.common.service.faceattribute.bean.Logistic;
+import com.hzgc.common.service.facedynrepo.DynamicTable;
+import com.hzgc.common.util.basic.IsEmpty;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.service.dynrepo.bean.SearchOption;
 import com.hzgc.service.dynrepo.bean.SortParam;

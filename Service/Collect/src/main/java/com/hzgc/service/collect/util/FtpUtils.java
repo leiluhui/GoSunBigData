@@ -1,6 +1,6 @@
 package com.hzgc.service.collect.util;
 
-import com.hzgc.common.util.empty.IsEmpty;
+import com.hzgc.common.util.basic.IsEmpty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;

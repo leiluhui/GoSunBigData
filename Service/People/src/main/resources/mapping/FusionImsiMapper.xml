@@ -4,12 +4,12 @@
   <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.FusionImsi" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+    <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
     <result column="receivetime" property="receivetime" jdbcType="TIMESTAMP" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="imsi" property="imsi" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, peopleid, receivetime, address, imsi
+    id, peopleid, deviceid, receivetime, imsi
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -22,10 +22,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.hzgc.service.people.model.FusionImsi" >
-    insert into t_fusion_imsi (id, peopleid, receivetime, 
-      address, imsi)
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{receivetime,jdbcType=TIMESTAMP}, 
-      #{address,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR})
+    insert into t_fusion_imsi (id, peopleid, deviceid, 
+      receivetime, imsi)
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{deviceid,jdbcType=VARCHAR}, 
+      #{receivetime,jdbcType=TIMESTAMP}, #{imsi,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.people.model.FusionImsi" >
     insert into t_fusion_imsi
@@ -36,11 +36,11 @@
       <if test="peopleid != null" >
         peopleid,
       </if>
+      <if test="deviceid != null" >
+        deviceid,
+      </if>
       <if test="receivetime != null" >
         receivetime,
-      </if>
-      <if test="address != null" >
-        address,
       </if>
       <if test="imsi != null" >
         imsi,
@@ -53,11 +53,11 @@
       <if test="peopleid != null" >
         #{peopleid,jdbcType=VARCHAR},
       </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
       <if test="receivetime != null" >
         #{receivetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="address != null" >
-        #{address,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null" >
         #{imsi,jdbcType=VARCHAR},
@@ -70,11 +70,11 @@
       <if test="peopleid != null" >
         peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
+      <if test="deviceid != null" >
+        deviceid = #{deviceid,jdbcType=VARCHAR},
+      </if>
       <if test="receivetime != null" >
         receivetime = #{receivetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="address != null" >
-        address = #{address,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null" >
         imsi = #{imsi,jdbcType=VARCHAR},
@@ -85,8 +85,8 @@
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.FusionImsi" >
     update t_fusion_imsi
     set peopleid = #{peopleid,jdbcType=VARCHAR},
+      deviceid = #{deviceid,jdbcType=VARCHAR},
       receivetime = #{receivetime,jdbcType=TIMESTAMP},
-      address = #{address,jdbcType=VARCHAR},
       imsi = #{imsi,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

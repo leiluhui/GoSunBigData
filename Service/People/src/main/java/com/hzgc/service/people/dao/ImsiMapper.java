@@ -17,5 +17,7 @@ public interface ImsiMapper {
 
     int updateByPrimaryKey(Imsi record);
 
-    List<Imsi> selectPeopleIdsByImsi(String imsi);
+    List<Imsi> selectByPeopleId(String peopleid);
+
+    List<Long> selectIdByPeopleId(String peopleid);
 }

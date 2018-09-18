@@ -6,12 +6,12 @@ import java.util.Date
 
 import com.google.gson.Gson
 import com.hzgc.cluster.spark.consumer.{AlarmMessage, PutDataToEs}
-import com.hzgc.common.facedispatch.DeviceUtilImpl
 import com.hzgc.cluster.spark.message.{AddAlarmMessage, Item, RecognizeAlarmMessage}
-import com.hzgc.common.rocketmq.RocketMQProducer
-import com.hzgc.common.facestarepo.table.alarm.StaticRepoUtil
+import com.hzgc.common.service.facestarepo.alarm.StaticRepoUtil
 import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
-import com.hzgc.common.facedispatch.table.DispatchTable
+import com.hzgc.common.service.facedispatch.DeviceUtilImpl
+import com.hzgc.common.service.facedispatch.table.DispatchTable
+import com.hzgc.common.util.rocketmq.RocketMQProducer
 import com.hzgc.jni.FaceFunction
 import kafka.serializer.StringDecoder
 import org.apache.log4j.Logger
@@ -155,12 +155,6 @@ object FaceAlarmJob {
             recognizeAlarmMessage.setHostName(result._1.getHostname)
             recognizeAlarmMessage.setDynamicDeviceID(result._2)
             recognizeAlarmMessage.setAlarmTime(dateStr)
-            if (switch.value.equals("true")) {
-              val status = putDataToEs.putAlarmDataToEs(surl, AlarmMessage)
-              if (status == 1) {
-                LOG.info("Put data to es succeed! And the ftpurl is " + surl)
-              }
-            }
             rocketMQProducer.send(result._3,
               "alarm_" + DispatchTable.IDENTIFY,
               surl,
@@ -189,12 +183,6 @@ object FaceAlarmJob {
             addAlarmMessage.setBigPictureURL(burl)
             addAlarmMessage.setDynamicDeviceID(result._2)
             addAlarmMessage.setHostName(result._1.getHostname)
-            if (switch.value.equals("true")) {
-              val status = putDataToEs.putAlarmDataToEs(surl, AlarmMessage)
-              if (status == 1) {
-                LOG.info("Put data to es succeed! And the ftpurl is " + surl)
-              }
-            }
             rocketMQProducer.send(result._3,
               "alarm_" + DispatchTable.ADDED,
               surl,

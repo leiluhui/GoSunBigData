@@ -229,21 +229,21 @@
             <includes>
                 <include>collect-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/collect/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Collect/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/collect/conf</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Collect/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/collect/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/collect/bin</outputDirectory>
         </fileSet>
         <!--Alarm目录-->
         <fileSet>
@@ -251,21 +251,21 @@
             <includes>
                 <include>alarm-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Alarm/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/alarm/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/conf</outputDirectory>
         </fileSet>
         <!--Face-Dispatch目录-->
         <fileSet>
@@ -273,21 +273,21 @@
             <includes>
                 <include>face-dispatch-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dispatch/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face-Dispatch/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dispatch/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face-Dispatch/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dispatch/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dispatch/conf</outputDirectory>
         </fileSet>
         <!--Face-DynRepo目录-->
         <fileSet>
@@ -295,21 +295,21 @@
             <includes>
                 <include>face-dynrepo-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynrepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face-DynRepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynrepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Face-DynRepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/face-dynRepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynRepo/conf</outputDirectory>
         </fileSet>
         <!--Person-Dynrepo目录-->
         <fileSet>
@@ -317,21 +317,21 @@
             <includes>
                 <include>person-dynrepo-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/person-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Person-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/person-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Person-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/person-dynrepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/person-dynrepo/conf</outputDirectory>
         </fileSet>
         <!--Vehicle-Dynrepo目录-->
         <fileSet>
@@ -339,21 +339,21 @@
             <includes>
                 <include>vehicle-dynrepo-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/vehicle-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Vehicle-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/vehicle-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Vehicle-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Clever-eyes/vehicle-dynrepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/vehicle-dynrepo/conf</outputDirectory>
         </fileSet>
 
         <!--Collect相关配置-->
