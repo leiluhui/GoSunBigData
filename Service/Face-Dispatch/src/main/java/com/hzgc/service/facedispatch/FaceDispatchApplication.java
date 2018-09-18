@@ -14,8 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableAutoConfiguration
-@MapperScan(value = "com.hzgc.service.facedispatch.dao")
+@MapperScan(value = "com.hzgc.service.facedispatch.starepo.dao")
 public class FaceDispatchApplication {
     public static void main(String[] args) {
         SpringApplication.run(FaceDispatchApplication.class, args);

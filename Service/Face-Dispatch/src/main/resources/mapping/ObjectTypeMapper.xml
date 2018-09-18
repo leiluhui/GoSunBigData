@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.service.facedispatch.dao.ObjectTypeMapper">
-    <resultMap id="BaseResultMap" type="com.hzgc.service.facedispatch.model.ObjectType">
+<mapper namespace="com.hzgc.service.facedispatch.starepo.dao.ObjectTypeMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.facedispatch.starepo.model.ObjectType">
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="reason" property="reason" jdbcType="VARCHAR"/>
@@ -21,13 +21,13 @@
             #{model}
         </foreach>
     </delete>
-    <insert id="addObjectType" parameterType="com.hzgc.service.facedispatch.model.ObjectType">
+    <insert id="addObjectType" parameterType="com.hzgc.service.facedispatch.starepo.model.ObjectType">
         insert into t_statype (id, name, reason,
         creator, createtime)
         values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR},
         #{creator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="addObjectTypeSelective" parameterType="com.hzgc.service.facedispatch.model.ObjectType">
+    <insert id="addObjectTypeSelective" parameterType="com.hzgc.service.facedispatch.starepo.model.ObjectType">
         insert into t_statype
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -84,7 +84,7 @@
         <include refid="Base_Column_List"/>
         from t_statype
     </select>
-    <update id="updateObjectTypeById" parameterType="com.hzgc.service.facedispatch.model.ObjectType">
+    <update id="updateObjectTypeById" parameterType="com.hzgc.service.facedispatch.starepo.model.ObjectType">
         update t_statype
         <set>
             <if test="name != null">
