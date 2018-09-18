@@ -25,10 +25,10 @@ class LoadDataFromTiDB {
         List<Picture> pictureList = pictureMapper.selectPicture(offset, limit);
         if (pictureList != null && pictureList.size() > 0) {
             log.info("Load data from databases successfull, offset ?, limit ?, time ?",
-                    offset, limit, stopwatch.elapsed(TimeUnit.MICROSECONDS));
+                    offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
             cacheToMemeory(pictureList);
         } else {
-            log.error("Load data failed, offset ?, limit ?", offset, limit, stopwatch.elapsed(TimeUnit.MICROSECONDS));
+            log.error("Load data failed, offset ?, limit ?", offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
 
@@ -46,6 +46,7 @@ class LoadDataFromTiDB {
                     log.error(e.getMessage());
                 }
                 comparePicture.setPeopleId(picture.getPeopleId());
+                memeoryCache.putData(comparePicture);
             }
         }
     }
