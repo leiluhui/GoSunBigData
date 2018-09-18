@@ -2,6 +2,7 @@ package com.hzgc.service.imsi.controller;
 
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.service.imsi.model.ImsiInfo;
 import com.hzgc.service.imsi.service.ImsiService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class ImsiController {
     @Autowired
     public ImsiService imsiService;
 
-    @RequestMapping(value = "query_by_time", method = RequestMethod.GET)
+    @RequestMapping(value = BigDataPath.IMSI_SEARCH_BY_TIME, method = RequestMethod.GET)
     public ResponseResult<List <ImsiInfo>> queryByTime(Long time) {
         if (null == time) {
             log.error("Start search imsi by time, but search option is null");

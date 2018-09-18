@@ -11,13 +11,24 @@ public class BigDataPath {
     private static final String ROOT = "";
 
     /**
-     * ftp模块请求路径
+     * Collect模块请求路径
      */
     public static final String FTP_GET_PROPERTIES = "/ftp_info";
     public static final String FTP_GET_IP = "/hostname_convert";
     public static final String FTP_SUBSCRIPTION_OPEN = "/subscribe_open";
     public static final String FTP_SUBSCRIPTION_CLOSE = "/subscribe_close";
 
+    public static final String FEATURE_EXTRACT_BIN = "/extract_bin";
+    public static final String FEATURE_EXTRACT_FTP = "/extract_ftp";
+    public static final String FACE_ATTRIBUTE = "/attribute";
+    public static final String FEATURE_EXTRACT_BYTES = "/extract_bytes";
+    public static final String CAR_ATTRIBUTE = "/car_attribute";
+    public static final String CAR_CAPTURE = "/car_capture";
+    public static final String CAR_EXTRACT = "/car_extract";
+
+    /**
+     * People模块请求路径
+     */
     public static final String PEOPLE_EDULEVEL = "/people_edulevel";
     public static final String PEOPLE_FLAG = "/people_flag";
     public static final String PEOPLE_POLITIC = "/people_politic";
@@ -56,25 +67,8 @@ public class BigDataPath {
     public static final String PEOPLEMANAGER_GETRESIDENTPICTURE="/peoplemanager_getresidentpicture";
     public static final String PEOPLEMANAGER_CAPTURELOCUS="/peoplemanager_capturelocus";
 
-
     /**
-     * Device模块请求路径
-     */
-    public static final String DEVICE = ROOT + "/device";
-    public static final String DEVICE_BIND = "/bindDevice";
-    public static final String DEVICE_UNBIND = "/unbindDevice";
-    public static final String DEVICE_RENAMENOTES = "/renameNotes";
-
-    public static final String WARNRULE = ROOT + "/warnRule";
-    public static final String WARNRULE_CONFIG = "/configRules";
-    public static final String WARNRULE_ADD = "/addRules";
-    public static final String WARNRULE_GETCOMPARE = "/getCompareRules";
-    public static final String WARNRULE_DELETE = "/deleteRules";
-    public static final String WARNRULE_OBJECTTYPE_GET = "/objectTypeHasRule";
-    public static final String WARNRULE_OBJECTTYPE_DELETE = "/deleteObjectTypeOfRules";
-
-    /**
-     * DynRepo模块请求路径
+     * FaceDynrepo模块请求路径
      */
     public static final String DYNREPO_SEARCH = "/search_picture";
     public static final String DYNREPO_SEARCHRESULT = "/search_result";
@@ -85,19 +79,27 @@ public class BigDataPath {
     public static final String DYNREPO_CAPTURE_LASTTIME="/capture_last_time";
 
     /**
-     * Face模块请求路径
+     * visual模块请求路径
      */
-    public static final String FEATURE_EXTRACT_BIN = "/extract_bin";
-    public static final String FEATURE_EXTRACT_FTP = "/extract_ftp";
-    public static final String FACE_ATTRIBUTE = "/attribute";
-    public static final String FEATURE_EXTRACT_BYTES = "/extract_bytes";
-    public static final String CAR_ATTRIBUTE = "/car_attribute";
-    public static final String CAR_CAPTURE = "/car_capture";
-    public static final String CAR_EXTRACT = "/car_extract";
+    public static final String CAPTURECOUNT_DYNREPO = "/capture_day_count";
+    public static final String CAPTURECOUNT_IPCIDS_TIME = "/face_hours";
+    public static final String CAPTURECOUNT_SIX_HOUR = "/sixhours_count";
+    public static final String CAPTURECOUNT_IPCIDS = "/face";
+    public static final String PEOPLE_COUNT="/people_count";
+    public static final String GET_PICTURE = "/image";
+    public static final String GET_CARE_PEOPLE = "/get_care_people";
+    public static final String GET_STATUS_PEOPLE = "/get_status_people";
+    public static final String GET_IMPORTANT_PEOPLE = "/get_important_people";
 
     /**
-     * StaRepo模块请求路径
+     * FaceDispatch模块请求路径
      */
+    public static final String DISPATCH_ADD = "/add_rule";
+    public static final String DISPATCH_MODIFY = "/modify_rule";
+    public static final String DISPATCH_DELETE = "/delete_rules";
+    public static final String DISPATCH_SEARCH_BYID = "/rule_info";
+    public static final String DISPATCH_CUTPAGE_RULE = "/get_rule";
+
     public static final String OBJECTINFO_ADD = "/object_add";
     public static final String OBJECTINFO_DELETE = "/object_delete";
     public static final String OBJECTINFO_UPDATE = "/object_update";
@@ -123,41 +125,20 @@ public class BigDataPath {
     public static final String TYPE_SEARCH_NAMES = "/type_search_names";
 
     /**
-     * visual模块请求路径
-     */
-    public static final String CAPTURECOUNT_DYNREPO = "/capture_day_count";
-    public static final String CAPTURECOUNT_IPCIDS_TIME = "/face_hours";
-    public static final String CAPTURECOUNT_SIX_HOUR = "/sixhours_count";
-    public static final String CAPTURECOUNT_IPCIDS = "/face";
-    public static final String PEOPLE_COUNT="/people_count";
-    public static final String GET_PICTURE = "/image";
-    public static final String GET_CARE_PEOPLE = "/get_care_people";
-    public static final String GET_STATUS_PEOPLE = "/get_status_people";
-    public static final String GET_IMPORTANT_PEOPLE = "/get_important_people";
-
-    /**
-     * Dispatch模块请求路径
-     */
-    public static final String DISPATCH_ADD = "/add_rule";
-    public static final String DISPATCH_MODIFY = "/modify_rule";
-    public static final String DISPATCH_DELETE = "/delete_rules";
-    public static final String DISPATCH_SEARCH_BYID = "/rule_info";
-    public static final String DISPATCH_CUTPAGE_RULE = "/get_rule";
-
-    /**
-     * Dispatch模块请求路径
-     */
-    public static final String ALARM__QUERY = "/alarm_info";
-
-    /**
-     *Discar模块请求路径
+     *VehicleDynrepo模块请求路径
      */
     public static final String DYNCAR_CAPTURE_HISTORY = "/vehicle_history";
 
     /**
-     * DynPerson模块请求路径
+     * PersonDynrepo模块请求路径
      */
     public static final String PERSON_ATTRIBUTE= "/person_attribute" ;
     public static final String CAPTURE_HISTORY= "/person_capture_history" ;
     public static final String PERSON_FEATURE_EXTRACT_BIN = "/person_extract_bin";
+
+    /**
+     * ImsiDynrepo模块请求路径
+     */
+    public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
+
 }
