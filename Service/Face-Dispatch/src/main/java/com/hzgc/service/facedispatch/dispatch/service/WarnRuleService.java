@@ -69,7 +69,7 @@ public class WarnRuleService {
                     }
                 }
                 //查询ipcid
-                List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
+                List<String> list = IpcIdsUtil.toDeviceIdList(deviceList);
                 Map<String, DeviceDTO> mapDTO = deviceQueryService.getDeviceInfoByBatchId(list);
                 //动态获取需要删除的设备对应的ipcid
                 ArrayList<String> delIpcs = new ArrayList <>();
@@ -146,7 +146,7 @@ public class WarnRuleService {
     }
 
     //删除规则
-    public List<Long> delRules(IdsType<String> idsType) throws IOException {
+    public List<String> delRules(IdsType<String> idsType) throws IOException {
         return hBaseDao.delRules(idsType);
     }
 

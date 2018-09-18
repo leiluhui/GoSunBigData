@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class IpcIdsUtil {
 
-    public static List<Long> toDeviceIdList(List<Device> list) {
-        List<Long> li = new ArrayList<>();
+    public static List<String> toDeviceIdList(List<Device> list) {
+        List<String> li = new ArrayList<>();
         for (Device dev : list) {
-            Long i = Long.valueOf(dev.getId());
+            String i = dev.getId();
             li.add(i);
         }
         return li;

@@ -10,6 +10,7 @@ import com.hzgc.service.dynrepo.bean.*;
 import com.hzgc.service.dynrepo.service.CaptureHistoryService;
 import com.hzgc.service.dynrepo.service.CaptureSearchService;
 import com.hzgc.service.dynrepo.service.CaptureServiceHelper;
+import com.hzgc.service.dynrepo.util.DeviceToIpcs;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api(tags = "动态库服务")
@@ -69,8 +71,8 @@ public class CaptureSearchController {
             log.error("Start search picture, but threshold is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        log.info("Start convert device id to ipc id");
-        captureServiceHelper.capturOptionConver(searchOption);
+        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(searchOption.getDeviceIpcs());
+        searchOption.setIpcMapping(ipcMapping);
         if (searchOption.getDeviceIpcs() == null
                 || searchOption.getDeviceIpcs().size() <= 0
                 || searchOption.getDeviceIpcs().get(0) == null) {
@@ -184,8 +186,8 @@ public class CaptureSearchController {
             log.error("Start query capture history, capture option is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        log.info("Start convert device id to ipc id");
-        captureServiceHelper.capturOptionConver(captureOption);
+        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
+        captureOption.setIpcMapping(ipcMapping);
         if (captureOption.getDeviceIpcs() == null ||
                 captureOption.getDeviceIpcs().size() <= 0 ||
                 captureOption.getDeviceIpcs().get(0) == null) {

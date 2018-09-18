@@ -1,6 +1,6 @@
 package com.hzgc.service.dyncar.bean;
 
-import com.hzgc.common.service.api.bean.DeviceDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,16 +12,15 @@ import java.util.Map;
  */
 @Data
 public class CaptureOption implements Serializable {
-    // 设备筛选
-    private List<Long> deviceIds;
     // 开始日期,格式：xxxx-xx-xx xx:xx:xx
     private String startTime;
     // 截止日期,格式：xxxx-xx-xx xx:xx:xx
     private String endTime;
     //搜索的设备IPC列表
-    private List<String> deviceIpcs;
+    private List<Device> devices;
     // ipc mapping device id
-    private Map<String, DeviceDTO> ipcMappingDevice;
+    @JsonIgnore
+    private Map<String, Device> ipcMapping;
     // 属性
     private List<VehicleAttribute> attributes;
     // 车牌

@@ -10,6 +10,8 @@ import com.hzgc.service.facedispatch.starepo.model.ObjectInfo;
 import com.hzgc.service.facedispatch.starepo.model.ObjectInfoVO;
 import com.hzgc.service.facedispatch.starepo.model.ObjectType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class ObjectInfoService {
+public class ObjectInfoService extends SqlSessionDaoSupport {
     @Autowired
     private ObjectInfoMapper objectInfoMapper;
 

@@ -26,7 +26,7 @@ public class HBaseDao {
     private RestTemplate restTemplate;
 
     public HBaseDao() {
-        HBaseHelper.getHBaseConnection();
+//        HBaseHelper.getHBaseConnection();
     }
 
     public void configRules(List<String> ipcIDs, List<Warn> rules) {
@@ -357,7 +357,7 @@ public class HBaseDao {
 
     //删除规则
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public List<Long> delRules(IdsType<String> idsType) throws IOException {
+    public List<String> delRules(IdsType<String> idsType) throws IOException {
         if (null != idsType) {
             Table dispatchTable = HBaseHelper.getTable(DispatchTable.TABLE_DEVICE);
             Get get = new Get(DispatchTable.RULE_ID);
@@ -365,7 +365,7 @@ public class HBaseDao {
             Result result = dispatchTable.get(get);
             byte[] bytes = result.getValue(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE);
             if (null != bytes) {
-                List<Long> ids = new ArrayList<>();
+                List<String> ids = new ArrayList<>();
                 String hbaseMapString = Bytes.toString(bytes);
                 LinkedHashMap<String, Dispatch> map = JsonToMap.dispatchStringToMap(hbaseMapString);
                 log.info("Before delete map is " + JacksonUtil.toJson(map));
@@ -375,7 +375,7 @@ public class HBaseDao {
                         //获取大数据传参需要的参数
                         List<Device> deviceList = map.get(idType).getDevices();
                         for (Device device : deviceList) {
-                            ids.add(Long.valueOf(device.getId()));
+                            ids.add(device.getId());
                         }
                         //移除数据
                         map.remove(idType);

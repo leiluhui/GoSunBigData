@@ -87,7 +87,7 @@ public class DeviceQueryService {
     }
 
     @HystrixCommand(fallbackMethod = "getDeviceInfoByBatchIdError")
-    public Map<String, DeviceDTO> getDeviceInfoByBatchId(List<Long> idList) {
+    public Map<String, DeviceDTO> getDeviceInfoByBatchId(List<String> idList) {
         if (idList != null && idList.size() > 0) {
             ParameterizedTypeReference<Map<String, DeviceDTO>>
                     parameterizedTypeReference = new ParameterizedTypeReference<Map<String, DeviceDTO>>() {
@@ -103,7 +103,7 @@ public class DeviceQueryService {
     }
 
     @SuppressWarnings("unused")
-    public Map<String, DeviceDTO> getDeviceInfoByBatchIdError(List<Long> idList) {
+    public Map<String, DeviceDTO> getDeviceInfoByBatchIdError(List<String> idList) {
         log.error("Get device info by batch id error, id List is:" + idList);
         return new HashMap<>();
     }
