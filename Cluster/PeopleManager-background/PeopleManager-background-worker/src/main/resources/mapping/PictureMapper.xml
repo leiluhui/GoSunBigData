@@ -9,7 +9,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, peopleid, bitfeature, community
+        id, peopleid, bitfeature
     </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap">
