@@ -30,6 +30,17 @@ public class BigDataPath {
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";
 
+    public static final String COMMUNITY_COUNT = "/count";
+    public static final String COMMUNITY_PEOPLE = "/people";
+    public static final String COMMUNITY_PEOPLE_STATUS = "/people_status";
+    public static final String COMMUNITY_PEOPLE_CARE = "/people_care";
+    public static final String COMMUNITY_PEOPLE_NEW = "/people_new";
+    public static final String COMMUNITY_PEOPLE_OUT = "/people_out";
+    public static final String COMMUNITY_SUGGEST_NEW = "/suggest_new";
+    public static final String COMMUNITY_SUGGEST_OUT = "/suggest_out";
+    public static final String COMMUNITY_AFFIRM_NEW = "/affirm_new";
+    public static final String COMMUNITY_AFFIRM_OUT = "/affirm_out";
+
     /**
      * Clustering模块请求路径
      */
