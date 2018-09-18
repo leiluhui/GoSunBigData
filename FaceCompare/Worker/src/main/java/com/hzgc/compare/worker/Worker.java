@@ -1,6 +1,7 @@
 package com.hzgc.compare.worker;
 
 
+import com.hzgc.common.rpc.client.RpcClient;
 import com.hzgc.compare.worker.common.FaceInfoTable;
 import com.hzgc.compare.worker.common.taskhandle.TaskToHandleQueue;
 import com.hzgc.compare.worker.comsumer.Comsumer;
@@ -67,11 +68,10 @@ public class Worker {
         if(Config.WORKER_FLUSH_PROGRAM == 0){
             memoryManager.timeToCheckFlush();
         }
-        fileManager.checkFile();
         fileManager.checkTaskTodo();
-        fileManager.checkFile();
+//        fileManager.checkFile();
         hBaseClient.timeToWrite();
-//        FaceFunction.init();
+        FaceFunction.init();
     }
 
     public static void main(String args[]){
@@ -85,9 +85,21 @@ public class Worker {
         String taskId = args[3];
         Worker worker = new Worker();
         worker.init(workerId, port);
-        worker.start();
-        Thread thread = new Thread(new RPCRegistry(workerId, nodeGroup, port, taskId));
+        RPCRegistry rpcRegistry = new RPCRegistry(workerId, nodeGroup, port, taskId);
+        Thread thread = new Thread(rpcRegistry);
         thread.start();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        if(!rpcRegistry.checkJob()){
+            logger.error("Registry to Zookeeper faild.");
+            System.exit(1);
+        }
+        worker.start();
+
 //        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
 //        thread.start();
     }

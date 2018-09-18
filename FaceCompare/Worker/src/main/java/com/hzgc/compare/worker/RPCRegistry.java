@@ -9,25 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RPCRegistry implements Runnable{
     private static final Logger logger = LoggerFactory.getLogger(RPCRegistry.class);
-    private String workerId;
-    private String nodeGroup;
-    private String port;
-    private String taskId;
+    private ServiceRegistry registry;
 
     RPCRegistry(String workerId, String nodeGroup, String port, String taskId){
-        this.workerId = workerId ;
-        this.nodeGroup = nodeGroup ;
-        this.port = port ;
-        this.taskId = taskId;
-    }
-
-    @Override
-    public void run() {
-        logger.info("Registry the service.");
         Constant constant = new Constant(Config.JOB_PATH, workerId, CreateMode.EPHEMERAL);
         Map<String, String> param = new HashMap<>();
         param.put("workerId", workerId);
@@ -36,9 +25,27 @@ public class RPCRegistry implements Runnable{
         param.put("taskId", taskId);
         constant.setParam(param);
         constant.setExitIfFaild(true);
-        ServiceRegistry registry = new ServiceRegistry(Config.ZOOKEEPER_ADDRESS, constant);
+        registry = new ServiceRegistry(Config.ZOOKEEPER_ADDRESS, constant);
+    }
+
+    @Override
+    public void run() {
+        logger.info("Registry the service.");
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);
         rpcServer.start();
+    }
+
+    public boolean checkJob(){
+        List<String> children;
+        try {
+            children = registry.getConnect().getChildren().forPath(Config.JOB_PATH);
+            logger.info("The Worker on Zookeeper : " + children.toString());
+            return children.contains(Config.WORKER_ID);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

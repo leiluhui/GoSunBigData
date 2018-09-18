@@ -3,6 +3,7 @@ package com.hzgc.common.rpc.server.zk;
 import com.google.common.base.Strings;
 import com.hzgc.common.rpc.util.Constant;
 import com.hzgc.common.rpc.util.ZookeeperClient;
+import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,10 @@ public class ServiceRegistry extends ZookeeperClient {
 
     public ServiceRegistry(String zkAddress, Constant constant) {
         super(zkAddress, constant);
+    }
+
+    public CuratorFramework getConnect(){
+        return zkClient;
     }
 
     public void register(String data, Constant constant) {
