@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableEurekaClient
 @EnableAutoConfiguration
-@MapperScan(value = "com.hzgc.service.facedispatch.starepo.dao")
+@MapperScan(value = "com.hzgc.service.facedispatch.dao")
 public class FaceDispatchApplication {
     public static void main(String[] args) {
         SpringApplication.run(FaceDispatchApplication.class, args);
