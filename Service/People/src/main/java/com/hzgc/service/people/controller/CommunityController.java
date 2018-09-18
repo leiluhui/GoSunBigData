@@ -100,37 +100,37 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区新增人口查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区新增人口查询（上月确认迁入数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_NEW, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunityNewPeople() {
         return null;
     }
 
-    @ApiOperation(value = "小区迁入人口查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区迁出人口查询（上月确认迁出数量）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_OUT, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunityOutPeople() {
         return null;
     }
 
-    @ApiOperation(value = "建议迁出查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区建议迁出查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_OUT, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunitySuggestOut() {
         return null;
     }
 
-    @ApiOperation(value = "确认迁出", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_OUT, method = RequestMethod.DELETE)
-    public ResponseResult<String> searchCommunityAffirmOut() {
-        return null;
-    }
-
-    //@ApiOperation(value = "建议迁入查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区建议迁入查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_NEW, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunitySuggestNew() {
         return null;
     }
 
-    //@ApiOperation(value = "确认迁入查询", response = ResponseResult.class)
+    @ApiOperation(value = "小区确认迁出操作", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_OUT, method = RequestMethod.DELETE)
+    public ResponseResult<String> searchCommunityAffirmOut() {
+        return null;
+    }
+
+    @ApiOperation(value = "小区确认迁入操作", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW, method = RequestMethod.GET)
     public ResponseResult<String> searchCommunityAffirmNew() {
         return null;

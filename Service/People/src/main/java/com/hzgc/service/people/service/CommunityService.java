@@ -45,7 +45,6 @@ public class CommunityService {
     }
 
     public List<CommunityPeopleVO> searchCommunityImportantPeople(CommunityPeopleDTO param) {
-        List<CommunityPeopleVO> voList = new ArrayList();
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchImportantPeople(param.getCommunityId());
         return this.shift(peopleList);
