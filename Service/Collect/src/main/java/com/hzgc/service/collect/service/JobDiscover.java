@@ -28,7 +28,7 @@ public class JobDiscover implements Serializable {
                 zkAddress, sessionTimeOut, connectionTimeOut);
     }
 
-    public void startListen(final DiscoverCallBack callBack, String path) {
+    public void startListener(final DiscoverCallBack callBack, String path) {
         final PathChildrenCache pathCache = new PathChildrenCache(zkClient, path, true);
         try {
             pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
