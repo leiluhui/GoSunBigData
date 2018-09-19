@@ -105,9 +105,11 @@
             </if>
         </where>
     </select>
+    <!--小区实有人口数量统计-->
     <select id="countCommunityPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
         select count(*) from t_people where community = #{community,jdbcType=BIGINT}
     </select>
+    <!--小区重点人口数量统计-->
     <select id="countImportantPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
         select count(*)
         from t_people, t_flag
@@ -115,6 +117,7 @@
         and t_people.id = t_flag.peopleid
         and t_flag.flagid = 9
     </select>
+    <!--小区关爱人口数量统计-->
     <select id="countCarePeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
         select count(*)
         from t_people, t_flag
@@ -122,22 +125,45 @@
         and t_people.id = t_flag.peopleid
         and t_flag.flagid = 9
     </select>
+    <!--小区实有人口查询-->
     <select id="searchCommunityPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select id, name, idcard, lasttime
         from t_people
         where community = #{community,jdbcType=BIGINT}
     </select>
+    <!--小区重点人口查询-->
     <select id="searchImportantPeople"  resultMap="BaseResultMap" parameterType="java.lang.Long" >
         select a.id, a.name, a.idcard, a.lasttime
         from t_people a, t_flag b
-        where a.community = #{community,jdbcType=BIGINT}
+        where a.id = b.peopleid
         and b.flagid = 8
+        and a.community = #{community,jdbcType=BIGINT}
     </select>
+    <!--小区关爱人口查询-->
     <select id="searchCarePeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select a.id, a.name, a.idcard, a.lasttime
         from t_people a, t_flag b
-        where a.community = #{community,jdbcType=BIGINT}
+        where a.id = b.peopleid
         and b.flagid = 9
+        and a.community = #{community,jdbcType=BIGINT}
+    </select>
+    <!--小区新增人口查询-->
+    <select id="searchNewPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime
+        from t_people a, t_confirm_record b
+        where b.flag = 1
+        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and a.id = b.peopleid
+        and a.community = #{community,jdbcType=BIGINT}
+    </select>
+    <!--小区迁出人口查询-->
+    <select id="searchOutPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime
+        from t_people a, t_confirm_record b
+        where b.flag = 2
+        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and a.id = b.peopleid
+        and a.community = #{community,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people

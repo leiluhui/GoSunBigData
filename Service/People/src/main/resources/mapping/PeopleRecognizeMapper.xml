@@ -20,6 +20,14 @@
     from t_people_recognize
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!--聚焦人员抓拍、电围数据查询-->
+  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select capturetime, deviceid, burl
+    from t_people_recognize
+    where DATE_FORMAT(capturetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    and flag = 3
+    and peopleid = #{peopleid,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_people_recognize
     where id = #{id,jdbcType=BIGINT}

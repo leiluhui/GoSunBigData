@@ -51,6 +51,10 @@ public class BigDataPath {
     public static final String COMMUNITY_SUGGEST_OUT = "/suggest_out";
     public static final String COMMUNITY_AFFIRM_NEW = "/affirm_new";
     public static final String COMMUNITY_AFFIRM_OUT = "/affirm_out";
+    public static final String COMMUNITY_PEOPLE_CAPTURE_1MONTH = "/search_capture";
+    public static final String COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH = "/device_track";
+    public static final String COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH = "/device_capture";
+    public static final String COMMUNITY_PEOPLE_CAPTURE_3MONTH = "/count_capture";
 
     /**
      * Clustering模块请求路径

@@ -2,6 +2,8 @@ package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.FusionImsi;
 
+import java.util.List;
+
 public interface FusionImsiMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface FusionImsiMapper {
     int updateByPrimaryKeySelective(FusionImsi record);
 
     int updateByPrimaryKey(FusionImsi record);
+
+    List<FusionImsi> searchCapture1Month(Long peopleid);
 }
