@@ -46,6 +46,8 @@ class LoadDataFromTiDB {
                     log.error(e.getMessage());
                 }
                 comparePicture.setPeopleId(picture.getPeopleId());
+                comparePicture.setFlagId(picture.getFlagId());
+                comparePicture.setName(picture.getName());
                 memeoryCache.putData(comparePicture);
             }
         }

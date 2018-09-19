@@ -6,16 +6,18 @@
         <result column="peopleid" property="peopleId" jdbcType="VARCHAR"/>
         <result column="bitfeature" property="bitFeature" jdbcType="VARCHAR"/>
         <result column="community" property="community" jdbcType="BIGINT"/>
+        <result column="flagid" property="flagId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, peopleid, bitfeature
+        id, peopleid, bitfeature, flagid, name
     </sql>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from t_picture,t_people where t_picture.peopleid=t_people.id limit #{offset},#{limit}
+        from t_picture,t_people, t_flag where t_picture.peopleid=t_people.id and t_picture.peopleid=t_flag.peopleid limit #{offset},#{limit}
     </select>
     <select id="selectByPictureId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select feature from t_picture where id = #{id,jdbcType=BIGINT}
