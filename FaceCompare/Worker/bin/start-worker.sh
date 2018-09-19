@@ -45,7 +45,7 @@ fi
 function start_worker()
 {
     cp ${BIGDATA_CLUSTER_PATH}/HBase/hbase/conf/hbase-site.xml ${CONF_DIR}
-    nohup java -server -Xms1g -Xmx3g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.Worker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} > ${LOG_FILE} 2>&1 &
+    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx3g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.Worker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} > /dev/null 2>&1 &
     echo "start worker ..."
 }
 
