@@ -43,8 +43,7 @@ public class JobDiscover implements Serializable {
             pathCache.getListenable().addListener((client, event) -> {
                 switch (event.getType()) {
                     case CHILD_ADDED:
-                        refreshData(pathCache.getCurrentData(),event);
-                        JobDiscover.saveDatabase();
+                        refreshData(pathCache.getCurrentData(), event);
                         break;
                 }
             });
@@ -54,12 +53,10 @@ public class JobDiscover implements Serializable {
     }
 
     //刷新数据库
-    private void refreshData(List<ChildData> currentData, PathChildrenCacheEvent event) {
+    private void refreshData(List <ChildData> currentData, PathChildrenCacheEvent event) {
         String ftpPath = event.getData().getPath();
         //数据库的存储
         ftpPersistence.queryDataBase(ftpPath);
     }
 
-    private static void saveDatabase() {
-    }
 }
