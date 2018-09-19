@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @ApiModel("设备对象")
-public class Device implements Serializable{
+public class Device implements Serializable {
 
     private static final long serialVersionUID = -2886805757480304222L;
 
@@ -18,7 +18,5 @@ public class Device implements Serializable{
     //设备名称
     @ApiModelProperty("设备名称")
     private String name;
-    //ipcid
-    @ApiModelProperty("序列号")
-    private String ipcId;
+
 }
