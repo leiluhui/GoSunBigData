@@ -5,9 +5,10 @@ import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dyncar.bean.CaptureOption;
+import com.hzgc.service.dyncar.bean.Device;
 import com.hzgc.service.dyncar.bean.SearchResult;
 import com.hzgc.service.dyncar.service.CaptureHistoryService;
-import com.hzgc.service.dyncar.service.CaptureServiceHelper;
+import com.hzgc.service.dyncar.util.DeviceToIpcs;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,14 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 
 @RestController
 @Api(tags = "动态库车辆服务")
 @Slf4j
 public class CaptureSearchController {
-
-    @Autowired
-    private CaptureServiceHelper captureServiceHelper;
 
     @Autowired
     private CaptureHistoryService captureHistoryService;
@@ -47,11 +47,11 @@ public class CaptureSearchController {
             log.error("Start query vehicle capture history, capture option is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        log.info("Start convert device id to ipc id");
-        captureServiceHelper.capturOptionConver(captureOption);
-        if (captureOption.getDeviceIpcs() == null ||
-                captureOption.getDeviceIpcs().size() <= 0 ||
-                captureOption.getDeviceIpcs().get(0) == null) {
+        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDevices());
+        captureOption.setIpcMapping(ipcMapping);
+        if (captureOption.getDevices() == null ||
+                captureOption.getDevices().size() <= 0 ||
+                captureOption.getDevices().get(0) == null) {
             log.error("Start query vehicle capture history, deviceIpcs option is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }

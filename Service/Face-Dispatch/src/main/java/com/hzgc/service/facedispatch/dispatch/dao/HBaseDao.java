@@ -1,32 +1,33 @@
 package com.hzgc.service.facedispatch.dispatch.dao;
 
 import com.alibaba.fastjson.JSON;
-import com.hzgc.common.service.facedispatch.table.DispatchTable;
-import com.hzgc.common.util.hbase.HBaseHelper;
 import com.hzgc.common.service.error.RestErrorCode;
+import com.hzgc.common.service.facedispatch.table.DispatchTable;
 import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.util.hbase.HBaseHelper;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
+import com.hzgc.service.facedispatch.dispatch.util.JsonToMap;
 import com.hzgc.service.facedispatch.dispatch.util.JsonToMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.*;
 
-@Repository
 @Slf4j
+@Component
 public class HBaseDao {
 
     @Autowired
     private RestTemplate restTemplate;
 
     public HBaseDao() {
-        HBaseHelper.getHBaseConnection();
+//        HBaseHelper.getHBaseConnection();
     }
 
     public void configRules(List<String> ipcIDs, List<Warn> rules) {
@@ -357,7 +358,7 @@ public class HBaseDao {
 
     //删除规则
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public List<Long> delRules(IdsType<String> idsType) throws IOException {
+    public List<String> delRules(IdsType<String> idsType) throws IOException {
         if (null != idsType) {
             Table dispatchTable = HBaseHelper.getTable(DispatchTable.TABLE_DEVICE);
             Get get = new Get(DispatchTable.RULE_ID);
@@ -365,7 +366,7 @@ public class HBaseDao {
             Result result = dispatchTable.get(get);
             byte[] bytes = result.getValue(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE);
             if (null != bytes) {
-                List<Long> ids = new ArrayList<>();
+                List<String> ids = new ArrayList<>();
                 String hbaseMapString = Bytes.toString(bytes);
                 LinkedHashMap<String, Dispatch> map = JsonToMap.dispatchStringToMap(hbaseMapString);
                 log.info("Before delete map is " + JacksonUtil.toJson(map));
@@ -375,7 +376,7 @@ public class HBaseDao {
                         //获取大数据传参需要的参数
                         List<Device> deviceList = map.get(idType).getDevices();
                         for (Device device : deviceList) {
-                            ids.add(Long.valueOf(device.getId()));
+                            ids.add(device.getId());
                         }
                         //移除数据
                         map.remove(idType);

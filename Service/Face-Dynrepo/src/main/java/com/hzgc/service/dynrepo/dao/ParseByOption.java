@@ -7,6 +7,7 @@ import com.hzgc.common.util.basic.IsEmpty;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.service.dynrepo.bean.SearchOption;
 import com.hzgc.service.dynrepo.bean.SortParam;
+import com.hzgc.service.dynrepo.util.DeviceToIpcs;
 import org.apache.log4j.Logger;
 
 import java.sql.Date;
@@ -206,7 +207,7 @@ class ParseByOption {
                 .append(" in ")
                 .append("(");
         for (int i = 0; option.getDeviceIpcs().size() > i; i++) {
-            String ipcid = option.getDeviceIpcs().get(i);
+            String ipcid = DeviceToIpcs.getIpcs(option.getDeviceIpcs()).get(i);
             if (option.getDeviceIpcs().size() - 1 > i) {
                 finalSql.append("'")
                         .append(ipcid)

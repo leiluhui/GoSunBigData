@@ -7,6 +7,7 @@ import com.hzgc.service.dyncar.bean.*;
 import com.hzgc.service.dyncar.dao.ElasticSearchDao;
 import com.hzgc.service.dyncar.dao.EsSearchParam;
 import com.hzgc.service.dyncar.dao.SortParam;
+import com.hzgc.service.dyncar.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -28,15 +29,11 @@ public class CaptureHistoryService {
     @Autowired
     @SuppressWarnings("unused")
     private Environment environment;
-    @Autowired
-    @SuppressWarnings("unused")
-    private CaptureServiceHelper captureServiceHelper;
 
     public SearchResult getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
         List<SortParam> sortParams = option.getSort()
                 .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        System.out.println(JacksonUtil.toJson(sortParams));
         for (SortParam s : sortParams) {
             if (s.name().equals(SortParam.TIMEDESC.toString())) {
                 sortParam = EsSearchParam.DESC;
@@ -49,7 +46,7 @@ public class CaptureHistoryService {
             searchResult = getCaptureHistory(option, sortParam,searchResult);
         } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query don't needs to be grouped by ipcid");
-            searchResult = getCaptureHistory(option, option.getDeviceIpcs(), sortParam,searchResult);
+            searchResult = getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam,searchResult);
         }
         return searchResult;
     }
@@ -57,7 +54,8 @@ public class CaptureHistoryService {
     //根据ipcid进行分类
     private SearchResult getCaptureHistory(CaptureOption option, String sortParam, SearchResult searchResult) {
         List <GroupByIpc> groupByIpcs = new ArrayList <>();
-        for (String ipcId : option.getDeviceIpcs()) {
+        List <String> ipcs = DeviceToIpcs.getIpcs(option.getDevices());
+        for (String ipcId : ipcs) {
             List<CapturedPicture> capturedPictureList = new ArrayList<>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, ipcId, sortParam);
             SearchHits searchHits = searchResponse.getHits();
@@ -72,15 +70,14 @@ public class CaptureHistoryService {
                     String surl = (String) hit.getSource().get("surl");
                     String burl = (String) hit.getSource().get("burl");
                     String ipc = (String) hit.getSource().get("ipcid");
-                    String ip = (String) hit.getSource().get("ip");
                     String timestamp = (String) hit.getSource().get("timestamp");
                     //参数封装
                     CarAttribute carAttribute = carDataPackage(hit);
                     capturePicture.setCarAttribute(carAttribute);
-                    capturePicture.setSurl(captureServiceHelper.getFtpUrl(surl, ip));
-                    capturePicture.setBurl(captureServiceHelper.getFtpUrl(burl, ip));
-                    capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                    capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                    capturePicture.setSurl(surl);
+                    capturePicture.setBurl(burl);
+                    capturePicture.setDeviceId(ipc);
+                    capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimestamp(timestamp);
                     if (ipcId.equals(ipc)) {
                         capturedPictureList.add(capturePicture);
@@ -88,9 +85,9 @@ public class CaptureHistoryService {
                 }
             }
             groupByIpc.setPictures(capturedPictureList);
-            groupByIpc.setDeviceId(option.getIpcMappingDevice().get(ipcId).getId());
+            groupByIpc.setDeviceId(option.getIpcMapping().get(ipcId).getDeviceName());
             groupByIpc.setTotal(capturedPictureList.size());
-            groupByIpc.setDeviceName(option.getIpcMappingDevice().get(ipcId).getName());
+            groupByIpc.setDeviceName(option.getIpcMapping().get(ipcId).getDeviceName());
             groupByIpcs.add(groupByIpc);
         }
         searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
@@ -114,15 +111,14 @@ public class CaptureHistoryService {
                 String surl = (String) hit.getSource().get("surl");
                 String burl = (String) hit.getSource().get("burl");
                 String ipcid = (String) hit.getSource().get("ipcid");
-                String ip = (String) hit.getSource().get("ip");
                 String timestamp = (String) hit.getSource().get("timestamp");
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSurl(captureServiceHelper.getFtpUrl(surl,ip));
-                capturePicture.setBurl(captureServiceHelper.getFtpUrl(burl,ip));
+                capturePicture.setSurl(surl);
+                capturePicture.setBurl(burl);
                 capturePicture.setDeviceId(ipcid);
-                capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipcid).getName());
+                capturePicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturePicture.setTimestamp(timestamp);
                 pictures.add(capturePicture);
             }
@@ -150,24 +146,22 @@ public class CaptureHistoryService {
                 String surl = (String) hit.getSource().get("surl");
                 String burl = (String) hit.getSource().get("burl");
                 String ipc = (String) hit.getSource().get("ipcid");
-                String ip = (String) hit.getSource().get("ip");
                 String timestamp = (String) hit.getSource().get("timestamp");
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSurl(captureServiceHelper.getFtpUrl(surl,ip));
-                capturePicture.setBurl(captureServiceHelper.getFtpUrl(burl,ip));
-                capturePicture.setDeviceId(ipc);
+                capturePicture.setSurl(surl);
+                capturePicture.setBurl(burl);
                 capturePicture.setTimestamp(timestamp);
-                capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                capturePicture.setDeviceId(ipc);
+                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                 captureList.add(capturePicture);
             }
         }
         groupByIpc.setTotal((int) searchHits.getTotalHits());
         groupByIpc.setPictures(captureList);
-        groupByIpc.setDeviceId(option.getDeviceIds().get(0).toString());
-        groupByIpc.setDeviceName(option.getIpcMappingDevice().get(option.getDeviceIpcs().get(0)).getName());
+        groupByIpc.setDeviceId(option.getDevices().get(0).toString());
+        groupByIpc.setDeviceName(option.getIpcMapping().get(option.getDevices().get(0)).getDeviceName());
         groupByIpcs.add(groupByIpc);
         searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
         return searchResult;

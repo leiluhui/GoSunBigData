@@ -168,8 +168,8 @@ public class CaptureServiceHelper {
                 CapturedPicture capturedPicture = new CapturedPicture();
                 capturedPicture.setSurl(getFtpUrl(surl));
                 capturedPicture.setBurl(getFtpUrl(burl));
-                capturedPicture.setDeviceId(option.getIpcMappingDevice().get(ipcid).getId());
-                capturedPicture.setDeviceName(option.getIpcMappingDevice().get(ipcid).getName());
+                capturedPicture.setDeviceId(ipcid);
+                capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
                 capturedPictureList.add(capturedPicture);
@@ -212,8 +212,8 @@ public class CaptureServiceHelper {
                 CapturedPicture capturedPicture = new CapturedPicture();
                 capturedPicture.setSurl(getFtpUrl(surl));
                 capturedPicture.setBurl(getFtpUrl(burl));
-                capturedPicture.setDeviceId(option.getIpcMappingDevice().get(ipcid).getId());
-                capturedPicture.setDeviceName(option.getIpcMappingDevice().get(ipcid).getName());
+                capturedPicture.setDeviceId(ipcid);
+                capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
                 if (mapSet.containsKey(id)) {
@@ -259,56 +259,6 @@ public class CaptureServiceHelper {
             return ftpUrl.replace(hostName, ftpServerIP);
         }
         return ftpUrl;
-    }
-
-    /**
-     * 将设备树中获取的设备ID转为ipc id
-     *
-     * @param idList 设备ID列表
-     * @return ipc id列表
-     */
-    List<String> deviceIdToDeviceIpc(List<Long> idList) {
-        Map<String, DeviceDTO> result = queryService.getDeviceInfoByBatchId(idList);
-        return result.values().stream().map(DeviceDTO::getSerial).collect(toList());
-    }
-
-    /**
-     * 向CaptureOption中添加转换后的IPC列表以及IPC映射DeviceDTO
-     *
-     * @param option 抓拍查询参数
-     */
-    public void capturOptionConver(CaptureOption option) {
-        List<String> ipcList;
-        Map<String, DeviceDTO> ipcListMapping;
-        Map<String, DeviceDTO> result = queryService.getDeviceInfoByBatchId(option.getDeviceIds());
-        if (!result.values().isEmpty() && result.values().size() > 0) {
-            ipcListMapping = result.values().stream().collect(Collectors.toMap(DeviceDTO::getSerial, DeviceDTO -> DeviceDTO));
-            ipcList = result.values().stream().map(DeviceDTO::getSerial).collect(toList());
-        } else {
-            log.error("Failed to find device id");
-            ipcListMapping = new HashMap<>();
-            ipcList = new ArrayList<>();
-        }
-        option.setDeviceIpcs(ipcList);
-        option.setIpcMappingDevice(ipcListMapping);
-    }
-
-    /**
-     * 设备id转ipcId
-     *
-     * @param deviceId 设备id
-     * @return ipcId
-     */
-    public String deviceIdToIpcId(String deviceId) {
-        List<Long> devices = new ArrayList<>();
-        devices.add(Long.valueOf(deviceId));
-        Map<String, DeviceDTO> result = queryService.getDeviceInfoByBatchId(devices);
-        if (!result.values().isEmpty() && result.values().size() > 0) {
-            return result.get(deviceId).getSerial();
-        } else {
-            log.error("Failed to find device id");
-        }
-        return null;
     }
 
     /**

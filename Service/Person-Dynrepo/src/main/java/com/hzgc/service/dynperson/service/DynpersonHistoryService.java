@@ -6,6 +6,7 @@ import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.service.dynperson.bean.*;
 import com.hzgc.service.dynperson.dao.ElasticSearchDao;
 import com.hzgc.service.dynperson.dao.EsSearchParam;
+import com.hzgc.service.dynperson.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -27,55 +28,53 @@ public class DynpersonHistoryService {
 
     @Autowired
     @SuppressWarnings("unused")
-    private  DypersonServiceHelper dypersonServiceHelper;
+    private DypersonServiceHelper dypersonServiceHelper;
 
     public SingleResults getCaptureHistory(CaptureOption captureOption) {
         String sortParam = EsSearchParam.DESC;
-        List<Integer> sortList = captureOption.getSort();
-        List<SortParam> sortParams = sortList.stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        for (SortParam param : sortParams){
-            if (SortParam.DESC.equals(param)){
+        List <Integer> sortList = captureOption.getSort();
+        List <SortParam> sortParams = sortList.stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
+        for (SortParam param : sortParams) {
+            if (SortParam.DESC.equals(param)) {
                 sortParam = EsSearchParam.DESC;
-            }else if (SortParam.ASC.equals(param)){
+            } else if (SortParam.ASC.equals(param)) {
                 sortParam = EsSearchParam.ASC;
             }
         }
-        SingleResults singleResults = getDefaultCaptureHistory(captureOption,sortParam);
-
+        SingleResults singleResults = getDefaultCaptureHistory(captureOption, sortParam);
         if (sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query needs to be grouped by ipcid");
             singleResults = getCaptureHistory(captureOption, sortParam, singleResults);
         } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query don't needs to be grouped by ipcid");
-            singleResults = getCaptureHistory(captureOption, captureOption.getDeviceIpcs(), sortParam, singleResults);
+            singleResults = getCaptureHistory(captureOption, DeviceToIpcs.getIpcs(captureOption.getDevices()), sortParam, singleResults);
         }
         return singleResults;
     }
 
     private SingleResults getDefaultCaptureHistory(CaptureOption captureOption, String sortParam) {
         SingleResults singleResults = new SingleResults();
-        SearchResponse searchResponse =elasticSearchDao.getCaptureHistory(captureOption, sortParam);
+        SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(captureOption, sortParam);
         SearchHits searchHits = searchResponse.getHits();
         int totalCount = (int) searchHits.getTotalHits();
-        List<Pictures> picturesList = new ArrayList<>();
-            for (SearchHit hit : searchHits) {
-                Pictures pictures = new Pictures();
-                String surl = (String) hit.getSource().get(PersonTable.SURL);
-                String burl = (String) hit.getSource().get(PersonTable.BURL);
-                String ipcid = (String) hit.getSource().get(PersonTable.IPCID);
-                String ip = (String) hit.getSource().get(PersonTable.IP);
-                String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
-                pictures.setSurl(dypersonServiceHelper.getFtpUrl(surl, ip));
-                pictures.setBurl(dypersonServiceHelper.getFtpUrl(burl, ip));
-                pictures.setDeviceId(ipcid);
-                pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipcid).getName());
-                pictures.setTime(timestamp);
+        List <Pictures> picturesList = new ArrayList <>();
+        for (SearchHit hit : searchHits) {
+            Pictures pictures = new Pictures();
+            String surl = (String) hit.getSource().get(PersonTable.SURL);
+            String burl = (String) hit.getSource().get(PersonTable.BURL);
+            String ipcid = (String) hit.getSource().get(PersonTable.IPCID);
+            String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
+            pictures.setSurl(surl);
+            pictures.setBurl(burl);
+            pictures.setDeviceId(ipcid);
+            pictures.setDeviceName(captureOption.getIpcMapping().get(ipcid).getDeviceName());
+            pictures.setTime(timestamp);
 
-                List<PersonAttributes> personAttributes = getPersonAttributes(hit);
+            List <PersonAttributes> personAttributes = getPersonAttributes(hit);
 
-                pictures.setPersonAttributes(personAttributes);
-                picturesList.add(pictures);
-            }
+            pictures.setPersonAttributes(personAttributes);
+            picturesList.add(pictures);
+        }
         singleResults.setTotal(totalCount);
         singleResults.setPictures(picturesList);
         singleResults.setSearchId(UuidUtil.getUuid());
@@ -83,13 +82,12 @@ public class DynpersonHistoryService {
     }
 
 
-
-    private SingleResults getCaptureHistory(CaptureOption captureOption, List<String> deviceIpcs, String sortParam, SingleResults singleResults) {
-        SearchResponse searchResponse =elasticSearchDao.getCaptureHistory(captureOption, deviceIpcs, sortParam);
+    private SingleResults getCaptureHistory(CaptureOption captureOption, List <String> deviceIpcs, String sortParam, SingleResults singleResults) {
+        SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(captureOption, deviceIpcs, sortParam);
         SearchHits searchHits = searchResponse.getHits();
         int totalCount = (int) searchHits.getTotalHits();
         SearchHit[] hits = searchHits.getHits();
-        List<Pictures> picturesList = new ArrayList<>();
+        List <Pictures> picturesList = new ArrayList <>();
         Pictures pictures;
         if (hits.length > 0) {
             for (SearchHit hit : hits) {
@@ -97,14 +95,13 @@ public class DynpersonHistoryService {
                 String surl = (String) hit.getSource().get(PersonTable.SURL);
                 String burl = (String) hit.getSource().get(PersonTable.BURL);
                 String ipc = (String) hit.getSource().get(PersonTable.IPCID);
-                String ip = (String) hit.getSource().get(PersonTable.IP);
                 String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
-                pictures.setSurl(dypersonServiceHelper.getFtpUrl(surl, ip));
-                pictures.setBurl(dypersonServiceHelper.getFtpUrl(burl, ip));
-                pictures.setDeviceId(captureOption.getIpcMappingDevice().get(ipc).getId());
-                pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipc).getName());
+                pictures.setSurl(surl);
+                pictures.setBurl(burl);
+                pictures.setDeviceId(ipc);
+                pictures.setDeviceName(captureOption.getIpcMapping().get(ipc).getDeviceName());
                 pictures.setTime(timestamp);
-                List<PersonAttributes> personAttributes = getPersonAttributes(hit);
+                List <PersonAttributes> personAttributes = getPersonAttributes(hit);
                 pictures.setPersonAttributes(personAttributes);
                 picturesList.add(pictures);
             }
@@ -118,10 +115,10 @@ public class DynpersonHistoryService {
 
     private SingleResults getCaptureHistory(CaptureOption captureOption, String sortParam, SingleResults singleResults) {
 
-        List<DevicePictures> devicePicturesList = new ArrayList<>();
-        for (String ipcId : captureOption.getDeviceIpcs()) {
+        List <DevicePictures> devicePicturesList = new ArrayList <>();
+        for (String ipcId : DeviceToIpcs.getIpcs(captureOption.getDevices())) {
             DevicePictures devicePictures = new DevicePictures();
-            List<Pictures> pictureList = new ArrayList<>();
+            List <Pictures> pictureList = new ArrayList <>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(captureOption, ipcId, sortParam);
             SearchHits searchHits = searchResponse.getHits();
             int totalCount = (int) searchHits.getTotalHits();
@@ -132,16 +129,15 @@ public class DynpersonHistoryService {
                     String surl = (String) hit.getSource().get(PersonTable.SURL);
                     String burl = (String) hit.getSource().get(PersonTable.BURL);
                     String ipc = (String) hit.getSource().get(PersonTable.IPCID);
-                    String ip = (String) hit.getSource().get(PersonTable.IP);
                     String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
-                    pictures.setSurl(dypersonServiceHelper.getFtpUrl(surl, ip));
-                    pictures.setBurl(dypersonServiceHelper.getFtpUrl(burl, ip));
-                    if (null!=captureOption.getIpcMappingDevice().get(ipc)){
-                        pictures.setDeviceId(captureOption.getIpcMappingDevice().get(ipc).getId());
-                        pictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipc).getName());
+                    pictures.setSurl(surl);
+                    pictures.setBurl(burl);
+                    if (null != captureOption.getIpcMapping().get(ipc)) {
+                        pictures.setDeviceId(ipc);
+                        pictures.setDeviceName(captureOption.getIpcMapping().get(ipc).getDeviceName());
                     }
 
-                    List<PersonAttributes> personAttributes = getPersonAttributes(hit);
+                    List <PersonAttributes> personAttributes = getPersonAttributes(hit);
                     pictures.setPersonAttributes(personAttributes);
 
                     pictures.setTime(timestamp);
@@ -154,7 +150,7 @@ public class DynpersonHistoryService {
                 pictureList.add(pictures);
             }
             devicePictures.setDeviceId(ipcId);
-            devicePictures.setDeviceName(captureOption.getIpcMappingDevice().get(ipcId).getName());
+            devicePictures.setDeviceName(captureOption.getIpcMapping().get(ipcId).getDeviceName());
             devicePictures.setPictures(pictureList);
             devicePictures.setTotal(pictureList.size());
             devicePicturesList.add(devicePictures);
@@ -163,11 +159,11 @@ public class DynpersonHistoryService {
             singleResults.setSearchId(UuidUtil.getUuid());
             singleResults.setDevicePicturesList(devicePicturesList);
         }
-        return  singleResults;
+        return singleResults;
     }
 
-    private List<PersonAttributes> getPersonAttributes(SearchHit hit) {
-        List<PersonAttributes> personAttributes = new ArrayList<>();
+    private List <PersonAttributes> getPersonAttributes(SearchHit hit) {
+        List <PersonAttributes> personAttributes = new ArrayList <>();
         PersonAttributes personAttribute = new PersonAttributes();
         personAttribute.setAge((String) hit.getSource().get(PersonTable.AGE));
         personAttribute.setHair((String) hit.getSource().get(PersonTable.HAIR));

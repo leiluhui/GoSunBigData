@@ -62,7 +62,7 @@ public class WarnRuleController {
             log.info("Add rule , param is " + JacksonUtil.toJson(dispatch));
             //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
-            List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
+            List<String> list = IpcIdsUtil.toDeviceIdList(deviceList);
             Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(list);
             //设置ipcid
             for (String s : map.keySet()) {
@@ -110,7 +110,7 @@ public class WarnRuleController {
             log.info("Update rule , param is " + JacksonUtil.toJson(dispatch));
             //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
-            List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
+            List<String> list = IpcIdsUtil.toDeviceIdList(deviceList);
             Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(list);
             for (String s : map.keySet()) {
                 DeviceDTO deviceDTO = map.get(s);
@@ -147,7 +147,7 @@ public class WarnRuleController {
     public ResponseResult<Boolean> delRules(@RequestBody IdsType<String> idsType) throws IOException {
         if (null != idsType) {
             log.info("Delete rules , param is " + idsType.toString());
-            List<Long> ids = warnRuleService.delRules(idsType);
+            List<String> ids = warnRuleService.delRules(idsType);
             Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(ids);
             List<String> ipcIDs = new ArrayList<>();
             for (String s : map.keySet()) {
