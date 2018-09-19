@@ -19,6 +19,6 @@
         <module>Imsi-Dynrepo</module>
         <module>Person-Dynrepo</module>
         <module>Vehicle-Dynrepo</module>
-        <module>fusion</module>
+        <module>Fusion</module>
     </modules>
 </project>
