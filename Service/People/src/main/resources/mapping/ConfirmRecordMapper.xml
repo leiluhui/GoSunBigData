@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.people.dao.ConfirmRecordMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.service.people.model.ConfirmRecord">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="month" property="month" jdbcType="VARCHAR"/>
+        <result column="flag" property="flag" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, peopleid, month, flag
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_confirm_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--统计上月小区新增人口数量（上月确认迁入数量）-->
+    <select id="countNewPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*) from t_people, t_confirm_record
+        where t_confirm_record.flag = 1
+        and t_people.id = t_confirm_record.peopleid
+        and t_people.community = #{community,jdbcType=BIGINT}
+    </select>
+    <!--统计上月小区迁出人口数量（上月确认迁出数量）-->
+    <select id="countOutPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*) from t_people, t_confirm_record
+        where t_confirm_record.flag = 2
+        and t_people.id = t_confirm_record.peopleid
+        and t_people.community = #{community,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_confirm_record
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.hzgc.service.people.model.ConfirmRecord">
+        insert into t_confirm_record (id, peopleid, month,
+        flag)
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR},
+        #{flag,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hzgc.service.people.model.ConfirmRecord">
+        insert into t_confirm_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="peopleid != null">
+                peopleid,
+            </if>
+            <if test="month != null">
+                month,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="peopleid != null">
+                #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.people.model.ConfirmRecord">
+        update t_confirm_record
+        <set>
+            <if test="peopleid != null">
+                peopleid = #{peopleid,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                month = #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.people.model.ConfirmRecord">
+        update t_confirm_record
+        set peopleid = #{peopleid,jdbcType=VARCHAR},
+        month = #{month,jdbcType=VARCHAR},
+        flag = #{flag,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

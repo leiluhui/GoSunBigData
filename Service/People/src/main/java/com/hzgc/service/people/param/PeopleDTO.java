@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @ApiModel(value ="前端入参封装类")
@@ -86,6 +87,7 @@ public class PeopleDTO implements Serializable {
         people.setEdulevel(peopleDTO.eduLevel);
         people.setJob(peopleDTO.job);
         people.setBirthplace(peopleDTO.birthplace);
+        people.setUpdatetime(new Date());
         return people;
     }
 }

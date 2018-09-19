@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
@@ -38,18 +35,27 @@ public class MemeoryCache {
 
     private Map<Integer, String> indexToPictureKey = new HashMap<>();
     private LinkedList<byte[]> bitFeatureList = new LinkedList<>();
-    private Map<String, ComparePicture> pictureMap = new HashMap<>();
+    private Map<String, List<ComparePicture>> pictureMap = new HashMap<>();
     private AtomicInteger atomicInteger = new AtomicInteger();
 
     public MemeoryCache() {
         FaceFunction.init();
     }
 
-    public void putData(ComparePicture picture) {
+    void putData(ComparePicture picture) {
         int index = atomicInteger.getAndIncrement();
         bitFeatureList.add(index, picture.getBitFeature());
         indexToPictureKey.put(index, picture.getPeopleId());
-        pictureMap.put(picture.getPeopleId(), picture);
+        picture.setIndex(index);
+        if (pictureMap.containsKey(picture.getPeopleId())) {
+            List<ComparePicture> comparePictures = pictureMap.get(picture.getPeopleId());
+            comparePictures.add(picture);
+        } else {
+
+            List<ComparePicture> comparePictures = new ArrayList<>();
+            comparePictures.add(picture);
+            pictureMap.put(picture.getPeopleId(), comparePictures);
+        }
     }
 
     public ComparePicture comparePicture(FaceAttribute faceAttribute) {
@@ -64,8 +70,14 @@ public class MemeoryCache {
             FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
             int index = faceFeatureInfo.getIndex();
             String pictureKey = indexToPictureKey.get(index);
-            ComparePicture comparePicture = pictureMap.get(pictureKey);
-            if (isOpen) {
+            List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
+            ComparePicture comparePicture = null;
+            for (ComparePicture pic : comparePictures) {
+                if (pic.getIndex() == index) {
+                    comparePicture = pic;
+                }
+            }
+            if (isOpen && comparePicture != null) {
                 Picture picture = pictureMapper.selectByPictureId(comparePicture.getId());
                 String floatFeatureStr = picture.getFeature();
                 if (floatFeatureStr != null && !"".equals(floatFeatureStr)) {
@@ -93,5 +105,10 @@ public class MemeoryCache {
         } else {
             return null;
         }
+    }
+
+
+    List<ComparePicture> getPeople(String peopleid) {
+        return pictureMap.get(peopleid);
     }
 }

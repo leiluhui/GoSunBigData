@@ -1,6 +1,6 @@
 package com.hzgc.compare.worker.persistence.task;
 
-import com.hzgc.compare.FaceObject;
+import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.compare.worker.common.FaceInfoTable;
 import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
@@ -56,10 +56,42 @@ public class TimeToWrite implements Runnable{
             for (FaceObject record : recordToHBase) {
                 String rowkey = record.getDate().replace("-", "") + record.getIpcId() + UuidUtil.generateShortUuid();
                 Put put = new Put(Bytes.toBytes(rowkey));
-                put.addColumn(Bytes.toBytes(FaceInfoTable.CLU_FAMILY), Bytes.toBytes(FaceInfoTable.INFO), Bytes.toBytes(FaceObjectUtil.objectToJson(record)));
+//                put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.INFO, Bytes.toBytes(FaceObjectUtil.objectToJson(record)));
+                if(record.getIpcId() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.IPCID, Bytes.toBytes(record.getIpcId()));
+                }
+                if(record.getIpcId() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.TIMESTAMP, Bytes.toBytes(record.getTimeStamp()));
+                }
+                if(record.getIpcId() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.DATE, Bytes.toBytes(record.getDate()));
+                }
+                put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.TIME_SLOT, Bytes.toBytes(record.getTimeSlot()));
+                if(record.getAttribute() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.ATTRIBUTE, Bytes.toBytes(FaceObjectUtil.objectToJson(record.getAttribute())));
+                }
+                if(record.getSurl() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.SURL, Bytes.toBytes(record.getSurl()));
+                }
+                if(record.getBurl() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.BURL, Bytes.toBytes(record.getBurl()));
+                }
+                if(record.getRelativePath() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.RELATIVE_PATH, Bytes.toBytes(record.getRelativePath()));
+                }
+                if(record.getRelativePath_big() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.RELATIVE_PATH_BIG, Bytes.toBytes(record.getRelativePath_big()));
+                }
+                if(record.getIp() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.IP, Bytes.toBytes(record.getIp()));
+                }
+                if(record.getHostname() != null) {
+                    put.addColumn(FaceInfoTable.CLU_FAMILY, FaceInfoTable.HOSTNAME, Bytes.toBytes(record.getHostname()));
+                }
+
                 putList.add(put);
                 Triplet<String, String, byte[]> bufferRecord =
-                        new Triplet<>(record.getDate(), rowkey, record.getAttribute().getFeature2());
+                        new Triplet<>(record.getDate(), rowkey, record.getAttribute().getBitFeature());
                 bufferList.add(bufferRecord);
             }
             table.put(putList);

@@ -1,7 +1,7 @@
 package com.hzgc.compare.worker.compare.task;
 
+import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.compare.CompareParam;
-import com.hzgc.compare.FaceObject;
 import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
