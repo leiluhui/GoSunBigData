@@ -16,6 +16,7 @@ public class FaceObject implements Serializable {
     private String relativePath_big;    // 大图相对路径（不带ftp根跟路径）
     private String ip;                  // 图片保存主机:ip
     private String hostname;            // 图片保存主机:hostname
+    private String UUID;                // 唯一标识
 
     public static FaceObject builder() {
         return new FaceObject();
@@ -118,5 +119,13 @@ public class FaceObject implements Serializable {
     public FaceObject setHostname(String hostname) {
         this.hostname = hostname;
         return this;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 }

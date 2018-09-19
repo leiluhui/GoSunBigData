@@ -8,4 +8,6 @@ public class Picture {
     private String peopleId;
     private String bitFeature;
     private String feature;
+    private Integer flagId;
+    private String name;
 }
