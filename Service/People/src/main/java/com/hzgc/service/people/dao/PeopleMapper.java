@@ -19,4 +19,20 @@ public interface PeopleMapper {
     int updateByPrimaryKey(People record);
 
     List<People> searchPeople(FilterField field);
+
+    int countCommunityPeople(Long community);
+
+    int countImportantPeople(Long community);
+
+    int countCarePeople(Long community);
+
+    List<People> searchCommunityPeople(Long community);
+
+    List<People> searchImportantPeople(Long community);
+
+    List<People> searchCarePeople(Long community);
+
+    List<People> searchNewPeople(Long community);
+
+    List<People> searchOutPeople(Long community);
 }

@@ -1,7 +1,7 @@
 package com.hzgc.compare.worker.comsumer;
 
 
-import com.hzgc.compare.FaceObject;
+import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.util.FaceObjectUtil;

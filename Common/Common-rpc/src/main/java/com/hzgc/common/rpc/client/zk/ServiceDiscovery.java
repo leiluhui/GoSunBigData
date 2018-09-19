@@ -2,6 +2,7 @@ package com.hzgc.common.rpc.client.zk;
 
 import com.google.common.collect.Lists;
 import com.hzgc.common.rpc.client.ConnectManager;
+import com.hzgc.common.rpc.server.zk.GsonUtil;
 import com.hzgc.common.rpc.util.ZookeeperClient;
 import com.hzgc.common.rpc.util.Constant;
 import org.apache.curator.framework.CuratorFramework;
@@ -72,7 +73,7 @@ public class ServiceDiscovery extends ZookeeperClient {
         if (currenDataList != null && !currenDataList.isEmpty()) {
             final List<String> newWorkerList = Lists.newArrayList();
             currenDataList.forEach(event -> {
-                newWorkerList.add(new String(event.getData()));
+                newWorkerList.add((String) GsonUtil.jsonToMap(new String(event.getData())).get("address"));
             });
             this.workerList = newWorkerList;
             //更新服务端连接信息
