@@ -281,7 +281,10 @@ public class ImageToData {
                     for (JSONObject js : pedestrains) {
                         Person person_object = new Person();
                         int car_type = (Integer) js.get("Type");
-                        person_object.setCar_type(String.valueOf(car_type));
+                        if (car_type == 2 || car_type == 3) {
+                            person_object.setCar_type("2");
+                        }
+                        person_object.setCar_type("1");
                         JSONObject person_detect = (JSONObject) js.get("Detect");
                         int person_code = (int) person_detect.get("Code");
                         JSONArray person_rect = null;
@@ -290,8 +293,6 @@ public class ImageToData {
                             person_rect = (JSONArray) person_body.get("Rect");
                         }
                         JSONObject recognize = (JSONObject) js.get("Recognize");
-                        //未骑车
-                        person_object.setCar_type("1");
                         //行人数据解析
                         personDataAnalysis(recognize, person_object);
                         if (null != imagePath && imagePath.length() > 0) {
