@@ -33,6 +33,9 @@ public class FtpPersistence implements CommandLineRunner {
     @Override
     public void run(String... strings) {
         List <FtpRegisterInfo> ftpRegisterInfoList = ftpRegisterClient.getFtpRegisterInfoList();
+        FtpRegisterInfo ftpRegisterInfo1 = new FtpRegisterInfo();
+        ftpRegisterInfo1.setFtpIPAddress("172.18.18.100");
+        ftpRegisterInfoList.add(ftpRegisterInfo1);
         for (FtpRegisterInfo ftpRegisterInfo : ftpRegisterInfoList) {
             String ftpIPAddress = ftpRegisterInfo.getFtpIPAddress();
             //查询数据库，是否存在，存在count + 1,不存在count = 1
@@ -47,8 +50,9 @@ public class FtpPersistence implements CommandLineRunner {
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-            sql = "select ip from t_ftp where ip = " + ftpIPAddress;
+            sql = "select ip from t_ftp where ip = \"" + ftpIPAddress + "\"";
             ResultSet resultSet = statement.executeQuery(sql);
+            log.info("---------------------------------------" + resultSet.next());
             if (resultSet.next()) {
                 //count + 1
                 int count = resultSet.getInt("count");
@@ -69,7 +73,7 @@ public class FtpPersistence implements CommandLineRunner {
     //新增count置1
     public void insertDataBase(String ftpIPAddress) {
         try {
-            sql = "insert into t_ftp(ip,count) values(" + ftpIPAddress + ",1) ";
+            sql = "insert into t_ftp(ip,count) values(\"" + ftpIPAddress + "\"" + ",1) ";
             int i = statement.executeUpdate(sql);
             if (i > 0) {
                 log.info("Insert ftpAddress is successful,new address is " + ftpIPAddress);
@@ -84,7 +88,7 @@ public class FtpPersistence implements CommandLineRunner {
     //修改count + 1
     public void updateDataBase(int count, String ftpIPAddress) {
         try {
-            sql = "update t_ftp set count =" + count + "where ip = " + ftpIPAddress;
+            sql = "update t_ftp set count =" + count + "where ip = \"" + ftpIPAddress + "\"";
             int i = statement.executeUpdate(sql);
             if (i > 0) {
                 log.info("Update ftpAddress is successful,this ftpAddress is " + ftpIPAddress);

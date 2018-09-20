@@ -30,8 +30,8 @@ public class JobDiscover implements Serializable {
         Curator curator = new Curator(zkAddress, sessionTimeOut, connectionTimeOut);
         this.curator = curator;
         zkClient = curator.getClient();
-        log.info("Start JobDiscover successful, zkAddress:?, sessionTimeOut:?, connectionTimeOut:?",
-                zkAddress, sessionTimeOut, connectionTimeOut);
+        log.info("Start JobDiscover successful, zkAddress:" + zkAddress + " sessionTimeOut:" + sessionTimeOut +
+                " connectionTimeOut:" + connectionTimeOut);
         startListener(curator.getClient());
     }
 
@@ -39,7 +39,7 @@ public class JobDiscover implements Serializable {
         final PathChildrenCache pathCache = new PathChildrenCache(zkClient, ftp_register_path, true);
         try {
             pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
-            log.info("Start listen path: ?", ftp_register_path);
+            log.info("Start listen path:" + ftp_register_path);
             pathCache.getListenable().addListener((client, event) -> {
                 switch (event.getType()) {
                     case CHILD_ADDED:
