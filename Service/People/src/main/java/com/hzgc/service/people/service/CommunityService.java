@@ -1,6 +1,7 @@
 package com.hzgc.service.people.service;
 
 import com.github.pagehelper.PageHelper;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.DeviceRecognize;
 import com.hzgc.service.people.model.FusionImsi;
@@ -185,6 +186,46 @@ public class CommunityService {
     public List<CommunityPeopleCaptureCountVO> countCaptureNum3Month(CommunityPeopleCaptureDTO param) {
         List<CommunityPeopleCaptureCountVO> voList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countCaptureNum3Month(param.getPeopleId());
-        return null;
+        if (deviceRecognizeList != null && deviceRecognizeList.size() > 0){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+            int year_end = cal.get(Calendar.YEAR);
+            int month_end = cal.get(Calendar.MONTH) + 1;
+            int date_end = cal.get(Calendar.DATE);
+            String endDate = year_end + "-" + month_end + "-" + date_end;
+            cal.add(Calendar.MONTH, -2);
+            cal.add(Calendar.DATE, - date_end + 1);
+            int year_start = cal.get(Calendar.YEAR);
+            int month_start = cal.get(Calendar.MONTH) + 1;
+            int date_start = cal.get(Calendar.DATE);
+            String startDate = year_start+ "-" + month_start + "-" + (date_start >= 10 ? date_start : "0" + date_start);
+            List<String> dateList = new ArrayList<>();
+            dateList.add(startDate);
+            try {
+                long time = dateFormat.parse(startDate).getTime();
+                for (int i = 0; i < 100; i++){
+                    time = time + (24 * 60 * 60 * 1000);
+                    if (time > dateFormat.parse(endDate).getTime()){
+                        break;
+                    }
+                    dateList.add(dateFormat.format(time));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (dateList.size() > 0){
+                for (String date : dateList){
+                    CommunityPeopleCaptureCountVO vo = new CommunityPeopleCaptureCountVO();
+                    vo.setDate(date);
+                    for (DeviceRecognize deviceRecognize : deviceRecognizeList){
+                        if (date.replace("-", "").equals(deviceRecognize.getCurrenttime())){
+                            vo.setCount(vo.getCount() + deviceRecognize.getCount());
+                        }
+                    }
+                    voList.add(vo);
+                }
+            }
+        }
+        return voList;
     }
 }

@@ -27,9 +27,9 @@
   </select>
   <!--统计聚焦人员每天抓拍次数-->
   <select id="countCaptureNum3Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select deviceid, count
+    select currenttime, count
     from t_device_recognize
-    where DATE_FORMAT(receivetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    where DATE_FORMAT(receivetime, '%Y%m') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 2 MONTH), '%Y%m')
     and peopleid = #{peopleid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
