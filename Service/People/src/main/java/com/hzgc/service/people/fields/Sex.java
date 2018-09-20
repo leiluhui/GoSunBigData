@@ -14,7 +14,7 @@ public class Sex implements Serializable {
         model.put(2, "女");
     }
 
-    public static String getSex(int i){
+    public static String getSex(int i) {
         return model.get(i);
     }
 }

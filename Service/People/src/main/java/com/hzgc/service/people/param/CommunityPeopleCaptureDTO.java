@@ -9,7 +9,7 @@ import java.io.Serializable;
 @ApiModel(value = "聚焦人员抓拍前端入参封装类")
 @Data
 public class CommunityPeopleCaptureDTO implements Serializable {
-    @ApiModelProperty(value="人员全局ID")
+    @ApiModelProperty(value = "人员全局ID")
     private Long peopleId;
     @ApiModelProperty(value = "起始行数")
     private int start;

@@ -143,7 +143,7 @@ public class CommunityService {
         return voList;
     }
 
-    private void listSort(List<CommunityPeopleCaptureVO> voList){
+    private void listSort(List<CommunityPeopleCaptureVO> voList) {
         voList.sort((o1, o2) -> {
             try {
                 Date d1 = sdf.parse(o1.getCaptureTime());
@@ -159,20 +159,20 @@ public class CommunityService {
     public List<CommunityPeopleCaptureCountVO> countDeviceCaptureNum1Month(CommunityPeopleCaptureDTO param) {
         List<CommunityPeopleCaptureCountVO> voList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countDeviceCaptureNum1Month(param.getPeopleId());
-        if (deviceRecognizeList != null && deviceRecognizeList.size() > 0){
+        if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             List<String> deviceIdList = new ArrayList<>();
-            for (DeviceRecognize device : deviceRecognizeList){
+            for (DeviceRecognize device : deviceRecognizeList) {
                 String deviceId = device.getDeviceid();
-                if (StringUtils.isNotBlank(deviceId) && !deviceIdList.contains(deviceId)){
+                if (StringUtils.isNotBlank(deviceId) && !deviceIdList.contains(deviceId)) {
                     deviceIdList.add(deviceId);
                 }
             }
-            if (deviceIdList.size() > 0){
-                for (String deviceId : deviceIdList){
+            if (deviceIdList.size() > 0) {
+                for (String deviceId : deviceIdList) {
                     CommunityPeopleCaptureCountVO vo = new CommunityPeopleCaptureCountVO();
                     vo.setDeviceId(deviceId);
-                    for (DeviceRecognize deviceRecognize : deviceRecognizeList){
-                        if (deviceId.equals(deviceRecognize.getDeviceid())){
+                    for (DeviceRecognize deviceRecognize : deviceRecognizeList) {
+                        if (deviceId.equals(deviceRecognize.getDeviceid())) {
                             vo.setCount(vo.getCount() + deviceRecognize.getCount());
                         }
                     }
@@ -186,7 +186,7 @@ public class CommunityService {
     public List<CommunityPeopleCaptureCountVO> countCaptureNum3Month(CommunityPeopleCaptureDTO param) {
         List<CommunityPeopleCaptureCountVO> voList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countCaptureNum3Month(param.getPeopleId());
-        if (deviceRecognizeList != null && deviceRecognizeList.size() > 0){
+        if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Calendar cal = Calendar.getInstance();
             int year_end = cal.get(Calendar.YEAR);
@@ -194,18 +194,18 @@ public class CommunityService {
             int date_end = cal.get(Calendar.DATE);
             String endDate = year_end + "-" + month_end + "-" + date_end;
             cal.add(Calendar.MONTH, -2);
-            cal.add(Calendar.DATE, - date_end + 1);
+            cal.add(Calendar.DATE, -date_end + 1);
             int year_start = cal.get(Calendar.YEAR);
             int month_start = cal.get(Calendar.MONTH) + 1;
             int date_start = cal.get(Calendar.DATE);
-            String startDate = year_start+ "-" + month_start + "-" + (date_start >= 10 ? date_start : "0" + date_start);
+            String startDate = year_start + "-" + month_start + "-" + (date_start >= 10 ? date_start : "0" + date_start);
             List<String> dateList = new ArrayList<>();
             dateList.add(startDate);
             try {
                 long time = dateFormat.parse(startDate).getTime();
-                for (int i = 0; i < 100; i++){
+                for (int i = 0; i < 100; i++) {
                     time = time + (24 * 60 * 60 * 1000);
-                    if (time > dateFormat.parse(endDate).getTime()){
+                    if (time > dateFormat.parse(endDate).getTime()) {
                         break;
                     }
                     dateList.add(dateFormat.format(time));
@@ -213,12 +213,12 @@ public class CommunityService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if (dateList.size() > 0){
-                for (String date : dateList){
+            if (dateList.size() > 0) {
+                for (String date : dateList) {
                     CommunityPeopleCaptureCountVO vo = new CommunityPeopleCaptureCountVO();
                     vo.setDate(date);
-                    for (DeviceRecognize deviceRecognize : deviceRecognizeList){
-                        if (date.replace("-", "").equals(deviceRecognize.getCurrenttime())){
+                    for (DeviceRecognize deviceRecognize : deviceRecognizeList) {
+                        if (date.replace("-", "").equals(deviceRecognize.getCurrenttime())) {
                             vo.setCount(vo.getCount() + deviceRecognize.getCount());
                         }
                     }
