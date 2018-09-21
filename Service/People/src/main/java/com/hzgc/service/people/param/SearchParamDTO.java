@@ -1,4 +1,4 @@
-package com.hzgc.service.community.param;
+package com.hzgc.service.people.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

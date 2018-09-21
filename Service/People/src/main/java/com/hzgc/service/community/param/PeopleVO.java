@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @ApiModel(value = "实有,重点,关爱,新增,迁出人口查询出参封装类")
 @Data
-public class CommunityPeopleVO implements Serializable {
+public class PeopleVO implements Serializable {
     @ApiModelProperty(value = "人员全局ID")
     private String id;
     @ApiModelProperty(value = "姓名")

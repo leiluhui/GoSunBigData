@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @ApiModel(value = "聚焦人员抓拍次数返回封装类")
 @Data
-public class CommunityPeopleCaptureCountVO implements Serializable {
+public class PeopleCaptureCountVO implements Serializable {
     @ApiModelProperty(value = "抓拍设备")
     private String deviceId;
     @ApiModelProperty(value = "抓拍日期")

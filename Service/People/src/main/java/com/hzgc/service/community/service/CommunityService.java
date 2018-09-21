@@ -35,8 +35,8 @@ public class CommunityService {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public CommunityPeopleCountVO countCommunityPeople(Long communityId) {
-        CommunityPeopleCountVO vo = new CommunityPeopleCountVO();
+    public PeopleCountVO countCommunityPeople(Long communityId) {
+        PeopleCountVO vo = new PeopleCountVO();
         vo.setCommunityPeoples(peopleMapper.countCommunityPeople(communityId));
         vo.setImportantPeoples(peopleMapper.countImportantPeople(communityId));
         vo.setCarePeoples(peopleMapper.countCarePeople(communityId));
@@ -45,41 +45,41 @@ public class CommunityService {
         return vo;
     }
 
-    public List<CommunityPeopleVO> searchCommunityPeople(CommunityPeopleDTO param) {
+    public List<PeopleVO> searchCommunityPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchCommunityPeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
-    public List<CommunityPeopleVO> searchCommunityImportantPeople(CommunityPeopleDTO param) {
+    public List<PeopleVO> searchCommunityImportantPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchImportantPeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
-    public List<CommunityPeopleVO> searchCommunityCarePeople(CommunityPeopleDTO param) {
+    public List<PeopleVO> searchCommunityCarePeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchCarePeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
-    public List<CommunityPeopleVO> searchCommunityNewPeople(CommunityPeopleDTO param) {
+    public List<PeopleVO> searchCommunityNewPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchNewPeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
-    public List<CommunityPeopleVO> searchCommunityOutPeople(CommunityPeopleDTO param) {
+    public List<PeopleVO> searchCommunityOutPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchOutPeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
-    private List<CommunityPeopleVO> shift(List<People> peopleList) {
-        List<CommunityPeopleVO> voList = new ArrayList<>();
+    private List<PeopleVO> shift(List<People> peopleList) {
+        List<PeopleVO> voList = new ArrayList<>();
         if (peopleList != null && peopleList.size() > 0) {
             for (People people : peopleList) {
-                CommunityPeopleVO vo = new CommunityPeopleVO();
+                PeopleVO vo = new PeopleVO();
                 vo.setId(people.getId());
                 vo.setIdCard(people.getIdcard());
                 vo.setName(people.getName());
@@ -96,14 +96,14 @@ public class CommunityService {
        return null;
     }
 
-    public List<CommunityPeopleCaptureVO> searchCapture1Month(CommunityPeopleCaptureDTO param) {
-        List<CommunityPeopleCaptureVO> voList = new ArrayList<>();
+    public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
+        List<PeopleCaptureVO> voList = new ArrayList<>();
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
         List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(param.getPeopleId());
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
-                CommunityPeopleCaptureVO vo = new CommunityPeopleCaptureVO();
+                PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
                 vo.setFtpUrl(people.getBurl());
@@ -112,7 +112,7 @@ public class CommunityService {
         }
         if (imsiList != null && imsiList.size() > 0) {
             for (FusionImsi imsi : imsiList) {
-                CommunityPeopleCaptureVO vo = new CommunityPeopleCaptureVO();
+                PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
                 vo.setDeviceId(imsi.getDeviceid());
                 vo.setImsi(imsi.getImsi());
@@ -123,13 +123,13 @@ public class CommunityService {
         return voList;
     }
 
-    public List<CommunityPeopleCaptureVO> searchPeopleTrack1Month(CommunityPeopleCaptureDTO param) {
-        List<CommunityPeopleCaptureVO> voList = new ArrayList<>();
+    public List<PeopleCaptureVO> searchPeopleTrack1Month(PeopleCaptureDTO param) {
+        List<PeopleCaptureVO> voList = new ArrayList<>();
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
         List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(param.getPeopleId());
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
-                CommunityPeopleCaptureVO vo = new CommunityPeopleCaptureVO();
+                PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
                 voList.add(vo);
@@ -137,7 +137,7 @@ public class CommunityService {
         }
         if (imsiList != null && imsiList.size() > 0) {
             for (FusionImsi imsi : imsiList) {
-                CommunityPeopleCaptureVO vo = new CommunityPeopleCaptureVO();
+                PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
                 vo.setDeviceId(imsi.getDeviceid());
                 voList.add(vo);
@@ -147,7 +147,7 @@ public class CommunityService {
         return voList;
     }
 
-    private void listSort(List<CommunityPeopleCaptureVO> voList) {
+    private void listSort(List<PeopleCaptureVO> voList) {
         voList.sort((o1, o2) -> {
             try {
                 Date d1 = sdf.parse(o1.getCaptureTime());
@@ -160,8 +160,8 @@ public class CommunityService {
         });
     }
 
-    public List<CommunityPeopleCaptureCountVO> countDeviceCaptureNum1Month(CommunityPeopleCaptureDTO param) {
-        List<CommunityPeopleCaptureCountVO> voList = new ArrayList<>();
+    public List<PeopleCaptureCountVO> countDeviceCaptureNum1Month(PeopleCaptureDTO param) {
+        List<PeopleCaptureCountVO> voList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countDeviceCaptureNum1Month(param.getPeopleId());
         if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             List<String> deviceIdList = new ArrayList<>();
@@ -173,7 +173,7 @@ public class CommunityService {
             }
             if (deviceIdList.size() > 0) {
                 for (String deviceId : deviceIdList) {
-                    CommunityPeopleCaptureCountVO vo = new CommunityPeopleCaptureCountVO();
+                    PeopleCaptureCountVO vo = new PeopleCaptureCountVO();
                     vo.setDeviceId(deviceId);
                     for (DeviceRecognize deviceRecognize : deviceRecognizeList) {
                         if (deviceId.equals(deviceRecognize.getDeviceid())) {
@@ -187,8 +187,8 @@ public class CommunityService {
         return voList;
     }
 
-    public List<CommunityPeopleCaptureCountVO> countCaptureNum3Month(CommunityPeopleCaptureDTO param) {
-        List<CommunityPeopleCaptureCountVO> voList = new ArrayList<>();
+    public List<PeopleCaptureCountVO> countCaptureNum3Month(PeopleCaptureDTO param) {
+        List<PeopleCaptureCountVO> voList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countCaptureNum3Month(param.getPeopleId());
         if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -219,7 +219,7 @@ public class CommunityService {
             }
             if (dateList.size() > 0) {
                 for (String date : dateList) {
-                    CommunityPeopleCaptureCountVO vo = new CommunityPeopleCaptureCountVO();
+                    PeopleCaptureCountVO vo = new PeopleCaptureCountVO();
                     vo.setDate(date);
                     for (DeviceRecognize deviceRecognize : deviceRecognizeList) {
                         if (date.replace("-", "").equals(deviceRecognize.getCurrenttime())) {
