@@ -12,7 +12,7 @@ public class CaptureOption implements Serializable {
     private List<Long> deviceIds;
     //搜索的设备IPC列表
     private List<String> deviceIpcs;
-    // ipc mapping device id
+    // ipc community-mapping device id
     private Map<String, DeviceDTO> ipcMappingDevice;
     //开始日期,格式：xxxx-xx-xx xx:xx:xx
     private String startTime;

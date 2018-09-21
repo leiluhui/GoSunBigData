@@ -5,8 +5,8 @@ import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
+import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
-import com.hzgc.service.people.model.Flag;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
 import com.hzgc.service.people.param.PictureVO;
@@ -51,10 +51,10 @@ public class PeopleService {
 
     public Integer people_flag_insert(String peopleId, List<Integer> flags) {
         for (Integer integer : flags) {
-            Flag flag = new Flag();
+            com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
             flag.setPeopleid(peopleId);
             flag.setFlagid(integer);
-            flag.setFlag(com.hzgc.service.people.fields.Flag.getFlag(integer));
+            flag.setFlag(Flag.getFlag(integer));
             int status = flagMapper.insertSelective(flag);
             if (status != 1) {
                 log.info("Insert people, but insert t_flag failed");
@@ -74,10 +74,10 @@ public class PeopleService {
             }
         }
         for (Integer integer : flags) {
-            Flag flag = new Flag();
+            com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
             flag.setPeopleid(peopleId);
             flag.setFlagid(integer);
-            flag.setFlag(com.hzgc.service.people.fields.Flag.getFlag(integer));
+            flag.setFlag(Flag.getFlag(integer));
             int insertStatus = flagMapper.insertSelective(flag);
             if (insertStatus != 1) {
                 log.info("Update people, but insert flag to t_flag failed, flag:" + integer);
@@ -374,9 +374,9 @@ public class PeopleService {
             if (people.getUpdatetime() != null) {
                 peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
             }
-            List<Flag> flags = people.getFlag();
+            List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
             List<Integer> flagIdList = new ArrayList<>();
-            for (Flag flag : flags) {
+            for (com.hzgc.service.people.model.Flag flag : flags) {
                 flagIdList.add(flag.getFlagid());
             }
             peopleVO.setFlag(flagIdList);
@@ -463,9 +463,9 @@ public class PeopleService {
                     if (people.getUpdatetime() != null) {
                         peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
                     }
-                    List<Flag> flags = people.getFlag();
+                    List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
                     List<Integer> flagIdList = new ArrayList<>();
-                    for (Flag flag : flags) {
+                    for (com.hzgc.service.people.model.Flag flag : flags) {
                         flagIdList.add(flag.getFlagid());
                     }
                     peopleVO.setFlag(flagIdList);

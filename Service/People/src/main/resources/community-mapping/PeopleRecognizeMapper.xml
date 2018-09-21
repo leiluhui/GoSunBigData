@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.community.dao.PeopleRecognizeMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.service.community.model.PeopleRecognize" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+    <result column="pictureid" property="pictureid" jdbcType="BIGINT" />
+    <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
+    <result column="capturetime" property="capturetime" jdbcType="TIMESTAMP" />
+    <result column="surl" property="surl" jdbcType="VARCHAR" />
+    <result column="burl" property="burl" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, peopleid, pictureid, deviceid, capturetime, surl, burl, flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_people_recognize
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--聚焦人员抓拍、电围数据查询-->
+  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select capturetime, deviceid, burl
+    from t_people_recognize
+    where DATE_FORMAT(capturetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    and flag = 3
+    and peopleid = #{peopleid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_people_recognize
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.service.community.model.PeopleRecognize" >
+    insert into t_people_recognize (id, peopleid, pictureid, 
+      deviceid, capturetime, surl, 
+      burl, flag)
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{pictureid,jdbcType=BIGINT}, 
+      #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP}, #{surl,jdbcType=VARCHAR}, 
+      #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.service.community.model.PeopleRecognize" >
+    insert into t_people_recognize
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="peopleid != null" >
+        peopleid,
+      </if>
+      <if test="pictureid != null" >
+        pictureid,
+      </if>
+      <if test="deviceid != null" >
+        deviceid,
+      </if>
+      <if test="capturetime != null" >
+        capturetime,
+      </if>
+      <if test="surl != null" >
+        surl,
+      </if>
+      <if test="burl != null" >
+        burl,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureid != null" >
+        #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.community.model.PeopleRecognize" >
+    update t_people_recognize
+    <set >
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureid != null" >
+        pictureid = #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        deviceid = #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        surl = #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        burl = #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.community.model.PeopleRecognize" >
+    update t_people_recognize
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
+      pictureid = #{pictureid,jdbcType=BIGINT},
+      deviceid = #{deviceid,jdbcType=VARCHAR},
+      capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      surl = #{surl,jdbcType=VARCHAR},
+      burl = #{burl,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

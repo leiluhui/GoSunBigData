@@ -4,6 +4,7 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.service.community.param.SearchParamDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;

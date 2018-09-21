@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.community.dao.ImsiFilterMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.service.community.model.ImsiFilter" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="currenttime" property="currenttime" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, imsi, currenttime, count
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_imsi_filter
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_imsi_filter
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.service.community.model.ImsiFilter" >
+    insert into t_imsi_filter (id, imsi, currenttime, 
+      count)
+    values (#{id,jdbcType=BIGINT}, #{imsi,jdbcType=VARCHAR}, #{currenttime,jdbcType=VARCHAR}, 
+      #{count,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.service.community.model.ImsiFilter" >
+    insert into t_imsi_filter
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="currenttime != null" >
+        currenttime,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="currenttime != null" >
+        #{currenttime,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.community.model.ImsiFilter" >
+    update t_imsi_filter
+    <set >
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="currenttime != null" >
+        currenttime = #{currenttime,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.community.model.ImsiFilter" >
+    update t_imsi_filter
+    set imsi = #{imsi,jdbcType=VARCHAR},
+      currenttime = #{currenttime,jdbcType=VARCHAR},
+      count = #{count,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

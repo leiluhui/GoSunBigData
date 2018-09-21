@@ -1,5 +1,6 @@
 package com.hzgc.service.people.param;
 
+import com.hzgc.service.community.param.SearchParamDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
