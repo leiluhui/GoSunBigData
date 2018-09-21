@@ -9,6 +9,7 @@ import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.util.JsonToMap;
 import com.hzgc.service.facedispatch.dispatch.util.JsonToMap;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -278,7 +279,7 @@ public class HBaseDao {
                             return ResponseResult.error(RestErrorCode.DB_DUPLICAET_KEY,"规则名称" + newName + "已经存在");
                         }
                         for (Device oldDevice : oldDeviceList) {
-                            //拿到旧的ipcId
+                            //拿到旧的Id
                             oldId = oldDevice.getId();
                             //进行比对，如果之前绑定了规则，直接返回报错
                             if (oldId.equals(originId)) {
@@ -358,8 +359,8 @@ public class HBaseDao {
 
     //删除规则
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public List<String> delRules(IdsType<String> idsType) throws IOException {
-        if (null != idsType) {
+    public List<String> delRules(RuleIds<String> ruleIds) throws IOException {
+        if (null != ruleIds) {
             Table dispatchTable = HBaseHelper.getTable(DispatchTable.TABLE_DEVICE);
             Get get = new Get(DispatchTable.RULE_ID);
             get.addColumn(DispatchTable.CF_DEVICE, DispatchTable.COLUMN_RULE);
@@ -371,15 +372,15 @@ public class HBaseDao {
                 LinkedHashMap<String, Dispatch> map = JsonToMap.dispatchStringToMap(hbaseMapString);
                 log.info("Before delete map is " + JacksonUtil.toJson(map));
                 //判断是否存在需要删除的ruleID
-                for (String idType : idsType.getId()) {
-                    if (map.containsKey(idType)) {
+                for (String ruleId : ruleIds.getRuleIds()) {
+                    if (map.containsKey(ruleId)) {
                         //获取大数据传参需要的参数
-                        List<Device> deviceList = map.get(idType).getDevices();
+                        List<Device> deviceList = map.get(ruleId).getDevices();
                         for (Device device : deviceList) {
                             ids.add(device.getId());
                         }
                         //移除数据
-                        map.remove(idType);
+                        map.remove(ruleId);
                     }
                 }
                 Put put = new Put(DispatchTable.RULE_ID);
@@ -489,11 +490,11 @@ public class HBaseDao {
     }
 
     //获取对象类型名称
-//    @HystrixCommand(fallbackMethod = "getObjectTypeNameError")
+    @HystrixCommand(fallbackMethod = "getObjectTypeNameError")
     @SuppressWarnings("unchecked")
     public Map<String, Map<String, String>> getObjectTypeName(String[] strings) {
         if (null != strings && strings.length > 0) {
-            Map<String, Map<String, String>> map = restTemplate.postForObject("http://STAREPO/type_search_names", strings, Map.class);
+            Map<String, Map<String, String>> map = restTemplate.postForObject("http://FACE-DISPATCH/type_search_names", strings, Map.class);
             log.info("StaRepo return param is " + JacksonUtil.toJson(map));
             return map;
         }

@@ -24,22 +24,6 @@ public class CarAttributeService {
         List<CarAttribute> carAttributeList = new ArrayList<>();
         Map<String, Map<Integer, String>> vehicleMap = new ReadCarInfo().getVehicleMap();
 
-        //对象类型
-        CarAttribute objectType = new CarAttribute();
-        objectType.setDesc("对象类型");
-        objectType.setLogistic(CarLogistic.AND);
-        List<CarAttributeValue> objectTypeValueList = new ArrayList<>();
-        Map<Integer, String> vehicle_object_type = vehicleMap.get(CarData.VEHICLE_BOJECT_TYPE);
-        for (Integer key : vehicle_object_type.keySet()) {
-            String value = vehicle_object_type.get(key);
-            CarAttributeValue objectTypeValue = new CarAttributeValue();
-            objectTypeValue.setDesc(value);
-            objectTypeValue.setValue(key);
-            objectTypeValueList.add(objectTypeValue);
-        }
-        objectType.setValues(objectTypeValueList);
-        carAttributeList.add(objectType);
-
         // 车辆特征
         CarAttribute plateTypeCode = new CarAttribute();
         plateTypeCode.setDesc("车辆特征");
@@ -120,39 +104,6 @@ public class CarAttributeService {
         vehicleType.setValues(vehicleTypeValueList);
         carAttributeList.add(vehicleType);
 
-        /*//车辆行驶方向
-        CarAttribute mistakeCode = new CarAttribute();
-        mistakeCode.setDesc("车辆行驶方向");
-        mistakeCode.setLogistic(CarLogistic.AND);
-        List<CarAttributeValue> mistakeCodeValueList = new ArrayList<>();
-        Map<Integer, String> mistake_code = vehicleMap.get(CarData.MISTAKE_CODE);
-        for (Integer key : mistake_code.keySet()) {
-            String value = mistake_code.get(key);
-            CarAttributeValue vehicleTypeValue = new CarAttributeValue();
-            vehicleTypeValue.setDesc(value);
-            vehicleTypeValue.setValue(key);
-            mistakeCodeValueList.add(vehicleTypeValue);
-        }
-        mistakeCode.setValues(mistakeCodeValueList);
-        carAttributeList.add(mistakeCode);*/
-
-        /*//天窗
-        CarAttribute sunroofCode = new CarAttribute();
-        sunroofCode.setDesc("天窗");
-        sunroofCode.setLogistic(CarLogistic.AND);
-
-        List<CarAttributeValue> sunroofCodeValueList = new ArrayList<>();
-        Map<Integer, String> sunroof_code = vehicleMap.get(CarData.SUNROOF_CODE);
-        for (Integer key : sunroof_code.keySet()) {
-            String value = sunroof_code.get(key);
-            CarAttributeValue vsunroofCodeValue = new CarAttributeValue();
-            vsunroofCodeValue.setDesc(value);
-            vsunroofCodeValue.setValue(key);
-            sunroofCodeValueList.add(vsunroofCodeValue);
-        }
-        sunroofCode.setValues(sunroofCodeValueList);
-        carAttributeList.add(sunroofCode);*/
-
         //主驾驶安全带
         CarAttribute belt_maindriverCode = new CarAttribute();
         belt_maindriverCode.setDesc("主驾驶安全带");
@@ -204,8 +155,8 @@ public class CarAttributeService {
 
         //是否撞损
         CarAttribute crashCode = new CarAttribute();
-        callCode.setDesc("是否撞损");
-        callCode.setLogistic(CarLogistic.AND);
+        crashCode.setDesc("是否撞损");
+        crashCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> crashCodeValueList = new ArrayList<>();
         Map<Integer, String> crash_code = vehicleMap.get(CarData.CRASH_CODE);
         for (Integer key : crash_code.keySet()) {
@@ -220,8 +171,8 @@ public class CarAttributeService {
 
         //危化品车
         CarAttribute dangerCode = new CarAttribute();
-        callCode.setDesc("危化品车");
-        callCode.setLogistic(CarLogistic.AND);
+        dangerCode.setDesc("危化品车");
+        dangerCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> dangerCodeValueList = new ArrayList<>();
         Map<Integer, String> danger_code = vehicleMap.get(CarData.DANGER_CODE);
         for (Integer key : danger_code.keySet()) {
@@ -236,8 +187,8 @@ public class CarAttributeService {
 
         //车牌污损
         CarAttribute plateSchelterCode = new CarAttribute();
-        callCode.setDesc("车牌污损");
-        callCode.setLogistic(CarLogistic.AND);
+        plateSchelterCode.setDesc("车牌污损");
+        plateSchelterCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> plateSchelterCodeValueList = new ArrayList<>();
         Map<Integer, String> plate_schelter_code = vehicleMap.get(CarData.PLATE_SCHELTER_CODE);
         for (Integer key : plate_schelter_code.keySet()) {
@@ -252,8 +203,8 @@ public class CarAttributeService {
 
         //车牌遮挡
         CarAttribute plateDestainCode = new CarAttribute();
-        callCode.setDesc("车牌遮挡");
-        callCode.setLogistic(CarLogistic.AND);
+        plateDestainCode.setDesc("车牌遮挡");
+        plateDestainCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> plateDestainCodeValueList = new ArrayList<>();
         Map<Integer, String> plate_destain_code = vehicleMap.get(CarData.PLATE_DESTAIN_CODE);
         for (Integer key : plate_destain_code.keySet()) {
@@ -268,8 +219,8 @@ public class CarAttributeService {
 
         //行李架
         CarAttribute rackCode = new CarAttribute();
-        callCode.setDesc("行李架");
-        callCode.setLogistic(CarLogistic.AND);
+        rackCode.setDesc("行李架");
+        rackCode.setLogistic(CarLogistic.AND);
         List<CarAttributeValue> rackCodeValueList = new ArrayList<>();
         Map<Integer, String> rack_code = vehicleMap.get(CarData.RACK_CODE);
         for (Integer key : rack_code.keySet()) {
@@ -281,7 +232,6 @@ public class CarAttributeService {
         }
         rackCode.setValues(rackCodeValueList);
         carAttributeList.add(rackCode);
-
 
         return carAttributeList;
     }

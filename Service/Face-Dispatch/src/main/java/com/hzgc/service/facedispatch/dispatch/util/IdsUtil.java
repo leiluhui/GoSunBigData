@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IpcIdsUtil {
+public class IdsUtil {
 
     public static List<String> toDeviceIdList(List<Device> list) {
         List<String> li = new ArrayList<>();
