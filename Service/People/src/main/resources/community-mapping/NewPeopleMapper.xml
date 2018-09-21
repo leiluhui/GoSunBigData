@@ -4,13 +4,14 @@
   <resultMap id="BaseResultMap" type="com.hzgc.service.community.model.NewPeople" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+    <result column="community" property="community" jdbcType="BIGINT" />
     <result column="month" property="month" jdbcType="VARCHAR" />
     <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
     <result column="isconfirm" property="isconfirm" jdbcType="INTEGER" />
     <result column="flag" property="flag" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, peopleid, month, deviceid, isconfirm, flag
+    id, peopleid, community, month, deviceid, isconfirm, flag
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -23,12 +24,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.hzgc.service.community.model.NewPeople" >
-    insert into t_people_new (id, peopleid, month, 
-      deviceid, isconfirm, flag
-      )
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, 
-      #{deviceid,jdbcType=VARCHAR}, #{isconfirm,jdbcType=INTEGER}, #{flag,jdbcType=INTEGER}
-      )
+    insert into t_people_new (id, peopleid, community, 
+      month, deviceid, isconfirm, 
+      flag)
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT}, 
+      #{month,jdbcType=VARCHAR}, #{deviceid,jdbcType=VARCHAR}, #{isconfirm,jdbcType=INTEGER}, 
+      #{flag,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.community.model.NewPeople" >
     insert into t_people_new
@@ -38,6 +39,9 @@
       </if>
       <if test="peopleid != null" >
         peopleid,
+      </if>
+      <if test="community != null" >
+        community,
       </if>
       <if test="month != null" >
         month,
@@ -59,6 +63,9 @@
       <if test="peopleid != null" >
         #{peopleid,jdbcType=VARCHAR},
       </if>
+      <if test="community != null" >
+        #{community,jdbcType=BIGINT},
+      </if>
       <if test="month != null" >
         #{month,jdbcType=VARCHAR},
       </if>
@@ -79,6 +86,9 @@
       <if test="peopleid != null" >
         peopleid = #{peopleid,jdbcType=VARCHAR},
       </if>
+      <if test="community != null" >
+        community = #{community,jdbcType=BIGINT},
+      </if>
       <if test="month != null" >
         month = #{month,jdbcType=VARCHAR},
       </if>
@@ -97,6 +107,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hzgc.service.community.model.NewPeople" >
     update t_people_new
     set peopleid = #{peopleid,jdbcType=VARCHAR},
+      community = #{community,jdbcType=BIGINT},
       month = #{month,jdbcType=VARCHAR},
       deviceid = #{deviceid,jdbcType=VARCHAR},
       isconfirm = #{isconfirm,jdbcType=INTEGER},

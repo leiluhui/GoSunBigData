@@ -7,6 +7,8 @@ public class FusionImsi {
 
     private String peopleid;
 
+    private Long community;
+
     private String deviceid;
 
     private Date receivetime;
@@ -27,6 +29,14 @@ public class FusionImsi {
 
     public void setPeopleid(String peopleid) {
         this.peopleid = peopleid == null ? null : peopleid.trim();
+    }
+
+    public Long getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Long community) {
+        this.community = community;
     }
 
     public String getDeviceid() {

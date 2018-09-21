@@ -2,8 +2,6 @@ package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.NewPeople;
 
-import java.util.List;
-
 public interface NewPeopleMapper {
     int deleteByPrimaryKey(Long id);
 

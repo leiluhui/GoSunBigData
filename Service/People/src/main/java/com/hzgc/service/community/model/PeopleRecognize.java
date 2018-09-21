@@ -7,6 +7,8 @@ public class PeopleRecognize {
 
     private String peopleid;
 
+    private Long community;
+
     private Long pictureid;
 
     private String deviceid;
@@ -33,6 +35,14 @@ public class PeopleRecognize {
 
     public void setPeopleid(String peopleid) {
         this.peopleid = peopleid == null ? null : peopleid.trim();
+    }
+
+    public Long getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Long community) {
+        this.community = community;
     }
 
     public Long getPictureid() {

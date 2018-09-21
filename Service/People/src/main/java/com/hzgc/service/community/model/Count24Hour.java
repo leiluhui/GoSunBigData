@@ -1,19 +1,15 @@
 package com.hzgc.service.community.model;
 
-public class DeviceRecognize {
+public class Count24Hour {
     private Long id;
 
     private String peopleid;
 
     private Long community;
 
-    private String deviceid;
-
-    private String currenttime;
+    private String hour;
 
     private Integer count;
-
-    private Integer flag;
 
     public Long getId() {
         return id;
@@ -39,20 +35,12 @@ public class DeviceRecognize {
         this.community = community;
     }
 
-    public String getDeviceid() {
-        return deviceid;
+    public String getHour() {
+        return hour;
     }
 
-    public void setDeviceid(String deviceid) {
-        this.deviceid = deviceid == null ? null : deviceid.trim();
-    }
-
-    public String getCurrenttime() {
-        return currenttime;
-    }
-
-    public void setCurrenttime(String currenttime) {
-        this.currenttime = currenttime == null ? null : currenttime.trim();
+    public void setHour(String hour) {
+        this.hour = hour == null ? null : hour.trim();
     }
 
     public Integer getCount() {
@@ -61,13 +49,5 @@ public class DeviceRecognize {
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public Integer getFlag() {
-        return flag;
-    }
-
-    public void setFlag(Integer flag) {
-        this.flag = flag;
     }
 }

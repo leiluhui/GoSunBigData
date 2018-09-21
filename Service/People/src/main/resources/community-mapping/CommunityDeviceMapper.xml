@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.service.community.dao.CommunityDeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.service.community.model.CommunityDevice" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="community" property="community" jdbcType="BIGINT" />
+    <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, community, deviceid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_community_device
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_community_device
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.service.community.model.CommunityDevice" >
+    insert into t_community_device (id, community, deviceid
+      )
+    values (#{id,jdbcType=BIGINT}, #{community,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.service.community.model.CommunityDevice" >
+    insert into t_community_device
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="community != null" >
+        community,
+      </if>
+      <if test="deviceid != null" >
+        deviceid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="community != null" >
+        #{community,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.community.model.CommunityDevice" >
+    update t_community_device
+    <set >
+      <if test="community != null" >
+        community = #{community,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        deviceid = #{deviceid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.community.model.CommunityDevice" >
+    update t_community_device
+    set community = #{community,jdbcType=BIGINT},
+      deviceid = #{deviceid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
