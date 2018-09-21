@@ -8,7 +8,7 @@ import com.hzgc.cluster.spark.util.PropertiesUtil
 import com.hzgc.common.collect.bean.{CarObject, FaceObject, PersonObject}
 import com.hzgc.common.service.facedynrepo.{FaceTable, PersonTable, VehicleTable}
 import com.hzgc.common.util.json.JacksonUtil
-import com.hzgc.jniface.FaceFunction
+import com.hzgc.jniface.FaceUtil
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
 import kafka.serializer.StringDecoder
@@ -31,7 +31,7 @@ object KafkaToParquet {
     def toEsMap: Map[String, Any] = Map("id" -> id, "sftpurl" -> sftpurl, "bftpurl" -> bftpurl, "timestamp" -> timestamp.toString,
       "ipcid" -> ipcid, "hostname" -> hostname, "babsolutepath" -> babsolutepath, "sabsolutepath" -> sabsolutepath,
       "eyeglasses" -> eyeglasses, "gender" -> gender, "age" -> age, "mask" -> mask, "huzi" -> huzi,
-      "feature" -> FaceFunction.floatFeature2Base64Str(feature), "bitfeature" -> bitfeature)
+      "feature" -> FaceUtil.floatFeature2Base64Str(feature), "bitfeature" -> bitfeature)
   }
 
   case class Person(id: String, sftpurl: String, bftpurl: String, timestamp: String, ipcid: String, hostname: String,

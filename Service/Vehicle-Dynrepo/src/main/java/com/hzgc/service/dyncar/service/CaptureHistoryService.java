@@ -10,6 +10,7 @@ import com.hzgc.service.dyncar.bean.*;
 import com.hzgc.service.dyncar.dao.ElasticSearchDao;
 import com.hzgc.service.dyncar.dao.EsSearchParam;
 import com.hzgc.service.dyncar.dao.SortParam;
+import com.hzgc.service.dyncar.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class CaptureHistoryService {
 
     @Autowired
+    private
     FtpRegisterClient ftpRegisterClient;
     @Autowired
     @SuppressWarnings("unused")
@@ -36,9 +38,6 @@ public class CaptureHistoryService {
     @Autowired
     @SuppressWarnings("unused")
     private Environment environment;
-    @Autowired
-    @SuppressWarnings("unused")
-    private CaptureServiceHelper captureServiceHelper;
     @Value("${ftp.port}")
     private String ftpPort;
 
@@ -46,28 +45,27 @@ public class CaptureHistoryService {
         String sortParam = EsSearchParam.DESC;
         List<SortParam> sortParams = option.getSort()
                 .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        System.out.println(JacksonUtil.toJson(sortParams));
-        for (SortParam s : sortParams) {
-            if (s.name().equals(SortParam.TIMEDESC.toString())) {
-                sortParam = EsSearchParam.DESC;
-            }
-        }
         log.info("The current query is default");
-        SearchResult searchResult = getDefaultCaptureHistory(option, sortParam);
+        SearchResult searchResult ;
         if (sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query needs to be grouped by ipcid");
-            searchResult = getCaptureHistory(option, sortParam,searchResult);
+            searchResult = getCaptureHistory(option, sortParam);
         } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query don't needs to be grouped by ipcid");
-            searchResult = getCaptureHistory(option, option.getDeviceIpcs(), sortParam,searchResult);
+            searchResult = getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam);
+        } else {
+            log.info("The current query is default");
+            searchResult = getDefaultCaptureHistory(option, sortParam);
         }
         return searchResult;
     }
 
     //根据ipcid进行分类
-    private SearchResult getCaptureHistory(CaptureOption option, String sortParam, SearchResult searchResult) {
-        List <GroupByIpc> groupByIpcs = new ArrayList <>();
-        for (String ipcId : option.getDeviceIpcs()) {
+    private SearchResult getCaptureHistory(CaptureOption option, String sortParam) {
+        SearchResult searchResult = new SearchResult();
+        List<GroupByIpc> groupByIpcs = new ArrayList<>();
+        List<String> ipcs = DeviceToIpcs.getIpcs(option.getDevices());
+        for (String ipcId : ipcs) {
             List<CapturedPicture> capturedPictureList = new ArrayList<>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, ipcId, sortParam);
             SearchHits searchHits = searchResponse.getHits();
@@ -84,15 +82,15 @@ public class CaptureHistoryService {
                     String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                     String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                     String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                    Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
+                    Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                     String ip = ftpIpMapping.get(hostname);
                     //参数封装
                     CarAttribute carAttribute = carDataPackage(hit);
                     capturePicture.setCarAttribute(carAttribute);
-                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
-                    capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                    capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
+                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+                    capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getDeviceCode());
+                    capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimestamp(timestamp);
                     if (ipcId.equals(ipc)) {
                         capturedPictureList.add(capturePicture);
@@ -100,9 +98,9 @@ public class CaptureHistoryService {
                 }
             }
             groupByIpc.setPictures(capturedPictureList);
-            groupByIpc.setDeviceId(option.getIpcMappingDevice().get(ipcId).getId());
+            groupByIpc.setDeviceId(option.getIpcMapping().get(ipcId).getDeviceName());
             groupByIpc.setTotal(capturedPictureList.size());
-            groupByIpc.setDeviceName(option.getIpcMappingDevice().get(ipcId).getName());
+            groupByIpc.setDeviceName(option.getIpcMapping().get(ipcId).getDeviceName());
             groupByIpcs.add(groupByIpc);
         }
         searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
@@ -128,15 +126,15 @@ public class CaptureHistoryService {
                 String ipcid = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
+                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                 String ip = ftpIpMapping.get(hostname);
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
+                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipcid);
-                capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipcid).getName());
+                capturePicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturePicture.setTimestamp(timestamp);
                 pictures.add(capturePicture);
             }
@@ -150,8 +148,9 @@ public class CaptureHistoryService {
     }
 
     //多个ipcid查询
-    private SearchResult getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam, SearchResult searchResult) {
-        ArrayList <GroupByIpc> groupByIpcs = new ArrayList <>();
+    private SearchResult getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam) {
+        SearchResult searchResult = new SearchResult();
+        ArrayList<GroupByIpc> groupByIpcs = new ArrayList<>();
         GroupByIpc groupByIpc = new GroupByIpc();
         List<CapturedPicture> captureList = new ArrayList<>();
         SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, deviceIds, sortParam);
@@ -166,51 +165,51 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
+                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                 String ip = ftpIpMapping.get(hostname);
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
+                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimestamp(timestamp);
-                capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                capturePicture.setDeviceId(ipc);
+                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                 captureList.add(capturePicture);
             }
         }
         groupByIpc.setTotal((int) searchHits.getTotalHits());
         groupByIpc.setPictures(captureList);
-        groupByIpc.setDeviceId(option.getDeviceIds().get(0).toString());
-        groupByIpc.setDeviceName(option.getIpcMappingDevice().get(option.getDeviceIpcs().get(0)).getName());
+        groupByIpc.setDeviceId(option.getDevices().get(0).toString());
+        groupByIpc.setDeviceName(option.getIpcMapping().get(option.getDevices().get(0).getDeviceCode()).getDeviceName());
         groupByIpcs.add(groupByIpc);
         searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
         return searchResult;
     }
 
     //数据封装
-    private static CarAttribute carDataPackage(SearchHit hit){
-        return new CarAttribute((String)hit.getSource().get("vehicle_object_type"),
-                (String)hit.getSource().get("belt_maindriver"),
-                (String)hit.getSource().get("belt_codriver"),
-                (String)hit.getSource().get("brand_name"),
-                (String)hit.getSource().get("call_code"),
-                (String)hit.getSource().get("vehicle_color"),
-                (String)hit.getSource().get("crash_code"),
-                (String)hit.getSource().get("danger_code"),
-                (String)hit.getSource().get("marker_code"),
-                (String)hit.getSource().get("plate_schelter_code"),
-                (String)hit.getSource().get("plate_flag_code"),
-                (String)hit.getSource().get("plate_licence"),
-                (String)hit.getSource().get("plate_destain_code"),
-                (String)hit.getSource().get("plate_color_code"),
-                (String)hit.getSource().get("plate_type_code"),
-                (String)hit.getSource().get("rack_code"),
-                (String)hit.getSource().get("sparetire_code"),
-                (String)hit.getSource().get("mistake_code"),
-                (String)hit.getSource().get("sunroof_code"),
-                (String)hit.getSource().get("vehicle_type"));
+    private static CarAttribute carDataPackage(SearchHit hit) {
+        return new CarAttribute((String) hit.getSource().get("vehicle_object_type"),
+                (String) hit.getSource().get("belt_maindriver"),
+                (String) hit.getSource().get("belt_codriver"),
+                (String) hit.getSource().get("brand_name"),
+                (String) hit.getSource().get("call_code"),
+                (String) hit.getSource().get("vehicle_color"),
+                (String) hit.getSource().get("crash_code"),
+                (String) hit.getSource().get("danger_code"),
+                (String) hit.getSource().get("marker_code"),
+                (String) hit.getSource().get("plate_schelter_code"),
+                (String) hit.getSource().get("plate_flag_code"),
+                (String) hit.getSource().get("plate_licence"),
+                (String) hit.getSource().get("plate_destain_code"),
+                (String) hit.getSource().get("plate_color_code"),
+                (String) hit.getSource().get("plate_type_code"),
+                (String) hit.getSource().get("rack_code"),
+                (String) hit.getSource().get("sparetire_code"),
+                (String) hit.getSource().get("mistake_code"),
+                (String) hit.getSource().get("sunroof_code"),
+                (String) hit.getSource().get("vehicle_type"));
 
     }
 }

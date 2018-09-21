@@ -5,6 +5,7 @@ import com.hzgc.seemmo.bean.personbean.Person;
 import java.io.Serializable;
 
 public class PersonObject implements Serializable {
+    private String id;                  //对象唯一ID
     private String ipcId;               // 设备ID
     private String timeStamp;           // 时间（格式：2017-01-01 00：00：00）
     private Person attribute;           // 行人属性对象
@@ -17,7 +18,6 @@ public class PersonObject implements Serializable {
     private String hostname;            // 图片保存主机:hostname
     private String feature;             //float特征值
     private String bitfeature;          //bit特征值
-    private String ip;
 
     public static PersonObject builder() {
         return new PersonObject();
@@ -111,15 +111,6 @@ public class PersonObject implements Serializable {
         this.bitfeature = bitfeature;
     }
 
-    public PersonObject setIp(String ip) {
-        this.ip = ip;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
     public String getsRelativePath() {
         return sRelativePath;
     }
@@ -135,6 +126,15 @@ public class PersonObject implements Serializable {
 
     public PersonObject setbRelativePath(String bRelativePath) {
         this.bRelativePath = bRelativePath;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public PersonObject setId(String id) {
+        this.id = id;
         return this;
     }
 }

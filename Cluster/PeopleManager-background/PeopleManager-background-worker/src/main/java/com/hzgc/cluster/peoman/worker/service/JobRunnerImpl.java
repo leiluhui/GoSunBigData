@@ -20,6 +20,10 @@ public class JobRunnerImpl implements JobRunner {
 
     @Autowired
     @SuppressWarnings("unused")
+    private FaceConsumer faceConsumer;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private LoadDataFromTiDB loadDataFromTiDB;
 
     @Value("lts.tasktracker.node-group")
@@ -50,6 +54,8 @@ public class JobRunnerImpl implements JobRunner {
                 innerConsumer.initInnerConsumer();
                 Thread thread = new Thread(innerConsumer);
                 thread.start();
+                faceConsumer.initFaceConsumer(workId);
+                new Thread(faceConsumer).start();
                 isRun = true;
             } else {
                 log.info("Worker is alreadt run ,worker id is ?", workId);

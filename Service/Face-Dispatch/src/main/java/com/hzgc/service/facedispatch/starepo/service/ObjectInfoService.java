@@ -1,7 +1,7 @@
 package com.hzgc.service.facedispatch.starepo.service;
 
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.facedispatch.starepo.dao.ObjectInfoMapper;
 import com.hzgc.service.facedispatch.starepo.dao.ObjectTypeMapper;
@@ -105,7 +105,7 @@ public class ObjectInfoService {
         int i = objectInfoMapper.addObjectSelective(objectInfo);
         //向告警中同步数据
         if (i == SUCCESS) {
-            float[] feature = FaceFunction.base64Str2floatFeature(objectInfo.getFeature());
+            float[] feature = FaceUtil.base64Str2floatFeature(objectInfo.getFeature());
             ObjectFeature objectFeature = new ObjectFeature();
             objectFeature.setId(objectInfo.getId());
             objectFeature.setTypeId(objectInfo.getTypeid());
@@ -168,7 +168,7 @@ public class ObjectInfoService {
     public Integer updateObjectInfo(ObjectInfo objectInfo) {
         int i = objectInfoMapper.updateObjectSelective(objectInfo);
         if (i == SUCCESS) {
-            float[] feature = FaceFunction.base64Str2floatFeature(objectInfo.getFeature());
+            float[] feature = FaceUtil.base64Str2floatFeature(objectInfo.getFeature());
             StarepoSendKafkaObject object = new StarepoSendKafkaObject();
             object.setPkey(objectInfo.getTypeid());
             object.setRowkey(objectInfo.getId());

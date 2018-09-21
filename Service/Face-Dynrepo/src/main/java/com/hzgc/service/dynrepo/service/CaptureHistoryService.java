@@ -10,6 +10,7 @@ import com.hzgc.service.dynrepo.bean.SingleCaptureResult;
 import com.hzgc.service.dynrepo.bean.SortParam;
 import com.hzgc.service.dynrepo.dao.ElasticSearchDao;
 import com.hzgc.service.dynrepo.dao.EsSearchParam;
+import com.hzgc.service.dynrepo.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class CaptureHistoryService {
 
     @Autowired
+    @SuppressWarnings("unused")
     private FtpRegisterClient ftpRegisterClient;
     @Autowired
     @SuppressWarnings("unused")
@@ -40,6 +42,7 @@ public class CaptureHistoryService {
     @SuppressWarnings("unused")
     private CaptureServiceHelper captureServiceHelper;
     @Value(value = "${ftp.port}")
+    @SuppressWarnings("unused")
     private String ftpPort;
 
     public List<SingleCaptureResult> getCaptureHistory(CaptureOption option) {
@@ -59,7 +62,7 @@ public class CaptureHistoryService {
             return getCaptureHistory(option, sortParam);
         } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
             log.info("The current query don't needs to be grouped by ipcid");
-            return getCaptureHistory(option, option.getDeviceIpcs(), sortParam);
+            return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
         } else {
             log.info("The current query is default");
             return getDefaultCaptureHistory(option, sortParam);
@@ -100,7 +103,7 @@ public class CaptureHistoryService {
 
     private List<SingleCaptureResult> getCaptureHistory(CaptureOption option, String sortParam) {
         List<SingleCaptureResult> results = new ArrayList<>();
-        for (String ipcId : option.getDeviceIpcs()) {
+        for (String ipcId : DeviceToIpcs.getIpcs(option.getDeviceIpcs())) {
             SingleCaptureResult singleResult = new SingleCaptureResult();
             List<CapturedPicture> capturedPictureList = new ArrayList<>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, ipcId, sortParam);
@@ -120,8 +123,8 @@ public class CaptureHistoryService {
                     String ip = ftpIpMapping.get(hostname);
                     capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
                     capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
-                    capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                    capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                    capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getIpc());
+                    capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimeStamp(timestamp);
                     if (ipcId.equals(ipc)) {
                         capturedPictureList.add(capturePicture);
@@ -132,8 +135,8 @@ public class CaptureHistoryService {
                 capturedPictureList.add(capturePicture);
             }
             singleResult.setTotal((int) searchHits.getTotalHits());
-            singleResult.setDeviceId(option.getIpcMappingDevice().get(ipcId).getId());
-            singleResult.setDeviceName(option.getIpcMappingDevice().get(ipcId).getName());
+            singleResult.setDeviceId(ipcId);
+            singleResult.setDeviceName(option.getIpcMapping().get(ipcId).getDeviceName());
             singleResult.setPictures(capturedPictureList);
             results.add(singleResult);
         }
@@ -164,15 +167,15 @@ public class CaptureHistoryService {
                 capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimeStamp(timestamp);
-                capturePicture.setDeviceId(option.getIpcMappingDevice().get(ipc).getId());
-                capturePicture.setDeviceName(option.getIpcMappingDevice().get(ipc).getName());
+                capturePicture.setDeviceId(ipc);
+                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                 captureList.add(capturePicture);
             }
         }
         singleResult.setTotal((int) searchHits.getTotalHits());
         singleResult.setPictures(captureList);
-        singleResult.setDeviceId(option.getDeviceIds().get(0).toString());
-        singleResult.setDeviceName(option.getIpcMappingDevice().get(option.getDeviceIpcs().get(0)).getName());
+        singleResult.setDeviceId(DeviceToIpcs.getIpcs(option.getDeviceIpcs()).get(0));
+        singleResult.setDeviceName(option.getIpcMapping().get(option.getDeviceIpcs().get(0).getIpc()).getDeviceName());
         results.add(singleResult);
         return results;
     }

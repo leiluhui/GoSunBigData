@@ -4,13 +4,12 @@ import com.hzgc.common.service.faceattribute.bean.Attribute;
 import com.hzgc.common.service.faceattribute.bean.Logistic;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.basic.IsEmpty;
-import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.FaceJNI;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.service.dynrepo.bean.SearchOption;
 import com.hzgc.service.dynrepo.bean.SortParam;
+import com.hzgc.service.dynrepo.util.DeviceToIpcs;
 import org.apache.log4j.Logger;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ class ParseByOption {
 
     static String getFinalSQLwithOption(SearchOption option, boolean printSql) throws SQLException {
         if (option.getImages().size() == 1) {
-            String feature = FaceFunction.
+            String feature = FaceUtil.
                     floatArray2string(option.getImages().get(0).getFeature().getFeature());
             return getNotOnePersonSQL(option, feature, printSql);
         } else if (!option.isSinglePerson()) {
@@ -114,7 +113,7 @@ class ParseByOption {
                 if (printSql) {
                     feature = "";
                 } else {
-                    feature = FaceFunction.floatArray2string(option.getImages().get(i).getFeature().getFeature());
+                    feature = FaceUtil.floatArray2string(option.getImages().get(i).getFeature().getFeature());
                 }
                 StringBuilder strBuilder = new StringBuilder();
                 strBuilder.append("(select ")
@@ -199,7 +198,7 @@ class ParseByOption {
                 .append(" in ")
                 .append("(");
         for (int i = 0; option.getDeviceIpcs().size() > i; i++) {
-            String ipcid = option.getDeviceIpcs().get(i);
+            String ipcid = DeviceToIpcs.getIpcs(option.getDeviceIpcs()).get(i);
             if (option.getDeviceIpcs().size() - 1 > i) {
                 finalSql.append("'")
                         .append(ipcid)
@@ -339,7 +338,7 @@ class ParseByOption {
             if (printSql) {
                 feature = "";
             } else {
-                feature = FaceFunction.
+                feature = FaceUtil.
                         floatArray2string(option.getImages().get(i).getFeature().getFeature());
             }
             prefix.append(FaceTable.FUNCTION_NAME)

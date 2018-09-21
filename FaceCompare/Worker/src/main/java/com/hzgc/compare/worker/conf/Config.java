@@ -46,7 +46,7 @@ public class Config {
         WORKER_MEMORY_CHECK_TIME = Long.parseLong(prop.getProperty("worker.memory.check.time", 1000L * 60 * 30 + ""));//内存数据的检查时间间隔
         WORKER_RECORD_TIME_OUT = Long.parseLong(prop.getProperty("work.record.time.out", 35 + ""));//内存中记录的过期时间
         WORKER_FILE_CHECK_TIME = Long.parseLong(prop.getProperty("worker.file.check.time", 24 * 60 * 60 * 1000L + "")); //文件检查时间间隔
-        WORKER_FILE_PATH = prop.getProperty("worker.file.path", "");
+        WORKER_FILE_PATH = prop.getProperty("worker.file.path", "test");
         WORKER_FILE_SIZE = Long.parseLong(prop.getProperty("worker.file.size", 128L * 1024 * 1024L + "")); //文件保存大小
         WORKER_FILE_SAVE_SYSTEM = Integer.parseInt(prop.getProperty("worker.file.save.system", 0 + "")); //数据持久化的文件系统 0 本地  1 HDFS
         WORKER_FLUSH_PROGRAM = Integer.parseInt(prop.getProperty("worker.flush.program", 0 + "")); //持久化触发方式 0 定期触发  1定量触发

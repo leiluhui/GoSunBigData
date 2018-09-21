@@ -31,4 +31,8 @@ public interface PeopleMapper {
     List<People> searchImportantPeople(Long community);
 
     List<People> searchCarePeople(Long community);
+
+    List<People> searchNewPeople(Long community);
+
+    List<People> searchOutPeople(Long community);
 }

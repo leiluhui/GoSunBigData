@@ -11,9 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @MapperScan(value = "com.hzgc.service.people.dao")
 public class PeopleApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext abc = SpringApplication.run(PeopleApplication.class, args);
-        System.out.println(abc.getBean(ABCConfig.class).getAbc());
-
+        SpringApplication.run(PeopleApplication.class, args);
     }
 
 }

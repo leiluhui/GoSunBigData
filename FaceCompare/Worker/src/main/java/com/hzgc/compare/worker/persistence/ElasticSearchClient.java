@@ -5,7 +5,7 @@ import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.jniface.FaceAttribute;
-import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.FaceUtil;
 import javafx.util.Pair;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -84,8 +84,8 @@ public class ElasticSearchClient {
             // TODO 缺IP
 //            faceObject.setIp(hit.getField(FaceTable.))
             FaceAttribute attribute = new FaceAttribute();
-            attribute.setFeature(FaceFunction.base64Str2floatFeature(hit.getField(FaceTable.FEATURE).getValue()));
-            attribute.setBitFeature(FaceFunction.base64Str2BitFeature(hit.getField(FaceTable.BITFEATURE).getValue()));
+            attribute.setFeature(FaceUtil.base64Str2floatFeature(hit.getField(FaceTable.FEATURE).getValue()));
+            attribute.setBitFeature(FaceUtil.base64Str2BitFeature(hit.getField(FaceTable.BITFEATURE).getValue()));
             attribute.setAge(hit.getField(FaceTable.AGE).getValue());
             attribute.setEyeglasses(hit.getField(FaceTable.EYEGLASSES).getValue());
             attribute.setGender(hit.getField(FaceTable.GENDER).getValue());

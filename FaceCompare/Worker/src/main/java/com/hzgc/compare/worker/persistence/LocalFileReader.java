@@ -6,15 +6,11 @@ import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 
 public class LocalFileReader extends FileReader {
@@ -234,7 +230,6 @@ class ReadFileForLocal implements Runnable{
     private LocalStreamCache streamCache = LocalStreamCache.getInstance();
     private boolean end = false;
     private List<File> list = new ArrayList<>();
-    private BASE64Decoder decoder = new BASE64Decoder();
 
     void addFile(File file){
         list.add(file);
@@ -256,7 +251,7 @@ class ReadFileForLocal implements Runnable{
     //解析数据，存入temp
     private void addRecordToMap(String[] record, Map<String, List <Pair<String, byte[]>>> temp) throws IOException {
         String key = record[0];
-        byte[] bytes = decoder.decodeBuffer(record[2]);
+        byte[] bytes = Base64.getDecoder().decode(record[2]);
         Pair<String, byte[]> value = new Pair <>(record[1], bytes);
         List<Pair<String, byte[]>> list = temp.computeIfAbsent(key, k -> new CustomizeArrayList<>());
         list.add(value);

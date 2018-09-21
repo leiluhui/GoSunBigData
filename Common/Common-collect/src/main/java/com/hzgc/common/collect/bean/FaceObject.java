@@ -16,7 +16,6 @@ public class FaceObject implements Serializable {
     private String sRelativePath;       //小图存储绝对路径(不带ftp根目录)
     private String bRelativePath;       //大图存储绝对路径(不带ftp根目录)
     private String hostname;            // 图片保存主机:hostname
-    private String ip;                  //ftp服务器ip
 
     public static FaceObject builder() {
         return new FaceObject();
@@ -101,15 +100,6 @@ public class FaceObject implements Serializable {
     public FaceObject setId(String id) {
         this.id = id;
         return this;
-    }
-
-    public FaceObject setIp(String ftpIp) {
-        this.ip = ftpIp;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
     }
 
     public String getsRelativePath() {

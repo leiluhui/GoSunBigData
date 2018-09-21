@@ -12,7 +12,7 @@ import com.hzgc.cluster.spark.util.{FaceObjectUtil, PropertiesUtil}
 import com.hzgc.common.service.facedispatch.DeviceUtilImpl
 import com.hzgc.common.service.facedispatch.table.DispatchTable
 import com.hzgc.common.util.rocketmq.RocketMQProducer
-import com.hzgc.jniface.FaceFunction
+import com.hzgc.jniface.FaceUtil
 import kafka.serializer.StringDecoder
 import org.apache.log4j.Logger
 import org.apache.spark.SparkConf
@@ -67,7 +67,7 @@ object FaceAlarmJob {
         val filterResult = new ArrayBuffer[Json]()
         if (alarmRule != null && !alarmRule.isEmpty) {
           totalList.foreach(record => {
-            val threshold = FaceFunction.featureCompare(record(2).asInstanceOf[Array[Float]], faceObj.getAttribute.getFeature)
+            val threshold = FaceUtil.featureCompare(record(2).asInstanceOf[Array[Float]], faceObj.getAttribute.getFeature)
             filterResult += Json(record(0).asInstanceOf[String], record(1).asInstanceOf[String], threshold)
           })
         } else {

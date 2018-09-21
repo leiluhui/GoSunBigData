@@ -12,7 +12,7 @@ import com.hzgc.common.util.basic.ImageUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
-import com.hzgc.jniface.FaceJNI;
+import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.jniface.SmallImage;
 import com.hzgc.seemmo.bean.ImageResult;
@@ -55,7 +55,7 @@ public class ProcessThread implements Runnable {
                 //continue;
                 //}
                 if (collectContext.getFtpTypeList().contains("face")) {
-                    ArrayList<SmallImage> smallImageList = FaceJNI.bigPictureCheck(bytes, PictureFormat.JPG);
+                    ArrayList<SmallImage> smallImageList = FaceFunction.bigPictureCheck(bytes, PictureFormat.JPG);
                     if (smallImageList != null && smallImageList.size() > 0) {
                         int index = 1;
                         for (SmallImage smallImage : smallImageList) {
@@ -157,9 +157,9 @@ public class ProcessThread implements Runnable {
                 .setsAbsolutePath(event.getsAbsolutePath())
                 .setHostname(event.getHostname())
                 .setId(faceId)
-                .setIp(collectContext.getFtpIp())
                 .setsRelativePath(event.getsRelativePath())
-                .setbRelativePath(event.getbRelativePath());
+                .setbRelativePath(event.getbRelativePath())
+                .setId(faceId);
         collectContext.getKafkaProducer().sendKafkaMessage(
                 collectContext.getKafkaFaceObjectTopic(),
                 faceId,
@@ -179,9 +179,9 @@ public class ProcessThread implements Runnable {
                 .setsAbsolutePath(event.getsAbsolutePath())
                 .setbFtpUrl(event.getbFtpUrl())
                 .setsFtpUrl(event.getsFtpUrl())
-                .setIp(collectContext.getFtpIp())
                 .setsRelativePath(event.getsRelativePath())
-                .setbRelativePath(event.getbRelativePath());
+                .setbRelativePath(event.getbRelativePath())
+                .setId(pesonId);
 
         collectContext.getKafkaProducer().sendKafkaMessage(
                 collectContext.getKafkaPersonObjectTopic(),
@@ -202,9 +202,9 @@ public class ProcessThread implements Runnable {
                 .setsAbsolutePath(event.getsAbsolutePath())
                 .setbFtpUrl(event.getbFtpUrl())
                 .setsFtpUrl(event.getsFtpUrl())
-                .setIp(collectContext.getFtpIp())
                 .setsRelativePath(event.getsRelativePath())
-                .setbRelativePath(event.getbRelativePath());
+                .setbRelativePath(event.getbRelativePath())
+                .setId(carId);
         collectContext.getKafkaProducer().sendKafkaMessage(
                 collectContext.getKafkaCarObjectTopic(),
                 carId,

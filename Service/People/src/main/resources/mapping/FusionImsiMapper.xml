@@ -17,6 +17,13 @@
     from t_fusion_imsi
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!--聚焦人员一个月内(30天)抓拍、电围数据查询-->
+  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select receivetime, deviceid, imsi
+    from t_fusion_imsi
+    where DATE_FORMAT(receivetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    and peopleid = #{peopleid,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_fusion_imsi
     where id = #{id,jdbcType=BIGINT}

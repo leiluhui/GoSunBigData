@@ -8,7 +8,7 @@ import com.hzgc.collect.service.processer.RocketMQProducer;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
-import com.hzgc.jniface.FaceJNI;
+import com.hzgc.jniface.FaceFunction;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,10 +177,10 @@ public class CollectContext implements Serializable {
     private void initDetector() {
         log.info("Init face detector, number is " + faceDetectorNumber);
         if (faceDetectorNumber == 0) {
-            FaceJNI.init();
+            FaceFunction.init();
         } else {
             for (int i = 0; i < faceDetectorNumber; i++) {
-                FaceJNI.init();
+                FaceFunction.init();
             }
         }
     }

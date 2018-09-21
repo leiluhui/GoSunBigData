@@ -2,6 +2,7 @@ package com.hzgc.compare.worker.util;
 
 import com.google.gson.Gson;
 import com.hzgc.common.collect.bean.FaceObject;
+import com.hzgc.jniface.FaceAttribute;
 
 public class FaceObjectUtil {
     private static Gson gson;
@@ -11,6 +12,8 @@ public class FaceObjectUtil {
     public static FaceObject jsonToObject(String json) {
         return gson.fromJson(json, FaceObject.class);
     }
+
+    public static FaceAttribute jsonToAttribute(String json) {return gson.fromJson(json, FaceAttribute.class); }
 
     public static float[] jsonToArray(String json) {return  gson.fromJson(json, float[].class); }
 

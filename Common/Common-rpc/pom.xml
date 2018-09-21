@@ -74,5 +74,9 @@
             <artifactId>jackson-core</artifactId>
             <version>2.9.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
     </dependencies>
 </project>

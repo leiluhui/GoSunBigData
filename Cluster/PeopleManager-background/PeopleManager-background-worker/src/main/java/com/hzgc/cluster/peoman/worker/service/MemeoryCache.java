@@ -38,7 +38,7 @@ public class MemeoryCache {
     private ReentrantLock lock = new ReentrantLock();
 
     public MemeoryCache() {
-        FaceJNI.init();
+        FaceFunction.init();
     }
 
     void putData(List<ComparePicture> pictureList) {
@@ -71,7 +71,7 @@ public class MemeoryCache {
             byte[][] queryList = new byte[1][];
             queryList[0] = bitFeature;
             ArrayList<CompareResult> compareResList =
-                    FaceJNI.faceCompareBit(bitFeatureList.toArray(new byte[0][]), queryList, 1);
+                    FaceFunction.faceCompareBit(bitFeatureList.toArray(new byte[0][]), queryList, 1);
             CompareResult compareResult = compareResList.get(0);
             ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
             FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
@@ -88,9 +88,9 @@ public class MemeoryCache {
                 Picture picture = pictureMapper.selectByPictureId(comparePicture.getId());
                 String floatFeatureStr = picture.getFeature();
                 if (floatFeatureStr != null && !"".equals(floatFeatureStr)) {
-                    float[] floatFeature = FaceFunction.base64Str2floatFeature(floatFeatureStr);
+                    float[] floatFeature = FaceUtil.base64Str2floatFeature(floatFeatureStr);
                     if (floatFeature.length == 512 && faceAttribute.getFeature().length == 512) {
-                        float sim = FaceFunction.featureCompare(floatFeature, faceAttribute.getFeature());
+                        float sim = FaceUtil.featureCompare(floatFeature, faceAttribute.getFeature());
                         if (sim >= this.floatThreshold) {
                             return comparePicture;
                         } else {

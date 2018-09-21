@@ -1,5 +1,6 @@
 package com.hzgc.service.dynperson.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.api.bean.DeviceDTO;
 import io.swagger.annotations.ApiModel;
@@ -17,11 +18,6 @@ import java.util.Map;
 @Slf4j
 @ToString
 public class CaptureOption implements Serializable {
-
-
-    //搜索的deviceId列表
-    @ApiModelProperty(value ="搜索的deviceId列表")
-    private List<Long> deviceIds;
 
     //截止日期,格式：xxxx-xx-xx xx:xx:xx
     @ApiModelProperty(value ="截止日期")
@@ -48,11 +44,12 @@ public class CaptureOption implements Serializable {
     private List<PersonAttribute> attributes;
 
     //搜索的设备IPC列表
-    @ApiModelProperty(value ="搜索的设备IPC列表")
-    private List<String> deviceIpcs;
+    @ApiModelProperty(value ="指定搜索设备ID列表")
+    private List<Device> devices;
 
     // ipc mapping device id
-    private Map<String, DeviceDTO> ipcMappingDevice;
+    @JsonIgnore
+    private Map<String, Device> ipcMapping;
 
 
 }

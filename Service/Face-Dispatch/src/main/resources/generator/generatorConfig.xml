@@ -12,14 +12,14 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!-- 数据库 url,用户名,密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.105/zhaozhe"
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.105:3306/zhaozhe"
                         userId="root" password="Hzgc@123">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!-- 指定生成模型的包名和位置-->
-        <javaModelGenerator targetPackage="com.hzgc.service.facedispatch.starepo.model" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.hzgc.service.facedispatch.model" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -28,7 +28,7 @@
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- 生成DAO的包名和位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hzgc.service.facedispatch.starepo.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hzgc.service.facedispatch.dao"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>

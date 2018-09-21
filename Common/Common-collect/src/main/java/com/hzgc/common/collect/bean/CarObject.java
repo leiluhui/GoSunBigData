@@ -5,6 +5,7 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import java.io.Serializable;
 
 public class CarObject implements Serializable {
+    private String id;                  //对象唯一ID
     private String ipcId;               // 设备ID
     private String timeStamp;           // 时间（格式：2017-01-01 00：00：00）
     private Vehicle attribute;          // 车辆属性对象
@@ -17,7 +18,6 @@ public class CarObject implements Serializable {
     private String hostname;            // 图片保存主机:hostname
     private String feature;             //float特征值
     private String bitfeature;          //bit特征值
-    private String ip;
 
     public static CarObject builder() {
         return new CarObject();
@@ -111,15 +111,6 @@ public class CarObject implements Serializable {
         this.bitfeature = bitfeature;
     }
 
-    public CarObject setIp(String ip) {
-        this.ip = ip;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
     public String getsRelativePath() {
         return sRelativePath;
     }
@@ -135,6 +126,15 @@ public class CarObject implements Serializable {
 
     public CarObject setbRelativePath(String bRelativePath) {
         this.bRelativePath = bRelativePath;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public CarObject setId(String id) {
+        this.id = id;
         return this;
     }
 }

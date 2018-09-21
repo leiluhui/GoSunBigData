@@ -3,12 +3,11 @@ package com.hzgc.cluster.peoman.worker.service;
 import com.google.common.base.Stopwatch;
 import com.hzgc.cluster.peoman.worker.dao.PictureMapper;
 import com.hzgc.cluster.peoman.worker.model.Picture;
-import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -41,8 +40,10 @@ class LoadDataFromTiDB {
                     picture.getPeopleId() != null) {
                 ComparePicture comparePicture = new ComparePicture();
                 comparePicture.setId(picture.getId());
-                comparePicture.setBitFeature(FaceFunction.base64Str2BitFeature(picture.getBitFeature()));
+                comparePicture.setBitFeature(FaceUtil.base64Str2BitFeature(picture.getBitFeature()));
                 comparePicture.setPeopleId(picture.getPeopleId());
+                comparePicture.setFlagId(picture.getFlagId());
+                comparePicture.setName(picture.getName());
                 comparePictureList.add(comparePicture);
             }
         }

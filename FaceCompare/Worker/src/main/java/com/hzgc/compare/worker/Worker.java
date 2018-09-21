@@ -9,7 +9,7 @@ import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.memory.manager.MemoryManager;
 import com.hzgc.compare.worker.persistence.*;
 import com.hzgc.compare.worker.util.HBaseHelper;
-import com.hzgc.jniface.FaceJNI;
+import com.hzgc.jniface.FaceFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,11 +27,11 @@ public class Worker {
 //    private HBaseClient hBaseClient;
 
 
-    public void init(String workId, String port){
-        Config.WORKER_ID = workId;
+    public void init(String workerId, String port){
+        Config.WORKER_ID = workerId;
         Config.WORKER_RPC_PORT =  Integer.parseInt(port);
         comsumer = new Comsumer();
-        logger.info("To start worker " + workId);
+        logger.info("To start worker " + workerId);
         logger.info("To init the memory module.");
         MemoryCacheImpl.getInstance();
         memoryManager = new MemoryManager();
@@ -67,13 +67,13 @@ public class Worker {
         if(Config.WORKER_FLUSH_PROGRAM == 0){
             memoryManager.timeToCheckFlush();
         }
-//        fileManager.checkFile();
+        // FIXME: 18-9-21 
         fileManager.checkTaskTodo();
 //        fileManager.checkFile();
 //        hBaseClient.timeToWrite();
-        Thread thread = new Thread(new RPCRegistry());
-        thread.start();
-        FaceJNI.init();
+//        Thread thread = new Thread(new RPCRegistry());
+//        thread.start();
+        FaceFunction.init();
     }
 
     public static void main(String args[]){
@@ -87,8 +87,22 @@ public class Worker {
         String taskId = args[3];
         Worker worker = new Worker();
         worker.init(workerId, port);
-        worker.start();
-        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
+        RPCRegistry rpcRegistry = new RPCRegistry(workerId, nodeGroup, port, taskId);
+        Thread thread = new Thread(rpcRegistry);
         thread.start();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        if(!rpcRegistry.checkJob()){
+            logger.error("Registry to Zookeeper faild.");
+            System.exit(1);
+        }
+        worker.start();
+
+//        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
+//        thread.start();
     }
 }

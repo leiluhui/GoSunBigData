@@ -1,10 +1,11 @@
 package com.hzgc.service.collect.service;
 
+import com.alibaba.fastjson.JSON;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.FaceJNI;
 import com.hzgc.jniface.PictureData;
+import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.collect.util.FtpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,11 @@ public class FaceExtractService {
 
     public FaceExtractService() {
         try {
-            log.info("Start FaceJNI init....");
-             FaceJNI.init();
-            log.info("Init FaceJNI successful!");
+            log.info("Start FaceFunction init....");
+             FaceFunction.init();
+            log.info("Init FaceFunction successful!");
         } catch (Exception e) {
-            log.error("Init FaceJNI failure!");
+            log.error("Init FaceFunction failure!");
             e.printStackTrace();
         }
     }
@@ -38,7 +39,10 @@ public class FaceExtractService {
         PictureData pictureData = new PictureData();
         pictureData.setImageID(UuidUtil.getUuid());
         pictureData.setImageData(imageBytes);
-        FaceAttribute faceAttribute = FaceFunction.featureExtract(imageBytes);
+        log.info("imageBytes: " + JSON.toJSONString(imageBytes));
+        log.info("Start extract feature");
+        FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(imageBytes, PictureFormat.JPG);
+        log.info("ok");
         if (faceAttribute != null) {
             log.info("Face extract successful, image contains feature");
             pictureData.setFeature(faceAttribute);

@@ -5,6 +5,7 @@ import com.hzgc.common.service.facedynrepo.PersonTable;
 import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.bean.PersonAttributeValue;
 import com.hzgc.service.dynperson.bean.CaptureOption;
+import com.hzgc.service.dynperson.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -85,9 +86,9 @@ public class ElasticSearchDao {
         }
 
         BoolQueryBuilder devicebuilder = QueryBuilders.boolQuery();
-        if (option.getDeviceIpcs().size() > 0){
+        if (option.getDevices().size() > 0){
 
-        for (String deviceIpc:option.getDeviceIpcs()){
+        for (String deviceIpc: DeviceToIpcs.getIpcs(option.getDevices())){
             devicebuilder.should(QueryBuilders.matchPhraseQuery(PersonTable.IPCID,deviceIpc));
         }
 

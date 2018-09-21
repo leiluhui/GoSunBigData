@@ -3,7 +3,7 @@ package com.hzgc.service.people.service;
 import com.github.pagehelper.PageHelper;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.FaceJNI;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.model.*;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +97,13 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceJNI.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
             }
-            picture.setFeature(FaceFunction.floatFeature2Base64Str(faceAttribute.getFeature()));
-            picture.setBitfeature(FaceFunction.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
             int insertStatus = pictureMapper.insertSelective(picture);
             if (insertStatus != 1) {
                 log.info("Insert people, but insert picture to t_picture failed");
@@ -132,13 +131,13 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceJNI.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
             }
-            picture.setFeature(FaceFunction.floatFeature2Base64Str(faceAttribute.getFeature()));
-            picture.setBitfeature(FaceFunction.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
             int insertStatus = pictureMapper.insertSelective(picture);
             if (insertStatus != 1) {
                 log.info("Update people, but insert picture to t_picture failed");

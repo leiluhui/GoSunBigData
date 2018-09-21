@@ -8,7 +8,7 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.facedispatch.dispatch.bean.*;
 import com.hzgc.service.facedispatch.dispatch.service.WarnRuleService;
-import com.hzgc.service.facedispatch.dispatch.util.IpcIdsUtil;
+import com.hzgc.service.facedispatch.dispatch.util.IdsUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +37,12 @@ public class WarnRuleController {
     @ApiOperation(value = "根据规则id获取规则详情", response = ResponseResult.class)
     @ApiImplicitParam(name = "id", value = "规则id", required = true, dataType = "string", paramType = "query")
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_BYID, method = RequestMethod.GET)
-    public ResponseResult<Dispatch> getRuleInfo(String id) {
-        if (null != id) {
-            log.info("Get rule info , param is " + id);
+    public ResponseResult<Dispatch> getRuleInfo(String ruleId) {
+        if (null != ruleId) {
+            log.info("Get rule info , param is " + ruleId);
             ResponseResult<Dispatch> responseResult = null;
             try {
-                responseResult = warnRuleService.searchByRuleId(id);
+                responseResult = warnRuleService.searchByRuleId(ruleId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,43 +57,23 @@ public class WarnRuleController {
     @RequestMapping(value = BigDataPath.DISPATCH_ADD, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseResult<String> addRule(@RequestBody @ApiParam(value = "规则配置参数", required = true) Dispatch dispatch) throws IOException {
         if (null != dispatch) {
-            List<String> ipcIDs = new ArrayList<>();
             List<Warn> warnList;
             log.info("Add rule , param is " + JacksonUtil.toJson(dispatch));
             //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
-            List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
-            Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(list);
-            //设置ipcid
-            for (String s : map.keySet()) {
-                DeviceDTO deviceDTO = map.get(s);
-                String ipcid = deviceDTO.getSerial();
-                if (null != ipcid && ipcid.length() > 0){
-                    ipcIDs.add(ipcid);
-                    for (Device device:deviceList){
-                        String id = device.getId();
-                        if (id.equals(s)){
-                            device.setIpcId(ipcid);
-                        }
-                    }
-                }else {
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"设备" + deviceDTO.getName() +
-                            "未设置序列号,请配置序列号,重新添加");
-                }
-            }
+            List<String> list = IdsUtil.toDeviceIdList(deviceList);
             //参数封装
             warnList = dispatch.getRule().getWarns();
-            Map<String, Dispatch> dispatchMap = IpcIdsUtil.toDispatchMap(dispatch);
+            Map<String, Dispatch> dispatchMap = IdsUtil.toDispatchMap(dispatch);
             ResponseResult<String> responseResult = warnRuleService.saveOriginData(dispatchMap);
             if (responseResult.getHead().getErrorCode() == RestErrorCode.DB_DUPLICAET_KEY ||
                     responseResult.getHead().getErrorCode() == RestErrorCode.ERR_DEVICE_ALREADY_BIND_RULE) {
                 return responseResult;
             }
             //调用大数据接口
-            ipcIDs.removeAll(Collections.singleton(null));
-            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs) + " warn list is " + JacksonUtil.toJson(warnList));
-            if (ipcIDs.size() > 0 && null != warnList && warnList.size() > 0) {
-                warnRuleService.configRules(ipcIDs, warnList);
+            log.info("Bigdata param , ids is " + JacksonUtil.toJson(list) + " warn list is " + JacksonUtil.toJson(warnList));
+            if (list.size() > 0 && null != warnList && warnList.size() > 0) {
+                warnRuleService.configRules(list, warnList);
             }
             return responseResult;
         }
@@ -105,36 +85,16 @@ public class WarnRuleController {
     @RequestMapping(value = BigDataPath.DISPATCH_MODIFY, method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseResult<Boolean> updateRule(@RequestBody Dispatch dispatch) throws IOException {
         if (null != dispatch) {
-            List<String> ipcIDs = new ArrayList<>();
             List<Warn> warnList;
             log.info("Update rule , param is " + JacksonUtil.toJson(dispatch));
-            //通过设备id查找ipcid
             List<Device> deviceList = dispatch.getDevices();
-            List<Long> list = IpcIdsUtil.toDeviceIdList(deviceList);
-            Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(list);
-            for (String s : map.keySet()) {
-                DeviceDTO deviceDTO = map.get(s);
-                String ipcid = deviceDTO.getSerial();
-                if (null != ipcid && ipcid.length() > 0){
-                    ipcIDs.add(ipcid);
-                    for (Device device:deviceList){
-                        String id = device.getId();
-                        if (id.equals(s)){
-                            device.setIpcId(ipcid);
-                        }
-                    }
-                }else {
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"设备" + deviceDTO.getName() +
-                            "未设置序列号,请配置序列号,重新修改");
-                }
-            }
+            List<String> list = IdsUtil.toDeviceIdList(deviceList);
             warnList = dispatch.getRule().getWarns();
             ResponseResult<Boolean> responseResult = warnRuleService.updateRule(dispatch);
             //调用大数据接口
-            ipcIDs.removeAll(Collections.singleton(null));
-            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs) + " warn list is " + JacksonUtil.toJson(warnList));
-            if (ipcIDs.size() > 0 && null != warnList && warnList.size() > 0) {
-                warnRuleService.configRules(ipcIDs, warnList);
+            log.info("Bigdata param , ids is " + JacksonUtil.toJson(list) + " warn list is " + JacksonUtil.toJson(warnList));
+            if (list.size() > 0 && null != warnList && warnList.size() > 0) {
+                warnRuleService.configRules(list, warnList);
             }
             return responseResult;
         }
@@ -144,19 +104,13 @@ public class WarnRuleController {
 
     @ApiOperation(value = "删除规则", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DELETE, method = RequestMethod.DELETE, consumes = "application/json", produces = "application/json")
-    public ResponseResult<Boolean> delRules(@RequestBody IdsType<String> idsType) throws IOException {
-        if (null != idsType) {
-            log.info("Delete rules , param is " + idsType.toString());
-            List<Long> ids = warnRuleService.delRules(idsType);
-            Map<String, DeviceDTO> map = deviceQueryService.getDeviceInfoByBatchId(ids);
-            List<String> ipcIDs = new ArrayList<>();
-            for (String s : map.keySet()) {
-                ipcIDs.add(map.get(s).getSerial());
-            }
-            ipcIDs.removeAll(Collections.singleton(null));
+    public ResponseResult<Boolean> delRules(@RequestBody RuleIds<String> ruleIds) throws IOException {
+        if (null != ruleIds) {
+            log.info("Delete rules , param is " + JacksonUtil.toJson(ruleIds));
+            List<String> ids = warnRuleService.delRules(ruleIds);
             //调用大数据接口
-            log.info("Bigdata param , ipcIDs is " + JacksonUtil.toJson(ipcIDs));
-            warnRuleService.deleteRules(ipcIDs);
+            log.info("Bigdata param , ids is " + JacksonUtil.toJson(ids));
+            warnRuleService.deleteRules(ids);
             return ResponseResult.init(true);
         }
         log.info("Delete rules , param is null");

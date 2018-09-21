@@ -29,6 +29,26 @@ if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi
 
+
+#####################################################################
+# 函数名: master_protect
+# 描述: master 启动的时候，为master添加定时检测服务是否挂掉脚本，保证master挂掉后可以重新拉起
+# 参数: N/A
+# 返回值: N/A
+# 其他: N/A
+#####################################################################
+function master_protect()
+{
+    isExistProtest=$(grep master-protect /etc/crontab | wc -l)
+    if [ "${isExistProtest=}" == "1" ];then
+        echo "master_protect already exist"
+    else
+        echo "master_protect not exist, add master_protect into crontab"
+        echo "* */1 * * * root sync;sh ${BIN_DIR}/master-protect.sh" >> /etc/crontab
+        service crond restart
+    fi
+}
+
 #####################################################################
 # 函数名: start_master
 # 描述: 启动master
@@ -42,4 +62,5 @@ function start_master()
     echo "start master ..."
 }
 
+#master_protect
 start_master
