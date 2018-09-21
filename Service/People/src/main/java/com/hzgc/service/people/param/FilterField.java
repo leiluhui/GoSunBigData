@@ -25,7 +25,7 @@ public class FilterField implements Serializable {
     @ApiModelProperty(value = "人员ID列表")
     private List<String> peopleIds;
 
-    public static FilterField SearchParamShift(SearchParam param) {
+    public static FilterField SearchParamShift(SearchParamDTO param) {
         FilterField field = new FilterField();
         field.setRegionid(param.getRegionId());
         field.setCommunityid(param.getCommunityId());

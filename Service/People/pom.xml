@@ -82,7 +82,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hzgc.service.people.PeopleApplication</mainClass>
+                    <mainClass>com.hzgc.service.PeopleApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
