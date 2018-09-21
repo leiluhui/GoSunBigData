@@ -483,4 +483,8 @@ public class PeopleService {
         }
         return list;
     }
+
+    public List<Long> searchCommunityIdsByRegionId(Long regionId) {
+        return  peopleMapper.searchCommunityIdsByRegionId(regionId);
+    }
 }

@@ -322,4 +322,17 @@ public class PeopleController {
         log.info("Start search people successfully, result:" + JacksonUtil.toJson(peoples));
         return ResponseResult.init(peoples);
     }
+
+    @ApiOperation(value = "统计单个区域下所有小区列表", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SELECT_COMMUNITY, method = RequestMethod.GET)
+    public ResponseResult<List<Long>> searchCommunityIdsByRegionId(Long regionId) {
+        if (regionId == null) {
+            log.info("start search community id list, but region is null");
+            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
+        }
+        log.info("Start search community id list, region is:" + regionId);
+        List<Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
+        log.info("Start search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
+        return ResponseResult.init(communityIds);
+    }
 }
