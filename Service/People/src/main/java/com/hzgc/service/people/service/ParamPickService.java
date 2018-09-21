@@ -29,7 +29,7 @@ public class ParamPickService {
     public List<Param> getEdulevelPick() {
         Map<Integer, String> map = Edulevel.getEdulevel();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()){
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
             list.add(new Param(entry.getKey(), entry.getValue()));
         }
         return list;
@@ -38,7 +38,7 @@ public class ParamPickService {
     public List<Param> getFlagPick() {
         Map<Integer, String> map = Flag.getFlag();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()){
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
             list.add(new Param(entry.getKey(), entry.getValue()));
         }
         return list;
@@ -47,7 +47,7 @@ public class ParamPickService {
     public List<Param> getPoliticPick() {
         Map<Integer, String> map = Politic.getPolitic();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()){
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
             list.add(new Param(entry.getKey(), entry.getValue()));
         }
         return list;
@@ -56,7 +56,7 @@ public class ParamPickService {
     public List<Param> getProvincesPick() {
         Map<Integer, String> map = Provinces.getProvince();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()){
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
             list.add(new Param(entry.getKey(), entry.getValue()));
         }
         return list;
@@ -65,7 +65,7 @@ public class ParamPickService {
     public List<Param> getCityPick(int index) {
         Map<Integer, String> map = Provinces.getCity(index);
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()){
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
             list.add(new Param(entry.getKey(), entry.getValue()));
         }
         return list;
@@ -73,7 +73,7 @@ public class ParamPickService {
 
     @ApiModel(value = "返回选项封装")
     @Data
-    public class Param implements Serializable{
+    public class Param implements Serializable {
         @ApiModelProperty(value = "下标")
         private int index;
         @ApiModelProperty(value = "选项")

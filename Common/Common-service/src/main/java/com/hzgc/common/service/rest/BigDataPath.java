@@ -40,13 +40,15 @@ public class BigDataPath {
     public static final String PEOPLE_SEARCH_PICTURE_BY_PICID="/search_picture_picid";
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";
+    public static final String PEOPLE_SELECT_COMMUNITY="/search_community";
 
-    public static final String COMMUNITY_COUNT = "/count";
+    public static final String COMMUNITY_COUNT = "/count_people";
     public static final String COMMUNITY_PEOPLE = "/people";
-    public static final String COMMUNITY_PEOPLE_STATUS = "/people_status";
+    public static final String COMMUNITY_PEOPLE_IMPORTANT = "/people_important";
     public static final String COMMUNITY_PEOPLE_CARE = "/people_care";
     public static final String COMMUNITY_PEOPLE_NEW = "/people_new";
     public static final String COMMUNITY_PEOPLE_OUT = "/people_out";
+    public static final String COMMUNITY_SUGGEST_COUNT = "/suggest_count";
     public static final String COMMUNITY_SUGGEST_NEW = "/suggest_new";
     public static final String COMMUNITY_SUGGEST_OUT = "/suggest_out";
     public static final String COMMUNITY_AFFIRM_NEW = "/affirm_new";

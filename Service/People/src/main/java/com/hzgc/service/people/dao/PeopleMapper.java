@@ -20,6 +20,8 @@ public interface PeopleMapper {
 
     List<People> searchPeople(FilterField field);
 
+    List<Long> searchCommunityIdsByRegionId(Long region);
+
     int countCommunityPeople(Long community);
 
     int countImportantPeople(Long community);

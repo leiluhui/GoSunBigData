@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@ApiModel(value ="前端入参封装类")
+@ApiModel(value = "前端入参封装类")
 @Data
 public class PeopleDTO implements Serializable {
     @ApiModelProperty(value = "人员全局ID")
@@ -54,7 +54,7 @@ public class PeopleDTO implements Serializable {
     @ApiModelProperty(value = "车辆列表")
     private List<String> car;
 
-    public People peopleDTOShift_insert(PeopleDTO peopleDTO){
+    public People peopleDTOShift_insert(PeopleDTO peopleDTO) {
         People people = new People();
         people.setId(UuidUtil.getUuid().toUpperCase());
         people.setName(peopleDTO.name);

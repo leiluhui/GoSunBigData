@@ -38,14 +38,14 @@ public class ParamPickController {
     @ApiOperation(value = "政治面貌选项", response = ParamPickService.Param.class)
     @RequestMapping(value = BigDataPath.PEOPLE_POLITIC, method = RequestMethod.GET)
     public ResponseResult<List<ParamPickService.Param>> getPoliticPick() {
-        List<ParamPickService.Param> list =  paramPickService.getPoliticPick();
+        List<ParamPickService.Param> list = paramPickService.getPoliticPick();
         return ResponseResult.init(list);
     }
 
     @ApiOperation(value = "全国省级目录选项", response = ParamPickService.Param.class)
     @RequestMapping(value = BigDataPath.PEOPLE_PROVINCES, method = RequestMethod.GET)
     public ResponseResult<List<ParamPickService.Param>> getProvincesPick() {
-        List<ParamPickService.Param> list =  paramPickService.getProvincesPick();
+        List<ParamPickService.Param> list = paramPickService.getProvincesPick();
         return ResponseResult.init(list);
     }
 
@@ -53,11 +53,11 @@ public class ParamPickController {
     @ApiOperation(value = "市级目录选项", response = ParamPickService.Param.class)
     @RequestMapping(value = BigDataPath.PEOPLE_CITY, method = RequestMethod.GET)
     public ResponseResult<List<ParamPickService.Param>> getCityPick(Integer index) {
-        if (index == null){
+        if (index == null) {
             log.error("Start city pick, but index is null ");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
         }
-        List<ParamPickService.Param> list =  paramPickService.getCityPick(index);
+        List<ParamPickService.Param> list = paramPickService.getCityPick(index);
         return ResponseResult.init(list);
     }
 }

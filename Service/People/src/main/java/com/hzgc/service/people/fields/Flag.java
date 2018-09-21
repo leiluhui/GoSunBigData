@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-public class Flag implements Serializable{
+public class Flag implements Serializable {
     private static Map<Integer, String> model = new LinkedHashMap<>();
 
     static {
@@ -23,11 +23,11 @@ public class Flag implements Serializable{
         model.put(9, "关爱人员");
     }
 
-    public static Map<Integer, String> getFlag(){
+    public static Map<Integer, String> getFlag() {
         return model;
     }
 
-    public static String getFlag(Integer index){
+    public static String getFlag(Integer index) {
         return model.get(index);
     }
 }
