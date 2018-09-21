@@ -20,7 +20,7 @@ public class CaptureOption implements Serializable {
     private String endTime;
     //搜索的设备IPC列表
     private List<String> deviceIpcs;
-    // ipc community-mapping device id
+    // ipc mapping device id
     private Map<String, DeviceDTO> ipcMappingDevice;
     // 属性
     private List<VehicleAttribute> attributes;

@@ -51,7 +51,7 @@ public class CaptureOption implements Serializable {
     @ApiModelProperty(value ="搜索的设备IPC列表")
     private List<String> deviceIpcs;
 
-    // ipc community-mapping device id
+    // ipc mapping device id
     private Map<String, DeviceDTO> ipcMappingDevice;
 
 

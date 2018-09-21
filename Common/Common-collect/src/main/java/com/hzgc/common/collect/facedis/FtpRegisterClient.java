@@ -25,7 +25,7 @@ public class FtpRegisterClient implements Serializable {
     private volatile List<FtpRegisterInfo> carFtpRegisterInfoList = new CopyOnWriteArrayList<>();
     // person ftp total register info
     private volatile List<FtpRegisterInfo> personFtpRegisterInfoList = new CopyOnWriteArrayList<>();
-    // ftp ip and hostname community-mapping (key:hostname,value:ip)
+    // ftp ip and hostname mapping (key:hostname,value:ip)
     private volatile Map<String, String> ftpIpMapping = new ConcurrentHashMap<>();
     private final String ftp_register_path = "/ftp_register";
     private Curator registerClient;
@@ -124,7 +124,7 @@ public class FtpRegisterClient implements Serializable {
             LOG.info("Face ftp register info:" + Arrays.toString(faceFtpRegisterInfoList.toArray()));
             LOG.info("Car ftp register info:" + Arrays.toString(carFtpRegisterInfoList.toArray()));
             LOG.info("Person ftp register info:" + Arrays.toString(personFtpRegisterInfoList.toArray()));
-            LOG.info("Ftp ip and hostname community-mapping:" + JacksonUtil.toJson(ftpIpMapping));
+            LOG.info("Ftp ip and hostname mapping:" + JacksonUtil.toJson(ftpIpMapping));
             LOG.info("*************************************************************");
         }
     }
