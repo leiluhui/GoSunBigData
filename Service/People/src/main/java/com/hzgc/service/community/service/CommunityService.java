@@ -2,6 +2,7 @@ package com.hzgc.service.community.service;
 
 import com.github.pagehelper.PageHelper;
 import com.hzgc.service.community.dao.*;
+import com.hzgc.service.community.model.CountCommunityPeople;
 import com.hzgc.service.community.param.*;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.community.model.DeviceRecognize;
@@ -93,7 +94,43 @@ public class CommunityService {
     }
 
     public List<SuggestPeopleVO> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
-       return null;
+        List<CountCommunityPeople> suggestNewCount = newPeopleMapper.countSuggestNewPeople(param);
+        List<CountCommunityPeople> suggestOutCount = peopleMapper.countSuggestOutPeople(param);
+        List<CountCommunityPeople> confirmNewCount = confirmRecordMapper.countConfirmNewPeople(param);
+        List<CountCommunityPeople> confirmOutCount = confirmRecordMapper.countConfirmOutPeople(param);
+        List<Long> communityIdList = param.getCommunityIdList();
+        List<SuggestPeopleVO> voList = new ArrayList<>();
+        for (Long communityId : communityIdList){
+            SuggestPeopleVO vo = new SuggestPeopleVO();
+            // TODO 名字
+            vo.setCommunityName(String.valueOf(communityId));
+            for (CountCommunityPeople suggestNew : suggestNewCount){
+                if (suggestNew.getCommunity().equals(communityId)){
+                    vo.setSuggestNewCount(suggestNew.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople suggestOut : suggestOutCount){
+                if (suggestOut.getCommunity().equals(communityId)){
+                    vo.setSuggestOutCount(suggestOut.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople confirmNew : confirmNewCount){
+                if (confirmNew.getCommunity().equals(communityId)){
+                    vo.setConfirmNewCount(confirmNew.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople confirmOut : confirmOutCount){
+                if (confirmOut.getCommunity().equals(communityId)){
+                    vo.setConfirmOutCount(confirmOut.getCount());
+                    break;
+                }
+            }
+            voList.add(vo);
+        }
+       return voList;
     }
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {

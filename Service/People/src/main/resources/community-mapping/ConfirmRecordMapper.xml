@@ -4,11 +4,16 @@
     <resultMap id="BaseResultMap" type="com.hzgc.service.community.model.ConfirmRecord">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="peopleid" property="peopleid" jdbcType="VARCHAR"/>
+        <result column="community" property="community" jdbcType="BIGINT"/>
         <result column="month" property="month" jdbcType="VARCHAR"/>
         <result column="flag" property="flag" jdbcType="INTEGER"/>
     </resultMap>
+    <resultMap id="CountResultMap" type="com.hzgc.service.community.model.CountCommunityPeople" >
+        <result column="community" property="community" jdbcType="BIGINT" />
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
     <sql id="Base_Column_List">
-        id, peopleid, month, flag
+        id, peopleid, community, month, flag
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
@@ -18,27 +23,65 @@
     </select>
     <!--统计上月小区新增人口数量（上月确认迁入数量）-->
     <select id="countNewPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
-        select count(*) from t_people, t_confirm_record
+        select count(peopleid)
+        from t_confirm_record
         where t_confirm_record.flag = 1
-        and t_people.id = t_confirm_record.peopleid
-        and t_people.community = #{community,jdbcType=BIGINT}
+        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and community = #{community,jdbcType=BIGINT}
     </select>
     <!--统计上月小区迁出人口数量（上月确认迁出数量）-->
     <select id="countOutPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
-        select count(*) from t_people, t_confirm_record
+        select count(peopleid)
+        from t_confirm_record
         where t_confirm_record.flag = 2
-        and t_people.id = t_confirm_record.peopleid
-        and t_people.community = #{community,jdbcType=BIGINT}
+        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and community = #{community,jdbcType=BIGINT}
+    </select>
+    <!--统计某小区某月确认迁入数量-->
+    <select id="countConfirmNewPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+        select community, count(peopleid) as count
+        from t_people_new
+        <where>
+            t_confirm_record.flag = 1
+            <if test="month != null and month.length() = 6" >
+                and month = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="communityIdList != null and communityIdList.size() > 0" >
+                and community in
+                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
+            </if>
+        </where>
+        group by community
+    </select>
+    <!--统计某小区某月确认迁出数量-->
+    <select id="countConfirmOutPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+        select community, count(peopleid) as count
+        from t_confirm_record
+        <where>
+            t_confirm_record.flag = 2
+            <if test="month != null and month.length() = 6" >
+                and month = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="communityIdList != null and communityIdList.size() > 0" >
+                and community in
+                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
+            </if>
+        </where>
+        group by community
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_confirm_record
         where id = #{id,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.hzgc.service.community.model.ConfirmRecord">
-        insert into t_confirm_record (id, peopleid, month,
-        flag)
-        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR},
-        #{flag,jdbcType=INTEGER})
+        insert into t_confirm_record (id, peopleid, community,
+        month, flag)
+        values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
+        #{month,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" parameterType="com.hzgc.service.community.model.ConfirmRecord">
         insert into t_confirm_record
@@ -48,6 +91,9 @@
             </if>
             <if test="peopleid != null">
                 peopleid,
+            </if>
+            <if test="community != null">
+                community,
             </if>
             <if test="month != null">
                 month,
@@ -63,6 +109,9 @@
             <if test="peopleid != null">
                 #{peopleid,jdbcType=VARCHAR},
             </if>
+            <if test="community != null">
+                #{community,jdbcType=BIGINT},
+            </if>
             <if test="month != null">
                 #{month,jdbcType=VARCHAR},
             </if>
@@ -77,6 +126,9 @@
             <if test="peopleid != null">
                 peopleid = #{peopleid,jdbcType=VARCHAR},
             </if>
+            <if test="community != null">
+                community = #{community,jdbcType=BIGINT},
+            </if>
             <if test="month != null">
                 month = #{month,jdbcType=VARCHAR},
             </if>
@@ -89,6 +141,7 @@
     <update id="updateByPrimaryKey" parameterType="com.hzgc.service.community.model.ConfirmRecord">
         update t_confirm_record
         set peopleid = #{peopleid,jdbcType=VARCHAR},
+        community = #{community,jdbcType=BIGINT},
         month = #{month,jdbcType=VARCHAR},
         flag = #{flag,jdbcType=INTEGER}
         where id = #{id,jdbcType=BIGINT}

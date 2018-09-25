@@ -5,6 +5,8 @@ public class ConfirmRecord {
 
     private String peopleid;
 
+    private Long community;
+
     private String month;
 
     private Integer flag;
@@ -23,6 +25,14 @@ public class ConfirmRecord {
 
     public void setPeopleid(String peopleid) {
         this.peopleid = peopleid == null ? null : peopleid.trim();
+    }
+
+    public Long getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Long community) {
+        this.community = community;
     }
 
     public String getMonth() {

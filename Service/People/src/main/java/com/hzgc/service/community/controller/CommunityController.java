@@ -145,16 +145,24 @@ public class CommunityController {
     @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.GET)
     public ResponseResult<List<SuggestPeopleVO>> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
         if (param == null){
-            log.error("Start count community suggest people, but param is null !");
+            log.error("Start count community suggest people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
         }
         if (StringUtils.isBlank(param.getMonth())){
-            log.error("Start count community suggest people, but month is null !");
+            log.error("Start count community suggest people, but month is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份为空,请检查！");
         }
-        if (param.getRegionId() == null){
-            log.error("Start count community suggest people, but region is null !");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询区域ID为空,请检查！");
+        if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0){
+            log.error("Start count community suggest people, but region is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询小区ID列表为空,请检查！");
+        }
+        if (param.getMonth() == null || param.getMonth().length() != 6){
+            log.error("Start count community suggest people, but month error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份有误,请检查！");
+        }
+        if (param.getLimit() == 0) {
+            log.error("Start count community suggest people, but limit is 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
         }
         log.info("Start count community suggest people, param is :"+ JacksonUtil.toJson(param));
         List<SuggestPeopleVO> voList = communityService.countCommunityNewAndOutPeople(param);
