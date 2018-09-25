@@ -141,9 +141,9 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区疑似迁入迁出人口统计", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_COUNT, method = RequestMethod.GET)
-    public ResponseResult<List<SuggestPeopleVO>> countCommunitySuggestPeople(SuggestPeopleDTO param) {
+    @ApiOperation(value = "小区迁入迁出人口统计（疑似与确认）", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.GET)
+    public ResponseResult<List<SuggestPeopleVO>> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
         if (param == null){
             log.error("Start count community suggest people, but param is null !");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
@@ -157,7 +157,7 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询区域ID为空,请检查！");
         }
         log.info("Start count community suggest people, param is :"+ JacksonUtil.toJson(param));
-        List<SuggestPeopleVO> voList = communityService.countCommunitySuggestPeople(param);
+        List<SuggestPeopleVO> voList = communityService.countCommunityNewAndOutPeople(param);
         log.info("Start count community suggest people successfully!");
         return ResponseResult.init(voList);
     }

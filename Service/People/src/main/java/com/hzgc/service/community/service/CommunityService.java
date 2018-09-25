@@ -92,7 +92,7 @@ public class CommunityService {
         return voList;
     }
 
-    public List<SuggestPeopleVO> countCommunitySuggestPeople(SuggestPeopleDTO param) {
+    public List<SuggestPeopleVO> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
        return null;
     }
 
