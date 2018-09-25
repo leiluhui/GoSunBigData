@@ -1,8 +1,6 @@
 package com.hzgc.common.service.api.service;
 
-import com.hzgc.common.service.api.bean.DeviceDTO;
-import com.hzgc.common.service.api.bean.RegionDTO;
-import com.hzgc.common.service.api.bean.WebgisMapPointDTO;
+import com.hzgc.common.service.api.bean.*;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -14,13 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
-public class DeviceQueryService {
+public class PlatformService {
     @Autowired
     @SuppressWarnings("unused")
     private RestTemplate restTemplate;
@@ -64,11 +60,19 @@ public class DeviceQueryService {
     }
 
     @SuppressWarnings("unused")
-    public List<Long> query_device_id(Long areaId, String level){
-        if (areaId != null){
-            return  restTemplate.getForObject("http://region/internal/region/query_device_id/" + areaId + "/" + level, List.class);
+    public List<Long> query_device_id(Long areaId, String level) {
+        if (areaId != null) {
+            log.info("Method:query_device_id, area id is:?, level is:?", areaId, level);
+            ResponseEntity<Long[]> responseEntity = restTemplate.getForEntity(
+                    "http://region/internal/region/query_device_id/" + areaId + "/level",
+                    Long[].class
+            );
+            return Arrays.asList(responseEntity.getBody());
+        } else {
+            log.error("Method:query_device_id, area id is:?, level is:?", areaId, level);
+            return new ArrayList<>();
         }
-        return null;
+
     }
 
     @HystrixCommand(fallbackMethod = "getDeviceInfoByIdError")
@@ -109,11 +113,11 @@ public class DeviceQueryService {
     }
 
     @SuppressWarnings("unused")
-    public Map<Long,WebgisMapPointDTO> getDeviceInfoByBatchIdByDevice(List<Long> deviceIds){
-        if (deviceIds != null && deviceIds.size() > 0){
-            ParameterizedTypeReference<Map<Long,WebgisMapPointDTO>> parameterizedTypeReference = new ParameterizedTypeReference<Map<Long, WebgisMapPointDTO>>() {
+    public Map<Long, WebgisMapPointDTO> getDeviceInfoByBatchIdByDevice(List<Long> deviceIds) {
+        if (deviceIds != null && deviceIds.size() > 0) {
+            ParameterizedTypeReference<Map<Long, WebgisMapPointDTO>> parameterizedTypeReference = new ParameterizedTypeReference<Map<Long, WebgisMapPointDTO>>() {
             };
-            ResponseEntity<Map<Long,WebgisMapPointDTO>> responseEntity = restTemplate.exchange("http://gis/internal/gis/batch_query_by_id",
+            ResponseEntity<Map<Long, WebgisMapPointDTO>> responseEntity = restTemplate.exchange("http://gis/internal/gis/batch_query_by_id",
                     HttpMethod.POST,
                     new HttpEntity<>(deviceIds),
                     parameterizedTypeReference);
@@ -124,17 +128,73 @@ public class DeviceQueryService {
     }
 
     @SuppressWarnings("unused")
-    public Map<Long,RegionDTO> getRegionNameByRegionId(List<Long> regionIds){
-        if (regionIds != null && regionIds.size() > 0){
-            ParameterizedTypeReference<Map<Long,RegionDTO>> parameterizedTypeReference = new ParameterizedTypeReference<Map<Long, RegionDTO>>() {
+    public Map<Long, RegionDTO> getRegionNameByRegionId(List<Long> regionIds) {
+        if (regionIds != null && regionIds.size() > 0) {
+            log.info("Method:getRegionNameByRegionId, region id list is:" + Arrays.toString(regionIds.toArray()));
+            ParameterizedTypeReference<Map<Long, RegionDTO>> parameterizedTypeReference = new ParameterizedTypeReference<Map<Long, RegionDTO>>() {
             };
-            ResponseEntity<Map<Long,RegionDTO>> responseEntity = restTemplate.exchange("http://region/internal/region/query_region_by_id",
+            ResponseEntity<Map<Long, RegionDTO>> responseEntity = restTemplate.exchange("http://region/internal/region/query_region_by_id",
                     HttpMethod.POST,
                     new HttpEntity<>(regionIds),
                     parameterizedTypeReference);
             log.info("responseEntity's Body is : " + responseEntity.getBody());
             return responseEntity.getBody();
+        } else {
+            log.error("Method:getRegionNameByRegionId, region id list is error");
+            return new HashMap<>();
         }
-        return new HashMap<>();
+    }
+
+    public String getRegionName(Long regionId) {
+        if (regionId != null) {
+            log.info("Method:getRegionName, region id is:" + regionId);
+            List<Long> regionIds = new ArrayList<>();
+            regionIds.add(regionId);
+            ResponseEntity<Region> responseEntity = restTemplate.postForEntity("http://region/query_region_info_by_ids", regionIds, Region.class);
+            Region region = responseEntity.getBody();
+            if (region == null || StringUtils.isBlank(region.getName())) {
+                log.info("Get region name failed, because result is null");
+                return null;
+            }
+            return region.getName();
+        } else {
+            log.error("Method:getRegionName, region id is:" + regionId);
+            return null;
+        }
+    }
+
+    public String getCommunityName(Long communityId) {
+        if (communityId != null) {
+            log.info("Method:getCommunityName, community id " + communityId);
+            List<Long> communityIds = new ArrayList<>();
+            communityIds.add(communityId);
+            ResponseEntity<Community> responseEntity = restTemplate.postForEntity("http://region/query_region_info_by_ids", communityIds, Community.class);
+            Community community = responseEntity.getBody();
+            if (community == null || StringUtils.isBlank(community.getCameraName())) {
+                log.info("Get region name failed, because result is null");
+                return null;
+            }
+            return community.getCameraName();
+        } else {
+            log.error("Method:getCommunityName, community id is null");
+            return null;
+        }
+    }
+
+    public Map<String, CameraQueryDTO> getCameraInfoByBatchIpc(List<String> ipcList) {
+        if (ipcList != null) {
+            log.info("Method:getCameraInfoByBatchIpc, ipc list is:" + Arrays.toString(ipcList.toArray()));
+            ParameterizedTypeReference<Map<String, CameraQueryDTO>> parameterizedTypeReference =
+                    new ParameterizedTypeReference<Map<String, CameraQueryDTO>>() {
+                    };
+            ResponseEntity<Map<String, CameraQueryDTO>> responseEntity =
+                    restTemplate.exchange("http://device/internal/cameras/query_camera_by_codes", HttpMethod.POST,
+                            new HttpEntity<>(ipcList), parameterizedTypeReference);
+            return responseEntity.getBody();
+        } else {
+            log.error("Method:getCameraInfoByBatchIpc, ipc list is null");
+            return new HashMap<>();
+        }
+
     }
 }

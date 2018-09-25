@@ -1,4 +1,4 @@
-package com.hzgc.service.platform.param;
+package com.hzgc.common.service.api.bean;
 
 import lombok.Data;
 
