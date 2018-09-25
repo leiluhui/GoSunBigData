@@ -2,8 +2,11 @@ package com.hzgc.collect.service.parser;
 
 import com.hzgc.collect.config.CollectContext;
 
+import java.text.SimpleDateFormat;
+
 public abstract class AbstractParser implements Parser {
     private CollectContext collectContext;
+     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     AbstractParser(CollectContext collectContext) {
         this.collectContext = collectContext;
