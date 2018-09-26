@@ -1,6 +1,8 @@
 package com.hzgc.service.people.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
@@ -11,6 +13,7 @@ import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
 import com.hzgc.service.people.param.PictureVO;
+import com.hzgc.service.people.param.SearchPeopleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -416,12 +419,16 @@ public class PeopleService {
      * 查询人员对象
      *
      * @param field 查询过滤字段封装
-     * @return peopleVO 查询返回参数封装
+     * @return SearchPeopleVO 查询返回参数封装
      */
-    public List<PeopleVO> searchPeople(FilterField field) {
+    public SearchPeopleVO searchPeople(FilterField field) {
+        SearchPeopleVO vo = new SearchPeopleVO();
         List<PeopleVO> list = new ArrayList<>();
-        PageHelper.offsetPage(field.getStart(), field.getLimit());
+        Page page = PageHelper.startPage(field.getStart(), field.getLimit());
         List<People> peoples = peopleMapper.searchPeople(field);
+        PageInfo info = new PageInfo(page.getResult());
+        int total = (int) info.getTotal();
+        vo.setTotal(total);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = new PeopleVO();
@@ -467,7 +474,8 @@ public class PeopleService {
                 }
             }
         }
-        return list;
+        vo.setPeopleVOList(list);
+        return vo;
     }
 
     public List<Long> searchCommunityIdsByRegionId(Long regionId) {

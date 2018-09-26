@@ -4,7 +4,7 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.service.people.param.SearchParamDTO;
+import com.hzgc.service.people.param.SearchPeopleDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api(value = "/people", tags = "人口库服务")
@@ -302,7 +303,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据条件查询人员", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
-    public ResponseResult<List<PeopleVO>> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchParamDTO param) {
+    public ResponseResult<SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
         if (param == null) {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
@@ -318,9 +319,9 @@ public class PeopleController {
         log.info("Start search people, search param DTO:" + JacksonUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
         log.info("Start search people, FilterField param:" + JacksonUtil.toJson(field));
-        List<PeopleVO> peoples = peopleService.searchPeople(field);
-        log.info("Search people successfully, result:" + JacksonUtil.toJson(peoples));
-        return ResponseResult.init(peoples);
+        SearchPeopleVO vo = peopleService.searchPeople(field);
+        log.info("Search people successfully, result:" + JacksonUtil.toJson(vo));
+        return ResponseResult.init(vo, vo != null ? vo.getTotal() : 0);
     }
 
     @ApiOperation(value = "统计单个区域下所有小区列表", response = PeopleVO.class)
