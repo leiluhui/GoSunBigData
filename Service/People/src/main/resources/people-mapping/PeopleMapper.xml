@@ -174,7 +174,8 @@
         and a.community = #{community,jdbcType=BIGINT}
     </select>
     <!--统计某小区某月建议迁出数量-->
-    <select id="countSuggestOutPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+    <select id="countSuggestOutPeople" resultMap="CountResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
         select community, count(people.id) as count from (
         select id, community from t_people
         where community in

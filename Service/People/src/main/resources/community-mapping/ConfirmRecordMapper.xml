@@ -38,7 +38,8 @@
         and community = #{community,jdbcType=BIGINT}
     </select>
     <!--统计某小区某月确认迁入数量-->
-    <select id="countConfirmNewPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+    <select id="countConfirmNewPeople" resultMap="CountResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
         select community, count(peopleid) as count
         from t_people_new
         <where>
@@ -56,7 +57,8 @@
         group by community
     </select>
     <!--统计某小区某月确认迁出数量-->
-    <select id="countConfirmOutPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+    <select id="countConfirmOutPeople" resultMap="CountResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
         select community, count(peopleid) as count
         from t_confirm_record
         <where>

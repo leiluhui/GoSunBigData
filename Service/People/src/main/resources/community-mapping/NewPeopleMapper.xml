@@ -24,7 +24,8 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <!--统计某小区某月建议迁入数量-->
-  <select id="countSuggestNewPeople" resultMap="CountResultMap" parameterMap="com.hzgc.service.community.param.SuggestPeopleDTO" >
+  <select id="countSuggestNewPeople" resultMap="CountResultMap"
+          parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
     select community, count(peopleid) as count
     from t_people_new
     <where>
