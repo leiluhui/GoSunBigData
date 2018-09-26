@@ -2,8 +2,7 @@ package com.hzgc.compare.mem;
 
 import com.github.ltsopensource.core.domain.Job;
 import com.hzgc.compare.conf.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TaskTracker implements Serializable{
-    private static final Logger logger = LoggerFactory.getLogger(TaskTracker.class);
+//    private static final Logger logger = LoggerFactory.getLogger(TaskTracker.class);
+    private static Logger logger = Logger.getLogger(TaskTracker.class);
     private final int maxJobsPerTaskTracker = Config.WORKER_NUM_PER_TRACKER;
     private List<String> ports; //可用的端口号
     private List<Job> jobs;

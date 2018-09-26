@@ -8,13 +8,13 @@ import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
 import com.hzgc.jniface.FaceFunction;
 import javafx.util.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class ComparatorsImpl implements Comparators{
-    private static final Logger logger = LoggerFactory.getLogger(ComparatorsImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ComparatorsImpl.class);
+    private static Logger log = Logger.getLogger(ComparatorsImpl.class);
 
     public List<Pair<String, byte[]>> filter(String dateStart, String dateEnd) {
         List<Pair<String, byte[]>> result = new ArrayList<>();
@@ -31,8 +31,8 @@ public class ComparatorsImpl implements Comparators{
                 result.addAll(cacheRecords.get(key));
             }
         }
-        logger.info("The time used to filter is : " + (System.currentTimeMillis() - start));
-        logger.info("The size of filtere result is : " + result.size());
+        log.info("The time used to filter is : " + (System.currentTimeMillis() - start));
+        log.info("The size of filtere result is : " + result.size());
         return result;
     }
 
@@ -50,13 +50,13 @@ public class ComparatorsImpl implements Comparators{
 
         byte[][] queryList = new byte[1][32];
         queryList[0] = feature;
-        logger.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
         ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num);
         for(FaceFeatureInfo featureInfo : array.get(0).getPictureInfoArrayList()){
             String rowkey = data.get(featureInfo.getIndex()).getKey();
             rowkeys.add(rowkey);
         }
-        logger.info("The time first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time first compare used is : " + (System.currentTimeMillis() - start));
         return rowkeys;
     }
 
@@ -75,7 +75,7 @@ public class ComparatorsImpl implements Comparators{
             queryList[index] = feature.getFeature1();
             index ++;
         }
-        logger.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
         FaceFunction.init();
         ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num);
         List<String> rowkeys = new ArrayList<>();
@@ -87,7 +87,7 @@ public class ComparatorsImpl implements Comparators{
                 }
             }
         }
-        logger.info("The time first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time first compare used is : " + (System.currentTimeMillis() - start));
         return rowkeys;
     }
 
@@ -110,7 +110,7 @@ public class ComparatorsImpl implements Comparators{
         }
         Set<String> set = new HashSet<>();
         index = 0;
-        logger.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time insert dataes when first compare used is : " + (System.currentTimeMillis() - start));
         ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num * 3);
         for(CompareResult compareResult : array){
             List<String> rowkeys = new ArrayList<>();
@@ -126,7 +126,7 @@ public class ComparatorsImpl implements Comparators{
             index ++;
         }
         result.addAll(set);
-        logger.info("The time first compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time first compare used is : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -162,13 +162,13 @@ public class ComparatorsImpl implements Comparators{
         }
         SearchResult result = new SearchResult(records);
         long compared = System.currentTimeMillis();
-        logger.info("The time second compare used is : " + (compared - start));
+        log.info("The time second compare used is : " + (compared - start));
         if(sorts != null && (sorts.size() > 1 || (sorts.size() == 1 && sorts.get(0) != 4))){
             result.sort(sorts);
         } else {
             result.sortBySim();
         }
-        logger.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
+        log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
         return result;
     }
 
@@ -216,13 +216,13 @@ public class ComparatorsImpl implements Comparators{
         }
         SearchResult result = new SearchResult(records);
         long compared = System.currentTimeMillis();
-        logger.info("The time second compare used is : " + (compared - start));
+        log.info("The time second compare used is : " + (compared - start));
         if(sorts != null && (sorts.size() > 1 || (sorts.size() == 1 && sorts.get(0) != 4))) {
             result.sort(sorts);
         } else {
             result.sortBySim();
         }
-        logger.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
+        log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
         return result;
     }
 
@@ -269,7 +269,7 @@ public class ComparatorsImpl implements Comparators{
             String id = features.get(Integer.parseInt(compareResult.getIndex())).getId();
             result.put(id, searchResult);
         }
-        logger.info("The time second compare used is : " + (System.currentTimeMillis() - start));
+        log.info("The time second compare used is : " + (System.currentTimeMillis() - start));
         return result;
     }
 }

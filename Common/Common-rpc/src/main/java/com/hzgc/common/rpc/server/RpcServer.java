@@ -22,8 +22,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import net.sf.cglib.reflect.FastClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -33,7 +32,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class RpcServer {
-    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
+    private static Logger logger = Logger.getLogger(RpcServer.class);
     private String ipAddress;
     private int port;
     private ServiceRegistry serviceRegistry;
@@ -141,7 +141,7 @@ public class RpcServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         try {
             ChannelFuture future = bootstrap.bind(this.ipAddress, this.port).sync();
-            logger.info("Rpc server started on {}, bind ip on {}", this.port, this.ipAddress);
+            logger.info("Rpc server started on " + this.port + ", bind ip on " + this.ipAddress);
             if (this.serviceRegistry != null) {
                 serviceRegistry.register(this.ipAddress + ":" + this.port, constant);
             }

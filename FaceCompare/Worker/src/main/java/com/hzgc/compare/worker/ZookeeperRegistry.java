@@ -1,19 +1,16 @@
 package com.hzgc.compare.worker;
 
 import com.hzgc.compare.worker.conf.Config;
-import jdk.nashorn.internal.ir.BlockLexicalContext;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class ZookeeperRegistry implements Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(Worker.class);
+    private static Logger log = Logger.getLogger(Worker.class);
+//    private static final Logger logger = LoggerFactory.getLogger(Worker.class);
     private CuratorFramework zkClient;
     private String data = "";
 
@@ -48,7 +45,7 @@ public class ZookeeperRegistry implements Runnable{
                     .withMode(CreateMode.EPHEMERAL)
                     .forPath(nodePath, data.getBytes());
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             System.exit(1);
         }
         return null;
@@ -58,7 +55,7 @@ public class ZookeeperRegistry implements Runnable{
         if (data != null && data.length() > 0) {
             String flag = createZnode(data, path);
             if (flag != null && data.contains(path)) {
-                logger.info("Create znode {} successfull", flag);
+                log.info("Create znode " + flag + " successfull");
             }
         }
     }

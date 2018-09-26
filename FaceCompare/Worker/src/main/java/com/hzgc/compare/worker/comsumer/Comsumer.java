@@ -8,8 +8,7 @@ import com.hzgc.compare.worker.util.FaceObjectUtil;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +16,8 @@ import java.util.List;
 import java.util.Properties;
 
 public class Comsumer extends Thread{
-    private static final Logger logger = LoggerFactory.getLogger(Comsumer.class);
+//    private static final Logger logger = LoggerFactory.getLogger(Comsumer.class);
+    private static Logger log = Logger.getLogger(Comsumer.class);
     private MemoryCacheImpl memoryCache;
     private KafkaConsumer<String, String> comsumer;
 
@@ -35,7 +35,7 @@ public class Comsumer extends Thread{
         prop.put("key.deserializer", Config.KAFKA_DESERIALIZER);
         prop.put("value.deserializer", Config.KAFKA_DESERIALIZER);
         comsumer = new KafkaConsumer<>(prop);
-        logger.info("Kafka comsumer is init.");
+        log.info("Kafka comsumer is init.");
         memoryCache = MemoryCacheImpl.getInstance();
     }
     /**
@@ -43,7 +43,7 @@ public class Comsumer extends Thread{
      */
     private void receiveAndSave(){
         comsumer.subscribe(Collections.singletonList(Config.KAFKA_TOPIC));
-        logger.info("Comsumer is started to accept kafka info.");
+        log.info("Comsumer is started to accept kafka info.");
         while(true){
             ConsumerRecords<String, String> records =
                     comsumer.poll(Config.KAFKA_MAXIMUM_TIME);
@@ -53,11 +53,14 @@ public class Comsumer extends Thread{
                 FaceObject obj = FaceObjectUtil.jsonToObject(record.value());
                 list.add(new Triplet<>(obj.getTimeStamp().split(" ")[0], obj.getId(), obj.getAttribute().getBitFeature()));
 //                objList.add(obj);
-                logger.debug(record.value());
+                log.debug(record.value());
             }
 //            memoryCache.addFaceObjects(objList);
-            memoryCache.addBuffer(list);
-//            logger.info("Push records from kafka to memory , the size is : " + objList.size());
+            if(list.size() > 0) {
+                memoryCache.addBuffer(list);
+//                log.info("Push records from kafka to memory , the size is : " + list.size());
+            }
+//
         }
     }
 

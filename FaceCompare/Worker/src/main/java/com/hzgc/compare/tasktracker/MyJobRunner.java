@@ -4,16 +4,14 @@ import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.tasktracker.Result;
 import com.github.ltsopensource.tasktracker.runner.JobContext;
 import com.github.ltsopensource.tasktracker.runner.JobRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
-
 public class MyJobRunner  implements JobRunner{
-    private static final Logger logger = LoggerFactory.getLogger(MyJobRunner.class);
+//    private static final Logger logger = LoggerFactory.getLogger(MyJobRunner.class);
+    private static Logger log = Logger.getLogger(MyJobRunner.class);
 
     public Result run(JobContext jobContext) throws Throwable {
         Job job = jobContext.getJob();
@@ -25,7 +23,7 @@ public class MyJobRunner  implements JobRunner{
             if(entry.getKey().getTaskId().equals(job.getTaskId())){
                 Long time = System.currentTimeMillis() - entry.getValue();
                 if(time < 1000L * 60 * 2){
-                    logger.info("This job is run not long ago.");
+                    log.info("This job is run not long ago.");
                     return null;
                 }
             }
@@ -35,11 +33,11 @@ public class MyJobRunner  implements JobRunner{
         String jarPath = MyJobRunner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         File temp = new File(jarPath);
         String parentPath = temp.getParentFile().getParentFile().getPath();
-        logger.info("---------------------------------start a worker---------------------------------");
-        logger.info("sh " + parentPath + "/bin/start-worker.sh " + workId + " " + nodeGroup + " " + port + " " + job.getTaskId());
+        log.info("---------------------------------start a worker---------------------------------");
+        log.info("sh " + parentPath + "/bin/start-worker.sh " + workId + " " + nodeGroup + " " + port + " " + job.getTaskId());
         builder.command("sh", parentPath + "/bin/start-worker.sh", workId, nodeGroup, port, job.getTaskId());
         builder.start();
-        logger.info("--------------------------------------------------------------------------------");
+        log.info("--------------------------------------------------------------------------------");
         jobs.put(job, System.currentTimeMillis());
         return null;
     }

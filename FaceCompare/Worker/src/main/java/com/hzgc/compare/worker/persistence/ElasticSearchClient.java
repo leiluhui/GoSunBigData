@@ -7,32 +7,34 @@ import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import javafx.util.Pair;
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  import java.util.ArrayList;
 import java.util.List;
  /**
  * 负责从elasticsearch读取数据
  */
+
 public class ElasticSearchClient {
-    private static final Logger logger = LoggerFactory.getLogger(ElasticSearchClient.class);
-     private TransportClient esClient;
-     public ElasticSearchClient() {
-        this.esClient = ElasticSearchHelper.getEsClient(Config.ES_CLUSTER_NAME, Config.ES_HOST, Config.ES_CLUSTER_PORT);
-    }
+//    private static final Logger logger = LoggerFactory.getLogger(ElasticSearchClient.class);
+    private static Logger log = Logger.getLogger(ElasticSearchClient.class);
+     private static TransportClient esClient;
+
+     public static void connect(){
+         esClient = ElasticSearchHelper.getEsClient(Config.ES_CLUSTER_NAME, Config.ES_HOST, Config.ES_CLUSTER_PORT);
+     }
      /**
      * 根据第一次比较的结果，查询EsHBas中的数据
      * @param ids 第一次对比的结果，id集合
      * @return 返回结果集
      */
-    public List<FaceObject> readFromEs(List<String> ids){
-        logger.info("The size of ids is " + ids.size());
+    public static List<FaceObject> readFromEs(List<String> ids){
+        log.info("The size of ids is " + ids.size());
         SearchRequestBuilder requestBuilder = esClient.prepareSearch(FaceTable.DYNAMIC_INDEX)
                 .setTypes(FaceTable.PERSON_INDEX_TYPE);
         requestBuilder.addStoredField("");
@@ -41,7 +43,7 @@ public class ElasticSearchClient {
         requestBuilder.setQuery(queryBuilder);
         long start = System.currentTimeMillis();
         SearchResponse response = requestBuilder.execute().actionGet();
-        logger.info("The time used to get data from ES is : " + (System.currentTimeMillis() - start));
+        log.info("The time used to get data from ES is : " + (System.currentTimeMillis() - start));
         SearchHit[] hits = response.getHits().getHits();
         return analyseResult(hits);
     }
@@ -50,8 +52,8 @@ public class ElasticSearchClient {
      * @param records 过滤后的内存数据
      * @return 返回结果集
      */
-    public List<FaceObject> readFromEs2(List<Pair<String, byte[]>> records){
-        logger.info("The size of records is " + records.size());
+    public static List<FaceObject> readFromEs2(List<Pair<String, byte[]>> records){
+        log.info("The size of records is " + records.size());
         String[] ids = new String[records.size()];
         int index = 0;
         for(Pair<String, byte[]> record : records){
@@ -65,11 +67,11 @@ public class ElasticSearchClient {
         requestBuilder.setQuery(queryBuilder);
         long start = System.currentTimeMillis();
         SearchResponse response = requestBuilder.execute().actionGet();
-        logger.info("The time used to get data from ES is : " + (System.currentTimeMillis() - start));
+        log.info("The time used to get data from ES is : " + (System.currentTimeMillis() - start));
         SearchHit[] hits = response.getHits().getHits();
         return analyseResult(hits);
     }
-     private List<FaceObject> analyseResult(SearchHit[] hits){
+     private static List<FaceObject> analyseResult(SearchHit[] hits){
         List<FaceObject> res = new ArrayList<>();
         for(SearchHit hit : hits){
             FaceObject faceObject = new FaceObject();

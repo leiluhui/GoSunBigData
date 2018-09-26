@@ -16,11 +16,13 @@ import java.util.TimerTask;
 /**
  * 定期任务，检查文件是否存在过期，并删除过期文件,按照月份进行删除
  */
+
 public class TimeToCheckFile extends TimerTask {
+    private static Logger log = Logger.getLogger(TimeToCheckFile.class);
     private String path;
     private int tag;  //1标识删除文件
     private String workId;
-    private static Logger LOG = Logger.getLogger(TimeToCheckFile.class);
+//    private static Logger LOG = Logger.getLogger(TimeToCheckFile.class);
 
     public TimeToCheckFile() {
         init();
@@ -112,7 +114,7 @@ public class TimeToCheckFile extends TimerTask {
                 deleteFilesOnHDFS();
             }
         } else {
-            LOG.info("Data is not delete");
+            log.info("Data is not delete");
         }
     }
 }

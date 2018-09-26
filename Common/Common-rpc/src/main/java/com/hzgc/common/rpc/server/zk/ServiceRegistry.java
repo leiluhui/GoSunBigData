@@ -4,9 +4,7 @@ import com.google.common.base.Strings;
 import com.hzgc.common.rpc.util.Constant;
 import com.hzgc.common.rpc.util.ZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.zookeeper.CreateMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +13,8 @@ import java.util.Map;
  * 服务注册工具，会将当前服务相关信息注册在zk节点上面
  */
 public class ServiceRegistry extends ZookeeperClient {
-    private static final Logger logger = LoggerFactory.getLogger(ServiceRegistry.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ServiceRegistry.class);
+    private static Logger logger = Logger.getLogger(ServiceRegistry.class);
 
     public ServiceRegistry(String zkAddress, Constant constant) {
         super(zkAddress, constant);
@@ -29,9 +28,9 @@ public class ServiceRegistry extends ZookeeperClient {
         if (!Strings.isNullOrEmpty(data)) {
             String flag = createZnode(data, constant);
             if (!Strings.isNullOrEmpty(flag)) { //&& data.contains(constant.getNodePath())
-                logger.info("Create znode {} successfull", flag);
+                logger.info("Create znode " + flag + " successfull");
             } else if(constant.isExitIfFaild()){
-                logger.info("Create znode {} faild. The constant is " + constant.toString(), flag);
+                logger.info("Create znode " + flag + " faild. The constant is " + constant.toString());
                 System.exit(0);
             }
         }

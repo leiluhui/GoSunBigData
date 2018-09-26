@@ -5,8 +5,7 @@ import com.hzgc.common.rpc.client.proxy.AllObjectProxy;
 import com.hzgc.common.rpc.client.proxy.AsyncObjectProxy;
 import com.hzgc.common.rpc.client.proxy.ObjectProxy;
 import com.hzgc.common.rpc.util.Constant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,7 +13,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class RpcClient {
-    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
+    private static Logger logger = Logger.getLogger(RpcClient.class);
     private ServiceDiscovery serviceDiscovery;
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(16,
             16,
@@ -39,7 +39,7 @@ public class RpcClient {
      */
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> interfaceClass) {
-        logger.info("Create this class proxy object, class name is:", interfaceClass.getName());
+        logger.info("Create this class proxy object, class name is:" + interfaceClass.getName());
         return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(),
                 new Class<?>[]{interfaceClass},
                 new ObjectProxy<>(interfaceClass));
@@ -55,7 +55,7 @@ public class RpcClient {
      */
     @SuppressWarnings("unchecked")
     public <T> T createAll(Class<T> interfaceClass) {
-        logger.info("Create this class proxy object, class name is:", interfaceClass.getName());
+        logger.info("Create this class proxy object, class name is:" + interfaceClass.getName());
         logger.info("The current proxy object will get the data set of all service nodes");
         return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(),
                 new Class<?>[]{interfaceClass},
@@ -63,7 +63,7 @@ public class RpcClient {
     }
 
     public <T> AsyncObjectProxy createAsync(Class<T> interfaceClass) {
-        logger.info("Create this class proxy object by async, class name is:", interfaceClass.getName());
+        logger.info("Create this class proxy object by async, class name is:" + interfaceClass.getName());
         return new ObjectProxy<>(interfaceClass);
     }
 

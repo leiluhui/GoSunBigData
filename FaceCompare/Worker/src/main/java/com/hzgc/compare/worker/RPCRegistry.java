@@ -4,16 +4,16 @@ import com.hzgc.common.rpc.server.RpcServer;
 import com.hzgc.common.rpc.server.zk.ServiceRegistry;
 import com.hzgc.common.rpc.util.Constant;
 import com.hzgc.compare.worker.conf.Config;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RPCRegistry implements Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(RPCRegistry.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RPCRegistry.class);
+    private static Logger log = Logger.getLogger(RPCRegistry.class);
     private ServiceRegistry registry;
 
     RPCRegistry(String workerId, String nodeGroup, String port, String taskId){
@@ -30,7 +30,7 @@ public class RPCRegistry implements Runnable{
 
     @Override
     public void run() {
-        logger.info("Registry the service.");
+        log.info("Registry the service.");
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);
         rpcServer.start();
@@ -40,10 +40,10 @@ public class RPCRegistry implements Runnable{
         List<String> children;
         try {
             children = registry.getConnect().getChildren().forPath(Config.JOB_PATH);
-            logger.info("The Worker on Zookeeper : " + children.toString());
+            log.info("The Worker on Zookeeper : " + children.toString());
             return children.contains(Config.WORKER_ID);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
             return false;
         }

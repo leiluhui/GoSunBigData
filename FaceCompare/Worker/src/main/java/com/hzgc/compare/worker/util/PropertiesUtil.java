@@ -5,23 +5,23 @@ import org.apache.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.Properties;
-
 public class PropertiesUtil {
-    private static Logger LOG = Logger.getLogger(PropertiesUtil.class);
+    private static Logger log = Logger.getLogger(PropertiesUtil.class);
+    //private static final Logger LOG = LoggerFactory.getLogger(PropertiesUtil.class);
 
     private static InputStream loadResourceInputStream(String resourceName) {
         if (!StringUtils.isBlank(resourceName)) {
             InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resourceName);
             if (resourceStream != null) {
-                LOG.info("Load resource file:" + ClassLoader.getSystemResource(resourceName).getPath() + " successful!");
+                log.info("Load resource file:" + ClassLoader.getSystemResource(resourceName).getPath() + " successful!");
                 return resourceStream;
             } else {
-                LOG.error("Resource file:" +
+                log.error("Resource file:" +
                         ClassLoader.getSystemResource("") + resourceName + " is not exist!");
                 System.exit(1);
             }
         } else {
-            LOG.error("The file name is not vaild!");
+            log.error("The file name is not vaild!");
         }
         return null;
     }

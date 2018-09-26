@@ -12,8 +12,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -33,7 +32,8 @@ import java.util.stream.Collectors;
  * 包括服务端某个节点与客户端节点断开连接则移除以及新增服务节点后进行主动连接
  */
 public class ConnectManager {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectManager.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ConnectManager.class);
+    private static Logger logger = Logger.getLogger(ConnectManager.class);
     private static volatile ConnectManager instance;
     private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
     //RpcClientHandler管理容器
@@ -91,9 +91,8 @@ public class ConnectManager {
                 if (rpcClientHandler == null) {
                     connectServerNode(serverNodeAddress);
                 } else {
-                    logger.warn("Current server node address already exists, host is {}, port is {}",
-                            serverNodeAddress.getHostString(),
-                            serverNodeAddress.getPort());
+                    logger.warn("Current server node address already exists, host is " + serverNodeAddress.getHostString()
+                                    + ", port is " + serverNodeAddress.getPort());
                 }
             }
 
@@ -102,7 +101,7 @@ public class ConnectManager {
                 InetSocketAddress remotePeer = connectedServerHandler.getRemotePeer();
                 //如果之前的连接不存在于最新的可用的连接里面则在连接管理池中去除
                 if (!newAllServerNodeList.contains(remotePeer)) {
-                    logger.info("Remove invalid server node {}", remotePeer);
+                    logger.info("Remove invalid server node " + remotePeer);
                     RpcClientHandler handler = connectedServerNodes.get(remotePeer);
                     if (handler != null) {
                         handler.close();
@@ -148,7 +147,7 @@ public class ConnectManager {
             final CountDownLatch latch = new CountDownLatch(1);
             channelFuture.addListener((ChannelFutureListener) channelFuture1 -> {
                 if (channelFuture1.isSuccess()) {
-                    logger.info("Successfully connect to remote server, remote peer = {}", remotePeer);
+                    logger.info("Successfully connect to remote server, remote peer = " + remotePeer);
                     RpcClientHandler handler = channelFuture1.channel().pipeline().get(RpcClientHandler.class);
                     addHandler(handler);
                     latch.countDown();
@@ -244,10 +243,10 @@ public class ConnectManager {
      */
     public void removeRpcClientHandler(RpcClientHandler handler) {
         if (connectedHandlers.contains(handler)) {
-            logger.info("ConnectedHandlers contains this invalid handler:{}, remove it", handler.toString());
+            logger.info("ConnectedHandlers contains this invalid handler:" + handler.toString() + ", remove it");
             connectedHandlers.remove(handler);
         } else {
-            logger.warn("ConnectedHandlers is not contains this invalid handler:{}", handler.toString());
+            logger.warn("ConnectedHandlers is not contains this invalid handler:" + handler.toString());
         }
     }
 
@@ -259,10 +258,10 @@ public class ConnectManager {
      */
     public void removeConnectedServerNodes(InetSocketAddress socketAddress) {
         if (connectedServerNodes.containsKey(socketAddress)) {
-            logger.info("ConnectedServerNodes contains this invalid socketAddress:{}, remove it", socketAddress.toString());
+            logger.info("ConnectedServerNodes contains this invalid socketAddress:" + socketAddress.toString() + ", remove it");
             connectedServerNodes.remove(socketAddress);
         } else {
-            logger.warn("ConnectedServerNodes contains this invalid socketAddress:{}", socketAddress.toString());
+            logger.warn("ConnectedServerNodes contains this invalid socketAddress:" + socketAddress.toString());
         }
     }
 

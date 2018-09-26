@@ -11,13 +11,13 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class ZookeeperClient {
-    private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
+    private static Logger logger = Logger.getLogger(ZookeeperClient.class);
     private CuratorFramework zkClient;
     private String zkAddress;
 
@@ -52,7 +52,7 @@ public class ZookeeperClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("Connect zookeeper successfull, zk address is {} ", zkAddress);
+        logger.info("Connect zookeeper successfull, zk address is " + zkAddress);
         return zkClient;
     }
 
@@ -67,9 +67,7 @@ public class ZookeeperClient {
                 new PathChildrenCache(zkClient, Config.JOB_PATH, true);
         pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
         pathCache.getListenable().addListener((client, event) -> {
-            logger.info("Child event [type:{}, path:{}]",
-                    event.getType(),
-                    event.getData() != null ? event.getData().getPath() : null);
+            logger.info("Child event [type:" + event.getType() + ", path: " + (event.getData() != null ? event.getData().getPath() : null) + "]");
             String data = new String(event.getData().getData());
             System.out.println(data);
             String workerId = data.split(",")[0];
@@ -115,9 +113,7 @@ public class ZookeeperClient {
         //此种类型的StartMode意思为已存在节点不作为变化事件
         pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
         pathCache.getListenable().addListener((client, event) -> {
-            logger.info("Child event [type:{}, path:{}]",
-                    event.getType(),
-                    event.getData() != null ? event.getData().getPath() : null);
+            logger.info("Child event [type:" + event.getType() + ", path: " + (event.getData() != null ? event.getData().getPath() : null) + "]");
             switch (event.getType()) {
                 case CHILD_ADDED:
                     String nodeGroup = analysePath(event.getData().getPath());

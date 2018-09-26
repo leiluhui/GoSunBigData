@@ -8,25 +8,25 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HBaseHelper {
-    private static Logger LOG = LoggerFactory.getLogger(HBaseHelper.class);
+//    private static Logger LOG = LoggerFactory.getLogger(HBaseHelper.class);
 
+    private static Logger log = Logger.getLogger(HBaseHelper.class);
     private static Configuration innerHBaseConf = null;
     private static Connection innerHBaseConnection = null;
     private static Map<String, Table> tables;
 
     public HBaseHelper() {
         initHBaseConfiguration();
-        LOG.info("Init configuration is successful");
+        log.info("Init configuration is successful");
         initHBaseConnection();
-        LOG.info("Init connection is successful");
+        log.info("Init connection is successful");
     }
 
     /**
@@ -81,7 +81,7 @@ public class HBaseHelper {
      */
     public static Connection getHBaseConnection() {
         if (null == innerHBaseConnection || innerHBaseConnection.isClosed()) {
-            LOG.info("The HBaseConnection is null or closed, create connection");
+            log.info("The HBaseConnection is null or closed, create connection");
             initHBaseConnection();
         }
         return innerHBaseConnection;
@@ -120,9 +120,9 @@ public class HBaseHelper {
         if (null != innerHBaseConnection && !innerHBaseConnection.isClosed()) {
             try {
                 innerHBaseConnection.close();
-                LOG.info("HBaseConnection close successfull");
+                log.info("HBaseConnection close successfull");
             } catch (IOException e) {
-                LOG.info("HBaseConnection close failed ");
+                log.info("HBaseConnection close failed ");
                 e.printStackTrace();
             }
         }

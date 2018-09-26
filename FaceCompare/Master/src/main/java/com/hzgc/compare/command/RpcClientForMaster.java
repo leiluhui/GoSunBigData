@@ -5,13 +5,12 @@ import com.hzgc.common.rpc.client.result.AllReturn;
 import com.hzgc.common.rpc.util.Constant;
 import com.hzgc.compare.conf.Config;
 import com.hzgc.compare.server.MasterServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class RpcClientForMaster {
-    private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
+//    private static Logger logger = Logger.getLogger(RpcClientForMaster.class);
     private MasterServer server;
     private void createService(String serverAddress){
         Constant constant = new Constant("/compare/master", "master");
