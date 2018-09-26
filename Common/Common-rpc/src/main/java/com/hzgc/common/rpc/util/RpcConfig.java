@@ -1,14 +1,15 @@
 package com.hzgc.common.rpc.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class RpcConfig {
-    private static final Logger logger = LoggerFactory.getLogger(RpcConfig.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcConfig.class);
+    private static Logger logger = Logger.getLogger(RpcConfig.class);
     private static Properties properties;
     private static int curatorBaseSleepTime;
     private static int curatorMaxRetries;

@@ -13,11 +13,12 @@ import java.io.IOException;
 import java.util.*;
 
 public class LocalFileManager implements FileManager {
+    private static Logger log = Logger.getLogger(LocalFileManager.class);
     private String path; //文件保存目录
     private Long fileSize = 256L * 1024 * 1024L;
     private Long timeToCheckFile = 24 * 60 * 60 * 1000L;
     private String work_id;
-    private static Logger logger = Logger.getLogger(LocalFileManager.class);
+//    private static Logger logger = Logger.getLogger(LocalFileManager.class);
     private LocalStreamCache streamCache;
 
     public LocalFileManager() {
@@ -42,11 +43,11 @@ public class LocalFileManager implements FileManager {
      */
     @Override
     public void flush(List<Triplet<String, String, byte[]>> buffer) {
-        logger.info("Flush records to Local, the num is " + buffer.size());
+        log.info("Flush records to Local, the num is " + buffer.size());
         Map<String , List<Triplet<String, String, String>>> temp = new Hashtable<>();
         for(Triplet<String, String, byte[]> quintuple : buffer){
             if(quintuple.getThird() == null){
-                logger.warn("Irregular data.");
+                log.warn("Irregular data.");
                 continue;
             }
             byte[] fea = quintuple.getThird();
@@ -68,7 +69,7 @@ public class LocalFileManager implements FileManager {
             try {
                 flushForMonth(dateYM, datas);
             } catch (IOException e) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -82,7 +83,7 @@ public class LocalFileManager implements FileManager {
      * @throws IOException
      */
     private void flushForMonth(String month, List<Triplet<String, String, String>>  datas) throws IOException {
-        logger.info("Flush data for month : " + month + ". The path is : " + path + "/" + work_id + "/" + month);
+        log.info("Flush data for month : " + month + ". The path is : " + path + "/" + work_id + "/" + month);
         File rootPath = new File(path);
         if (!rootPath.exists() || !rootPath.isDirectory()) {
             boolean res = rootPath.mkdir();
@@ -97,7 +98,7 @@ public class LocalFileManager implements FileManager {
             if(!res){
                 throw new IOException("创建文件夹 " + workFile.getAbsolutePath() + " 失败");
             }
-            logger.info("WorkFile name is " + workFile.getName());
+            log.info("WorkFile name is " + workFile.getName());
         }
         //寻找目标月的文件夹
         File dirMonth = new File(workFile, month);

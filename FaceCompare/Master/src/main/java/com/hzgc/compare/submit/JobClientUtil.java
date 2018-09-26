@@ -3,11 +3,12 @@ package com.hzgc.compare.submit;
 
 import com.github.ltsopensource.jobclient.JobClient;
 import com.hzgc.compare.conf.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 public class JobClientUtil {
-    private static final Logger logger = LoggerFactory.getLogger(JobClientUtil.class);
+//    private static final Logger logger = LoggerFactory.getLogger(JobClientUtil.class);
+    private static Logger logger = Logger.getLogger(JobClientUtil.class);
     private static JobClient client;
 
     public static JobClient getClient(){

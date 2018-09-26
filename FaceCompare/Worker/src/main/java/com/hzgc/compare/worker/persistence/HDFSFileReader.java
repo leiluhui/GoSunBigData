@@ -9,8 +9,8 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -18,7 +18,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class HDFSFileReader extends FileReader {
-    private static final Logger logger = LoggerFactory.getLogger(HDFSFileReader.class);
+//    private static final Logger logger = LoggerFactory.getLogger(HDFSFileReader.class);
+    private static Logger log = Logger.getLogger(HDFSFileReader.class);
     private HDFSStreamCache streamCache = HDFSStreamCache.getInstance();
     private int readFilesPerThread = 1;
     private List<ReadFileForHDFS> list = new ArrayList<>();
@@ -69,7 +70,7 @@ public class HDFSFileReader extends FileReader {
         loadRecordForMonth2(dirForThisWorker, ym);
 
         if(list.size() == 0){
-            logger.info("There is no file to load.");
+            log.info("There is no file to load.");
             return;
         }
         for(ReadFileForHDFS readFile1: list){
@@ -87,7 +88,7 @@ public class HDFSFileReader extends FileReader {
             }
         }
         pool.shutdown();
-        logger.info("The time used to load record is : " + (System.currentTimeMillis() - start));
+        log.info("The time used to load record is : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -97,7 +98,7 @@ public class HDFSFileReader extends FileReader {
      */
     private void loadRecordForMonth2(Path path, String month) throws IOException {
         FileSystem fileSystem = streamCache.getFileSystem();
-        logger.info("Read month is : " + month);
+        log.info("Read month is : " + month);
         //得到目标月份的文件夹
         Path monthDir = new Path(path.toString(), month);
         if(!fileSystem.isDirectory(monthDir)){
@@ -127,7 +128,8 @@ public class HDFSFileReader extends FileReader {
 }
 
 class ReadFileForHDFS implements Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(ReadFileForHDFS.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ReadFileForHDFS.class);
+    private static Logger log = Logger.getLogger(ReadFileForHDFS.class);
     private MemoryCacheImpl memoryCacheImpl1 = MemoryCacheImpl.getInstance();
     private HDFSStreamCache streamCache = HDFSStreamCache.getInstance();
     private boolean end = false;
@@ -172,7 +174,7 @@ class ReadFileForHDFS implements Runnable{
                 if(!fileSystem.isFile(f.getPath())){
                     return;
                 }
-                logger.info("Read file : " + f.getPath().toString());
+                log.info("Read file : " + f.getPath().toString());
                 FSDataInputStream inputStream = streamCache.getReaderStream(f.getPath().toString());
                 while (true){
                     int len;
@@ -203,7 +205,7 @@ class ReadFileForHDFS implements Runnable{
                 e.printStackTrace();
             }
         }
-        logger.info("The num of Records Loaded is : " + count);
+        log.info("The num of Records Loaded is : " + count);
         memoryCacheImpl1.loadCacheRecords(temp);
         end = true;
     }

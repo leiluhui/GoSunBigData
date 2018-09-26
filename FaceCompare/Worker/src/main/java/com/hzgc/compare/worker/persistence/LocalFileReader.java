@@ -4,8 +4,7 @@ import com.hzgc.compare.worker.common.collects.CustomizeArrayList;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import javafx.util.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +13,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class LocalFileReader extends FileReader {
-    private static final Logger logger = LoggerFactory.getLogger(LocalFileReader.class);
+//    private static final Logger logger = LoggerFactory.getLogger(LocalFileReader.class);
+    private static Logger log = Logger.getLogger(LocalFileReader.class);
     private int readFilesPerThread = 2;
     private List<ReadFileForLocal> list = new ArrayList<>();
 
@@ -89,7 +89,7 @@ public class LocalFileReader extends FileReader {
 //        loadRecordForMonth(dirForThisWorker, ym);
 
         if(list.size() == 0){
-            logger.info("There is no file to load.");
+            log.info("There is no file to load.");
             return;
         }
         for(ReadFileForLocal readFile1: list){
@@ -107,7 +107,7 @@ public class LocalFileReader extends FileReader {
             }
         }
         pool.shutdown();
-        logger.info("The time used to load record is : " + (System.currentTimeMillis() - start));
+        log.info("The time used to load record is : " + (System.currentTimeMillis() - start));
     }
 
 //    /**
@@ -171,7 +171,7 @@ public class LocalFileReader extends FileReader {
      * @param month 目标月份
      */
     private void loadRecordForMonth(File fi, String month){
-        logger.info("Read month is : " + month);
+        log.info("Read month is : " + month);
         //得到目标月份的文件夹
         File monthdir = null;
         File[] files = fi.listFiles();
@@ -225,7 +225,8 @@ public class LocalFileReader extends FileReader {
 }
 
 class ReadFileForLocal implements Runnable{
-    private static final Logger logger = LoggerFactory.getLogger(ReadFileForLocal.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ReadFileForLocal.class);
+    private static Logger log = Logger.getLogger(ReadFileForLocal.class);
     private MemoryCacheImpl memoryCacheImpl1 = MemoryCacheImpl.getInstance();
     private LocalStreamCache streamCache = LocalStreamCache.getInstance();
     private boolean end = false;
@@ -263,7 +264,7 @@ class ReadFileForLocal implements Runnable{
         Map<String, List <Pair <String, byte[]>>> temp = new HashMap<>();
         for(File f : list){
             if(f.isFile()){
-                logger.info("Read file : " + f.getAbsolutePath());
+                log.info("Read file : " + f.getAbsolutePath());
                 BufferedReader bufferedReader = streamCache.getReaderStream(f);
                 try {
                     String line;
@@ -279,7 +280,7 @@ class ReadFileForLocal implements Runnable{
                 }
             }
         }
-        logger.info("The num of Records Loaded is : " + count);
+        log.info("The num of Records Loaded is : " + count);
         memoryCacheImpl1.loadCacheRecords(temp);
         end = true;
     }

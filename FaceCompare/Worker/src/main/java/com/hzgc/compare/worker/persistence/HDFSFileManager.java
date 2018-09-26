@@ -15,11 +15,12 @@ import java.io.IOException;
 import java.util.*;
 
 public class HDFSFileManager implements FileManager {
+    private static Logger log = Logger.getLogger(HDFSFileManager.class);
     private String path = ""; //文件保存目录
     private Long fileSize = 64L * 1024 * 1024L;
     private Long timeToCheckFile = 24 * 60 * 60 * 1000L;
     private String work_id = "";
-    private static Logger LOG = Logger.getLogger(HDFSFileManager.class);
+//    private static Logger LOG = Logger.getLogger(HDFSFileManager.class);
     private HDFSStreamCache streamCache;
     private KryoSerializer kryoSerializer;
 
@@ -42,7 +43,7 @@ public class HDFSFileManager implements FileManager {
 
 
     public void flush(List<Triplet<String, String, byte[]>> buffer) {
-        LOG.info("Flush records to HDFS, the num is " + buffer.size());
+        log.info("Flush records to HDFS, the num is " + buffer.size());
         Map<String , List<RecordToFlush>> temp = new Hashtable<>();
         for(Triplet<String, String, byte[]> quintuple : buffer){
             byte[] feature = quintuple.getThird();
@@ -79,7 +80,7 @@ public class HDFSFileManager implements FileManager {
             if(!res){
                 throw new IOException("创建文件夹 " + workFile.toString() + " 失败");
             }
-            LOG.info("WorkFile name is " + workFile.getName());
+            log.info("WorkFile name is " + workFile.getName());
         }
         //寻找目标月的文件夹
 //        File dirMonth = new File(workFile, month);

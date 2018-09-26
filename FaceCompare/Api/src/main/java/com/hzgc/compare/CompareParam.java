@@ -67,6 +67,30 @@ public class CompareParam {
         this.sort = sort;
     }
 
+    public void setDateStart(String dateStart) {
+        this.dateStart = dateStart;
+    }
+
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+
+    public void setFeatures(List<Feature> features) {
+        this.features = features;
+    }
+
+    public void setSim(float sim) {
+        this.sim = sim;
+    }
+
+    public void setResultCount(int resultCount) {
+        this.resultCount = resultCount;
+    }
+
+    public void setTheSamePerson(boolean theSamePerson) {
+        isTheSamePerson = theSamePerson;
+    }
+
     @Override
     public String toString() {
         return "CompareParam{" +

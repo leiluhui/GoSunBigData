@@ -2,14 +2,14 @@ package com.hzgc.compare.mem;
 
 import com.github.ltsopensource.core.domain.Job;
 import com.hzgc.compare.conf.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
 
 public class TaskTrackerManager {
-    private static final Logger logger = LoggerFactory.getLogger(TaskTrackerManager.class);
+//    private static final Logger logger = LoggerFactory.getLogger(TaskTrackerManager.class);
+    private static Logger logger = Logger.getLogger(TaskTrackerManager.class);
     private static TaskTrackerManager taskTrackerManager;
     private List<TaskTracker> trackers;
 //    private Map<Job, Integer> numOfSend;
@@ -53,7 +53,7 @@ public class TaskTrackerManager {
         if(num == 0){
             return null;
         } else {
-            logger.info("Chose a free tracker. There are {} job can be run int This tracker" , num);
+            logger.info("Chose a free tracker. There are " + num + " job can be run int This tracker");
             return taskTracker;
         }
     }

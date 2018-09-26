@@ -4,13 +4,13 @@ import com.github.ltsopensource.core.domain.Job;
 import com.github.ltsopensource.jobclient.JobClient;
 import com.hzgc.compare.mem.TaskTracker;
 import com.hzgc.compare.mem.TaskTrackerManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
 public class JobSubmit {
-    private static final Logger logger = LoggerFactory.getLogger(JobSubmit.class);
+//    private static final Logger logger = LoggerFactory.getLogger(JobSubmit.class);
+    private static Logger logger = Logger.getLogger(JobSubmit.class);
 
     /**
      *  接收到增加Worker的命令时

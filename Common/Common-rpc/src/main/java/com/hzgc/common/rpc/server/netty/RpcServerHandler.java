@@ -10,8 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -20,7 +19,8 @@ import java.util.Map;
  * server端handler，用来处理出入站消息
  */
 public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
-    private static final Logger logger = LoggerFactory.getLogger(RpcServerHandler.class);
+    private static Logger logger = Logger.getLogger(RpcServerHandler.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcServerHandler.class);
     private final Map<String, Object> rpcServiceMap;
     private final Map<String, FastClass> fastClassMap;
 
@@ -34,7 +34,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
         switch (rpcRequest.getType()) {
             case ASK:
                 RpcServer.execute(() -> {
-                    logger.debug("Receive request, request id is:{}", rpcRequest.getRequestId());
+                    logger.debug("Receive request, request id is:" + rpcRequest.getRequestId());
                     RpcResponse response = new RpcResponse();
                     response.setType(MsgType.ASK);
                     response.setRequestId(rpcRequest.getRequestId());
@@ -74,7 +74,7 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
             Class<?>[] requestParameterTypes = rpcRequest.getParameterTypes();
             Object[] requestParameters = rpcRequest.getParameters();
             FastMethod fastMethod = fastClass.getMethod(requestMethodName, requestParameterTypes);
-            logger.debug("Call rpc service, name is:{}, method name is:{}", className, requestMethodName);
+            logger.debug("Call rpc service, name is:" + className + ", method name is:" + requestMethodName);
             logger.debug(Arrays.toString(requestParameterTypes));
             logger.debug(Arrays.toString(requestParameters));
             return fastMethod.invoke(serviceBean, requestParameters);

@@ -9,18 +9,15 @@ import com.hzgc.compare.mem.TaskTracker;
 import com.hzgc.compare.mem.TaskTrackerManager;
 import com.hzgc.compare.submit.JobSubmit;
 import com.hzgc.compare.zk.ZookeeperClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FaceCompareMaster {
-    private static final Logger logger = LoggerFactory.getLogger(FaceCompareMaster.class);
+//    private static final Logger logger = LoggerFactory.getLogger(FaceCompareMaster.class);
+    private static Logger logger = Logger.getLogger(FaceCompareMaster.class);
     private TaskTrackerManager taskTrackerManager;
     private ZookeeperClient zkClient;
 

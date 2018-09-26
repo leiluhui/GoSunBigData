@@ -9,8 +9,7 @@ import com.hzgc.compare.worker.common.taskhandle.TaskToHandleQueue;
 import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
 import javafx.util.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -22,11 +21,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * 当buffer数据量达到一定时，将buffer持久化，并加入cacheRecords，buffer清空
  */
 public class MemoryCacheImpl{
-    private static final Logger logger = LoggerFactory.getLogger(MemoryCacheImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(MemoryCacheImpl.class);
+    private static Logger log = Logger.getLogger(MemoryCacheImpl.class);
     private static MemoryCacheImpl memoryCache;
     private int flushProgram = 0; //flush 方案 0 定期flush  1 定量flush
     private Integer bufferSizeMax = 1000; // buffer存储上限，默认1000
-    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
+//    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
     private Map<String, List<Pair<String, byte[]>>> cacheRecords;
     private DoubleBufferQueue<Triplet<String, String, byte[]>> buffer;
 
@@ -46,7 +46,7 @@ public class MemoryCacheImpl{
     private void init() {
         bufferSizeMax = Config.WORKER_BUFFER_SIZE_MAX;
         flushProgram = Config.WORKER_FLUSH_PROGRAM;
-        faceObjects = new BatchBufferQueue<>();
+//        faceObjects = new BatchBufferQueue<>();
         cacheRecords = new ConcurrentHashMap<>();//ConcurrentHashMap
         buffer = new DoubleBufferQueue<>();
     }
@@ -55,9 +55,9 @@ public class MemoryCacheImpl{
      * 返回faceObjects
      * @return
      */
-    public List<FaceObject> getObjects() {
-        return faceObjects.get();
-    }
+//    public List<FaceObject> getObjects() {
+//        return faceObjects.get();
+//    }
 
     public List<Triplet<String, String, byte[]>> getBuffer(){
         return buffer.get();
@@ -78,11 +78,11 @@ public class MemoryCacheImpl{
     /**
      * 增加recordToHBase
      */
-    public void addFaceObjects(List<FaceObject> objs) {
-        if(objs.size() > 0) {
-            faceObjects.push(objs);
-        }
-    }
+//    public void addFaceObjects(List<FaceObject> objs) {
+//        if(objs.size() > 0) {
+//            faceObjects.push(objs);
+//        }
+//    }
 
     /**
      * 增加多条record
@@ -121,7 +121,7 @@ public class MemoryCacheImpl{
      * 检查buffer是否满了, 如果满了，则在TaskToHandle中添加一个FlushTask任务,并将buffer加入cacheRecords，buffer重新创建
      */
     private void check() {
-        logger.info("To check The Buferr if it is to be flushed.");
+        log.info("To check The Buferr if it is to be flushed.");
         if(buffer.getWriteListSize() >= bufferSizeMax){
             List<Triplet<String, String, byte[]>> records = buffer.get();
             TaskToHandleQueue.getTaskQueue().addTask(new FlushTask(records));
@@ -131,8 +131,8 @@ public class MemoryCacheImpl{
 
     public void flush(){
         if(buffer.getWriteListSize() > 0) {
-            logger.info("To flush the buffer.");
             List<Triplet<String, String, byte[]>> records = buffer.get();
+            log.info("To flush the buffer. records size : " + records.size());
             TaskToHandleQueue.getTaskQueue().addTask(new FlushTask(records));
             moveToCacheRecords(records);
         }
@@ -143,16 +143,16 @@ public class MemoryCacheImpl{
         for(Map.Entry<String, List<Pair<String, byte[]>>> entry : cacheRecords.entrySet()){
             cacheCount += entry.getValue().size();
         }
-        logger.info("The size of cache used to compare is : " + cacheCount);
-        logger.info("The size of faceObject used to write to HBase is : " + faceObjects.size());
-        logger.info("The size of buffer used to persistence is : " + buffer.getWriteListSize());
+        log.info("The size of cache used to compare is : " + cacheCount);
+//        log.info("The size of faceObject used to write to HBase is : " + faceObjects.size());
+        log.info("The size of buffer used to persistence is : " + buffer.getWriteListSize());
     }
 
     /**
      * 将数据加入cacheRecords
      */
     public void moveToCacheRecords(List<Triplet<String, String, byte[]>> records) {
-        logger.info("Move records from buffer to cacheRecords.");
+        log.info("Move records from buffer to cacheRecords.");
         for(Triplet<String, String, byte[]> record : records){
             String key = record.getFirst();
             Pair<String, byte[]> value = new Pair<>(record.getSecond(), record.getThird());
