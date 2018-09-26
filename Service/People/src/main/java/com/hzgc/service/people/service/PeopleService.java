@@ -363,8 +363,6 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-            peopleVO.setImportant(people.getImportant());
-            peopleVO.setCare(people.getCare());
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -450,8 +448,6 @@ public class PeopleService {
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
                     peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-                    peopleVO.setImportant(people.getImportant());
-                    peopleVO.setCare(people.getCare());
                     if (people.getLasttime() != null) {
                         peopleVO.setLastTime(sdf.format(people.getLasttime()));
                     }

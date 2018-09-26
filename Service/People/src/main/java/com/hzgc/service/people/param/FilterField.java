@@ -1,33 +1,21 @@
 package com.hzgc.service.people.param;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(value = "参数过滤封装")
 @Data
 public class FilterField implements Serializable {
-    @ApiModelProperty(value = "区域ID（省市区选择器）")
-    private Long regionid;
-    @ApiModelProperty(value = "小区ID")
-    private Long communityid;
-    @ApiModelProperty(value = "姓名")
-    private String name;
-    @ApiModelProperty(value = "身份证")
-    private String idcard;
-    @ApiModelProperty(value = "IMSI码")
-    private String imsi;
-    @ApiModelProperty(value = "手机号")
-    private String phone;
-    @ApiModelProperty(value = "人员ID列表")
-    private List<String> peopleIds;
-    @ApiModelProperty(value = "起始行数")
-    private int start;
-    @ApiModelProperty(value = "分页行数")
-    private int limit;
+    private Long regionid;//区域ID
+    private Long communityid;   // 小区ID
+    private String name;        // 姓名
+    private String idcard;      // 身份证
+    private String imsi;        // IMSI码
+    private String phone;       // 手机号
+    private List<String> peopleIds;     // 人员ID列表
+    private int start;                  // 起始行数
+    private int limit;                  // 分页行数
 
     public static FilterField SearchParamShift(SearchParamDTO param) {
         FilterField field = new FilterField();
