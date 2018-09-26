@@ -1,4 +1,4 @@
-package com.hzgc.cluster.peoman.client.zookeeper;
+package com.hzgc.cluster.peoman.worker.zookeeper;
 
 import org.springframework.stereotype.Component;
 

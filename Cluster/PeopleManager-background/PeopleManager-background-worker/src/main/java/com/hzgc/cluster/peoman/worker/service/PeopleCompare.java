@@ -5,6 +5,8 @@ import com.hzgc.cluster.peoman.worker.dao.FlagMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleRecognizeMapper;
 import com.hzgc.cluster.peoman.worker.model.PeopleRecognize;
 import com.hzgc.common.collect.bean.FaceObject;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.rocketmq.RocketMQProducer;
 import com.hzgc.jniface.CompareResult;
@@ -13,7 +15,6 @@ import com.hzgc.jniface.FaceFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,10 @@ import java.util.*;
 public class PeopleCompare {
     @Autowired
     @SuppressWarnings("unused")
+    private PlatformService platformService;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private MemeoryCache memeoryCache;
 
     @Autowired
@@ -37,54 +42,54 @@ public class PeopleCompare {
     @SuppressWarnings("unused")
     private FlagMapper flagMapper;
 
-    @Value("kafka.bootstrap.servers")
-    @SuppressWarnings("unused")
-    private String kafkaHost;
-
-    @Value("kafka.fusion.topic")
+    @Value("${kafka.fusion.topic}")
     @SuppressWarnings("unused")
     private String fusionTopic;
 
-    @Value("face.float.threshold")
+    @Value("${face.float.threshold}")
     @SuppressWarnings("unused")
     private float floatThreshold;
 
-    @Value("face.bit.threshold")
+    @Value("${face.bit.threshold}")
     @SuppressWarnings("unused")
     private float featureThreshold;
 
-    @Value("face.float.compare.open")
+    @Value("${face.float.compare.open}")
     @SuppressWarnings("unused")
     private boolean isOpen;
 
-    @Value("rocketmq.nameserver")
+    @Value("${rocketmq.nameserver}")
     @SuppressWarnings("unused")
     private String mqNameServer;
 
-    @Value("rocketmq.topic.name")
+    @Value("${rocketmq.topic.name}")
     @SuppressWarnings("unused")
     private String mqTopicName;
 
-    @Value("rocketmq.group.id")
+    @Value("${rocketmq.group.id}")
     @SuppressWarnings("unused")
     private String mqGroupId;
 
     private String yearMonth = new SimpleDateFormat("yyyyMM").format(System.currentTimeMillis());
     private Map<Integer, String> indexUUID = new HashMap<>();
+    private Map<String, CameraQueryDTO> cameraInfos = new HashMap<>();
     private LinkedList<byte[]> bitFeatureList = new LinkedList<>();
     private LinkedList<float[]> floatFeatureList = new LinkedList<>();
     private KafkaProducer<String, String> producer;
 
-    public PeopleCompare() {
+    public PeopleCompare(@Value("${kafka.bootstrap.servers}") String kafkaHost) {
         FaceFunction.init();
+        Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(new ArrayList<>());
+        cameraInfos.putAll(cameraInfoByBatchIpc);
+
         Properties properties = new Properties();
         properties.put("bootstrap.servers", kafkaHost);
         properties.put("acks", "all");
         properties.put("retries", 0);
         properties.put("batch.size", 0);
         properties.put("linger.ms", 1);
-        properties.put("key.deserializer", StringDeserializer.class.getName());
-        properties.put("value.deserializer", StringDeserializer.class.getName());
+        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         producer = new KafkaProducer<String, String>(properties);
     }
 
@@ -97,9 +102,25 @@ public class PeopleCompare {
             yearMonth = currentYearMonth;
         }
 
+        CameraQueryDTO cameraInfo = cameraInfos.get(faceObject.getIpcId());
+        Long communityId = null;
+        if (cameraInfo == null) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(faceObject.getIpcId());
+            Map<String, CameraQueryDTO> cameraInfoByIpc = platformService.getCameraInfoByBatchIpc(list);
+            CameraQueryDTO cameraIpc = cameraInfoByIpc.get(faceObject.getIpcId());
+            if(cameraIpc != null) {
+                communityId = cameraIpc.getCommunityId();
+                cameraInfos.put(faceObject.getIpcId(), cameraIpc);
+            }
+        } else {
+            communityId = cameraInfo.getCommunityId();
+        }
+
         ComparePicture comparePicture = memeoryCache.comparePicture(faceObject.getAttribute());
+        log.info("========================comparePicture="+comparePicture);
         if(comparePicture != null) {
-            addPeopleRecognize(faceObject, comparePicture);
+            addPeopleRecognize(faceObject, comparePicture, communityId);
 
             if(comparePicture.getFlagId() == 8) {
                 MessageMq mesg = new MessageMq();
@@ -114,30 +135,35 @@ public class PeopleCompare {
             ProducerRecord<String, String> record = new ProducerRecord<>(fusionTopic, faceObject.getId(), JacksonUtil.toJson(faceObject));
             producer.send(record);
         } else {
-            addNewPeopleRecognize(faceObject);
+            log.info("========================= add new People recognize faceobject="+ JacksonUtil.toJson(faceObject));
+            addNewPeopleRecognize(faceObject, communityId);
         }
     }
 
-    public void addPeopleRecognize(FaceObject faceObject, ComparePicture comparePicture) {
+    public void addPeopleRecognize(FaceObject faceObject, ComparePicture comparePicture, Long communityId) {
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(faceObject.getTimeStamp());
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         PeopleRecognize peopleRecognize = new PeopleRecognize();
         peopleRecognize.setPeopleid(comparePicture.getPeopleId());
         peopleRecognize.setPictureid(comparePicture.getId());
+        peopleRecognize.setCommunity(communityId);
         peopleRecognize.setDeviceid(faceObject.getIpcId());
         peopleRecognize.setCapturetime(date);
         peopleRecognize.setSurl(faceObject.getsFtpUrl());
         peopleRecognize.setBurl(faceObject.getbFtpUrl());
         peopleRecognize.setFlag(1);
-        peopleRecognizeMapper.insert(peopleRecognize);
+        log.info("====================insert people recognize value="+ JacksonUtil.toJson(peopleRecognize));
+        peopleRecognizeMapper.insertSelective(peopleRecognize);
     }
 
-    public void addNewPeopleRecognize(FaceObject faceObject) {
+    public void addNewPeopleRecognize(FaceObject faceObject, Long communityId) {
         HashMap resultMap = compareNewPeople(faceObject);
+        log.info("=============resultMap="+resultMap);
         PeopleRecognize peopleRecognize = new PeopleRecognize();
         Date date = null;
         try {
@@ -151,7 +177,11 @@ public class PeopleCompare {
             peopleRecognize.setCapturetime(date);
             peopleRecognize.setSurl(faceObject.getsFtpUrl());
             peopleRecognize.setBurl(faceObject.getbFtpUrl());
+            peopleRecognize.setPictureid(445555L);
+            peopleRecognize.setCommunity(communityId);
             peopleRecognize.setFlag((Integer) resultMap.get("result"));
+            int rest = peopleRecognizeMapper.insertSelective(peopleRecognize);
+            log.info("==========================faceobject="+ JacksonUtil.toJson(faceObject)+", rest="+rest);
         }
     }
 

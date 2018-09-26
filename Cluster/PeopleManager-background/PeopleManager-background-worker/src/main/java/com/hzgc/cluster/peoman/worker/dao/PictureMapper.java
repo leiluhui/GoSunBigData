@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface PictureMapper {
-    List<Picture> selectPicture(@Param("offset") int offset, @Param("limit") int limit);
+    List<Picture> selectByPrimaryKey(@Param("offset") int offset, @Param("limit") int limit);
     Picture selectByPictureId(Long id);
 }

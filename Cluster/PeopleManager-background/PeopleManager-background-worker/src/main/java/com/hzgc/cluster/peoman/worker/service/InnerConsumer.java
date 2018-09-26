@@ -29,19 +29,19 @@ public class InnerConsumer implements Runnable {
     @SuppressWarnings("unused")
     private Environment environment;
 
-    @Value("kafka.bootstrap.servers")
+    @Value("${kafka.bootstrap.servers}")
     @SuppressWarnings("unused")
     private String kafkaHost;
 
-    @Value("kafka.inner.group.id")
+    @Value("${kafka.inner.group.id}")
     @SuppressWarnings("unused")
     private String groupId;
 
-    @Value("kafka.inner.topic")
+    @Value("${kafka.inner.topic}")
     @SuppressWarnings("unused")
     private String innerTopic;
 
-    @Value("kafka.inner.topic.polltime")
+    @Value("${kafka.inner.topic.polltime}")
     @SuppressWarnings("unused")
     private Long pollTime;
 

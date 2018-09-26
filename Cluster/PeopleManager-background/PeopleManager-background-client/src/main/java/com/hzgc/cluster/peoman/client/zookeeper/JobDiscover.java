@@ -34,8 +34,9 @@ public class JobDiscover implements Serializable {
      *
      * @param callBack 回调对象,其中的run方法封装了具体的业务逻辑
      */
-    public void startListen(final DiscoveCallBack callBack,String path) throws InterruptedException {
-        createRootPath(path);
+    public void startListen(final DiscoveCallBack callBack, String path) throws InterruptedException {
+        createRootPath(Constant.tempPath);
+        createRootPath(Constant.rootPath);
         final PathChildrenCache pathCache = new PathChildrenCache(zkClient, path, true);
         try {
             pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
@@ -77,5 +78,13 @@ public class JobDiscover implements Serializable {
 
     public boolean isExist(String path){
         return curator.nodePathExists(path);
+    }
+
+    public String getData(String path){
+        byte[] data = curator.getNodeData(path);
+        if (data == null){
+            return "";
+        }
+        return new String(data);
     }
 }

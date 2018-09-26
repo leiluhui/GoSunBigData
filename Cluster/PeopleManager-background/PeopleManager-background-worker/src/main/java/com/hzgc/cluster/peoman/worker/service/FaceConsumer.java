@@ -21,15 +21,15 @@ public class FaceConsumer implements Runnable{
     @SuppressWarnings("unused")
     private PeopleCompare peopleCompare;
 
-    @Value("kafka.bootstrap.servers")
+    @Value("${kafka.bootstrap.servers}")
     @SuppressWarnings("unused")
     private String kafkaHost;
 
-    @Value("kafka.face.topic")
+    @Value("${kafka.face.topic}")
     @SuppressWarnings("unused")
     private String faceTopic;
 
-    @Value("kafka.inner.topic.polltime")
+    @Value("${kafka.inner.topic.polltime}")
     @SuppressWarnings("unused")
     private Long pollTime;
 
@@ -43,6 +43,7 @@ public class FaceConsumer implements Runnable{
         properties.put("value.deserializer", StringDeserializer.class.getName());
         consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Collections.singletonList(faceTopic));
+        log.info("topic="+faceTopic+", groupid="+groupId+",kafkaHost="+kafkaHost);
     }
 
     @Override
@@ -50,8 +51,11 @@ public class FaceConsumer implements Runnable{
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(pollTime);
             for (ConsumerRecord<String, String> record : records) {
-                FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
-                peopleCompare.comparePeople(faceObject);
+                log.info("--------kafka value="+record.value());
+                if (record.value() != null && record.value().length() > 0) {
+                    FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
+                    peopleCompare.comparePeople(faceObject);
+                }
             }
         }
     }
