@@ -160,7 +160,6 @@ public class STOR extends AbstractCommand {
                                 .setHostname(context.getCollectContext().getHostname())
                                 .setParser(parser)
                                 .setbRelativePath(fileName);
-                        LOG.info("Event = " + JacksonUtil.toJson(event));
                         context.getScheduler().putData(event);
                     }
                 }
