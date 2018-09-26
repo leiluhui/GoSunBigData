@@ -2,7 +2,7 @@ package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.ConfirmRecord;
 import com.hzgc.service.community.model.CountCommunityPeople;
-import com.hzgc.service.community.param.SuggestPeopleDTO;
+import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface ConfirmRecordMapper {
 
     int countOutPeople(Long community);
 
-    List<CountCommunityPeople> countConfirmNewPeople(SuggestPeopleDTO param);
+    List<CountCommunityPeople> countConfirmNewPeople(NewAndOutPeopleCountDTO param);
 
-    List<CountCommunityPeople> countConfirmOutPeople(SuggestPeopleDTO param);
+    List<CountCommunityPeople> countConfirmOutPeople(NewAndOutPeopleCountDTO param);
 }

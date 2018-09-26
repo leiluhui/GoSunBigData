@@ -2,7 +2,7 @@ package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.CountCommunityPeople;
 import com.hzgc.service.community.model.NewPeople;
-import com.hzgc.service.community.param.SuggestPeopleDTO;
+import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface NewPeopleMapper {
 
     int updateByPrimaryKey(NewPeople record);
 
-    List<CountCommunityPeople> countSuggestNewPeople(SuggestPeopleDTO param);
+    List<CountCommunityPeople> countSuggestNewPeople(NewAndOutPeopleCountDTO param);
 }

@@ -143,7 +143,7 @@ public class CommunityController {
 
     @ApiOperation(value = "小区迁入迁出人口统计（疑似与确认）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.GET)
-    public ResponseResult<List<SuggestPeopleVO>> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
+    public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(NewAndOutPeopleCountDTO param) {
         if (param == null){
             log.error("Start count community suggest people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
@@ -164,21 +164,25 @@ public class CommunityController {
             log.error("Start count community suggest people, but limit is 0");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
         }
+        if (param.getLimit() >= param.getCommunityIdList().size() - param.getStart()) {
+            log.error("Start count community suggest people, but limit is 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页设备不合理,请检查！");
+        }
         log.info("Start count community suggest people, param is :"+ JacksonUtil.toJson(param));
-        List<SuggestPeopleVO> voList = communityService.countCommunityNewAndOutPeople(param);
+        List<NewAndOutPeopleCounVO> voList = communityService.countCommunityNewAndOutPeople(param);
         log.info("Start count community suggest people successfully!");
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区疑似迁出查询", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_OUT, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunitySuggestOut() {
+    @ApiOperation(value = "小区迁入迁出人口查询（疑似与确认）", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.GET)
+    public ResponseResult<NewAndOutPeopleSearchVO> searchCommunitySuggestOut(NewAndOutPeopleSearchDTO param) {
         return null;
     }
 
-    @ApiOperation(value = "小区疑似迁入查询", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_SUGGEST_NEW, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunitySuggestNew() {
+    @ApiOperation(value = "小区迁出人口最后抓拍查询", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_OUT_LAST_CAPTURE, method = RequestMethod.GET)
+    public ResponseResult<String> searchCommunitySuggestNew(String peopleId) {
         return null;
     }
 

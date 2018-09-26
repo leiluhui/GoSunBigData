@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @ApiModel(value ="小区疑似迁入迁出人口统计出参")
 @Data
-public class SuggestPeopleVO implements Serializable {
+public class NewAndOutPeopleCounVO implements Serializable {
     @ApiModelProperty(value = "小区名字")
     private String communityName;
     @ApiModelProperty(value = "本月小区疑似迁入总数量")

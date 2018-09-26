@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan(value = {"com.hzgc.service.people.dao","com.hzgc.service.community.dao"})
+@MapperScan(basePackages = {"com.hzgc.service.people.dao","com.hzgc.service.community.dao"})
 public class PeopleApplication {
     public static void main(String[] args) {
         SpringApplication.run(PeopleApplication.class, args);

@@ -1,7 +1,7 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.community.model.CountCommunityPeople;
-import com.hzgc.service.community.param.SuggestPeopleDTO;
+import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.FilterField;
 
@@ -40,5 +40,5 @@ public interface PeopleMapper {
 
     List<People> searchOutPeople(Long community);
 
-    List<CountCommunityPeople> countSuggestOutPeople(SuggestPeopleDTO param);
+    List<CountCommunityPeople> countSuggestOutPeople(NewAndOutPeopleCountDTO param);
 }

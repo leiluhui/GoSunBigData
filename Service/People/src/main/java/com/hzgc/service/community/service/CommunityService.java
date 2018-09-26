@@ -93,15 +93,37 @@ public class CommunityService {
         return voList;
     }
 
-    public List<SuggestPeopleVO> countCommunityNewAndOutPeople(SuggestPeopleDTO param) {
+    public List<NewAndOutPeopleCounVO> countCommunityNewAndOutPeople(NewAndOutPeopleCountDTO param) {
         List<CountCommunityPeople> suggestNewCount = newPeopleMapper.countSuggestNewPeople(param);
         List<CountCommunityPeople> suggestOutCount = peopleMapper.countSuggestOutPeople(param);
         List<CountCommunityPeople> confirmNewCount = confirmRecordMapper.countConfirmNewPeople(param);
         List<CountCommunityPeople> confirmOutCount = confirmRecordMapper.countConfirmOutPeople(param);
-        List<Long> communityIdList = param.getCommunityIdList();
-        List<SuggestPeopleVO> voList = new ArrayList<>();
+        List<Long> communityIdList;
+        int size = param.getCommunityIdList().size();
+        if (param.getStart()  <= size){
+            if (param.getLimit() - 1 <= size - param.getStart()){
+                communityIdList = param.getCommunityIdList().subList(param.getStart(), param.getLimit());
+            }else {
+                return null;
+            }
+        }else {
+            return null;
+        }
+
+
+        if (param.getStart() + param.getLimit() < param.getCommunityIdList().size()){
+            if (param.getStart() >= param.getCommunityIdList().size() - param.getLimit()){
+                return null;
+            }else {
+
+            }
+            communityIdList = param.getCommunityIdList().subList(param.getStart(), param.getCommunityIdList().size());
+        }else {
+            communityIdList = param.getCommunityIdList().subList(param.getStart(), param.getLimit());
+        }
+        List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
         for (Long communityId : communityIdList){
-            SuggestPeopleVO vo = new SuggestPeopleVO();
+            NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             // TODO 名字
             vo.setCommunityName(String.valueOf(communityId));
             for (CountCommunityPeople suggestNew : suggestNewCount){
