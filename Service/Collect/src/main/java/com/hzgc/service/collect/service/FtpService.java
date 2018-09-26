@@ -49,9 +49,9 @@ public class FtpService implements Serializable {
      *
      * @return ftp相关配置参数
      */
-    public Map <String, String> getProperties(String ftpType) {
-        Map <String, String> map = new HashMap <>();
-        List <FtpRegisterInfo> list = null;
+    public Map<String, String> getProperties(String ftpType) {
+        Map<String, String> map = new HashMap<>();
+        List<FtpRegisterInfo> list = null;
         if ("face".equals(ftpType)) {
             list = register.getFaceFtpRegisterInfoList();
         }
@@ -63,7 +63,7 @@ public class FtpService implements Serializable {
         }
         //分配绑定次数最小的返回
         if (list != null && list.size() > 0) {
-            List <String> ftps = ftpService.queryIpByASC();
+            List<String> ftps = ftpService.queryIpByASC();
             for (FtpRegisterInfo registerInfo : list) {
                 String ftpIPAddress = registerInfo.getFtpIPAddress();
                 if (ftps.size() > 0) {
@@ -97,7 +97,7 @@ public class FtpService implements Serializable {
         return null;
     }
 
-    public boolean openFtpSubscription(String sessionId, List <String> ipcIdList) {
+    public boolean openFtpSubscription(String sessionId, List<String> ipcIdList) {
         if (!sessionId.equals("") && !ipcIdList.isEmpty()) {
             subscribe.updateSessionPath(sessionId, ipcIdList);
             return true;
@@ -113,14 +113,14 @@ public class FtpService implements Serializable {
         return false;
     }
 
-    public List <String> queryIpByASC() {
+    public List<String> queryIpByASC() {
         try {
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
             sql = "select ip from t_ftp order by count ASC";
             ResultSet resultSet = statement.executeQuery(sql);
-            ArrayList <String> ftpIps = new ArrayList <>();
+            ArrayList<String> ftpIps = new ArrayList<>();
             while (resultSet.next()) {
                 String ip = resultSet.getString("ip");
                 ftpIps.add(ip);
@@ -140,7 +140,7 @@ public class FtpService implements Serializable {
                 e.printStackTrace();
             }
         }
-        return new ArrayList <>();
+        return new ArrayList<>();
     }
 }
 

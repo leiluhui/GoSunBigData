@@ -29,6 +29,7 @@ public class FtpRegisterClient implements Serializable {
     private volatile Map<String, String> ftpIpMapping = new ConcurrentHashMap<>();
     private final String ftp_register_path = "/ftp_register";
     private Curator registerClient;
+    private RefreshDataCallBack refreshDataCallBack;
 
     public FtpRegisterClient(String zkAddress) {
         registerClient = new Curator(zkAddress, 20000, 15000);
@@ -39,6 +40,11 @@ public class FtpRegisterClient implements Serializable {
             log.info("Ftp register root path '/ftp_register' create successfully");
         }
         initPathCache(registerClient.getClient());
+    }
+
+    public FtpRegisterClient(String zkAddress, RefreshDataCallBack callBack) {
+        this(zkAddress);
+        this.refreshDataCallBack = callBack;
     }
 
     public void createNode(FtpRegisterInfo registerInfo) {
@@ -108,7 +114,7 @@ public class FtpRegisterClient implements Serializable {
                             personFtpRegisterInfoList.add(registerInfo);
                             break;
                         default:
-                            log.error("Ftp type error for this ftp register info:"
+                            log.warn("Ftp type error for this ftp register info:"
                                     + registerInfo.getFtpIPAddress() + " = "
                                     + JacksonUtil.toJson(registerInfo));
                             break;
@@ -118,7 +124,6 @@ public class FtpRegisterClient implements Serializable {
                     log.error("Ftp register info is null, ftp register child path:" + childData.getPath());
                 }
             }
-
             log.info("*************************************************************");
             log.info("Total ftp register info:" + Arrays.toString(ftpRegisterInfoList.toArray()));
             log.info("Face ftp register info:" + Arrays.toString(faceFtpRegisterInfoList.toArray()));
@@ -126,6 +131,12 @@ public class FtpRegisterClient implements Serializable {
             log.info("Person ftp register info:" + Arrays.toString(personFtpRegisterInfoList.toArray()));
             log.info("Ftp ip and hostname mapping:" + JacksonUtil.toJson(ftpIpMapping));
             log.info("*************************************************************");
+
+            if (this.refreshDataCallBack != null) {
+                refreshDataCallBack.run(currentData);
+            } else {
+                log.info("RefreshDataCallBack is null, don't do anything");
+            }
         }
     }
 

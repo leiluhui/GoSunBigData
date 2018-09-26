@@ -1,4 +1,4 @@
-package com.hzgc.service.collect.service;
+package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.PersonAttributes;
@@ -7,8 +7,7 @@ import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +16,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class PersonExtractService {
-
-    @Autowired
-    private Environment environment;
+    @Value("${seemmo.url}")
+    private String seemmoUrl;
 
     /**
      * 特征提取
@@ -29,7 +27,7 @@ public class PersonExtractService {
      * @return PersonPictureData
      */
     public PersonPictureData featureExtractByImage(byte[] imageBytes) {
-        ImageResult imageResult = ImageToData.getImageResult(environment.getProperty("seemmo.url"), imageBytes, environment.getProperty("person.tag"));
+        ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "1");
         PersonPictureData personPictureData = new PersonPictureData();
         personPictureData.setImageID(UuidUtil.getUuid());
         personPictureData.setImageData(imageBytes);

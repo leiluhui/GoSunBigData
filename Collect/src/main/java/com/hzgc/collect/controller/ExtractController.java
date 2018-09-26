@@ -1,5 +1,8 @@
-package com.hzgc.service.collect.controller;
+package com.hzgc.collect.controller;
 
+import com.hzgc.collect.service.extract.CarExtractService;
+import com.hzgc.collect.service.extract.FaceExtractService;
+import com.hzgc.collect.service.extract.PersonExtractService;
 import com.hzgc.common.service.carattribute.bean.CarAttribute;
 import com.hzgc.common.service.carattribute.service.CarAttributeService;
 import com.hzgc.common.service.faceattribute.bean.Attribute;
@@ -12,9 +15,6 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.jniface.CarPictureData;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.jniface.PictureData;
-import com.hzgc.service.collect.service.CarExtractService;
-import com.hzgc.service.collect.service.FaceExtractService;
-import com.hzgc.service.collect.service.PersonExtractService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -74,18 +74,6 @@ public class ExtractController {
             e.printStackTrace();
         }
         PictureData pictureData = faceExtractService.featureExtractByImage(imageBin);
-        return ResponseResult.init(pictureData);
-    }
-
-    @ApiOperation(value = "根据ftpUrl提取人脸特征值", response = ResponseResult.class)
-    @ApiImplicitParam(name = "pictureUrl", value = "图片路径", required = true, dataType = "string", paramType = "query")
-    @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_FTP, method = RequestMethod.GET)
-    public ResponseResult<PictureData> getFeatureExtract(String pictureUrl) {
-        if (null == pictureUrl) {
-            log.error("Start extract feature by ftp, pictureUrl is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-        }
-        PictureData pictureData = faceExtractService.getFeatureExtractByFtp(pictureUrl);
         return ResponseResult.init(pictureData);
     }
 

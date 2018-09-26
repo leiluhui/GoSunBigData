@@ -147,7 +147,7 @@ public class PropertiesUserManager extends AbstractUserManager {
         userDataProp = new BaseProperties();
         for (String key : properties.stringPropertyNames()) {
             userDataProp.setProperty(key, properties.getProperty(key));
-            log.info("Set ftp user properties successfull, key:?, value:?", key, properties.getProperty(key));
+            log.info("Set ftp user properties successfull, key[" + key + "], value[" + properties.getProperty(key) + "]");
         }
     }
 

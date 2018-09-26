@@ -1,4 +1,4 @@
-package com.hzgc.service.collect.service;
+package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.jniface.CarAttribute;
@@ -8,6 +8,7 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class CarExtractService {
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private Environment environment;
+    @Value("${seemmo.url}")
+    private String seemmoUrl;
 
     /**
      * 特征提取
@@ -29,7 +28,7 @@ public class CarExtractService {
      * @return CarPictureData
      */
     public CarPictureData carExtractByImage(byte[] imageBytes) {
-        ImageResult imageResult = ImageToData.getImageResult(environment.getProperty("seemmo.url"), imageBytes, environment.getProperty("car.tag"));
+        ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "0");
         if (imageResult == null) {
             log.error("imageResult is null !");
             return null;
