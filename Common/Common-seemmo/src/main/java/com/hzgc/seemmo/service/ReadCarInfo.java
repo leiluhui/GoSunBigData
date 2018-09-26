@@ -10,21 +10,18 @@ public class ReadCarInfo {
     private final Map<String, Map<Integer, String>> vehicleMap = new HashMap<>();
 
     public ReadCarInfo() {
-        vehicleMap.put(CarData.VEHICLE_BOJECT_TYPE, ReadCarInfo.objectTypeInfo());
         vehicleMap.put(CarData.BELT_MAINDRIVER, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.BELT_CODRIVER, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.CALL_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.VEHICLE_COLOR, ReadCarInfo.carColorInfo());
         vehicleMap.put(CarData.CRASH_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.DANGER_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.MISTAKE_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.PLATE_SCHELTER_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.PLATE_FLAG_CODE, ReadCarInfo.plateFlagInfo());
         vehicleMap.put(CarData.PLATE_DESTAIN_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.PLATE_COLER_CODE, ReadCarInfo.plateColorInfo());
         vehicleMap.put(CarData.PLATE_TYPE_CODE, ReadCarInfo.plateTypeInfo());
         vehicleMap.put(CarData.RACK_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.SUNROOF_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.VEHICLE_TYPE, ReadCarInfo.carKindInfo());
     }
 

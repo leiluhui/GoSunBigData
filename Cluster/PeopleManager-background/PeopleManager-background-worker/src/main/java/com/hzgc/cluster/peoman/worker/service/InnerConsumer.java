@@ -1,6 +1,8 @@
 package com.hzgc.cluster.peoman.worker.service;
 
-import com.alibaba.druid.support.json.JSONUtils;
+import com.hzgc.common.service.peoman.SyncPeopleManager;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -11,29 +13,36 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 @Slf4j
 @Component
 public class InnerConsumer implements Runnable {
     @Autowired
+    @SuppressWarnings("unused")
     private MemeoryCache memeoryCache;
 
     @Autowired
+    @SuppressWarnings("unused")
     private Environment environment;
 
     @Value("kafka.bootstrap.servers")
+    @SuppressWarnings("unused")
     private String kafkaHost;
 
     @Value("kafka.inner.group.id")
+    @SuppressWarnings("unused")
     private String groupId;
 
     @Value("kafka.inner.topic")
+    @SuppressWarnings("unused")
     private String innerTopic;
 
     @Value("kafka.inner.topic.polltime")
+    @SuppressWarnings("unused")
     private Long pollTime;
 
     private KafkaConsumer<String, String> consumer;
@@ -52,8 +61,37 @@ public class InnerConsumer implements Runnable {
     public void run() {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(pollTime);
+            List<SyncPeopleManager> managers = new ArrayList<>();
             for (ConsumerRecord<String, String> record : records) {
+                SyncPeopleManager message = JacksonUtil.toObject(record.value(), SyncPeopleManager.class);
+                String type = message.getType();
+                switch (type) {
+                    case "2":
+                        managers.add(message);
+                        break;
+                }
+            }
+            addPerson(managers);
+        }
+    }
+
+    /**
+     * 添加人员
+     *
+     * @param managerList 消息对象
+     */
+    private void addPerson(List<SyncPeopleManager> managerList) {
+        List<ComparePicture> newComparePicture = new ArrayList<>();
+        for (SyncPeopleManager message : managerList) {
+            List<ComparePicture> comparePictureList = memeoryCache.getPeople(message.getPersonid());
+            if (comparePictureList != null) {
+                ComparePicture comparePicture = new ComparePicture();
+                comparePicture.setPeopleId(message.getPersonid());
+                comparePicture.setBitFeature(FaceUtil.base64Str2BitFeature(message.getBitFeature()));
+                comparePicture.setId(message.getPictureId());
+                newComparePicture.add(comparePicture);
             }
         }
+        memeoryCache.putData(newComparePicture);
     }
 }

@@ -14,7 +14,7 @@ public class JobSubmit {
 
     /**
      *  接收到增加Worker的命令时
-     * @param workerId
+     * @param workerId 要增加的workerId
      */
     public static void submitJob(String workerId) {
         JobClient jobClient = JobClientUtil.getClient();
@@ -36,6 +36,7 @@ public class JobSubmit {
         job.setTaskTrackerNodeGroup(taskTracker.getNodeGroup());
         job.setMaxRetryTimes(0);
         jobClient.submitJob(job);
+//        TaskTrackerManager.getInstance().addTimes(job);
 
         //更新内存中的Job
         taskTracker.getPorts().remove(port);
@@ -47,6 +48,7 @@ public class JobSubmit {
         JobClient jobClient = JobClientUtil.getClient();
         String taskTrackerGroup = job.getTaskTrackerNodeGroup();
         TaskTracker taskTracker = TaskTrackerManager.getInstance().getTaskTracker(taskTrackerGroup);
+
         if(taskTracker == null){
             System.out.println("There is no TaskTracker : " + taskTrackerGroup + "free.");
             return;
@@ -56,14 +58,17 @@ public class JobSubmit {
             System.out.println("There is no TaskTracker : " + taskTrackerGroup + "free.");
             return;
         }
+        job = taskTracker.changePort(job);
         logger.info("Submit job : " + job.getParam("workerId") + " To tracker group : " + taskTrackerGroup);
         jobClient.submitJob(job);
+//        TaskTrackerManager.getInstance().addTimes(job);
+        TaskTrackerManager.getInstance().saveTracker();
     }
 
     /**
      * 项目启动时
-     * @param workerId
-     * @param nodeGroup
+     * @param workerId 要启动的workerId
+     * @param nodeGroup 启动worker的节点组
      */
     public static void submitJob(String workerId, String nodeGroup){
         JobClient jobClient = JobClientUtil.getClient();
@@ -86,6 +91,7 @@ public class JobSubmit {
         job.setPriority(100);
         job.setTaskTrackerNodeGroup(taskTracker.getNodeGroup());
         jobClient.submitJob(job);
+//        TaskTrackerManager.getInstance().addTimes(job);
 
         //更新内存中的Job
         taskTracker.getPorts().remove(port);

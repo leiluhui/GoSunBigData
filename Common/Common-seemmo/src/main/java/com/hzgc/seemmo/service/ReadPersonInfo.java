@@ -27,7 +27,7 @@ public class ReadPersonInfo {
         personMap.put("umbrella_code", ReadPersonInfo.umbrellaInfo());
         personMap.put("uppercolor_code", ReadPersonInfo.upperColorInfo());
         personMap.put("uppertype_code", ReadPersonInfo.upperTypeInfo());
-        personMap.put("car_type", ReadPersonInfo.objectTypeInfo());
+        personMap.put("car_type", ReadPersonInfo.bikeInfo());
     }
 
     private static Map<Integer, String> ageInfo() {
@@ -154,18 +154,12 @@ public class ReadPersonInfo {
         return upperColorMap;
     }
 
-    private static Map<Integer, String> objectTypeInfo() {
-        HashMap<Integer, String> objectTypeMap = new HashMap<>();
-        objectTypeMap.put(0, "未知类型");
-        objectTypeMap.put(1, "行人");
-        objectTypeMap.put(2, "自行车");
-        objectTypeMap.put(3, "摩托车");
-        objectTypeMap.put(4, "小汽车");
-        objectTypeMap.put(5, "三轮车");
-        objectTypeMap.put(6, "巴士");
-        objectTypeMap.put(7, "面包车");
-        objectTypeMap.put(8, "卡车");
-        return objectTypeMap;
+    //1未骑车 2骑车
+    private static Map <Integer, String> bikeInfo() {
+        HashMap <Integer, String> bikeMap = new HashMap <>();
+        bikeMap.put(1, "未骑车");
+        bikeMap.put(2, "骑车");
+        return bikeMap;
     }
 
     private static Map<Integer, String> upperTypeInfo() {

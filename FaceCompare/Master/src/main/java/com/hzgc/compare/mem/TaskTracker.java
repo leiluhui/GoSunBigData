@@ -2,6 +2,8 @@ package com.hzgc.compare.mem;
 
 import com.github.ltsopensource.core.domain.Job;
 import com.hzgc.compare.conf.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TaskTracker implements Serializable{
+    private static final Logger logger = LoggerFactory.getLogger(TaskTracker.class);
     private final int maxJobsPerTaskTracker = Config.WORKER_NUM_PER_TRACKER;
     private List<String> ports; //可用的端口号
     private List<Job> jobs;
@@ -19,6 +22,18 @@ public class TaskTracker implements Serializable{
         this.nodeGroup = nodeGroup;
         ports = new ArrayList<>();
         ports.addAll(Arrays.asList(Config.PORTS.split(",")));
+    }
+
+    public Job changePort(Job job){
+        logger.info("Chhange the port for job : " + job.getTaskId());
+        String portUsed = job.getParam("port");
+        if(ports.size() > 0){
+            String portToUse = ports.get(0);
+            ports.remove(0);
+            job.setParam("port", portToUse);
+            ports.add(portUsed);
+        }
+        return job;
     }
 
     boolean addJob(Job job){
@@ -48,4 +63,8 @@ public class TaskTracker implements Serializable{
     public List<Job> getJobs(){
         return jobs;
     }
+
+//    public void disablePort(String port){
+//        ports.remove(port);
+//    }
 }

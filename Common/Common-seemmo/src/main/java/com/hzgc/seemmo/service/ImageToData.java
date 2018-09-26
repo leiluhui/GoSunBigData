@@ -281,7 +281,10 @@ public class ImageToData {
                     for (JSONObject js : pedestrains) {
                         Person person_object = new Person();
                         int car_type = (Integer) js.get("Type");
-                        person_object.setCar_type(String.valueOf(car_type));
+                        if (car_type == 2 || car_type == 3) {
+                            person_object.setCar_type("2");
+                        }
+                        person_object.setCar_type("1");
                         JSONObject person_detect = (JSONObject) js.get("Detect");
                         int person_code = (int) person_detect.get("Code");
                         JSONArray person_rect = null;
@@ -313,7 +316,11 @@ public class ImageToData {
                         JSONArray car_rect = null;
                         if (0 == car_code) {
                             int car_type = (int) js.get("Type");
-                            person_object.setCar_type(String.valueOf(car_type));
+                            if (car_type == 2 || car_type == 3) {
+                                person_object.setCar_type("2");
+                            } else if (car_type == 1) {
+                                person_object.setCar_type("1");
+                            }
                             JSONObject car_body = (JSONObject) car_detect.get("Body");
                             car_rect = (JSONArray) car_body.get("Rect");
                         }
@@ -535,8 +542,4 @@ public class ImageToData {
         String s = ImageToData.executeHttpPost(url, imageJsonString);
         return ImageToData.getData(s, null, tag, bytes);
     }
-
-//    public static void main(String[] args) {
-//        ImageToData.getImageResult("http://172.18.18.139:8000/?cmd=recogPic", "C:\\Users\\g10255\\Desktop\\2018_08_31_15_45_59_591_赣AA1115_0.jpg", "66");
-//    }
 }

@@ -49,10 +49,6 @@
                     <groupId>io.netty</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>curator-client</artifactId>
-                    <groupId>org.apache.curator</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>hadoop-annotations</artifactId>
                     <groupId>org.apache.hadoop</groupId>
                 </exclusion>

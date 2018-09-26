@@ -6,7 +6,7 @@ package com.hzgc.compare.worker.compare;//package com.hzgc.compare.worker.compar
 //import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 //import com.hzgc.jniface.CompareResult;
 //import com.hzgc.jniface.FaceFeatureInfo;
-//import com.hzgc.jniface.FaceFunction;
+//import com.hzgc.jniface.FaceUtil;
 //import javafx.util.Pair;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ package com.hzgc.compare.worker.compare;//package com.hzgc.compare.worker.compar
 //
 //        float[][] queryList = new float[1][512];
 //        queryList[0] = feature;
-//        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
+//        ArrayList<CompareResult> array = FaceUtil.faceCompareFloat(diku, queryList, 30);
 //        if(array.size() == 0){
 //            return new SearchResult();
 //    }
@@ -104,7 +104,7 @@ package com.hzgc.compare.worker.compare;//package com.hzgc.compare.worker.compar
 //        }
 //
 //        float[][] queryList = features.toArray(new float[features.size()][512]);
-//        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
+//        ArrayList<CompareResult> array = FaceUtil.faceCompareFloat(diku, queryList, 30);
 //        Map<String, Float> temp = new HashMap<>();
 //        for(CompareResult compareResult : array){
 //            ArrayList<FaceFeatureInfo> faceFeatureInfos = compareResult.getPictureInfoArrayList();
@@ -151,7 +151,7 @@ package com.hzgc.compare.worker.compare;//package com.hzgc.compare.worker.compar
 //            index ++;
 //        }
 //
-//        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
+//        ArrayList<CompareResult> array = FaceUtil.faceCompareFloat(diku, queryList, 30);
 //        for(CompareResult compareResult : array){
 //            SearchResult.Record[] records = new SearchResult.Record[compareResult.getPictureInfoArrayList().size()];
 //            int recordIndex = 0;

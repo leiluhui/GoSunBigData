@@ -6,7 +6,6 @@ import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.task.TimeToCheckFile;
 import com.hzgc.compare.worker.persistence.task.TimeToCheckTask;
 import org.apache.log4j.Logger;
-import sun.misc.BASE64Encoder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,12 +13,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class LocalFileManager implements FileManager {
-    private Config conf;
-    private String path = ""; //文件保存目录
+    private String path; //文件保存目录
     private Long fileSize = 256L * 1024 * 1024L;
     private Long timeToCheckFile = 24 * 60 * 60 * 1000L;
-    private String work_id = "";
-    private static Logger LOG = Logger.getLogger(LocalFileManager.class);
+    private String work_id;
+    private static Logger logger = Logger.getLogger(LocalFileManager.class);
     private LocalStreamCache streamCache;
 
     public LocalFileManager() {
@@ -44,12 +42,15 @@ public class LocalFileManager implements FileManager {
      */
     @Override
     public void flush(List<Triplet<String, String, byte[]>> buffer) {
-        LOG.info("Flush records to Local, the num is " + buffer.size());
-        BASE64Encoder encoder = new BASE64Encoder();
+        logger.info("Flush records to Local, the num is " + buffer.size());
         Map<String , List<Triplet<String, String, String>>> temp = new Hashtable<>();
         for(Triplet<String, String, byte[]> quintuple : buffer){
+            if(quintuple.getThird() == null){
+                logger.warn("Irregular data.");
+                continue;
+            }
             byte[] fea = quintuple.getThird();
-            String feature = encoder.encode(fea);
+            String feature = Base64.getEncoder().encodeToString(fea);
             String dateYMD = quintuple.getFirst();
             String[] strings = dateYMD.split("-");
             String dateYM = strings[0] + "-" + strings[1];
@@ -67,6 +68,7 @@ public class LocalFileManager implements FileManager {
             try {
                 flushForMonth(dateYM, datas);
             } catch (IOException e) {
+                logger.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -80,8 +82,9 @@ public class LocalFileManager implements FileManager {
      * @throws IOException
      */
     private void flushForMonth(String month, List<Triplet<String, String, String>>  datas) throws IOException {
+        logger.info("Flush data for month : " + month + ". The path is : " + path + "/" + work_id + "/" + month);
         File rootPath = new File(path);
-        if (!rootPath.exists()) {
+        if (!rootPath.exists() || !rootPath.isDirectory()) {
             boolean res = rootPath.mkdir();
             if(!res){
                 throw new IOException("创建文件夹 " + rootPath.getAbsolutePath() + " 失败");
@@ -89,12 +92,12 @@ public class LocalFileManager implements FileManager {
         }
         //创建workid目录
         File workFile = new File(path, work_id);
-        if (!workFile.exists()) {
+        if (!workFile.exists() || !workFile.isDirectory()) {
             boolean res = workFile.mkdir();
             if(!res){
                 throw new IOException("创建文件夹 " + workFile.getAbsolutePath() + " 失败");
             }
-            LOG.info("WorkFile name is " + workFile.getName());
+            logger.info("WorkFile name is " + workFile.getName());
         }
         //寻找目标月的文件夹
         File dirMonth = new File(workFile, month);

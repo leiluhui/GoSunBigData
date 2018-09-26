@@ -26,6 +26,27 @@ if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi
 
+
+#####################################################################
+# 函数名: tasktracker_protect
+# 描述: tasktracker 启动的时候，为tasktracker添加定时检测服务是否挂掉脚本，保证tasktracker挂掉后可以重新拉起
+# 参数: N/A
+# 返回值: N/A
+# 其他: N/A
+#####################################################################
+function tasktracker_protect()
+{
+    isExistProtest=$(grep tasktracker-protect /etc/crontab | wc -l)
+    if [ "${isExistProtest=}" == "1" ];then
+        echo "tasktracker_protect already exist"
+    else
+        echo "tasktracker_protect not exist, add tasktracker_protect into crontab"
+        echo "* */1 * * * root sync;sh ${BIN_DIR}/tasktracker-protect.sh" >> /etc/crontab
+        service crond restart
+    fi
+}
+
+
 #####################################################################
 # 函数名: start_tasktracker
 # 描述: 启动tasktracker
@@ -39,4 +60,5 @@ function start_tasktracker()
     echo "start tasktracker ..."
 }
 
+#tasktracker_protect
 start_tasktracker

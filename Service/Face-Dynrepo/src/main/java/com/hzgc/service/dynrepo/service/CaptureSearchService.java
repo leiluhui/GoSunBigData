@@ -114,14 +114,14 @@ public class CaptureSearchService {
                         if (singleSearchResult.getDevicePictures() != null) {
                             for (GroupByIpc groupByIpc : singleSearchResult.getDevicePictures()) {
                                 for (CapturedPicture capturedPicture : groupByIpc.getPictures()) {
-                                    capturedPicture.setSurl(captureServiceHelper.getFtpUrl(capturedPicture.getSurl()));
-                                    capturedPicture.setBurl(captureServiceHelper.getFtpUrl(capturedPicture.getBurl()));
+                                    capturedPicture.setSabsolutepath(capturedPicture.getSabsolutepath());
+                                    capturedPicture.setBabsolutepath(capturedPicture.getBabsolutepath());
                                 }
                             }
                         } else {
                             for (CapturedPicture capturedPicture : singleSearchResult.getPictures()) {
-                                capturedPicture.setSurl(captureServiceHelper.getFtpUrl(capturedPicture.getSurl()));
-                                capturedPicture.setBurl(captureServiceHelper.getFtpUrl(capturedPicture.getBurl()));
+                                capturedPicture.setSabsolutepath(capturedPicture.getSabsolutepath());
+                                capturedPicture.setBabsolutepath(capturedPicture.getBabsolutepath());
                             }
                         }
                     }
@@ -131,8 +131,8 @@ public class CaptureSearchService {
                     }
                     for (SingleSearchResult singleSearchResult : searchResult.getSingleResults()) {
                         for (CapturedPicture capturedPicture : singleSearchResult.getPictures()) {
-                            capturedPicture.setSurl(captureServiceHelper.getFtpUrl(capturedPicture.getSurl()));
-                            capturedPicture.setBurl(captureServiceHelper.getFtpUrl(capturedPicture.getBurl()));
+                            capturedPicture.setSabsolutepath(capturedPicture.getSabsolutepath());
+                            capturedPicture.setBabsolutepath(capturedPicture.getBabsolutepath());
                         }
                     }
                 }
@@ -166,11 +166,10 @@ public class CaptureSearchService {
     /**
      * 查询设备最后一次抓拍时间
      *
-     * @param deviceId 设备ID
+     * @param ipcId 设备ID
      * @return 最后抓拍时间
      */
-    public String getLastCaptureTime(String deviceId) {
-        String ipcId = captureServiceHelper.deviceIdToIpcId(deviceId);
+    public String getLastCaptureTime(String ipcId) {
         log.info("Start query last capture time, get ipcId is:" + ipcId);
         if (!StringUtils.isBlank(ipcId)) {
             String time = esDao.getLastCaptureTime(ipcId);
