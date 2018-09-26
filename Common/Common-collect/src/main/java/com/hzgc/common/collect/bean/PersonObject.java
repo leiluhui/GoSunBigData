@@ -5,17 +5,19 @@ import com.hzgc.seemmo.bean.personbean.Person;
 import java.io.Serializable;
 
 public class PersonObject implements Serializable {
+    private String id;                  //对象唯一ID
     private String ipcId;               // 设备ID
     private String timeStamp;           // 时间（格式：2017-01-01 00：00：00）
-    private String date;                // 日期（格式：2017-01-01）
-    private int timeSlot;               // 时间段（格式：0000）（小时+分钟）
     private Person attribute;           // 行人属性对象
-    private String surl;                // 小图ftp路径（带hostname的ftpurl）
-    private String burl;                // 大图ftp路径（带hostname的ftpurl）
-    private String relativePath;        // 小图相对路径（不带ftp根跟路径）
-    private String relativePath_big;    // 大图相对路径（不带ftp根跟路径）
-    private String ip;                  // 图片保存主机:ip
+    private String sFtpUrl;                // 小图ftp路径（带hostname的ftpurl）
+    private String bFtpUrl;                // 大图ftp路径（带hostname的ftpurl）
+    private String sAbsolutePath;        // 小图相对路径（不带ftp根跟路径）
+    private String bAbsolutePath;    // 大图相对路径（不带ftp根跟路径）
+    private String sRelativePath;       //小图存储绝对路径(不带ftp根目录)
+    private String bRelativePath;       //大图存储绝对路径(不带ftp根目录)
     private String hostname;            // 图片保存主机:hostname
+    private String feature;             //float特征值
+    private String bitfeature;          //bit特征值
 
     public static PersonObject builder() {
         return new PersonObject();
@@ -39,24 +41,6 @@ public class PersonObject implements Serializable {
         return this;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public PersonObject setDate(String date) {
-        this.date = date;
-        return this;
-    }
-
-    public int getTimeSlot() {
-        return timeSlot;
-    }
-
-    public PersonObject setTimeSlot(int timeSlot) {
-        this.timeSlot = timeSlot;
-        return this;
-    }
-
     public Person getAttribute() {
         return attribute;
     }
@@ -66,57 +50,91 @@ public class PersonObject implements Serializable {
         return this;
     }
 
-    public String getSurl() {
-        return surl;
-    }
-
-    public PersonObject setSurl(String surl) {
-        this.surl = surl;
-        return this;
-    }
-
-    public String getBurl() {
-        return burl;
-    }
-
-    public PersonObject setBurl(String burl) {
-        this.burl = burl;
-        return this;
-    }
-
-    public String getRelativePath() {
-        return relativePath;
-    }
-
-    public PersonObject setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
-        return this;
-    }
-
-    public String getRelativePath_big() {
-        return relativePath_big;
-    }
-
-    public PersonObject setRelativePath_big(String relativePath_big) {
-        this.relativePath_big = relativePath_big;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public PersonObject setIp(String ip) {
-        this.ip = ip;
-        return this;
-    }
-
     public String getHostname() {
         return hostname;
     }
 
     public PersonObject setHostname(String hostname) {
         this.hostname = hostname;
+        return this;
+    }
+
+    public String getsFtpUrl() {
+        return sFtpUrl;
+    }
+
+    public PersonObject setsFtpUrl(String sFtpUrl) {
+        this.sFtpUrl = sFtpUrl;
+        return this;
+    }
+
+    public String getbFtpUrl() {
+        return bFtpUrl;
+    }
+
+    public PersonObject setbFtpUrl(String bFtpUrl) {
+        this.bFtpUrl = bFtpUrl;
+        return this;
+    }
+
+    public String getsAbsolutePath() {
+        return sAbsolutePath;
+    }
+
+    public PersonObject setsAbsolutePath(String sAbsolutePath) {
+        this.sAbsolutePath = sAbsolutePath;
+        return this;
+    }
+
+    public String getbAbsolutePath() {
+        return bAbsolutePath;
+    }
+
+    public PersonObject setbAbsolutePath(String bAbsolutePath) {
+        this.bAbsolutePath = bAbsolutePath;
+        return this;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
+
+    public String getBitfeature() {
+        return bitfeature;
+    }
+
+    public void setBitfeature(String bitfeature) {
+        this.bitfeature = bitfeature;
+    }
+
+    public String getsRelativePath() {
+        return sRelativePath;
+    }
+
+    public PersonObject setsRelativePath(String sRelativePath) {
+        this.sRelativePath = sRelativePath;
+        return this;
+    }
+
+    public String getbRelativePath() {
+        return bRelativePath;
+    }
+
+    public PersonObject setbRelativePath(String bRelativePath) {
+        this.bRelativePath = bRelativePath;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public PersonObject setId(String id) {
+        this.id = id;
         return this;
     }
 }

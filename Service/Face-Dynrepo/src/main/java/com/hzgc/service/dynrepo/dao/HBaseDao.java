@@ -6,6 +6,7 @@ import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.SearchCollection;
 import com.hzgc.service.dynrepo.bean.SearchHisotry;
 import com.hzgc.service.dynrepo.bean.SearchResult;
+import com.hzgc.service.dynrepo.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.Cell;
@@ -189,7 +190,7 @@ public class HBaseDao {
                             SearchCollection collection =
                                     JacksonUtil.toObject(Bytes.toString(CellUtil.cloneValue(cell)), SearchCollection.class);
                             searchHisotry.setAttributes(collection.getSearchOption().getAttributes());
-                            searchHisotry.setDeviceIds(collection.getSearchOption().getDeviceIpcs());
+                            searchHisotry.setDeviceIds(DeviceToIpcs.getIpcs(collection.getSearchOption().getDeviceIpcs()));
                             searchHisotry.setSearchId(new String(CellUtil.cloneRow(cell)));
                             searchHisotry.setSimilarity(collection.getSearchOption().getSimilarity() + "");
                             searchHisotry.setStartTime(collection.getSearchOption().getStartTime());

@@ -3,9 +3,11 @@ package com.hzgc.cluster.peoman.worker.service;
 import lombok.Data;
 
 @Data
-public class ComparePicture {
+class ComparePicture {
     private Long id;
+    private Integer index;
     private String peopleId;
     private byte[] bitFeature;
-    private String community;
+    private Integer flagId;
+    private String name;
 }

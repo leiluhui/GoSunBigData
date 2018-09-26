@@ -13,7 +13,7 @@ import java.util.List;
 public class RpcClientForMaster {
     private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
     private MasterServer server;
-    public void createService(String serverAddress){
+    private void createService(String serverAddress){
         Constant constant = new Constant("/compare/master", "master");
         RpcClient rpcClient = new RpcClient(serverAddress, constant);
         try {
@@ -24,11 +24,11 @@ public class RpcClientForMaster {
         server = rpcClient.createAll(MasterServer.class);
     }
 
-    public void submitJob(String workerId){
+    private void submitJob(String workerId){
         server.submitJob(workerId);
     }
 
-    public void getJobsNow(){
+    private void getJobsNow(){
         AllReturn<List<String>> allReturn = server.getJobsNow();
         List<String> res = allReturn.getResult().get(0);
         for(String str : res){
@@ -49,7 +49,7 @@ public class RpcClientForMaster {
             Thread.sleep(2000);
             System.exit(0);
         } else{
-            System.out.println("");
+            System.out.println("无效用法");
         }
     }
 }

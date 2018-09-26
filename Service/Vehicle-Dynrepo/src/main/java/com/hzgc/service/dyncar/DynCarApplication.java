@@ -1,6 +1,6 @@
 package com.hzgc.service.dyncar;
 
-import com.hzgc.common.service.api.config.EnableDeviceQueryService;
+import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableHystrix
 @EnableSwagger2
-@EnableDeviceQueryService
+@EnablePlatformService
 public class DynCarApplication {
     public static void main(String[] args) {
         SpringApplication.run(DynCarApplication.class,args);

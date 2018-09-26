@@ -3,6 +3,7 @@ package com.hzgc.service.people.service;
 import com.github.pagehelper.PageHelper;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,12 +102,8 @@ public class PeopleService {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
             }
-            picture.setFeature(FaceFunction.floatArray2string(faceAttribute.getFeature()));
-            try {
-                picture.setBitfeature(new String(faceAttribute.getBitFeature(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
             int insertStatus = pictureMapper.insertSelective(picture);
             if (insertStatus != 1) {
                 log.info("Insert people, but insert picture to t_picture failed");
@@ -140,12 +136,8 @@ public class PeopleService {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
             }
-            picture.setFeature(FaceFunction.floatArray2string(faceAttribute.getFeature()));
-            try {
-                picture.setBitfeature(new String(faceAttribute.getBitFeature(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
             int insertStatus = pictureMapper.insertSelective(picture);
             if (insertStatus != 1) {
                 log.info("Update people, but insert picture to t_picture failed");
@@ -479,6 +471,6 @@ public class PeopleService {
     }
 
     public List<Long> searchCommunityIdsByRegionId(Long regionId) {
-        return  peopleMapper.searchCommunityIdsByRegionId(regionId);
+        return peopleMapper.searchCommunityIdsByRegionId(regionId);
     }
 }
