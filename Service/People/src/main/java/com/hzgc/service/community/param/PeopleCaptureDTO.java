@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class PeopleCaptureDTO implements Serializable {
     @ApiModelProperty(value = "人员全局ID")
-    private Long peopleId;
+    private String peopleId;
     @ApiModelProperty(value = "起始行数")
     private int start;
     @ApiModelProperty(value = "分页行数")

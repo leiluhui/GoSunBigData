@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class OutPeopleLastCaptureVO implements Serializable {
     @ApiModelProperty(value = "最后抓拍设备ID")
-    private Long deviceid;
+    private String deviceid;
     @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
     @ApiModelProperty(value = "离线天数")

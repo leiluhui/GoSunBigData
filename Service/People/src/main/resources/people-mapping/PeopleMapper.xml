@@ -190,6 +190,10 @@
         where people.id = t_picture.peopleid
         group by community
     </select>
+    <!--获取人员最后一次出现时间-->
+    <select id="getLastTime" resultMap="java.sql.Timestamp" parameterType="java.lang.String">
+        select lasttime from t_people where id = #{id,jdbcType=VARCHAR}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people
         where id = #{id,jdbcType=VARCHAR}
