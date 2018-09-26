@@ -1,7 +1,7 @@
 package com.hzgc.service.facedispatch.dispatch.service;
 
 import com.hzgc.common.service.api.bean.DeviceDTO;
-import com.hzgc.common.service.api.service.DeviceQueryService;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.json.JacksonUtil;
@@ -24,7 +24,7 @@ public class WarnRuleService {
     private HBaseDao hBaseDao;
 
     @Autowired
-    private DeviceQueryService deviceQueryService;
+    private PlatformService platformService;
 
     public void configRules(List<String> ipcIDs, List<Warn> warns) {
         hBaseDao.configRules(ipcIDs, warns);
@@ -69,7 +69,7 @@ public class WarnRuleService {
                 }
                 //查询ipcid
                 List<String> list = IdsUtil.toDeviceIdList(deviceList);
-                Map<String, DeviceDTO> mapDTO = deviceQueryService.getDeviceInfoByBatchId(list);
+                Map<String, DeviceDTO> mapDTO = platformService.getDeviceInfoByBatchId(list);
                 //动态获取需要删除的设备对应的id
                 ArrayList<String> delIds = new ArrayList <>();
                 //需要更新的id

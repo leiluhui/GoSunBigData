@@ -1,7 +1,6 @@
 package com.hzgc.service.facedispatch.dispatch.controller;
 
-import com.hzgc.common.service.api.bean.DeviceDTO;
-import com.hzgc.common.service.api.service.DeviceQueryService;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +29,7 @@ public class WarnRuleController {
     private WarnRuleService warnRuleService;
 
     @Autowired
-    private DeviceQueryService deviceQueryService;
+    private PlatformService platformService;
 
     @ApiOperation(value = "根据规则id获取规则详情", response = ResponseResult.class)
     @ApiImplicitParam(name = "id", value = "规则id", required = true, dataType = "string", paramType = "query")

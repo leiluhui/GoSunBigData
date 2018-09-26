@@ -3,6 +3,8 @@ package com.hzgc.collect.service.parser;
 import com.hzgc.collect.config.CollectContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
+
 /**
  * 大华抓拍机路径解析
  * 相机配置根路径: IPC-HFW5238M-AS-I1
@@ -32,18 +34,18 @@ public class DaHuaParser_HFW5238M extends AbstractParser {
         try {
             String ipcID = path.substring(path.indexOf("/", 1))
                     .substring(1, path.substring(path.indexOf("/", 1)).indexOf("/", 1));
-            String dateStr = path.split("/")[3].replace("-", "");
-            String year = dateStr.substring(0, 4);
-            String month = dateStr.substring(4, 6);
-            String day = dateStr.substring(6, 8);
-            String hour = path.split("/")[6];
-            String minute = path.split("/")[7];
-            String second = path.split("/")[8].substring(0, 2);
+//            String dateStr = path.split("/")[3].replace("-", "");
+//            String year = dateStr.substring(0, 4);
+//            String month = dateStr.substring(4, 6);
+//            String day = dateStr.substring(6, 8);
+//            String hour = path.split("/")[6];
+//            String minute = path.split("/")[7];
+//            String second = path.split("/")[8].substring(0, 2);
 
             message.setIpcid(ipcID);
-            String time = year + "-" + month + "-" + day +
-                    " " + hour + ":" + minute + ":" + second;
-            message.setTimeStamp(time);
+//            String time = year + "-" + month + "-" + day +
+//                    " " + hour + ":" + minute + ":" + second;
+            message.setTimeStamp(dateFormat.format(new Date()));
         } catch (Exception e) {
             log.error("Parse failed, path is:?" + path);
         }

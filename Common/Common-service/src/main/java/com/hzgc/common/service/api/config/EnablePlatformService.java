@@ -8,6 +8,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(DeviceQueryServiceConfig.class)
-public @interface EnableDeviceQueryService {
+@Import(EnablePlatformServiceConfig.class)
+public @interface EnablePlatformService {
 }

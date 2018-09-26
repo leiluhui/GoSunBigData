@@ -3,6 +3,8 @@ package com.hzgc.collect.service.parser;
 import com.hzgc.collect.config.CollectContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
+
 @Slf4j
 public class BoxParser extends AbstractParser {
     BoxParser(CollectContext collectContext) {
@@ -35,19 +37,19 @@ public class BoxParser extends AbstractParser {
         FtpPathMetaData message = new FtpPathMetaData();
         try {
             String ipcID = path.substring(1, path.indexOf("/", 1));
-            String timeStr = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("_")).replace("_", "");
-
-            String year = timeStr.substring(0, 4);
-            String month = timeStr.substring(4, 6);
-            String day = timeStr.substring(6, 8);
-            String hour = timeStr.substring(8, 10);
-            String minute = timeStr.substring(10, 12);
-            String second = timeStr.substring(12, 14);
+//            String timeStr = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("_")).replace("_", "");
+//
+//            String year = timeStr.substring(0, 4);
+//            String month = timeStr.substring(4, 6);
+//            String day = timeStr.substring(6, 8);
+//            String hour = timeStr.substring(8, 10);
+//            String minute = timeStr.substring(10, 12);
+//            String second = timeStr.substring(12, 14);
 
             message.setIpcid(ipcID);
-            String time = year + "-" + month + "-" + day +
-                    " " + hour + ":" + minute + ":" + second;
-            message.setTimeStamp(time);
+//            String time = year + "-" + month + "-" + day +
+//                    " " + hour + ":" + minute + ":" + second;
+            message.setTimeStamp(dateFormat.format(new Date()));
         } catch (Exception e) {
           log.error("Parse failed, path is:?" + path);
         }

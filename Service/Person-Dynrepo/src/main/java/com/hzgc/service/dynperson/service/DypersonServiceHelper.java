@@ -1,7 +1,7 @@
 package com.hzgc.service.dynperson.service;
 
 
-import com.hzgc.common.service.api.service.DeviceQueryService;
+import com.hzgc.common.service.api.service.PlatformService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,7 +20,7 @@ public class DypersonServiceHelper {
 
     @Autowired
     @SuppressWarnings("unused")
-    private DeviceQueryService queryService;
+    private PlatformService queryService;
 
     /**
      * ftpUrl中的HostName转为IP

@@ -3,8 +3,7 @@ package com.hzgc.service.dynrepo.service;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.util.ConverFtpurl;
 import com.hzgc.common.service.facedynrepo.FaceTable;
-import com.hzgc.common.service.api.bean.DeviceDTO;
-import com.hzgc.common.service.api.service.DeviceQueryService;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.basic.IsEmpty;
 import com.hzgc.service.dynrepo.bean.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +39,7 @@ public class CaptureServiceHelper {
 
     @Autowired
     @SuppressWarnings("unused")
-    private DeviceQueryService queryService;
+    private PlatformService queryService;
 
     @Autowired
     @SuppressWarnings("unused")

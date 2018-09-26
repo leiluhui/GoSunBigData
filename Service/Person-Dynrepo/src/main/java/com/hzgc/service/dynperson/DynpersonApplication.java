@@ -1,6 +1,6 @@
 package com.hzgc.service.dynperson;
 
-import com.hzgc.common.service.api.config.EnableDeviceQueryService;
+import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableEurekaClient
-@EnableDeviceQueryService
+@EnablePlatformService
 @EnableHystrix
 @EnableSwagger2
 public class DynpersonApplication {
