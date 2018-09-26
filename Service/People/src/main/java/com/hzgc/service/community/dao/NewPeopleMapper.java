@@ -19,5 +19,9 @@ public interface NewPeopleMapper {
 
     int updateByPrimaryKey(NewPeople record);
 
-    List<CountCommunityPeople> countSuggestNewPeople(NewAndOutPeopleCountDTO param);
+    int countNewPeople(Long communityId);
+
+    List<CountCommunityPeople> countTotalNewPeople(NewAndOutPeopleCountDTO param);
+
+    List<CountCommunityPeople> countConfirmNewPeople(NewAndOutPeopleCountDTO param);
 }
