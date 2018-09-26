@@ -24,22 +24,30 @@ public class FilterField implements Serializable {
     private String phone;
     @ApiModelProperty(value = "人员ID列表")
     private List<String> peopleIds;
+    @ApiModelProperty(value = "起始行数")
+    private int start;
+    @ApiModelProperty(value = "分页行数")
+    private int limit;
 
     public static FilterField SearchParamShift(SearchParamDTO param) {
         FilterField field = new FilterField();
-        field.setRegionid(param.getRegionId());
-        field.setCommunityid(param.getCommunityId());
-        if (param.getSearchType() == 0) {
-            field.setName(param.getSearchVal());
-        }
-        if (param.getSearchType() == 1) {
-            field.setIdcard(param.getSearchVal());
-        }
-        if (param.getSearchType() == 2) {
-            field.setImsi(param.getSearchVal());
-        }
-        if (param.getSearchType() == 3) {
-            field.setPhone(param.getSearchVal());
+        if (param != null){
+            field.setRegionid(param.getRegionId());
+            field.setCommunityid(param.getCommunityId());
+            if (param.getSearchType() == 0) {
+                field.setName(param.getSearchVal());
+            }
+            if (param.getSearchType() == 1) {
+                field.setIdcard(param.getSearchVal());
+            }
+            if (param.getSearchType() == 2) {
+                field.setImsi(param.getSearchVal());
+            }
+            if (param.getSearchType() == 3) {
+                field.setPhone(param.getSearchVal());
+            }
+            field.setStart(param.getStart());
+            field.setLimit(param.getLimit());
         }
         return field;
     }
