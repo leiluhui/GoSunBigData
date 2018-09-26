@@ -1,8 +1,11 @@
 package com.hzgc.service.people.dao;
 
+import com.hzgc.service.community.model.CountCommunityPeople;
+import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.FilterField;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface PeopleMapper {
@@ -37,4 +40,8 @@ public interface PeopleMapper {
     List<People> searchNewPeople(Long community);
 
     List<People> searchOutPeople(Long community);
+
+    List<CountCommunityPeople> countSuggestOutPeople(NewAndOutPeopleCountDTO param);
+
+    Timestamp getLastTime(String peopleId);
 }

@@ -48,9 +48,10 @@ public class BigDataPath {
     public static final String COMMUNITY_PEOPLE_CARE = "/people_care";
     public static final String COMMUNITY_PEOPLE_NEW = "/people_new";
     public static final String COMMUNITY_PEOPLE_OUT = "/people_out";
-    public static final String COMMUNITY_SUGGEST_COUNT = "/suggest_count";
-    public static final String COMMUNITY_SUGGEST_NEW = "/suggest_new";
-    public static final String COMMUNITY_SUGGEST_OUT = "/suggest_out";
+    public static final String COMMUNITY_COUNT_NEW_OUT = "/count_new_out";
+    public static final String COMMUNITY_SEARCH_NEW_OUT = "/search_new_out";
+    public static final String COMMUNITY_SEARCH_OUT_LAST_CAPTURE = "/out_last_capture";
+    public static final String COMMUNITY_SEARCH_NEW_CAPTURE = "/new_capture";
     public static final String COMMUNITY_AFFIRM_NEW = "/affirm_new";
     public static final String COMMUNITY_AFFIRM_OUT = "/affirm_out";
     public static final String COMMUNITY_PEOPLE_CAPTURE_1MONTH = "/search_capture";

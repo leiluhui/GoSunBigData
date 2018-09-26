@@ -59,6 +59,10 @@
         <collection property="picture" ofType="com.hzgc.service.people.model.PictureWithBLOBs" column="id"
                     select="com.hzgc.service.people.dao.PictureMapper.selectByPeopleId"/>
     </resultMap>
+    <resultMap id="CountResultMap" type="com.hzgc.service.community.model.CountCommunityPeople" >
+        <result column="community" property="community" jdbcType="BIGINT" />
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
     <sql id="Base_Column_List">
         id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
         job, birthplace, community, lasttime, createtime, updatetime
@@ -168,6 +172,27 @@
         and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
         and a.id = b.peopleid
         and a.community = #{community,jdbcType=BIGINT}
+    </select>
+    <!--统计某小区某月建议迁出数量-->
+    <select id="countSuggestOutPeople" resultMap="CountResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
+        select community, count(people.id) as count from (
+        select id, community from t_people
+        where community in
+        and id in
+        <foreach collection="communityIdList" item="model" open="(" close=")" separator=",">
+            #{model}
+        </foreach>
+        <if test="month != null and month.length() = 6">
+            and DATE_FORMAT(lasttime, '%Y%m%d') &lt;= DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m%d')
+        </if>
+        ) as people, t_picture
+        where people.id = t_picture.peopleid
+        group by community
+    </select>
+    <!--获取人员最后一次出现时间-->
+    <select id="getLastTime" resultType="java.sql.Timestamp" parameterType="java.lang.String">
+        select lasttime from t_people where id = #{id,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people

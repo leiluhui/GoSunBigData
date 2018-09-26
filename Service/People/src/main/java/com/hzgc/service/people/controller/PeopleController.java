@@ -272,7 +272,7 @@ public class PeopleController {
         }
         log.info("Start select picture, picture id is:" + pictureId);
         byte[] pic = peopleService.searchPictureByPicId(pictureId);
-        log.info("Start select picture successfully");
+        log.info("Select picture successfully");
         return ResponseResult.init(pic);
     }
 
@@ -290,7 +290,7 @@ public class PeopleController {
         }
         log.info("Start select picture, people id is:" + peopleId);
         PictureVO pictureVO = peopleService.searchPictureByPeopleId(peopleId);
-        log.info("Start select picture successfully");
+        log.info("Slect picture successfully");
         return ResponseResult.init(pictureVO);
     }
 
@@ -318,8 +318,8 @@ public class PeopleController {
         log.info("Start search people, search param DTO:" + JacksonUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
         log.info("Start search people, FilterField param:" + JacksonUtil.toJson(field));
-        List<PeopleVO> peoples = peopleService.searchPeople(field, param.getStart(), param.getLimit());
-        log.info("Start search people successfully, result:" + JacksonUtil.toJson(peoples));
+        List<PeopleVO> peoples = peopleService.searchPeople(field);
+        log.info("Search people successfully, result:" + JacksonUtil.toJson(peoples));
         return ResponseResult.init(peoples);
     }
 
@@ -332,7 +332,7 @@ public class PeopleController {
         }
         log.info("Start search community id list, region is:" + regionId);
         List<Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
-        log.info("Start search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
+        log.info("Search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
         return ResponseResult.init(communityIds);
     }
 }

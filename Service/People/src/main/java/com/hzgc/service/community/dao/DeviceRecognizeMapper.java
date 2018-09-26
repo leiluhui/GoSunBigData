@@ -17,7 +17,7 @@ public interface DeviceRecognizeMapper {
 
     int updateByPrimaryKey(DeviceRecognize record);
 
-    List<DeviceRecognize> countDeviceCaptureNum1Month(Long peopleid);
+    List<DeviceRecognize> countDeviceCaptureNum1Month(String peopleid);
 
-    List<DeviceRecognize> countCaptureNum3Month(Long peopleid);
+    List<DeviceRecognize> countCaptureNum3Month(String peopleid);
 }

@@ -355,8 +355,6 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-            peopleVO.setImportant(people.getImportant());
-            peopleVO.setCare(people.getCare());
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -418,13 +416,11 @@ public class PeopleService {
      * 查询人员对象
      *
      * @param field 查询过滤字段封装
-     * @param start 起始行数
-     * @param limit 分页行数
      * @return peopleVO 查询返回参数封装
      */
-    public List<PeopleVO> searchPeople(FilterField field, int start, int limit) {
+    public List<PeopleVO> searchPeople(FilterField field) {
         List<PeopleVO> list = new ArrayList<>();
-        PageHelper.offsetPage(start, limit);
+        PageHelper.offsetPage(field.getStart(), field.getLimit());
         List<People> peoples = peopleMapper.searchPeople(field);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
@@ -444,8 +440,6 @@ public class PeopleService {
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
                     peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-                    peopleVO.setImportant(people.getImportant());
-                    peopleVO.setCare(people.getCare());
                     if (people.getLasttime() != null) {
                         peopleVO.setLastTime(sdf.format(people.getLasttime()));
                     }
