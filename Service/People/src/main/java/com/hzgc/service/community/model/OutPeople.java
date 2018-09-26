@@ -1,6 +1,6 @@
 package com.hzgc.service.community.model;
 
-public class ConfirmRecord {
+public class OutPeople {
     private Long id;
 
     private String peopleid;
@@ -9,7 +9,7 @@ public class ConfirmRecord {
 
     private String month;
 
-    private Integer flag;
+    private Integer isconfirm;
 
     public Long getId() {
         return id;
@@ -43,11 +43,11 @@ public class ConfirmRecord {
         this.month = month == null ? null : month.trim();
     }
 
-    public Integer getFlag() {
-        return flag;
+    public Integer getIsconfirm() {
+        return isconfirm;
     }
 
-    public void setFlag(Integer flag) {
-        this.flag = flag;
+    public void setIsconfirm(Integer isconfirm) {
+        this.isconfirm = isconfirm;
     }
 }

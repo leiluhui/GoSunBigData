@@ -28,7 +28,7 @@ public class CommunityService {
     @Autowired
     private NewPeopleMapper newPeopleMapper;
     @Autowired
-    private ConfirmRecordMapper confirmRecordMapper;
+    private OutPeopleMapper outPeopleMapper;
     @Autowired
     private PeopleRecognizeMapper peopleRecognizeMapper;
     @Autowired
@@ -43,8 +43,8 @@ public class CommunityService {
         vo.setCommunityPeoples(peopleMapper.countCommunityPeople(communityId));
         vo.setImportantPeoples(peopleMapper.countImportantPeople(communityId));
         vo.setCarePeoples(peopleMapper.countCarePeople(communityId));
-        vo.setNewPeoples(confirmRecordMapper.countNewPeople(communityId));
-        vo.setOutPeoples(confirmRecordMapper.countOutPeople(communityId));
+        vo.setNewPeoples(newPeopleMapper.countNewPeople(communityId));
+        vo.setOutPeoples(outPeopleMapper.countOutPeople(communityId));
         return vo;
     }
 
@@ -109,22 +109,22 @@ public class CommunityService {
         }
         param.setCommunityIdList(communityIdList);
         log.info("Start count community new and out people, community id list:"+ JacksonUtil.toJson(param.getCommunityIdList()));
-        List<CountCommunityPeople> suggestNewCount = newPeopleMapper.countSuggestNewPeople(param);
-        List<CountCommunityPeople> suggestOutCount = peopleMapper.countSuggestOutPeople(param);
-        List<CountCommunityPeople> confirmNewCount = confirmRecordMapper.countConfirmNewPeople(param);
-        List<CountCommunityPeople> confirmOutCount = confirmRecordMapper.countConfirmOutPeople(param);
+        List<CountCommunityPeople> totalNewCount = newPeopleMapper.countTotalNewPeople(param);
+        List<CountCommunityPeople> totalOutCount = outPeopleMapper.countTotalOutPeople(param);
+        List<CountCommunityPeople> confirmNewCount = newPeopleMapper.countConfirmNewPeople(param);
+        List<CountCommunityPeople> confirmOutCount = outPeopleMapper.countConfirmOutPeople(param);
         List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
         for (Long communityId : communityIdList){
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             // TODO 名字
             vo.setCommunityName(String.valueOf(communityId));
-            for (CountCommunityPeople suggestNew : suggestNewCount){
+            for (CountCommunityPeople suggestNew : totalNewCount){
                 if (suggestNew.getCommunity().equals(communityId)){
                     vo.setSuggestNewCount(suggestNew.getCount());
                     break;
                 }
             }
-            for (CountCommunityPeople suggestOut : suggestOutCount){
+            for (CountCommunityPeople suggestOut : totalOutCount){
                 if (suggestOut.getCommunity().equals(communityId)){
                     vo.setSuggestOutCount(suggestOut.getCount());
                     break;

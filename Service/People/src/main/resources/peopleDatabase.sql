@@ -131,11 +131,20 @@ CREATE TABLE t_people_new(
 id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
 peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
 community BIGINT(20) NOT NULL COMMENT '小区ID',
-month VARCHAR(6) NOT NULL COMMENT '建议迁入的月份:yyyyMM',
+month VARCHAR(6) NOT NULL COMMENT '疑似迁入月份:yyyyMM',
 deviceid VARCHAR(50) NOT NULL COMMENT '设备ID',
-isconfirm INT(2) NOT NULL COMMENT '是否确认迁入(1:未迁入，2：迁入)',
+isconfirm INT(2) NOT NULL COMMENT '是否确认迁入(1:未确认，2：已确认迁入，3：确认未迁入)',
 flag INT(2) NOT NULL COMMENT '标签(1:预实名, 2:新增)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '建议迁入人口表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '疑似迁入记录表';
+
+
+CREATE TABLE t_people_out(
+id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
+peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
+community BIGINT(20) NOT NULL COMMENT '小区ID',
+month VARCHAR(6) NOT NULL COMMENT '疑似迁出月份:yyyyMM',
+isconfirm INT(2) NOT NULL COMMENT '是否确认迁出(1:未确认，2：已确认迁出，3：确认未迁出)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '疑似迁出记录表';
 
 
 CREATE TABLE t_24hour_count(
@@ -145,12 +154,3 @@ community BIGINT(20) NOT NULL COMMENT '小区ID',
 hour VARCHAR(10) NOT NULL COMMENT '抓拍小时:yyyyMMddHH',
 count INT(10) NOT NULL COMMENT '抓拍次数'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '24小时抓拍统计表';
-
-
-CREATE TABLE t_confirm_record(
-id BIGINT(20) PRIMARY KEY AUTO_INCREMENT NOT NULL COMMENT 'ID',
-peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
-community BIGINT(20) COMMENT '小区ID',
-month VARCHAR(6) NOT NULL COMMENT '确认迁入迁出月份:yyyyMM',
-flag INT(2) NOT NULL COMMENT '标签(1:确认迁入, 2:确认迁出)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '确认迁入迁出记录表';
