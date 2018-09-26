@@ -125,7 +125,7 @@ public class ProcessThread implements Runnable {
                 }
 
                 if (collectContext.getFtpTypeList().contains("car") && vehicleList != null && vehicleList.size() > 0) {
-                    log.info("Person check successfull ,file name is:{}, event.getbAbsolutePath())");
+                    log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
                         if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
@@ -145,7 +145,7 @@ public class ProcessThread implements Runnable {
                         index++;
                     }
                 } else {
-                    log.warn("Person check failed, file name is:{}", event.getbAbsolutePath());
+                    log.warn("Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
             }
         } catch (InterruptedException e) {
