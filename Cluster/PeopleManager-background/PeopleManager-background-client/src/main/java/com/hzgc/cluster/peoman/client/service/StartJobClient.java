@@ -20,7 +20,7 @@ public class StartJobClient {
     @PostConstruct
     public void catchNodeNumAndStartJob(){
         try {
-            jobDiscover.startListen(jobClientCallBack, Constant.rootPath);
+            jobDiscover.startListen(jobClientCallBack, Constant.tempPath);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

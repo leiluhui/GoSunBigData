@@ -1,7 +1,7 @@
 #!/bin/bash
 ##################################################################
 ## Copyright:      HZGOSUN Tech. Co, BigData
-## Filename:       stop-client.sh
+## Filename:       stop-peoman-client.sh
 ## Desctiption:    停止jobClient
 ## Author:         chenke
 ## Created:        2018-09-17
@@ -18,7 +18,7 @@ CLIENT_DIR=`pwd`                              ##client目录地址
 CLIENT_LOG_DIR=${CLIENT_DIR}/log              ##client的log目录地址
 CLIENT_LIB_DIR=${CLIENT_DIR}/lib              ##client的lib目录地址
 CLIENT_LOG_FILE=${CLIENT_LOG_DIR}/client.log
-CLIENT_JAR_NAME=`ls ${CLIENT_LIB_DIR} | grep ^peoman-client-[0-9].[0-9].[0-9].jar$`
+CLIENT_JAR_NAME=`ls ${CLIENT_LIB_DIR} | grep ^peoman-client-[0-9].[0-9].jar$`
 CLIENT_JAR_PID=`jps | grep ${CLIENT_JAR_NAME} | awk '{print $1}'`
 
 #######################################################################

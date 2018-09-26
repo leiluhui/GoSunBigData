@@ -1,4 +1,4 @@
-package com.hzgc.cluster.peoman.client.zookeeper;
+package com.hzgc.cluster.peoman.worker.zookeeper;
 
 import com.hzgc.common.util.zookeeper.Curator;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import org.apache.zookeeper.CreateMode;
 import java.io.Serializable;
 
 @Slf4j
-public class JobRegister implements Serializable {
+public class WorkerRegister implements Serializable {
     private Curator zkClient;
 
     /**
@@ -16,7 +16,7 @@ public class JobRegister implements Serializable {
      * @param sessionTimeOut session超时时间
      * @param connectionTimeOut 连接超时时间
      */
-    public JobRegister(String zkAddress, int sessionTimeOut, int connectionTimeOut) {
+    public WorkerRegister(String zkAddress, int sessionTimeOut, int connectionTimeOut) {
         zkClient = new Curator(zkAddress, sessionTimeOut, connectionTimeOut);
         log.info("Start JobRegister successfull, zkAddress:?, sessionTimeOut:?, connectionTimeOut:?",
                 zkAddress, sessionTimeOut, connectionTimeOut);
@@ -27,7 +27,7 @@ public class JobRegister implements Serializable {
      *
      * @param zkAddress zookeeper地址
      */
-    public JobRegister(String zkAddress) {
+    public WorkerRegister(String zkAddress) {
         this(zkAddress, 12000, 12000);
     }
 
@@ -36,9 +36,9 @@ public class JobRegister implements Serializable {
      *
      * @param registInfo 注册信息
      */
-    public void regist(String registInfo,String Data) throws InterruptedException {
-        String registPath = Constant.rootPath + "/" + registInfo;
-        zkClient.createNode(registPath, Data.getBytes(), CreateMode.PERSISTENT);
+    public void regist(String registInfo) throws InterruptedException {
+        String registPath = Constant.tempPath + "/" + registInfo;
+        zkClient.createNode(registPath, null, CreateMode.EPHEMERAL);
     }
 
     public void update(String path,String Data) throws Exception{
