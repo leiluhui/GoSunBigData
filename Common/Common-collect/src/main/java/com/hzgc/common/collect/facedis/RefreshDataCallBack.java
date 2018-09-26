@@ -1,9 +1,7 @@
 package com.hzgc.common.collect.facedis;
 
-import org.apache.curator.framework.recipes.cache.ChildData;
-
-import java.util.List;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
 public interface RefreshDataCallBack {
-    public void run(List<ChildData> childDataList);
+    public void run(PathChildrenCacheEvent event);
 }

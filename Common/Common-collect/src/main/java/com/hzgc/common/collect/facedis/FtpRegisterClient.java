@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.zookeeper.CreateMode;
 
 
@@ -72,26 +73,26 @@ public class FtpRegisterClient implements Serializable {
                         + ", path:" + data + "]");
                 switch (event.getType()) {
                     case CHILD_ADDED:
-                        refreshData(pathCache.getCurrentData());
+                        refreshData(pathCache.getCurrentData(), event);
                         break;
                     case CHILD_UPDATED:
-                        refreshData(pathCache.getCurrentData());
+                        refreshData(pathCache.getCurrentData(), event);
                         break;
                     case CHILD_REMOVED:
-                        refreshData(pathCache.getCurrentData());
+                        refreshData(pathCache.getCurrentData(), event);
                         break;
                     default:
                         break;
                 }
             });
             //尝试第一次刷新节点下数据
-            refreshData(pathCache.getCurrentData());
+            refreshData(pathCache.getCurrentData(), null);
         } catch (Exception e) {
             log.info(e.getMessage());
         }
     }
 
-    private void refreshData(List<ChildData> currentData) {
+    private void refreshData(List<ChildData> currentData, PathChildrenCacheEvent event) {
         if (currentData != null && currentData.size() > 0) {
             ftpRegisterInfoList.clear();
             faceFtpRegisterInfoList.clear();
@@ -133,7 +134,7 @@ public class FtpRegisterClient implements Serializable {
             log.info("*************************************************************");
 
             if (this.refreshDataCallBack != null) {
-                refreshDataCallBack.run(currentData);
+                refreshDataCallBack.run(event);
             } else {
                 log.info("RefreshDataCallBack is null, don't do anything");
             }
@@ -158,5 +159,13 @@ public class FtpRegisterClient implements Serializable {
 
     public Map<String, String> getFtpIpMapping() {
         return ftpIpMapping;
+    }
+
+    public RefreshDataCallBack getRefreshDataCallBack() {
+        return refreshDataCallBack;
+    }
+
+    public void setRefreshDataCallBack(RefreshDataCallBack refreshDataCallBack) {
+        this.refreshDataCallBack = refreshDataCallBack;
     }
 }
