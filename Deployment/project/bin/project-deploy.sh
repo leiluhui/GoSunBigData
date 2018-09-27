@@ -733,7 +733,7 @@ function distribute_facecompare(){
         sed -i "s#worker.address=.*#worker.address=${node}#g" /opt/FaceCompare/conf/worker.properties
 
         if [[ ${num} -lt ${CLUSTER_NODE_NUM} ]]; then
-            sed -i "s#tasktracker.group=.*#tasktracker.group=compareTask${num}#g" /opt/FaceCompare/conf/worker.properties
+            sed -i "s#tasktracker.group=.*#tasktracker.group=facecompare-compareTask${num}#g" /opt/FaceCompare/conf/worker.properties
             ((num++))
         fi
     done
