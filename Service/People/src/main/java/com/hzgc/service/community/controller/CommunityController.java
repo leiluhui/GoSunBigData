@@ -179,6 +179,32 @@ public class CommunityController {
         return null;
     }
 
+    @ApiOperation(value = "小区迁入迁出人口信息查询", response = CommunityPeopleInfoVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_INFO, method = RequestMethod.GET)
+    public ResponseResult<CommunityPeopleInfoVO> searchCommunityPeopleInfo(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
+            log.error("Start search community people info, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID不能为空,请检查！");
+        }
+        log.info("Start search community people info, people id is:" + peopleId);
+        CommunityPeopleInfoVO vo = communityService.searchCommunityPeopleInfo(peopleId);
+        log.info("Search community people info successfully");
+        return ResponseResult.init(vo);
+    }
+
+    @ApiOperation(value = "身份证精准查询", response = CommunityPeopleInfoVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_INFO_IDCARD, method = RequestMethod.GET)
+    public ResponseResult<CommunityPeopleInfoVO> searchPeopleByIdCard(String idCard) {
+        if (idCard == null) {
+            log.info("Start search people by idCard, but idCard is null");
+            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询身份证为空,请检查!");
+        }
+        log.info("Start search people by idCard, idCard is:" + idCard);
+        CommunityPeopleInfoVO people = communityService.searchPeopleByIdCard(idCard);
+        log.info("Search people by idCard successfully, result:" + JacksonUtil.toJson(people));
+        return ResponseResult.init(people);
+    }
+
     @ApiOperation(value = "小区迁入人口抓拍详情", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.POST)
     public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(@RequestBody CaptureDetailsDTO param) {

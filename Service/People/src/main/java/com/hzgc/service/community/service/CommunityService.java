@@ -150,6 +150,38 @@ public class CommunityService {
        return voList;
     }
 
+    public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {
+        CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
+        People people = peopleMapper.searchCommunityPeopleInfo(peopleId);
+        if (people != null){
+            vo.setId(people.getId());
+            vo.setName(people.getName());
+            vo.setIdCard(people.getIdcard());
+            vo.setSex(people.getSex());
+            vo.setBirthday(people.getBirthday());
+            vo.setBirthplace(people.getBirthplace());
+            vo.setAddress(people.getAddress());
+            vo.setPictureId(people.getPictureId());
+        }
+        return vo;
+    }
+
+    public CommunityPeopleInfoVO searchPeopleByIdCard(String idCard) {
+        CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
+        People people = peopleMapper.searchPeopleByIdCard(idCard);
+        if (people != null){
+            vo.setId(people.getId());
+            vo.setName(people.getName());
+            vo.setSex(people.getSex());
+            vo.setIdCard(people.getIdcard());
+            vo.setBirthday(people.getBirthday());
+            vo.setBirthplace(people.getBirthplace());
+            vo.setAddress(people.getAddress());
+            vo.setPictureId(people.getPictureId());
+        }
+        return vo;
+    }
+
     public OutPeopleLastCaptureVO searchCommunityOutPeopleLastCapture(String peopleId) {
         OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);

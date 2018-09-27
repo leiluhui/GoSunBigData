@@ -39,5 +39,9 @@ public interface PeopleMapper {
 
     List<People> searchOutPeople(Long community);
 
+    People searchCommunityPeopleInfo(String peopleId);
+
+    People searchPeopleByIdCard(String idcard);
+
     Timestamp getLastTime(String peopleId);
 }
