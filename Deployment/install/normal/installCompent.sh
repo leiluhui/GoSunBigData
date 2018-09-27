@@ -61,7 +61,7 @@ else
     sh hbaseInstall.sh
 
     ##安装phoenix
-    sh phoenixInstall.sh
+#    sh phoenixInstall.sh
 
     ##安装hive
     sh hiveInstall.sh
