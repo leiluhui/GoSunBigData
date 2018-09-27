@@ -24,16 +24,27 @@ import java.util.*;
 @Slf4j
 public class CommunityService {
     @Autowired
+    @SuppressWarnings("unused")
     private PeopleMapper peopleMapper;
+
     @Autowired
-    private NewPeopleMapper newPeopleMapper;
-    @Autowired
-    private OutPeopleMapper outPeopleMapper;
-    @Autowired
-    private PeopleRecognizeMapper peopleRecognizeMapper;
-    @Autowired
+    @SuppressWarnings("unused")
     private FusionImsiMapper fusionImsiMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
+    private NewPeopleMapper newPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private OutPeopleMapper outPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PeopleRecognizeMapper peopleRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private DeviceRecognizeMapper deviceRecognizeMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -26,22 +26,37 @@ import java.util.List;
 @Slf4j
 public class PeopleService {
     @Autowired
-    private CarMapper carMapper;
-    @Autowired
-    private FlagMapper flagMapper;
-    @Autowired
-    private HouseMapper houseMapper;
-    @Autowired
-    private ImsiMapper imsiMapper;
-    @Autowired
+    @SuppressWarnings("unused")
     private PeopleMapper peopleMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
+    private CarMapper carMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private FlagMapper flagMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private HouseMapper houseMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private ImsiMapper imsiMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private PhoneMapper phoneMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
     private PictureMapper pictureMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public final static String IDCARD_PIC = "idcardpic";
+
     public final static String CAPTURE_PIC = "capturepic";
 
     public Integer people_insert(People people) {
