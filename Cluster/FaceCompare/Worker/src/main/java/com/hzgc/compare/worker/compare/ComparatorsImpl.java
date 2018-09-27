@@ -7,6 +7,7 @@ import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
 import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.FaceUtil;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
@@ -132,34 +133,20 @@ public class ComparatorsImpl implements Comparators{
 
     @Override
     public SearchResult compareSecond(float[] feature, float sim, List<FaceObject> datas, List<Integer> sorts) {
-        Long start = System.currentTimeMillis();
-        float[][] diku = new float[datas.size()][512];
-        int index = 0;
-        for(FaceObject faceobj : datas){
-            diku[index] = faceobj.getAttribute().getFeature();
-            index ++;
-        }
-
-        float[][] queryList = new float[1][512];
-        queryList[0] = feature;
-
-        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
-        if(array == null || array.size() == 0){
+        if(datas == null || datas.size() == 0){
             return new SearchResult();
         }
-        List<FaceFeatureInfo> list = array.get(0).getPictureInfoArrayList();
-        SearchResult.Record[] records = new SearchResult.Record[list.size()];
-        index = 0;
-        for(FaceFeatureInfo faceFeatureInfo : list){
-            float score = faceFeatureInfo.getScore();
-            if(score < sim){
-                continue;
-            }
-            FaceObject body = datas.get(faceFeatureInfo.getIndex());
-            SearchResult.Record record = new SearchResult.Record(score, body);
+        Long start = System.currentTimeMillis();
+        SearchResult.Record[] records = new SearchResult.Record[datas.size()];
+        int index = 0;
+        for(FaceObject faceobj : datas){
+            float[] history = faceobj.getAttribute().getFeature();
+            float simple = FaceUtil.featureCompare(feature, history);
+            SearchResult.Record record = new SearchResult.Record(simple, faceobj);
             records[index] = record;
             index ++;
         }
+
         SearchResult result = new SearchResult(records);
         long compared = System.currentTimeMillis();
         log.info("The time second compare used is : " + (compared - start));
@@ -168,52 +155,33 @@ public class ComparatorsImpl implements Comparators{
         } else {
             result.sortBySim();
         }
+        result.filterBySim(sim);
         log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
         return result;
     }
 
     @Override
     public SearchResult compareSecondTheSamePerson(List<float[]> features, float sim, List<FaceObject> datas, List<Integer> sorts) {
-        Long start = System.currentTimeMillis();
-        float[][] diku = new float[datas.size()][512];
-        int index = 0;
-        for(FaceObject faceobj : datas){
-            diku[index] = faceobj.getAttribute().getFeature();
-            index ++;
-        }
-
-        float[][] queryList = new float[1][512];
-        index = 0;
-        for(float[] feature : features){
-            queryList[index] = feature;
-            index ++;
-        }
-        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
-        if(array == null || array.size() == 0){
+        if(datas == null || datas.size() == 0){
             return new SearchResult();
         }
-        Map<FaceObject, Float> temp = new HashMap<>();
-        for(CompareResult compareResult : array){
-            ArrayList<FaceFeatureInfo> faceFeatureInfos = compareResult.getPictureInfoArrayList();
-            for(FaceFeatureInfo faceFeatureInfo : faceFeatureInfos){
-                FaceObject face = datas.get(faceFeatureInfo.getIndex());
-                float score = faceFeatureInfo.getScore();
-                if(score < sim){
-                    continue;
-                }
-                float scoreTemp = temp.get(face);
-                if(score < scoreTemp){
-                    temp.put(face, score);
+        Long start = System.currentTimeMillis();
+        SearchResult.Record[] records = new SearchResult.Record[datas.size()];
+        int index = 0;
+        for (FaceObject faceobj : datas) {
+            float simple = 100.0f;
+            for(float[] feature : features) {
+                float[] history = faceobj.getAttribute().getFeature();
+                float temp = FaceUtil.featureCompare(feature, history);
+                if(simple > temp){
+                    simple = temp;
                 }
             }
+            SearchResult.Record record = new SearchResult.Record(simple, faceobj);
+            records[index] = record;
+            index++;
         }
-        Set<Map.Entry<FaceObject, Float>> entrySet = temp.entrySet();
-        SearchResult.Record[] records = new SearchResult.Record[entrySet.size()];
-        index = 0;
-        for(Map.Entry<FaceObject, Float> entry : entrySet){
-            records[index] = new SearchResult.Record(entry.getValue(), entry.getKey());
-            index ++;
-        }
+
         SearchResult result = new SearchResult(records);
         long compared = System.currentTimeMillis();
         log.info("The time second compare used is : " + (compared - start));
@@ -222,6 +190,7 @@ public class ComparatorsImpl implements Comparators{
         } else {
             result.sortBySim();
         }
+        result.filterBySim(sim);
         log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
         return result;
     }
@@ -229,36 +198,20 @@ public class ComparatorsImpl implements Comparators{
     @Override
     public Map<String, SearchResult> compareSecondNotSamePerson(List<Feature> features, float sim,
                                                                 List<FaceObject> datas, List<Integer> sorts) {
-        Long start = System.currentTimeMillis();
-        Map<String, SearchResult> result = new HashMap<>();
-        float[][] diku = new float[datas.size()][512];
-        int index = 0;
-        for(FaceObject faceobj : datas){
-            diku[index] = faceobj.getAttribute().getFeature();
-            index ++;
-        }
-
-        float[][] queryList = new float[features.size()][512];
-        index = 0;
-        for(Feature feature : features){
-            queryList[index] = feature.getFeature2();
-            index ++;
-        }
-        ArrayList<CompareResult> array = FaceFunction.faceCompareFloat(diku, queryList, 30);
-        if(array == null || array.size() == 0){
+        if(datas == null || datas.size() == 0){
             return new HashMap<>();
         }
-        for(CompareResult compareResult : array){
-            SearchResult.Record[] records = new SearchResult.Record[compareResult.getPictureInfoArrayList().size()];
-            int recordIndex = 0;
-            for(FaceFeatureInfo faceFeatureInfo : compareResult.getPictureInfoArrayList()){
-                float score = faceFeatureInfo.getScore();
-                if(score < sim){
-                    continue;
-                }
-                FaceObject faceObject = datas.get(faceFeatureInfo.getIndex());
-                records[recordIndex] = new SearchResult.Record(score, faceObject);
-                recordIndex ++;
+        Map<String, SearchResult> res = new HashMap<>();
+        Long start = System.currentTimeMillis();
+        for(Feature feature : features) {
+            SearchResult.Record[] records = new SearchResult.Record[datas.size()];
+            int index = 0;
+            for (FaceObject faceobj : datas) {
+                float[] history = faceobj.getAttribute().getFeature();
+                float simple = FaceUtil.featureCompare(feature.getFeature2(), history);
+                SearchResult.Record record = new SearchResult.Record(simple, faceobj);
+                records[index] = record;
+                index++;
             }
             SearchResult searchResult = new SearchResult(records);
             if(sorts != null && (sorts.size() > 1 || (sorts.size() == 1 && sorts.get(0) != 4))) {
@@ -266,10 +219,11 @@ public class ComparatorsImpl implements Comparators{
             } else {
                 searchResult.sortBySim();
             }
-            String id = features.get(Integer.parseInt(compareResult.getIndex())).getId();
-            result.put(id, searchResult);
+            searchResult.filterBySim(sim);
+            res.put(feature.getId(), searchResult);
         }
         log.info("The time second compare used is : " + (System.currentTimeMillis() - start));
-        return result;
+
+        return res;
     }
 }
