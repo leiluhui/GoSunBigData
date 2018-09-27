@@ -2,9 +2,12 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.google.gson.Gson;
 import com.hzgc.cluster.peoman.worker.dao.FlagMapper;
+import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleRecognizeMapper;
+import com.hzgc.cluster.peoman.worker.model.People;
 import com.hzgc.cluster.peoman.worker.model.PeopleRecognize;
 import com.hzgc.common.collect.bean.FaceObject;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
@@ -33,6 +36,10 @@ public class PeopleCompare {
     @Autowired
     @SuppressWarnings("unused")
     private MemeoryCache memeoryCache;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PeopleMapper peopleMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -129,7 +136,7 @@ public class PeopleCompare {
                 mesg.setTime(faceObject.getTimeStamp());
                 mesg.setDevId(faceObject.getIpcId());
                 RocketMQProducer producerMQ = RocketMQProducer.getInstance(mqNameServer, mqTopicName, mqGroupId);
-                producerMQ.send(mqTopicName, "zdalarm", comparePicture.getPeopleId(), gson.toJson(mesg).getBytes(), null);
+                producerMQ.send(mqTopicName, "ZD-Message", comparePicture.getPeopleId(), gson.toJson(mesg).getBytes(), null);
             }
 
             ProducerRecord<String, String> record = new ProducerRecord<>(fusionTopic, faceObject.getId(), JacksonUtil.toJson(faceObject));
@@ -147,6 +154,10 @@ public class PeopleCompare {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        People people = new People();
+        people.setId(comparePicture.getPeopleId());
+        people.setLasttime(date);
+        peopleMapper.updateByPrimaryKeySelective(people);
 
         PeopleRecognize peopleRecognize = new PeopleRecognize();
         peopleRecognize.setPeopleid(comparePicture.getPeopleId());
@@ -154,8 +165,8 @@ public class PeopleCompare {
         peopleRecognize.setCommunity(communityId);
         peopleRecognize.setDeviceid(faceObject.getIpcId());
         peopleRecognize.setCapturetime(date);
-        peopleRecognize.setSurl(faceObject.getsFtpUrl());
-        peopleRecognize.setBurl(faceObject.getbFtpUrl());
+        peopleRecognize.setSurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath()));
+        peopleRecognize.setBurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath()));
         peopleRecognize.setFlag(1);
         log.info("====================insert people recognize value="+ JacksonUtil.toJson(peopleRecognize));
         peopleRecognizeMapper.insertSelective(peopleRecognize);
@@ -163,7 +174,6 @@ public class PeopleCompare {
 
     public void addNewPeopleRecognize(FaceObject faceObject, Long communityId) {
         HashMap resultMap = compareNewPeople(faceObject);
-        log.info("=============resultMap="+resultMap);
         PeopleRecognize peopleRecognize = new PeopleRecognize();
         Date date = null;
         try {
@@ -175,9 +185,8 @@ public class PeopleCompare {
             peopleRecognize.setPeopleid(indexUUID.get(resultMap.get("index")));
             peopleRecognize.setDeviceid(faceObject.getIpcId());
             peopleRecognize.setCapturetime(date);
-            peopleRecognize.setSurl(faceObject.getsFtpUrl());
-            peopleRecognize.setBurl(faceObject.getbFtpUrl());
-            peopleRecognize.setPictureid(445555L);
+            peopleRecognize.setSurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath()));
+            peopleRecognize.setBurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath()));
             peopleRecognize.setCommunity(communityId);
             peopleRecognize.setFlag((Integer) resultMap.get("result"));
             int rest = peopleRecognizeMapper.insertSelective(peopleRecognize);
