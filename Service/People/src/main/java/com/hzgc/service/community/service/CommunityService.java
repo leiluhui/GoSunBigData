@@ -163,7 +163,7 @@ public class CommunityService {
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);
         if (lastTime != null){
             long now = new Date().getTime();
-            int day = Math.toIntExact((lastTime.getTime() - now) / (24 * 60 * 60 * 1000));
+            int day = Math.toIntExact((now - lastTime.getTime()) / (24 * 60 * 60 * 1000));
             vo.setLastDay(day);
         }
         return vo;

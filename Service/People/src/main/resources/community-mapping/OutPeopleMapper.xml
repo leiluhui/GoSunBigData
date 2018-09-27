@@ -35,12 +35,12 @@
         select community, count(peopleid) as count
         from t_people_out
         <where>
-            <if test="month != null and month.length() = 6" >
+            <if test="month != null" >
                 month = #{month,jdbcType=VARCHAR}
             </if>
             <if test="communityIdList != null and communityIdList.size() > 0" >
                 and community in
-                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                <foreach collection="communityIdList" item="model" open="(" close=")" separator=",">
                     #{model}
                 </foreach>
             </if>
@@ -54,12 +54,12 @@
         from t_people_out
         <where>
             isconfirm = 2
-            <if test="month != null and month.length() = 6" >
+            <if test="month != null" >
                 and month = #{month,jdbcType=VARCHAR}
             </if>
             <if test="communityIdList != null and communityIdList.size() > 0" >
                 and community in
-                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                <foreach collection="communityIdList" item="model" open="(" close=")" separator=",">
                     #{model}
                 </foreach>
             </if>

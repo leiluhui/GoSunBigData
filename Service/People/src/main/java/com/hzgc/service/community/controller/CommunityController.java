@@ -144,7 +144,7 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区迁入迁出人口统计（疑似与确认）", response = ResponseResult.class)
+    @ApiOperation(value = "小区迁入迁出人口统计（实有人口首页）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.POST)
     public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleCountDTO param) {
         if (param == null){
@@ -173,7 +173,7 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区迁入迁出人口查询（疑似与确认）", response = ResponseResult.class)
+    @ApiOperation(value = "小区迁入迁出人口查询（实有人口展示）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.POST)
     public ResponseResult<NewAndOutPeopleSearchVO> searchCommunitySuggestOut(@RequestBody NewAndOutPeopleSearchDTO param) {
         return null;
