@@ -28,7 +28,7 @@
     select count(peopleid)
     from t_people_new
     where isconfirm = 2
-    and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+    and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = month
     and community = #{community,jdbcType=BIGINT}
   </select>
   <!--统计某小区某月总迁入数量-->
