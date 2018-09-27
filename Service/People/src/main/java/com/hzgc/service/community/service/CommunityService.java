@@ -89,6 +89,7 @@ public class CommunityService {
                 if (people.getLasttime() != null) {
                     vo.setLastTime(sdf.format(people.getLasttime()));
                 }
+                vo.setPictureId(people.getPictureId());
                 voList.add(vo);
             }
         }

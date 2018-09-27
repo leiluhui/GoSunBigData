@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +39,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区实有人口查询", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityPeople(PeopleDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleVO>> searchCommunityPeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空，请检查！");
@@ -59,8 +60,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区重点人口查询", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_IMPORTANT, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityImportantPeople(PeopleDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_IMPORTANT, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleVO>> searchCommunityImportantPeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community important people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -80,8 +81,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区关爱人口查询", response = PeopleVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CARE, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityCarePeople(PeopleDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CARE, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleVO>> searchCommunityCarePeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community care people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -100,9 +101,10 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区新增人口查询（上月确认迁入数量）", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_NEW, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityNewPeople(PeopleDTO param) {
+    @ApiOperation(value = "小区新增人口查询（上月确认迁入数量）", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_NEW, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleVO>> searchCommunityNewPeople(@RequestBody PeopleDTO param) {
+        System.out.println(JacksonUtil.toJson(param));
         if (param == null) {
             log.error("Start search community new people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -121,9 +123,9 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "小区迁出人口查询（上月确认迁出数量）", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_OUT, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityOutPeople(PeopleDTO param) {
+    @ApiOperation(value = "小区迁出人口查询（上月确认迁出数量）", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_OUT, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleVO>> searchCommunityOutPeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community out people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -143,8 +145,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区迁入迁出人口统计（疑似与确认）", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.GET)
-    public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(NewAndOutPeopleCountDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.POST)
+    public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleCountDTO param) {
         if (param == null){
             log.error("Start count community new and out people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
@@ -172,14 +174,14 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区迁入迁出人口查询（疑似与确认）", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.GET)
-    public ResponseResult<NewAndOutPeopleSearchVO> searchCommunitySuggestOut(NewAndOutPeopleSearchDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.POST)
+    public ResponseResult<NewAndOutPeopleSearchVO> searchCommunitySuggestOut(@RequestBody NewAndOutPeopleSearchDTO param) {
         return null;
     }
 
     @ApiOperation(value = "小区迁入人口抓拍详情", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.GET)
-    public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(CaptureDetailsDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.POST)
+    public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(@RequestBody CaptureDetailsDTO param) {
         return null;
     }
 
@@ -197,20 +199,20 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "小区确认迁出操作", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_OUT, method = RequestMethod.DELETE)
+    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_OUT, method = RequestMethod.POST)
     public ResponseResult<String> searchCommunityAffirmOut() {
         return null;
     }
 
     @ApiOperation(value = "小区确认迁入操作", response = ResponseResult.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW, method = RequestMethod.GET)
+    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW, method = RequestMethod.POST)
     public ResponseResult<String> searchCommunityAffirmNew() {
         return null;
     }
 
     @ApiOperation(value = "聚焦人员抓拍、电围数据查询", response = PeopleCaptureVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_1MONTH, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(PeopleCaptureDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_1MONTH, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start search people capture info, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -230,8 +232,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "聚焦人员轨迹查询", response = PeopleCaptureVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleCaptureVO>> searchPeopleTrack1Month(PeopleCaptureDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleCaptureVO>> searchPeopleTrack1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start search people capture track, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -251,8 +253,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "统计聚焦人员每个设备抓拍次数", response = PeopleCaptureCountVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(PeopleCaptureDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start count people capture number, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
@@ -272,8 +274,8 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "统计聚焦人员每天抓拍次数", response = PeopleCaptureCountVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(PeopleCaptureDTO param) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.POST)
+    public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start count people everyday capture number, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");

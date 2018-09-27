@@ -52,6 +52,8 @@ public class People {
 
     private List<Car> car;
 
+    private Long pictureId;
+
     private List<PictureWithBLOBs> picture;
 
     public String getId() {
@@ -244,6 +246,14 @@ public class People {
 
     public void setCar(List<Car> car) {
         this.car = car;
+    }
+
+    public Long getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(Long pictureId) {
+        this.pictureId = pictureId;
     }
 
     public List<PictureWithBLOBs> getPicture() {

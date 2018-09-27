@@ -17,4 +17,6 @@ public class PeopleVO implements Serializable {
     private String idCard;
     @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
+    @ApiModelProperty(value = "照片ID")
+    private Long pictureId;
 }
