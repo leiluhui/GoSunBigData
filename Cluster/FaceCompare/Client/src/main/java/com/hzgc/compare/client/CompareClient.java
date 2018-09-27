@@ -79,13 +79,13 @@ public class CompareClient {
         features.add(feature2);
         CompareParam param = new CompareParam(null, null, "2018-06-29",
                 "2018-07-30", features, 0.5f, 20, false);
-        for(int i =0 ; i < 1 ; i ++) { //
-//            param.setDateEnd("2018-09-" + ran.nextInt(3) + ran.nextInt(9));
+        for(int i =0 ; i < 1000 ; i ++) { //
+            param.setDateEnd("2018-07-" + ran.nextInt(3) + ran.nextInt(9));
             long start = System.currentTimeMillis();
             SearchResult searchResult = client.retrievalOnePerson(param);
             System.out.println("Time : " + (System.currentTimeMillis() - start));
             System.out.println(searchResult.getRecords());
-//            Thread.sleep(2000);
+            Thread.sleep(2000);
         }
     }
 }

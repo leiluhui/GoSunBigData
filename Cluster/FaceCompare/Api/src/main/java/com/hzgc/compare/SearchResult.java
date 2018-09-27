@@ -2,6 +2,7 @@ package com.hzgc.compare;
 
 import com.hzgc.common.collect.bean.FaceObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -79,6 +80,16 @@ public class SearchResult {
                 return flug;
             }
         });
+    }
+
+    public void filterBySim(float simple){
+        List<Record> recordList = new ArrayList<>();
+        for(Record record : records){
+            if(record.sim > simple){
+                recordList.add(record);
+            }
+        }
+        records = recordList.toArray(new Record[recordList.size()]);
     }
 
 //    public static void main(String args[]){
