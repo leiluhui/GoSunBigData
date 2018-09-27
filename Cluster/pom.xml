@@ -15,6 +15,7 @@
         <module>Spark</module>
         <module>Spark-udf</module>
         <module>PeopleManager-background</module>
+        <module>FaceCompare</module>
     </modules>
 
     <dependencyManagement>
