@@ -1,7 +1,7 @@
 package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.util.ConverFtpurl;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.basic.IsEmpty;
@@ -174,8 +174,8 @@ public class CaptureServiceHelper {
                 String ip = ftpIpMapping.get(hostname);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
-                capturedPicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,surl));
-                capturedPicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,burl));
+                capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,surl));
+                capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,burl));
                 capturedPicture.setDeviceId(option.getIpcMapping().get(ipcid).getIpc());
                 capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
@@ -219,8 +219,8 @@ public class CaptureServiceHelper {
                 String ip = ftpIpMapping.get(hostname);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
-                capturedPicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,surl));
-                capturedPicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,burl));
+                capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,surl));
+                capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,burl));
                 capturedPicture.setDeviceId(option.getIpcMapping().get(ipcid).getIpc());
                 capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));

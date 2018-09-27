@@ -39,21 +39,21 @@ public class CommunityController {
 
     @ApiOperation(value = "小区实有人口查询", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE, method = RequestMethod.GET)
-    public ResponseResult<List<PeopleVO>> searchCommunityPeople(PeopleDTO dto) {
-        if (dto == null) {
+    public ResponseResult<List<PeopleVO>> searchCommunityPeople(PeopleDTO param) {
+        if (param == null) {
             log.error("Start search community people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空，请检查！");
         }
-        if (dto.getCommunityId() == null) {
+        if (param.getCommunityId() == null) {
             log.error("Start search community people, but communityId is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空，请检查！");
         }
-        if (dto.getLimit() == 0) {
+        if (param.getLimit() == 0) {
             log.error("Start search community people, but limit is 0");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0，请检查！");
         }
-        log.info("Start search community people, param is:" + JacksonUtil.toJson(dto));
-        List<PeopleVO> peopleVO = communityService.searchCommunityPeople(dto);
+        log.info("Start search community people, param is:" + JacksonUtil.toJson(param));
+        List<PeopleVO> peopleVO = communityService.searchCommunityPeople(param);
         log.info("Search community people successfully");
         return ResponseResult.init(peopleVO);
     }
@@ -179,7 +179,7 @@ public class CommunityController {
 
     @ApiOperation(value = "小区迁入人口抓拍详情", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.GET)
-    public ResponseResult<String> searchCommunityNewPeopleCapture(String peopleId) {
+    public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(CaptureDetailsDTO param) {
         return null;
     }
 

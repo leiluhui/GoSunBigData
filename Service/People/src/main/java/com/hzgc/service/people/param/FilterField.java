@@ -17,7 +17,7 @@ public class FilterField implements Serializable {
     private int start;                  // 起始行数
     private int limit;                  // 分页行数
 
-    public static FilterField SearchParamShift(SearchParamDTO param) {
+    public static FilterField SearchParamShift(SearchPeopleDTO param) {
         FilterField field = new FilterField();
         if (param != null){
             field.setRegionid(param.getRegionId());

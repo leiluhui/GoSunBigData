@@ -3,6 +3,7 @@ package com.hzgc.service.collect.service;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.service.collect.util.FtpUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,14 @@ public class FtpService implements Serializable {
             }
         }
         return new ArrayList<>();
+    }
+
+    public List<String> httpHostnameToIp(List<String> httpUrlList) {
+        List<String> ipUrlList = new ArrayList<>();
+        for (String url : httpUrlList) {
+            ipUrlList.add(CollectUrlUtil.httpHostNameToIp(url, register.getFtpIpMapping()));
+        }
+        return ipUrlList;
     }
 }
 
