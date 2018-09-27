@@ -1,6 +1,10 @@
 package com.hzgc.service.community.dao;
 
+import com.hzgc.service.community.model.CountCommunityPeople;
 import com.hzgc.service.community.model.NewPeople;
+import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
+
+import java.util.List;
 
 public interface NewPeopleMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +18,10 @@ public interface NewPeopleMapper {
     int updateByPrimaryKeySelective(NewPeople record);
 
     int updateByPrimaryKey(NewPeople record);
+
+    int countNewPeople(Long communityId);
+
+    List<CountCommunityPeople> countTotalNewPeople(NewAndOutPeopleCountDTO param);
+
+    List<CountCommunityPeople> countConfirmNewPeople(NewAndOutPeopleCountDTO param);
 }

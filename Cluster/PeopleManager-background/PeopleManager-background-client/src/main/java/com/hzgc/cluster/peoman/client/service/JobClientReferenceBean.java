@@ -31,16 +31,19 @@ public class JobClientReferenceBean implements InitializingBean {
     }
 
     public void startJob(Map<String, String> map) {
+        log.info("The map is : " + map);
         for (String key : map.keySet()) {
             String value = map.get(key);
-            String offset = value.substring(0,value.indexOf("-"));
-            String max = value.substring(value.indexOf("-")+1);
-            String limit = String.valueOf(Integer.parseInt(max) - Integer.parseInt(offset) + 1);
+            String offset = value.substring(0, value.indexOf("-"));
+            String limit = value.substring(value.indexOf("-") + 1);
             Job job = new Job();
             job.setTaskId("hzgc");
-            job.setParam("offset", value);
-            job.setParam("limit",limit);
-            job.setParam("run","");
+            job.setParam("offset", offset);
+            job.setParam("limit", limit);
+            log.info("The offset is : " + offset);
+            log.info("The limit is : " + limit);
+            job.setParam("run", "");
+            log.info("The key is : " + key);
             job.setTaskTrackerNodeGroup(key);
             job.setNeedFeedback(true);
             job.setReplaceOnExist(true);
@@ -51,35 +54,35 @@ public class JobClientReferenceBean implements InitializingBean {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            jobClient.stop();
         }
     }
 
-    public void stopWorker(){
-       List<String> childPath = jobDiscover.listGroup(Constant.rootPath);
-       for (String child : childPath){
-           Job job = new Job();
-           job.setTaskId("hzgc");
-           job.setParam("stop","");
-           job.setTaskTrackerNodeGroup(child);
-           job.setNeedFeedback(true);
-           job.setReplaceOnExist(true);
-           Response response = jobClient.submitJob(job);
-           log.info("The response is : " + response);
-           try {
-               Thread.sleep(10000);
-           } catch (InterruptedException e) {
-               e.printStackTrace();
-           }
-       }
-        jobClient.stop();
+    public void stopWorker() {
+        List<String> childPath = jobDiscover.listGroup(Constant.rootPath);
+        for (String child : childPath) {
+            Job job = new Job();
+            job.setTaskId("hzgc");
+            job.setParam("stop", "");
+            job.setTaskTrackerNodeGroup(child);
+            job.setNeedFeedback(true);
+            job.setReplaceOnExist(true);
+            Response response = jobClient.submitJob(job);
+            log.info("The response is : " + response);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public Map<String,String> restartJob(){
+    public Map<String, String> restartJob() {
         List<String> list = new ArrayList<>();
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         List<String> nodeList = jobDiscover.listGroup(Constant.rootPath);
         int count = Integer.parseInt(jobGetMap.getCount());
+        log.info("重启后从数据库读出来的count为： " + count);
+        log.info("重启后从zookeeper中读出来的node为： " + nodeList);
         int capacity = nodeList.size();
         int num = count / capacity;
         for (int i = 0; i < capacity; i++) {
@@ -91,10 +94,11 @@ public class JobClientReferenceBean implements InitializingBean {
                 list.add("" + i * num + "-" + ((i + 1) * num - 1));
             }
         }
-        for (int i = 0; i < nodeList.size(); i++){
-            String childGroup = nodeList.get(i).substring(nodeList.indexOf("an/")+3);
-            map.put(childGroup,list.get(i));
+        for (int i = 0; i < nodeList.size(); i++) {
+            String childGroup = nodeList.get(i).substring(nodeList.indexOf("an/") + 3);
+            map.put(childGroup, list.get(i));
         }
+        log.info("重启后分配的map为： " + map);
         return map;
     }
 }

@@ -1,6 +1,8 @@
 package com.hzgc.service.people.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
@@ -11,6 +13,7 @@ import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.FilterField;
 import com.hzgc.service.people.param.PeopleVO;
 import com.hzgc.service.people.param.PictureVO;
+import com.hzgc.service.people.param.SearchPeopleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -355,8 +358,6 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-            peopleVO.setImportant(people.getImportant());
-            peopleVO.setCare(people.getCare());
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -418,14 +419,16 @@ public class PeopleService {
      * 查询人员对象
      *
      * @param field 查询过滤字段封装
-     * @param start 起始行数
-     * @param limit 分页行数
-     * @return peopleVO 查询返回参数封装
+     * @return SearchPeopleVO 查询返回参数封装
      */
-    public List<PeopleVO> searchPeople(FilterField field, int start, int limit) {
+    public SearchPeopleVO searchPeople(FilterField field) {
+        SearchPeopleVO vo = new SearchPeopleVO();
         List<PeopleVO> list = new ArrayList<>();
-        PageHelper.offsetPage(start, limit);
+        Page page = PageHelper.offsetPage(field.getStart(), field.getLimit());
         List<People> peoples = peopleMapper.searchPeople(field);
+        PageInfo info = new PageInfo(page.getResult());
+        int total = (int) info.getTotal();
+        vo.setTotal(total);
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = new PeopleVO();
@@ -444,8 +447,6 @@ public class PeopleService {
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
                     peopleVO.setCommunity(String.valueOf(people.getCommunity()));
-                    peopleVO.setImportant(people.getImportant());
-                    peopleVO.setCare(people.getCare());
                     if (people.getLasttime() != null) {
                         peopleVO.setLastTime(sdf.format(people.getLasttime()));
                     }
@@ -473,7 +474,8 @@ public class PeopleService {
                 }
             }
         }
-        return list;
+        vo.setPeopleVOList(list);
+        return vo;
     }
 
     public List<Long> searchCommunityIdsByRegionId(Long regionId) {

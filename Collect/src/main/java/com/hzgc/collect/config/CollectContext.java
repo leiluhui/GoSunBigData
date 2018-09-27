@@ -161,7 +161,9 @@ public class CollectContext implements Serializable {
      * 加载有顺序
      */
     public void initAll() {
-//        initDetector();
+        if (faceDetectorOpen) {
+            initDetector();
+        }
         initFtpPathBoostrap();
         initFtpHomeDirCheck();
         initKafkaProducer();

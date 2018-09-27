@@ -1,7 +1,7 @@
 package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.util.ConverFtpurl;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
@@ -88,8 +88,8 @@ public class CaptureHistoryService {
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
                 Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                 String ip = ftpIpMapping.get(ftpIpMapping.get(hostname));
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
                 capturePicture.setDeviceId(ipcid);
                 capturePicture.setTimeStamp(timestamp);
                 persons.add(capturePicture);
@@ -121,8 +121,8 @@ public class CaptureHistoryService {
                     String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
                     Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                     String ip = ftpIpMapping.get(hostname);
-                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                    capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
+                    capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
                     capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getIpc());
                     capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimeStamp(timestamp);
@@ -163,8 +163,8 @@ public class CaptureHistoryService {
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
                 Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
                 String ip = ftpIpMapping.get(hostname);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);

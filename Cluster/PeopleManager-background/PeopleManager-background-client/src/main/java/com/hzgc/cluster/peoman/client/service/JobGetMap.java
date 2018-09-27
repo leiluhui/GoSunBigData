@@ -36,7 +36,7 @@ public class JobGetMap {
             if (!connection.isClosed()){
                 log.info("Succeeded connectiong to the Database!");
                 Statement statement = connection.createStatement();
-                String sql = "select count(*) as count from t_picture";
+                String sql = "select count(*) as count from t_picture,t_people, t_flag where t_picture.peopleid=t_people.id and t_picture.peopleid=t_flag.peopleid;";
                 ResultSet resultSet = statement.executeQuery(sql);
                 while (resultSet.next()){
                     count = resultSet.getString("count");

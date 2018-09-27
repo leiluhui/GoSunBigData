@@ -1,7 +1,9 @@
 package com.hzgc.service.community.service;
 
 import com.github.pagehelper.PageHelper;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
+import com.hzgc.service.community.model.CountCommunityPeople;
 import com.hzgc.service.community.param.*;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.community.model.DeviceRecognize;
@@ -13,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,7 +28,7 @@ public class CommunityService {
     @Autowired
     private NewPeopleMapper newPeopleMapper;
     @Autowired
-    private ConfirmRecordMapper confirmRecordMapper;
+    private OutPeopleMapper outPeopleMapper;
     @Autowired
     private PeopleRecognizeMapper peopleRecognizeMapper;
     @Autowired
@@ -40,8 +43,8 @@ public class CommunityService {
         vo.setCommunityPeoples(peopleMapper.countCommunityPeople(communityId));
         vo.setImportantPeoples(peopleMapper.countImportantPeople(communityId));
         vo.setCarePeoples(peopleMapper.countCarePeople(communityId));
-        vo.setNewPeoples(confirmRecordMapper.countNewPeople(communityId));
-        vo.setOutPeoples(confirmRecordMapper.countOutPeople(communityId));
+        vo.setNewPeoples(newPeopleMapper.countNewPeople(communityId));
+        vo.setOutPeoples(outPeopleMapper.countOutPeople(communityId));
         return vo;
     }
 
@@ -92,8 +95,77 @@ public class CommunityService {
         return voList;
     }
 
-    public List<SuggestPeopleVO> countCommunitySuggestPeople(SuggestPeopleDTO param) {
-       return null;
+    public List<NewAndOutPeopleCounVO> countCommunityNewAndOutPeople(NewAndOutPeopleCountDTO param) {
+        List<Long> communityIdList;
+        int offset = param.getStart();
+        int count = param.getLimit();
+        int size = param.getCommunityIdList().size();
+        if (offset > -1 && size > (offset + count - 1)) {
+            //结束行小于总数，取起始行开始后续count条数据
+            communityIdList = param.getCommunityIdList().subList(offset, offset + count);
+        } else {
+            //结束行大于总数，则返回起始行开始的后续所有数据
+            communityIdList = param.getCommunityIdList().subList(offset, size);
+        }
+        param.setCommunityIdList(communityIdList);
+        log.info("Start count community new and out people, community id list:"+ JacksonUtil.toJson(param.getCommunityIdList()));
+        List<CountCommunityPeople> totalNewCount = newPeopleMapper.countTotalNewPeople(param);
+        List<CountCommunityPeople> totalOutCount = outPeopleMapper.countTotalOutPeople(param);
+        List<CountCommunityPeople> confirmNewCount = newPeopleMapper.countConfirmNewPeople(param);
+        List<CountCommunityPeople> confirmOutCount = outPeopleMapper.countConfirmOutPeople(param);
+        List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
+        for (Long communityId : communityIdList){
+            NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
+            vo.setCommunityId(communityId);
+            // TODO 名字
+            vo.setCommunityName(String.valueOf(communityId));
+            vo.setMonth(param.getMonth());
+            for (CountCommunityPeople suggestNew : totalNewCount){
+                if (suggestNew.getCommunity().equals(communityId)){
+                    vo.setSuggestNewCount(suggestNew.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople suggestOut : totalOutCount){
+                if (suggestOut.getCommunity().equals(communityId)){
+                    vo.setSuggestOutCount(suggestOut.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople confirmNew : confirmNewCount){
+                if (confirmNew.getCommunity().equals(communityId)){
+                    vo.setConfirmNewCount(confirmNew.getCount());
+                    break;
+                }
+            }
+            for (CountCommunityPeople confirmOut : confirmOutCount){
+                if (confirmOut.getCommunity().equals(communityId)){
+                    vo.setConfirmOutCount(confirmOut.getCount());
+                    break;
+                }
+            }
+            voList.add(vo);
+        }
+       return voList;
+    }
+
+    public OutPeopleLastCaptureVO searchCommunityOutPeopleLastCapture(String peopleId) {
+        OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
+        PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
+        if (peopleRecognize != null){
+            vo.setDeviceId(peopleRecognize.getDeviceid());
+            // TODO 名字
+            vo.setDeviceName("名字");
+            vo.setPicture(peopleRecognize.getSurl());
+            vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
+        }
+        Timestamp lastTime = peopleMapper.getLastTime(peopleId);
+        if (lastTime != null){
+            long now = new Date().getTime();
+            int day = Math.toIntExact((lastTime.getTime() - now) / (24 * 60 * 60 * 1000));
+            vo.setLastDay(day);
+        }
+        return vo;
     }
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
