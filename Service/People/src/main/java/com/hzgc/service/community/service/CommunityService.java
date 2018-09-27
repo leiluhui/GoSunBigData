@@ -116,8 +116,10 @@ public class CommunityService {
         List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
         for (Long communityId : communityIdList){
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
+            vo.setCommunityId(communityId);
             // TODO 名字
             vo.setCommunityName(String.valueOf(communityId));
+            vo.setMonth(param.getMonth());
             for (CountCommunityPeople suggestNew : totalNewCount){
                 if (suggestNew.getCommunity().equals(communityId)){
                     vo.setSuggestNewCount(suggestNew.getCount());
@@ -151,7 +153,10 @@ public class CommunityService {
         OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
         if (peopleRecognize != null){
-            vo.setDeviceid(peopleRecognize.getDeviceid());
+            vo.setDeviceId(peopleRecognize.getDeviceid());
+            // TODO 名字
+            vo.setDeviceName("名字");
+            vo.setPicture(peopleRecognize.getSurl());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);

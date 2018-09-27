@@ -32,7 +32,7 @@
     </select>
     <!--查询小区迁出人口最后抓拍信息-->
     <select id="searchCommunityOutPeopleLastCapture" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select capturetime, deviceid, burl
+        select capturetime, deviceid, surl
         from t_people_recognize
         where peopleid = #{peopleid,jdbcType=VARCHAR}
         order by capturetime asc
