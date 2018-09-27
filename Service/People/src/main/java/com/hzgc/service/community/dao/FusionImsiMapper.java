@@ -17,5 +17,5 @@ public interface FusionImsiMapper {
 
     int updateByPrimaryKey(FusionImsi record);
 
-    List<FusionImsi> searchCapture1Month(Long peopleid);
+    List<FusionImsi> searchCapture1Month(String peopleid);
 }

@@ -4,11 +4,11 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class ZookeeperClient {
-    private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
+    private static Logger logger = Logger.getLogger(ZookeeperClient.class);
     protected CuratorFramework zkClient;
     private String zkAddress;
     private Constant constant;
@@ -39,7 +39,7 @@ public class ZookeeperClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("Connect zookeeper successfull, zk address is {} ", zkAddress);
+        logger.info("Connect zookeeper successfull, zk address is " +  zkAddress);
         return zkClient;
     }
 

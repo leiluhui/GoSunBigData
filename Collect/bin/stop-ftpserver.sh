@@ -1,64 +1,68 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    ftpoverkafka
-## Description: stop  ftp
-## Author:      liushanbin
-## Created:     2018-01-08
+## Filename:    springCloud start collect
+## Description: 启动 collect服务
+## Author:      zhaozhe
+## Created:     2018-09-25
 ################################################################################
-
 #set -x
-cd `dirname $0`
-## 脚本所在目录
-BIN_DIR=`pwd`
-cd ..
-## ftp根目录
-FTP_DIR=`pwd`
-## log 日记目录
-LOG_DIR=${FTP_DIR}/logs
-##log日志文件
-source /etc/profile
-stop_ftp=1                                                      ## 判断ftp是否关闭成功 1->失败 0->成功 默认失败
-stop_check_ftp=1
 
+cd `dirname $0`
+BIN_DIR=`pwd`                         ##bin目录地址
+cd ..
+COLLECT_DIR=`pwd`                     ##collect目录地址
+LIB_DIR=${COLLECT_DIR}/lib            ##lib目录地址
+CONF_DIR=${COLLECT_DIR}/conf          ##conf目录地址
+COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp-[0-9].[0-9].jar$`          ##获取collect的jar包名称
+COLLECT_JAR=${LIB_DIR}/${COLLECT_JAR_NAME}                        ##获取jar包的全路径
+COLLECT_JAR_PID=`jps | grep ${COLLECT_JAR_NAME} | awk '{print $1}'`             ##获取PID
+CRONTAB_FILE=/var/spool/cron/${USERNAME}
+
+#---------------------------------------------------------------------#
+#                              定义函数                                #
+#---------------------------------------------------------------------#
 
 #####################################################################
-# 函数名:stopftp 
-# 描述: 停止ftp
+# 函数名:stop_spring_cloud
+# 描述: 停止spring cloud
 # 参数: N/A
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function stopftp ()
+function stop_springCloud()
 {
-    ftp_pid=$(jps | grep FTP | awk '{print $1}')
-    if [ -n "${ftp_pid}" ];then
-        echo "ftp pid is ${ftp_pid}, stop now "
-        kill -9 ${ftp_pid}
-        sleep 1s
-        ftp_pid=$(jps | grep FTP | awk '{print $1}')
-        if [ -n "${ftp_pid}" ];then
-            stop_ftp=1
-            echo "stop ftp failure"
-        else
-            stop_ftp=0
-            echo "stop ftp sucessfull"
+	if [ -n "${COLLECT_JAR_PID}" ];then
+        echo "Collect-ftp service is exist, exit with 0, kill service now!!"
+            ##杀掉进程
+        kill -9 ${COLLECT_JAR_PID}
+        echo "stop service successfully!!"
+        if [ -n "$1"  ];then
+            if [ "$1" = "-force" ];then
+                ##清除crontab
+                if [ -e "${CRONTAB_FILE}" ];then
+                    rm -rf ${CRONTAB_FILE}
+                    echo "delete crontab.conf successfully"
+                else
+                    echo "${CRONTAB_FILE} is not exist"
+                fi
+            fi
         fi
-    else 
-        echo "ftp process is not exit"
-        stop_ftp=0
+    else
+        echo "Collect service is not start"
     fi
 }
 
 #####################################################################
 # 函数名: main
-# 描述:  停止dubbo的入口函数
+# 描述: 脚本主要业务入口
 # 参数: N/A
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
 function main()
 {
-    stopftp
+    stop_springCloud
 }
+
 main

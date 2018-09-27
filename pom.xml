@@ -17,7 +17,6 @@
         <module>Cluster</module>
         <module>Service</module>
         <module>Collect</module>
-        <module>FaceCompare</module>
         <module>Distribution</module>
         <module>Common</module>
     </modules>

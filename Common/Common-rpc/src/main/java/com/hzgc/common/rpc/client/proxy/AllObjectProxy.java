@@ -6,8 +6,7 @@ import com.hzgc.common.rpc.client.result.AllReturn;
 import com.hzgc.common.rpc.client.result.RPCFuture;
 import com.hzgc.common.rpc.protocol.MsgType;
 import com.hzgc.common.rpc.protocol.RpcRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -21,7 +20,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  */
 public class AllObjectProxy implements InvocationHandler, AsyncObjectProxy {
-    private static final Logger logger = LoggerFactory.getLogger(ObjectProxy.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ObjectProxy.class);
+    private static Logger logger = Logger.getLogger(AllObjectProxy.class);
 
     @Override
     public RPCFuture call(String funcName, Object... args) {

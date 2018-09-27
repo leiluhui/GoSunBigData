@@ -4,8 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import net.sf.cglib.reflect.FastClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +14,8 @@ import java.util.Map;
  * 注解扫描器，用来扫描RpcService注解
  */
 public class RpcServiceScanner {
-    private Logger logger = LoggerFactory.getLogger(RpcServiceScanner.class);
+//    private Logger logger = LoggerFactory.getLogger(RpcServiceScanner.class);
+    private static Logger logger = Logger.getLogger(RpcServiceScanner.class);
 
     /**
      * 使用此方法默认扫描com.hzgc包路径下以及子包的注解
@@ -41,7 +41,7 @@ public class RpcServiceScanner {
                     Class<?> aClass = classInfo.load();
                     if (aClass.isAnnotationPresent(RpcService.class)) {
                         classList.put(aClass.getAnnotation(RpcService.class).value().getName(), FastClass.create(aClass));
-                        logger.info("Annotation RpcService is found, class name is:{}", aClass.getName());
+                        logger.info("Annotation RpcService is found, class name is:" + aClass.getName());
                     }
                 }
             }

@@ -46,6 +46,7 @@ public class ProcessThread implements Runnable {
         Event event;
         try {
             while ((event = queue.take()) != null) {
+                log.info("Event = " + JacksonUtil.toJson(event));
                 byte[] bytes = FileUtil.fileToByteArray(event.getbAbsolutePath());
                 Parser parser = event.getParser();
                 //BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
@@ -55,7 +56,7 @@ public class ProcessThread implements Runnable {
                 //continue;
                 //}
                 if (collectContext.getFtpTypeList().contains("face")) {
-                    ArrayList<SmallImage> smallImageList = FaceFunction.bigPictureCheck(bytes, PictureFormat.JPG);
+                    ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG);
                     if (smallImageList != null && smallImageList.size() > 0) {
                         int index = 1;
                         for (SmallImage smallImage : smallImageList) {
@@ -85,21 +86,22 @@ public class ProcessThread implements Runnable {
                             }
                             index++;
                         }
+                    } else {
+                        log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                     }
-                } else {
-                    log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                 }
 
                 List<Person> personList = null;
                 List<Vehicle> vehicleList = null;
-                if (collectContext.getFtpTypeList().contains("person") || collectContext.getFtpTypeList().contains("car")) {
-                    ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
-                    if (result != null) {
-                        personList = result.getPersonList();
-                        vehicleList = result.getVehicleList();
-                    }
+                ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
+                if (result != null) {
+                    personList = result.getPersonList();
+                    vehicleList = result.getVehicleList();
+                } else {
+                    log.error("Person or Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
                 if (collectContext.getFtpTypeList().contains("person") && personList != null && personList.size() > 0) {
+                    log.info("Person check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Person person : personList) {
                         if (person.getCar_data() == null || person.getCar_data().length == 0) {
@@ -118,8 +120,12 @@ public class ProcessThread implements Runnable {
                         }
                         index++;
                     }
+                } else {
+                    log.warn("Person check failed, file name is:{}", event.getbAbsolutePath());
                 }
+
                 if (collectContext.getFtpTypeList().contains("car") && vehicleList != null && vehicleList.size() > 0) {
+                    log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
                         if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
@@ -138,6 +144,8 @@ public class ProcessThread implements Runnable {
                         }
                         index++;
                     }
+                } else {
+                    log.warn("Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
             }
         } catch (InterruptedException e) {

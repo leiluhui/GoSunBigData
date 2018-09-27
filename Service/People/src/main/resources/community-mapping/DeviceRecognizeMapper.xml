@@ -20,20 +20,20 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <!--统计聚焦人员该小区每个设备抓拍次数-->
-  <select id="countDeviceCaptureNum1Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="countDeviceCaptureNum1Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select deviceid, count
     from t_device_recognize
     where DATE_FORMAT(receivetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
-    and community = (select community from t_people where id = #{peopleid,jdbcType=BIGINT})
-    and peopleid = #{peopleid,jdbcType=BIGINT}
+    and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
+    and peopleid = #{peopleid,jdbcType=VARCHAR}
   </select>
   <!--统计聚焦人员该小区每天抓拍次数-->
-  <select id="countCaptureNum3Month" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="countCaptureNum3Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select currenttime, count
     from t_device_recognize
     where DATE_FORMAT(receivetime, '%Y%m') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 2 MONTH), '%Y%m')
-    and community = (select community from t_people where id = #{peopleid,jdbcType=BIGINT})
-    and peopleid = #{peopleid,jdbcType=BIGINT}
+    and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
+    and peopleid = #{peopleid,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_device_recognize

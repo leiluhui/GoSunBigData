@@ -11,6 +11,7 @@ import com.hzgc.common.util.json.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -102,21 +103,19 @@ public class STOR extends AbstractCommand {
             long transSz = 0L;
             try {
                 fileName = file.getAbsolutePath();
-                LOG.info(fileName + "    " + file.getSize() / 1024 + "KB");
                 parser = context.getCollectContext().getFtpPathBootStrap().getParser(fileName);
                 if (parser == null) {
-                    return;
+                    LOG.warn("No parser for this fileName [" + fileName + "]");
+                    if (fileName.equals("/DVRWorkDirectory")) {
+                        outStream = file.createOutputStream(skipLen);
+                    } else {
+                        outStream = new ByteArrayOutputStream();
+                    }
+                } else {
+                    LOG.info("Get parser for this fileName [" + fileName + "]");
+                    outStream = file.createOutputStream(skipLen);
                 }
-                outStream = file.createOutputStream(skipLen);
                 transSz = dataConnection.transferFromClient(session.getFtpletSession(), outStream);
-
-                // attempt to close the output stream so that errors in
-                // closing it will return an error to the client (FTPSERVER-119)
-                if (outStream != null) {
-                    outStream.close();
-                }
-
-                LOG.debug("File uploaded {}", fileName);
 
                 // notify the statistics component
                 ServerFtpStatistics ftpStat = (ServerFtpStatistics) context
@@ -161,7 +160,6 @@ public class STOR extends AbstractCommand {
                                 .setHostname(context.getCollectContext().getHostname())
                                 .setParser(parser)
                                 .setbRelativePath(fileName);
-                        LOG.info("Event = " + JacksonUtil.toJson(event));
                         context.getScheduler().putData(event);
                     }
                 }

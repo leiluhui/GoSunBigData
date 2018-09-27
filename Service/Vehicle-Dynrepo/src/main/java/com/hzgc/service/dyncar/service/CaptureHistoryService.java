@@ -1,7 +1,7 @@
 package com.hzgc.service.dyncar.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.util.ConverFtpurl;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.facedynrepo.VehicleTable;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.basic.UuidUtil;
@@ -87,8 +87,8 @@ public class CaptureHistoryService {
                     //参数封装
                     CarAttribute carAttribute = carDataPackage(hit);
                     capturePicture.setCarAttribute(carAttribute);
-                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+                    capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, sabsolutepath));
+                    capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, babsolutepath));
                     capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getDeviceCode());
                     capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimestamp(timestamp);
@@ -131,8 +131,8 @@ public class CaptureHistoryService {
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipcid);
                 capturePicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturePicture.setTimestamp(timestamp);
@@ -170,8 +170,8 @@ public class CaptureHistoryService {
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimestamp(timestamp);
                 capturePicture.setDeviceId(ipc);

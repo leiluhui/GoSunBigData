@@ -17,5 +17,7 @@ public interface PeopleRecognizeMapper {
 
     int updateByPrimaryKey(PeopleRecognize record);
 
-    List<PeopleRecognize> searchCapture1Month(Long peopleid);
+    List<PeopleRecognize> searchCapture1Month(String peopleid);
+
+    PeopleRecognize searchCommunityOutPeopleLastCapture(String peopleId);
 }

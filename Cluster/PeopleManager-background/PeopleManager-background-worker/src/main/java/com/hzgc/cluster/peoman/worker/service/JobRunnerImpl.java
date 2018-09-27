@@ -26,13 +26,12 @@ public class JobRunnerImpl implements JobRunner {
     @SuppressWarnings("unused")
     private LoadDataFromTiDB loadDataFromTiDB;
 
-    @Value("lts.tasktracker.node-group")
+    @Autowired
+    private WorkerReg workerReg;
+
+    @Value("${lts.tasktracker.node-group}")
     @SuppressWarnings("unused")
     private String workId;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private WorkerRegister workerRegister;
 
     private boolean isRun = false;
 
@@ -40,6 +39,7 @@ public class JobRunnerImpl implements JobRunner {
     public Result run(JobContext jobContext) throws Throwable {
         Map<String, String> extParams = jobContext.getJob().getExtParams();
         Result result = new Result();
+        log.info("ExeParams is : " + extParams);
         if (extParams.containsKey(JobRunnerProtocol.STOP)) {
             result.setMsg(JobRunnerProtocol.SUCCESSFULL);
             log.info("Start stop worker, worker id is ?", workId);
@@ -47,7 +47,7 @@ public class JobRunnerImpl implements JobRunner {
         }
         if (extParams.containsKey(JobRunnerProtocol.RUN)) {
             if (!isRun) {
-                log.info("Start run worker, worker id is ?", workId);
+                log.info("Start run worker, worker id is ?" + workId);
                 int offset = Integer.parseInt(extParams.get(JobRunnerProtocol.OFFSET));
                 int limit = Integer.parseInt(extParams.get(JobRunnerProtocol.LIMIT));
                 loadDataFromTiDB.load(offset, limit);
@@ -58,7 +58,7 @@ public class JobRunnerImpl implements JobRunner {
                 new Thread(faceConsumer).start();
                 isRun = true;
             } else {
-                log.info("Worker is alreadt run ,worker id is ?", workId);
+                log.info("Worker is already run ,worker id is ?", workId);
                 result.setMsg(JobRunnerProtocol.ALREADYRUN);
             }
         }

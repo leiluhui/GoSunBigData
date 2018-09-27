@@ -24,16 +24,16 @@ import java.util.Properties;
 @Component
 public class Gusion implements Runnable {
 
-    @Value("kafka.bootstrap.servers")
+    @Value("${kafka.bootstrap.servers}")
     private String kafkaHost;
 
-    @Value("kafka.gusion.group.id")
+    @Value("${kafka.fusion.group.id}")
     private String groupId;
 
-    @Value("kafka.gusion.topic")
-    private String gusionTopic;
+    @Value("${kafka.fusion.topic}")
+    private String fusionTopic;
 
-    @Value("kafka.gusion.topic.plltime")
+    @Value("${kafka.fusion.topic.polltime}")
     @SuppressWarnings("unused")
     private String pollTime;
 
@@ -58,7 +58,7 @@ public class Gusion implements Runnable {
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         consumer = new KafkaConsumer<String, String>(properties);
-        consumer.subscribe(Collections.singletonList(gusionTopic));
+        consumer.subscribe(Collections.singletonList(fusionTopic));
     }
 
     @Override

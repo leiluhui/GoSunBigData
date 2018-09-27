@@ -1,66 +1,68 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    start-consumer.sh
-## Description: to start consumer
-## Author:      liushanbin
-## Created:     2018-01-08
+## Filename:    springCloud start collect
+## Description: 启动 collect服务
+## Author:      zhaozhe
+## Created:     2018-09-25
 ################################################################################
-#set -x  ## 用于调试用，不用的时候可以注释掉
+#set -x
 
-#---------------------------------------------------------------------#
-#                              定义变量                                #
-#---------------------------------------------------------------------#
 cd `dirname $0`
-BIN_DIR=`pwd`                                          ### bin目录
+BIN_DIR=`pwd`                         ##bin目录地址
 cd ..
-OBJECT_DIR=`pwd`                                       ### 项目根目录
-LOG_DIR=${OBJECT_DIR}/logs                             ## log 日记目录
-LOG_FILE=${LOG_DIR}/ftpserver.log                      ##  log 日记文件
-CONF_DIR=$OBJECT_DIR/conf                              ### 配置文件目录
-LIB_DIR=$OBJECT_DIR/lib                                ## Jar 包目录
-BIN_DIR=${OBJECT_DIR}/bin
-FTP_PORT=`sed '/ftp.port/!d;s/.*=//' ${CONF_DIR}/collect.properties | tr -d '\r'`
-FTP_PNAME=`sed '/ftp.process.name/!d;s/.*=//' ${CONF_DIR}/collect.properties | tr -d '\r'`
-LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`    ## jar 包位置以及第三方依赖jar包，绝对路径
-LIB_JARS=${LIB_JARS}
+COLLECT_DIR=`pwd`                     ##collect目录地址
+LIB_DIR=${COLLECT_DIR}/lib            ##lib目录地址
+CONF_DIR=${COLLECT_DIR}/conf          ##conf目录地址
+COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp-[0-9].[0-9].jar$`          ##获取collect的jar包名称
+COLLECT_JAR=${LIB_DIR}/${COLLECT_JAR_NAME}                        ##获取jar包的全路径
+CRONTAB_FILE=${LIB_DIR}/crontab.conf
 
-FTPDATA=`sed '/com.hzgc.ftpserver.user.admin.homedirectory/!d;s/.*=//' ${CONF_DIR}/users.properties | tr -d '\r'`
+#-----------------------------------------------------------------------------#
+#                               springcloud配置参数                            #
+#-----------------------------------------------------------------------------#
+EUREKA_IP=172.18.18.191     ##注册中心的ip地址
+EUREKA_PORT=9000            ##服务注册中心端口
+FTP_IP=172.18.18.105
+DETECTOR_NUMBER=6
+ROCKETMQ_HOST=172.18.18.107:9876
+KAFKA_HOST=172.18.18.105:9092
+SEEMMO_URL=http://172.18.18.138:8000/?cmd=recogPic
+HOME_DIR=/opt/ftpdata
+BACKUP_DIR=/home/ftpdata
+DETECTOR_ENABLE=true
+ZOOKEEPER_HOST=172.18.18.105:2181
 
-if [ ! -d ${FTPDATA} ]; then
-    mkdir ${FTPDATA}
-fi
-
-if [ -n "${FTP_PNAME}" ];then
-    PNAME_COUNT=`ps -ef | grep ${FTP_PNAME} | wc -l`
-    if [ ${PNAME_COUNT} -gt 1 ];then
-        echo "ftp process name ${FTP_PNAME} alread exists, stop ftpserver first"
-        exit 1
-    fi
-fi
-
-if [ -n "$FTP_PORT" ]; then
-    SERVER_PORT_COUNT=`netstat -tln | grep $FTP_PORT | wc -l`
-    if [ $SERVER_PORT_COUNT -gt 0 ]; then
-        echo "ftp port $FTP_PORT already used, start ftp failed"
-        exit 1
-    fi
-fi
-
+#------------------------------------------------------------------------------#
+#                                定义函数                                      #
+#------------------------------------------------------------------------------#
 #####################################################################
-# 函数名: start_ftpserver
-# 描述: 启动ftp
+# 函数名: start_springCloud
+# 描述: 启动 springCloud collect-ftp服务
 # 参数: N/A
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function start_ftpserver()
+function start_springCloud()
 {
-    if [ ! -d $LOG_DIR ]; then
-        mkdir $LOG_DIR;
-    fi
-    nohup java -server -Xms2g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.collect.service.FTP > ${LOG_FILE} 2>&1 &
-    echo "ftpserver started"
+   COLLECT_PID=`jps | grep ${COLLECT_JAR_NAME} | awk '{print $1}'`
+   if [  -n "${COLLECT_PID}" ];then
+      echo "Collect-ftp service already started!!"
+   else
+      nohup java -jar ${COLLECT_JAR} --spring.profiles.active=pro \
+      --spring.cloud.config.enabled=false \
+      --zk.host=${ZOOKEEPER_HOST} \
+      --ftp.ip=${FTP_IP} \
+      --detector.number=${DETECTOR_NUMBER} \
+      --rocketmq.host=${ROCKETMQ_HOST} \
+      --kafka.host=${KAFKA_HOST} \
+      --seemmo.url=${SEEMMO_URL} \
+      --home.dir=${HOME_DIR} \
+      --backup.dir=${BACKUP_DIR} \
+      --detector.enable=${DETECTOR_ENABLE} \
+      --eureka.ip=${EUREKA_IP} \
+      --eureka.port=${EUREKA_PORT}  2>&1 &
+   fi
 }
 
 #####################################################################
@@ -72,14 +74,7 @@ function start_ftpserver()
 #####################################################################
 function drop_caches()
 {
-    boolDropCaches=$(grep drop_caches /etc/crontab | wc  -l)
-    if [ "$boolDropCaches" == "1" ];then
-        echo "drop_caches already exist"
-    else
-        echo "drop_caches not exist, add drop_caches into crontab"
-        echo "* */1 * * * root sync;echo 3 > /proc/sys/vm/drop_caches" >> /etc/crontab
-        service crond restart
-    fi
+    echo "* */1 * * * root sync;echo 3 > /proc/sys/vm/drop_caches" > ${CRONTAB_FILE}
 }
 
 #####################################################################
@@ -91,14 +86,7 @@ function drop_caches()
 #####################################################################
 function ftp_protect()
 {
-    isExistProtest=$(grep ftp_protect /etc/crontab | wc -l)
-    if [ "${isExistProtest=}" == "1" ];then
-        echo "ftp_protect already exist"
-    else
-        echo "ftp_protect not exist, add ftp_protect into crontab"
-        echo "* */1 * * * root sync;sh ${BIN_DIR}/ftp_protect.sh" >> /etc/crontab
-        service crond restart
-    fi
+    echo "*/1 * * * * root sync;sh ${BIN_DIR}/ftp_protect.sh" >> ${CRONTAB_FILE}
 }
 
 
@@ -111,9 +99,11 @@ function ftp_protect()
 #####################################################################
 function main()
 {
+    `systemctl restart crond`
     drop_caches
     ftp_protect
-    start_ftpserver
+    `crontab ${CRONTAB_FILE}`
+    start_springCloud
 }
 
 ## 脚本主要业务入口

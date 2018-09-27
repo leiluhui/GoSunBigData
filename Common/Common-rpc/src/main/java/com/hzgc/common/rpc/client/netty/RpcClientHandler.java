@@ -13,8 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +21,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
-    private static final Logger logger = LoggerFactory.getLogger(RpcClientHandler.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RpcClientHandler.class);
+    private static Logger logger = Logger.getLogger(RpcClientHandler.class);
     private ConcurrentHashMap<String, RPCFuture> pendingRPC = new ConcurrentHashMap<>();
     private volatile Channel channel;
     private InetSocketAddress remotePeer;
@@ -157,15 +157,13 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
                     countDownLatch.countDown();
                 });
                 countDownLatch.await();
-                logger.debug("Try to check the server side connection, current attempts is:{}", pingCount.get());
+                logger.debug("Try to check the server side connection, current attempts is:" + pingCount.get());
             } else {
                 IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
                 if (idleStateEvent.state() == IdleState.WRITER_IDLE) {
-                    logger.info("Failed to get heartbeat from worker, worker ip is:{}, port is:{}, " +
-                                    "more than {} retry attempts",
-                            this.remotePeer.getHostString(),
-                            this.remotePeer.getPort(),
-                            pingCount.get());
+                    logger.info("Failed to get heartbeat from worker, worker ip is:" + this.remotePeer.getHostString()
+                                    + ", port is:" + this.remotePeer.getPort() + ", " +
+                                    "more than " + pingCount.get() + " retry attempts");
                     removeCurrentHandler(ctx);
                 }
             }

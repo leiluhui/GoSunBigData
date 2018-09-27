@@ -10,6 +10,10 @@
     <result column="isconfirm" property="isconfirm" jdbcType="INTEGER" />
     <result column="flag" property="flag" jdbcType="INTEGER" />
   </resultMap>
+  <resultMap id="CountResultMap" type="com.hzgc.service.community.model.CountCommunityPeople" >
+    <result column="community" property="community" jdbcType="BIGINT" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, peopleid, community, month, deviceid, isconfirm, flag
   </sql>
@@ -18,6 +22,51 @@
     <include refid="Base_Column_List" />
     from t_people_new
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--统计上月小区新增人口数量（上月确认迁入数量）-->
+  <select id="countNewPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+    select count(peopleid)
+    from t_people_new
+    where isconfirm = 2
+    and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = month
+    and community = #{community,jdbcType=BIGINT}
+  </select>
+  <!--统计某小区某月总迁入数量-->
+  <select id="countTotalNewPeople" resultMap="CountResultMap"
+          parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
+    select community, count(peopleid) as count
+    from t_people_new
+    <where>
+      <if test="month != null and month.length() = 6" >
+        month = #{month,jdbcType=VARCHAR}
+      </if>
+      <if test="communityIdList != null and communityIdList.size() > 0" >
+        and community in
+        <foreach collection="list" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
+      </if>
+    </where>
+    group by community
+  </select>
+  <!--统计某小区某月确认迁入数量-->
+  <select id="countConfirmNewPeople" resultMap="CountResultMap"
+          parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
+    select community, count(peopleid) as count
+    from t_people_new
+    <where>
+      isconfirm = 2
+      <if test="month != null and month.length() = 6" >
+        and month = #{month,jdbcType=VARCHAR}
+      </if>
+      <if test="communityIdList != null and communityIdList.size() > 0" >
+        and community in
+        <foreach collection="list" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
+      </if>
+    </where>
+    group by community
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_people_new
