@@ -31,16 +31,11 @@ public class CustomFunction {
     }
     private double featureCompare(float[] currentFeature, float[] historyFeature) {
         double similarityDegree = 0;
-        double currentFeatureMultiple = 0;
-        double historyFeatureMultiple = 0;
         if (currentFeature.length == 512 && historyFeature.length == 512) {
             for (int i = 0; i < currentFeature.length; i++) {
                 similarityDegree = similarityDegree + currentFeature[i] * historyFeature[i];
-                currentFeatureMultiple = currentFeatureMultiple + Math.pow(currentFeature[i], 2);
-                historyFeatureMultiple = historyFeatureMultiple + Math.pow(historyFeature[i], 2);
             }
-            double tempSim = similarityDegree / Math.sqrt(currentFeatureMultiple) / Math.sqrt(historyFeatureMultiple);
-            double actualValue = new BigDecimal((0.5 + (tempSim / 2)) * 100).
+            double actualValue = new BigDecimal((0.5 + (similarityDegree / 2)) * 100).
                     setScale(2, BigDecimal.ROUND_HALF_UP).
                     doubleValue();
             if (actualValue >= 100) {
