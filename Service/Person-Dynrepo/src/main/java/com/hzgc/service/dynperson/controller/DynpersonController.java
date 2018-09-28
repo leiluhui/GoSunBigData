@@ -3,14 +3,13 @@ package com.hzgc.service.dynperson.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynperson.bean.CaptureOption;
 import com.hzgc.service.dynperson.bean.CaptureResult;
 import com.hzgc.service.dynperson.bean.Device;
 import com.hzgc.service.dynperson.bean.SingleResults;
 import com.hzgc.service.dynperson.service.DynpersonHistoryService;
-import com.hzgc.service.dynperson.service.DynpersonSearchService;
 import com.hzgc.service.dynperson.util.DeviceToIpcs;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,9 +28,6 @@ import java.util.Map;
 @Slf4j
 @SuppressWarnings("unused")
 public class DynpersonController {
-    @Autowired
-    @SuppressWarnings("unused")
-    private DynpersonSearchService dynpersonSearchService;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -48,12 +44,6 @@ public class DynpersonController {
         }
         Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDevices());
         captureOption.setIpcMapping(ipcMapping);
-        if (captureOption.getDevices() == null ||
-                captureOption.getDevices().size() <= 0 ||
-                captureOption.getDevices().get(0) == null) {
-            log.error("Start capture history, deviceIpcs option is error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-        }
         log.info("Start capture history, search option is:" + JacksonUtil.toJson(captureOption));
         SingleResults searchResultList =
                 dynpersonHistoryService.getCaptureHistory(captureOption);

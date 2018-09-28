@@ -5,15 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Repository
 public class ImsiDao {
 
-    @Value(value = "${time}")
+    @Value(value = "${query.time}")
     private String time;
     @Autowired
     ImsiInfoMapper imsiInfoMapper;

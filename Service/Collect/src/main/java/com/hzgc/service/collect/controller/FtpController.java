@@ -32,7 +32,7 @@ public class FtpController {
     @ApiOperation(value = "根据ftpurl获取图片数据", produces = "image/jpeg")
     @ApiImplicitParam(name = "ftpUrl", value = "ftp路径", dataType = "String", paramType = "query")
     @RequestMapping(value = "ftp_get_image", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getPhotoData(String ftpUrl) {
+    public ResponseEntity <byte[]> getPhotoData(String ftpUrl) {
         if (StringUtils.isBlank(ftpUrl)) {
             log.error("Start get ftp photo, but ftp url is null");
             return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
@@ -50,8 +50,8 @@ public class FtpController {
     @ApiOperation(value = "获取可绑定ftp地址信息")
     @ApiImplicitParam(name = "ftpType", value = "ftp类型", required = true, dataType = "String", paramType = "query")
     @RequestMapping(value = BigDataPath.FTP_GET_PROPERTIES, method = RequestMethod.GET)
-    public ResponseResult<Map<String, String>> getFtpAddress(@ApiParam(value = "ftp类型") String ftpType) {
-        Map<String, String> map = ftpService.getProperties(ftpType);
+    public ResponseResult <Map <String, String>> getFtpAddress(@ApiParam(value = "ftp类型") String ftpType,String deviceId) {
+        Map <String, String> map = ftpService.getProperties(ftpType,deviceId);
         return ResponseResult.init(map);
     }
 
@@ -64,7 +64,7 @@ public class FtpController {
     @ApiOperation(value = "ftp服务器主机名转IP", response = String.class, responseContainer = "List")
     @ApiImplicitParam(name = "hostname", value = "主机名", required = true, dataType = "String", paramType = "query")
     @RequestMapping(value = BigDataPath.FTP_GET_IP, method = RequestMethod.GET)
-    public ResponseResult<String> getIPAddress(@ApiParam(value = "主机名") String hostname) {
+    public ResponseResult <String> getIPAddress(@ApiParam(value = "主机名") String hostname) {
         if (null != hostname) {
             String ip = ftpService.getIPAddress(hostname);
             return ResponseResult.init(ip);
@@ -74,7 +74,7 @@ public class FtpController {
 
     @ApiOperation(value = "打开抓拍订阅")
     @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_OPEN, method = RequestMethod.POST)
-    public ResponseResult<Boolean> openFtpSubscription(String userId, @RequestBody List<String> ipcIdList) {
+    public ResponseResult <Boolean> openFtpSubscription(String userId, @RequestBody List <String> ipcIdList) {
         if (StringUtils.isBlank(userId) || ipcIdList.isEmpty()) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
@@ -84,17 +84,11 @@ public class FtpController {
 
     @ApiOperation(value = "关闭抓拍订阅")
     @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_CLOSE, method = RequestMethod.POST)
-    public ResponseResult<Boolean> closeFtpSubscription(String userId) {
+    public ResponseResult <Boolean> closeFtpSubscription(String userId) {
         if (StringUtils.isBlank(userId)) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
         boolean bb = ftpService.closeFtpSubscription(userId);
         return ResponseResult.init(bb);
-    }
-
-    @ApiOperation(value = "图片带hostname的httpurl转为带ip的httpurl")
-    @RequestMapping(value = BigDataPath.HTTP_HOSTNAME_TO_IP, method = RequestMethod.POST)
-    public List<String> httpHostnameToIp(List<String> httpUrlList) {
-        return ftpService.httpHostnameToIp(httpUrlList);
     }
 }

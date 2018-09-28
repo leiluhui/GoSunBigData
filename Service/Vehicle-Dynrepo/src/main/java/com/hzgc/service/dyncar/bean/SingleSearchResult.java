@@ -11,5 +11,6 @@ public class SingleSearchResult implements Serializable {
     private List<CapturedPicture> pictures;
     private int total;
     private List<GroupByIpc> devicePictures;
+    private Integer deviceTotal;
 
 }

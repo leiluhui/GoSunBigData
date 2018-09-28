@@ -45,14 +45,6 @@
                     <groupId>commons-net</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>netty</artifactId>
-                    <groupId>io.netty</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>curator-client</artifactId>
-                    <groupId>org.apache.curator</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>hadoop-annotations</artifactId>
                     <groupId>org.apache.hadoop</groupId>
                 </exclusion>
@@ -68,7 +60,16 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>

@@ -25,7 +25,7 @@ COLLECT_JAR=${LIB_DIR}/${COLLECT_JAR_NAME}                        ##获取jar包
 EUREKA_IP=172.18.18.201     ##注册中心的ip地址
 EUREKA_PORT=9000            ##服务注册中心端口
 ZOOKEEPER_HOST=172.18.18.105:2181
-MYSQL_HOST=
+MYSQL_HOST=172.18.18.105:3306
 
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
@@ -47,7 +47,8 @@ function start_springCloud()
       --spring.cloud.config.enabled=false \
       --eureka.ip=${EUREKA_IP} \
       --zookeeper.host=${ZOOKEEPER_HOST} \
-      --eureka.port=${EUREKA_PORT}  2>&1 &
+      --eureka.port=${EUREKA_PORT} \
+      --mysql.host=${MYSQL_HOST} 2>&1 &
    fi
 }
 #####################################################################
