@@ -87,6 +87,9 @@ else
     ##安装kibana
     sh kibanaInstall.sh
 
+    ##安装lts
+    sh ltsInstall.sh
+
     ##安装azkaban
     sh azkabanInstall.sh
 
