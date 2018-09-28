@@ -47,8 +47,7 @@
     </select>
     <!--根据人口库ID获取照片-->
     <select id="selectPictureByPeopleId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
-        select
-        <include refid="Blob_Column_List"/>
+        select id, idcardpic, capturepic
         from t_picture
         where id in (select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR})
     </select>

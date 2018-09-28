@@ -331,20 +331,23 @@ public class PeopleService {
         PictureVO pictureVO = new PictureVO();
         List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
         if (pictures != null && pictures.size() > 0) {
-            List<byte[]> idcardPics = new ArrayList<>();
-            List<byte[]> capturePics = new ArrayList<>();
+            List<Long> pictureIds = new ArrayList<>();
+            List<Long> idcardPictureIds = new ArrayList<>();
+            List<Long> capturePictureIds = new ArrayList<>();
             for (PictureWithBLOBs picture : pictures) {
                 if (picture != null) {
+                    pictureIds.add(picture.getId());
                     byte[] idcardPic = picture.getIdcardpic();
                     if (idcardPic != null && idcardPic.length > 0) {
-                        idcardPics.add(idcardPic);
+                        idcardPictureIds.add(picture.getId());
                     } else {
-                        capturePics.add(picture.getCapturepic());
+                        capturePictureIds.add(picture.getId());
                     }
                 }
             }
-            pictureVO.setIdcardPics(idcardPics);
-            pictureVO.setCapturePics(capturePics);
+            pictureVO.setPictureIds(pictureIds);
+            pictureVO.setIdcardPics(idcardPictureIds);
+            pictureVO.setCapturePics(capturePictureIds);
         }
         return pictureVO;
     }
@@ -414,17 +417,18 @@ public class PeopleService {
             peopleVO.setCar(carList);
             List<PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
-                List<byte[]> idcardPictureList = new ArrayList<>();
-                List<byte[]> capturePictureList = new ArrayList<>();
+                List<Long> idcardPictureIds = new ArrayList<>();
+                List<Long> capturePictureIds = new ArrayList<>();
                 for (PictureWithBLOBs picture : pictures) {
-                    if (picture.getIdcardpic() != null) {
-                        idcardPictureList.add(picture.getIdcardpic());
+                    byte[] idcardPic = picture.getIdcardpic();
+                    if (idcardPic != null && idcardPic.length > 0) {
+                        idcardPictureIds.add(picture.getId());
                     } else {
-                        capturePictureList.add(picture.getCapturepic());
+                        capturePictureIds.add(picture.getId());
                     }
                 }
-                peopleVO.setIdcardPicture(idcardPictureList);
-                peopleVO.setCapturePicture(capturePictureList);
+                peopleVO.setIdcardPictureIds(idcardPictureIds);
+                peopleVO.setCapturePictureIds(capturePictureIds);
             }
         }
         return peopleVO;
@@ -479,11 +483,7 @@ public class PeopleService {
                     peopleVO.setFlag(flagIdList);
                     if (people.getPicture() != null && people.getPicture().size() > 0) {
                         PictureWithBLOBs picture = people.getPicture().get(0);
-                        if (picture.getIdcardpic() != null) {
-                            peopleVO.setPicture(picture.getIdcardpic());
-                        } else {
-                            peopleVO.setPicture(picture.getCapturepic());
-                        }
+                        peopleVO.setPictureId(picture.getId());
                     }
                     list.add(peopleVO);
                 }

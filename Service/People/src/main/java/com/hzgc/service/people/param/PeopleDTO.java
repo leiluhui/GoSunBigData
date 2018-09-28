@@ -5,6 +5,7 @@ import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -56,7 +57,9 @@ public class PeopleDTO implements Serializable {
 
     public People peopleDTOShift_insert(PeopleDTO peopleDTO) {
         People people = new People();
-        people.setId(UuidUtil.getUuid().toUpperCase());
+        if (StringUtils.isBlank(peopleDTO.id)){
+            people.setId(UuidUtil.getUuid().toUpperCase());
+        }
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idCard);
         people.setRegion(peopleDTO.region);
