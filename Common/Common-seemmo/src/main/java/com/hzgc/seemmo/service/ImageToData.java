@@ -8,7 +8,6 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.util.CutImageUtil;
 import com.hzgc.seemmo.util.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -16,12 +15,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jettison.json.JSONString;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 public class ImageToData {
 
     private static CloseableHttpClient httpClient = null;
@@ -45,13 +44,10 @@ public class ImageToData {
             CloseableHttpResponse res = httpClient.execute(httpPost);
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(res.getEntity());
-            } else {
-                log.warn("Http service status is abnormal, status code is:{}", res.getStatusLine().getStatusCode());
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
         }
-        log.warn("Http request return value is null");
         return null;
     }
 
@@ -59,26 +55,25 @@ public class ImageToData {
     @SuppressWarnings("unchecked")
     public static ImageResult getData(String result, String imagePath, String tag, byte[] bytes) {
         JSONObject jsonObject = JsonUtil.stringToJsonObject(result);
-        if (jsonObject != null) {
-            int code = (int) jsonObject.get("code");
-            if (0 == code) {
-                JSONObject data = (JSONObject) jsonObject.get("data");
-                List <JSONObject> imageResults = (List <JSONObject>) data.get("ImageResults");
-                ImageResult imageResult = new ImageResult();
-                if ("0".equals(tag)) {
-                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
-                    imageResult.setVehicleList(vehicleList);
-                } else if ("1".equals(tag)) {
-                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
-                    imageResult.setPersonList(personList);
-                } else {
-                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
-                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
-                    imageResult.setVehicleList(vehicleList);
-                    imageResult.setPersonList(personList);
-                }
-                return imageResult;
+        String jsondata = (String) jsonObject.get("data");
+        JSONObject jsonObject1 = JsonUtil.stringToJsonObject(jsondata);
+        int code = (int) jsonObject1.get("Code");
+        if (0 == code) {
+            List <JSONObject> imageResults = (List <JSONObject>) jsonObject1.get("ImageResults");
+            ImageResult imageResult = new ImageResult();
+            if ("0".equals(tag)) {
+                List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                imageResult.setVehicleList(vehicleList);
+            } else if ("1".equals(tag)) {
+                List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                imageResult.setPersonList(personList);
+            } else {
+                List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                imageResult.setVehicleList(vehicleList);
+                imageResult.setPersonList(personList);
             }
+            return imageResult;
         }
         return null;
     }
