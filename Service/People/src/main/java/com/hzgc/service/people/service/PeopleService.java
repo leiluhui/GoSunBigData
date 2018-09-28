@@ -105,10 +105,11 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_insert(String peopleId, String picType, List<byte[]> pics) {
-        for (byte[] bytes : pics) {
+    public Integer people_picture_insert(String peopleId, String picType, List<String> pics) {
+        for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
+            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
             if (IDCARD_PIC.equals(picType)) {
                 picture.setIdcardpic(bytes);
             }
@@ -131,7 +132,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_update(String peopleId, String picType, List<byte[]> pics) {
+    public Integer people_picture_update(String peopleId, String picType, List<String> pics) {
         List<Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = pictureMapper.deleteByPrimaryKey(id);
@@ -140,9 +141,10 @@ public class PeopleService {
                 return 0;
             }
         }
-        for (byte[] bytes : pics) {
+        for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
+            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
             if (IDCARD_PIC.equals(picType)) {
                 picture.setIdcardpic(bytes);
             }

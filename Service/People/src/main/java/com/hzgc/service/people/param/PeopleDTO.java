@@ -43,9 +43,9 @@ public class PeopleDTO implements Serializable {
     @ApiModelProperty(value = "标签列表")
     private List<Integer> flagId;
     @ApiModelProperty(value = "证件照片列表")
-    private List<byte[]> idCardPic;
+    private List<String> idCardPic;
     @ApiModelProperty(value = "实采照片列表")
-    private List<byte[]> capturePic;
+    private List<String> capturePic;
     @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
     @ApiModelProperty(value = "电话列表")
