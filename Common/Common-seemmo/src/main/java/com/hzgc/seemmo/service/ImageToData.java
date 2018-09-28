@@ -3,6 +3,8 @@ package com.hzgc.seemmo.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.seemmo.bean.ImageBean;
 import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
@@ -18,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONString;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class ImageToData {
         try {
             httpClient = getHttpClient();
             HttpPost httpPost = new HttpPost(url);
-            StringEntity stringEntity = new StringEntity(imageJsonString);
+            StringEntity stringEntity = new StringEntity(imageJsonString,Charset.forName("UTF-8"));
             stringEntity.setContentType("application/json");
             httpPost.setEntity(stringEntity);
             CloseableHttpResponse res = httpClient.execute(httpPost);
@@ -543,5 +546,10 @@ public class ImageToData {
         String imageJsonString = JsonUtil.objectToJsonString(bytes);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
         return ImageToData.getData(s, null, tag, bytes);
+    }
+
+    public static void main(String[] args) {
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\20180831183711.jpg", "66");
+        System.out.println(JacksonUtil.toJson(imageResult));
     }
 }
