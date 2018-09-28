@@ -133,7 +133,11 @@ public class ZookeeperClient {
         }
         String temp = pathName.substring(pathName.indexOf("group=") + 6);
         String nodeGroup = temp.substring(0, temp.indexOf("&"));
-        return nodeGroup;
+        if(nodeGroup.contains(Config.TRACKER_NAME_PREFIX)){
+            return nodeGroup;
+        }else {
+            return null;
+        }
     }
 
     private List<Job> getJobsOnZk(CuratorFramework zkClient) throws Exception {
