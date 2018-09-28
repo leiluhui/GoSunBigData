@@ -1,5 +1,6 @@
 package com.hzgc.service.people.dao;
 
+import com.hzgc.service.community.param.AffirmOperationDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.FilterField;
 
@@ -39,9 +40,13 @@ public interface PeopleMapper {
 
     List<People> searchOutPeople(Long community);
 
-    People searchCommunityPeopleInfo(String peopleId);
+    People searchCommunityPeopleInfo(String id);
 
     People searchPeopleByIdCard(String idcard);
 
-    Timestamp getLastTime(String peopleId);
+    Timestamp getLastTime(String id);
+
+    Integer deleteCommunityByPeopleId(String id);
+
+    Integer insertCommunityByPeopleId(AffirmOperationDTO param);
 }

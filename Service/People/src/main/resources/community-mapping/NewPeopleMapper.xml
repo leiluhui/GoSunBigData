@@ -68,6 +68,18 @@
     </where>
     group by community
   </select>
+  <!--更新 isconfirm 值-->
+  <update id="updateIsconfirm" parameterType="com.hzgc.service.community.param.AffirmOperationDTO">
+    update t_people_new
+    <set>
+      <if test="isconfirm != null">
+        isconfirm = #{isconfirm,jdbcType=INTEGER},
+      </if>
+    </set>
+    where peopleid = #{peopleId,jdbcType=BIGINT}
+    and community = #{communityId,jdbcType=BIGINT}
+    and month = #{month,jdbcType=VARCHAR}
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_people_new
     where id = #{id,jdbcType=BIGINT}

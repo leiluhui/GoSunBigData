@@ -219,6 +219,14 @@
     <select id="getLastTime" resultType="java.sql.Timestamp" parameterType="java.lang.String">
         select lasttime from t_people where id = #{id,jdbcType=VARCHAR}
     </select>
+    <!--根据人员ID删除小区ID-->
+    <update id="deleteCommunityByPeopleId" parameterType="java.lang.String">
+        update t_people set community = null where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <!--根据人员ID添加小区ID-->
+    <update id="insertCommunityByPeopleId" parameterType="com.hzgc.service.community.param.AffirmOperationDTO">
+        update t_people set community = #{communityId,jdbcType=BIGINT} where id = #{peopleId,jdbcType=VARCHAR}
+    </update>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people
         where id = #{id,jdbcType=VARCHAR}

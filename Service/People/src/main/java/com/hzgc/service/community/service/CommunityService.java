@@ -3,13 +3,10 @@ package com.hzgc.service.community.service;
 import com.github.pagehelper.PageHelper;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
-import com.hzgc.service.community.model.CountCommunityPeople;
+import com.hzgc.service.community.model.*;
 import com.hzgc.service.community.param.*;
 import com.hzgc.service.people.dao.*;
-import com.hzgc.service.community.model.DeviceRecognize;
-import com.hzgc.service.community.model.FusionImsi;
 import com.hzgc.service.people.model.People;
-import com.hzgc.service.community.model.PeopleRecognize;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,6 +207,70 @@ public class CommunityService {
             vo.setLastDay(day);
         }
         return vo;
+    }
+
+    public Integer communityAffirmOut(AffirmOperationDTO param) {
+        // 已确认迁出
+        if (param.getIsconfirm() == 2){
+            Integer delete = peopleMapper.deleteCommunityByPeopleId(param.getPeopleId());
+            if (delete != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+            Integer update = outPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+        }else if (param.getIsconfirm() == 3) {     // 已确认未迁出
+            Integer update = outPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+        }else {
+            log.info("Affirm out operation failed, because param: isconfirm error");
+            return 0;
+        }
+        return 1;
+    }
+
+    public Integer communityAffirmNew(AffirmOperationDTO param) {
+        // 已确认迁入
+        if (param.getIsconfirm() == 2){
+            // 已确认迁入:预实名
+            if (param.getFlag() == 0){
+                Integer integer = peopleMapper.insertCommunityByPeopleId(param);
+                if (integer != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+                Integer update = newPeopleMapper.updateIsconfirm(param);
+                if (update != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+            }else if (param.getFlag() == 1){    // 已确认迁入:新增
+                Integer update = newPeopleMapper.updateIsconfirm(param);
+                if (update != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+            }else {
+                log.info("Affirm new operation failed, because param: flag error");
+                return 0;
+            }
+        }else if (param.getIsconfirm() == 3) {     // 已确认未迁入
+            Integer update = newPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm new operation failed");
+                return 0;
+            }
+        }else {
+            log.info("Affirm new operation failed, because param: isconfirm error");
+            return 0;
+        }
+        return 1;
     }
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {

@@ -226,14 +226,64 @@ public class CommunityController {
 
     @ApiOperation(value = "小区确认迁出操作", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_OUT, method = RequestMethod.POST)
-    public ResponseResult<String> searchCommunityAffirmOut() {
-        return null;
+    public ResponseResult<Integer> communityAffirmOut(@RequestBody AffirmOperationDTO param) {
+        if (param == null) {
+            log.error("Start affirm out operation, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getPeopleId())) {
+            log.error("Start affirm out operation, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID不能为空,请检查！");
+        }
+        if (param.getCommunityId() == null) {
+            log.error("Start affirm out operation, but community id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getMonth())) {
+            log.error("Start affirm out operation, but month is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份为空,请检查！");
+        }
+        if (param.getIsconfirm() != 2 && param.getIsconfirm() != 3) {
+            log.error("Start affirm out operation, but isconfirm is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "确认标签有误,请检查！");
+        }
+        log.info("Start affirm out operation, param is:" + JacksonUtil.toJson(param));
+        Integer integer = communityService.communityAffirmOut(param);
+        log.info("Affirm out operation successfully");
+        return ResponseResult.init(integer);
     }
 
     @ApiOperation(value = "小区确认迁入操作", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW, method = RequestMethod.POST)
-    public ResponseResult<String> searchCommunityAffirmNew() {
-        return null;
+    public ResponseResult<Integer> communityAffirmNew(@RequestBody AffirmOperationDTO param) {
+        if (param == null) {
+            log.error("Start affirm new operation, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getPeopleId())) {
+            log.error("Start affirm new operation, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID不能为空,请检查！");
+        }
+        if (param.getCommunityId() == null) {
+            log.error("Start affirm new operation, but community id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getMonth())) {
+            log.error("Start affirm new operation, but month is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份为空,请检查！");
+        }
+        if (param.getIsconfirm() != 2 && param.getIsconfirm() != 3) {
+            log.error("Start affirm new operation, but isconfirm is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "确认标签有误,请检查！");
+        }
+        if (param.getFlag() != 0 && param.getFlag() != 1){
+            log.error("Start affirm new operation, but flag is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "迁入状态有误,请检查！");
+        }
+        log.info("Start affirm new operation, param is:" + JacksonUtil.toJson(param));
+        Integer integer = communityService.communityAffirmNew(param);
+        log.info("Affirm new operation successfully");
+        return ResponseResult.init(integer);
     }
 
     @ApiOperation(value = "聚焦人员抓拍、电围数据查询", response = PeopleCaptureVO.class)
