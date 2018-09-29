@@ -343,7 +343,7 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "统计聚焦人员每个设备抓拍次数", response = PeopleCaptureCountVO.class)
+    @ApiOperation(value = "统计聚焦人员每个设备抓拍次数（设备热力图）", response = PeopleCaptureCountVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.POST)
     public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
@@ -364,7 +364,7 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "统计聚焦人员每天抓拍次数", response = PeopleCaptureCountVO.class)
+    @ApiOperation(value = "统计聚焦人员每天抓拍次数（最近三个月）", response = PeopleCaptureCountVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.POST)
     public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {

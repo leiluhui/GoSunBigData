@@ -23,7 +23,7 @@
   <select id="countDeviceCaptureNum1Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select deviceid, count
     from t_device_recognize
-    where DATE_FORMAT(currenttime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    where currenttime >= DATE_SUB(now(),INTERVAL 30 DAY)
     and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
     and peopleid = #{peopleid,jdbcType=VARCHAR}
   </select>
