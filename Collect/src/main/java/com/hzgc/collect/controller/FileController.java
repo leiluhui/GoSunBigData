@@ -1,6 +1,9 @@
 package com.hzgc.collect.controller;
 
 import com.hzgc.collect.service.http.HttpFile;
+import com.hzgc.common.service.api.service.InnerService;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.jniface.PictureData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,8 +19,6 @@ public class FileController {
 
     @Autowired
     private HttpFile httpFile;
-    @Autowired
-    KafkaTemplate<String, String> kafkaTemplate;
 
     @RequestMapping("/image")
     public ResponseEntity<byte[]> getImage(@RequestParam(name = "url") String path) {

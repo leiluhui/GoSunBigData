@@ -1,6 +1,8 @@
 package com.hzgc.common.service.api.service;
 
+import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.basic.StopWatch;
+import com.hzgc.jniface.PictureData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,6 +39,24 @@ public class InnerService {
         } else {
             log.error("Method httpHostNameToIp, httpUrlList is null or size is 0");
             return new ArrayList<>();
+        }
+    }
+
+    public PictureData faceFeautreExtract(String base64Str) {
+        if (base64Str != null && !"".equals(base64Str)) {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            ParameterizedTypeReference<PictureData> parameterizedTypeReference =
+                    new ParameterizedTypeReference<PictureData>() {};
+            ResponseEntity<PictureData> data = restTemplate.exchange("http://collect-ftp" +
+                            BigDataPath.FEATURE_EXTRACT_BASE64, HttpMethod.POST,
+                    new HttpEntity<>(base64Str), parameterizedTypeReference);
+            stopWatch.stop();
+            log.info("Method faceFeatureExtract, request seccessull, total time is:{}", stopWatch.getTotalTimeMillis());
+            return data.getBody();
+        } else {
+            log.error("Method faceFeatureExtract, base64Str is null or size is 0");
+            return null;
         }
     }
 }

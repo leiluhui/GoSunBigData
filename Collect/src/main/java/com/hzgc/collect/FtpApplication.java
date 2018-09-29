@@ -1,6 +1,7 @@
 package com.hzgc.collect;
 
 import com.hzgc.collect.service.FTP;
+import com.hzgc.common.service.api.config.EnableInnerService;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
