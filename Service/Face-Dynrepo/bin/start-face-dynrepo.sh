@@ -41,7 +41,7 @@ function start_springCloud()
 {
    FACE_DYNREPO_PID=`jps | grep ${FACE_DYNREPO_JAR_NAME} | awk '{print $1}'`
    if [ -n "${FACE_DYNREPO_PID}" ];then
-       echo "dynrepo service already started"
+       echo "face-dynrepo service already started"
    else
        nohup java -jar ${FACE_DYNREPO_JAR} --spring.profiles.active=pro  \
        --eureka.ip=${EUREKA_IP} \
