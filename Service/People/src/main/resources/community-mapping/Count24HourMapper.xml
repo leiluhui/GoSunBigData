@@ -17,6 +17,14 @@
     from t_24hour_count
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!--小区迁入人口抓拍详情:24小时统计-->
+  <select id="countCommunityNewPeopleCapture" resultMap="BaseResultMap" parameterType="com.hzgc.service.community.param.CaptureDetailsDTO" >
+    select hour, count
+    from t_24hour_count
+    where community = #{communityId,jdbcType=BIGINT}
+    and peopleid = #{peopleId,jdbcType=VARCHAR}
+    and hour >= DATE_FORMAT(NOW() - INTERVAL 24 HOUR, '%Y%m%d%H')
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_24hour_count
     where id = #{id,jdbcType=BIGINT}

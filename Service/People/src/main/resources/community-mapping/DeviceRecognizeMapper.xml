@@ -23,7 +23,7 @@
   <select id="countDeviceCaptureNum1Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select deviceid, count
     from t_device_recognize
-    where DATE_FORMAT(receivetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+    where DATE_FORMAT(currenttime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
     and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
     and peopleid = #{peopleid,jdbcType=VARCHAR}
   </select>
@@ -31,10 +31,19 @@
   <select id="countCaptureNum3Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select currenttime, count
     from t_device_recognize
-    where DATE_FORMAT(receivetime, '%Y%m') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 2 MONTH), '%Y%m')
+    where DATE_FORMAT(currenttime, '%Y%m') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 2 MONTH), '%Y%m')
     and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
     and peopleid = #{peopleid,jdbcType=VARCHAR}
   </select>
+    <!--小区迁入人口抓拍详情:设备抓拍统计-->
+    <select id="countCommunityNewPeopleCapture" resultMap="BaseResultMap" parameterType="com.hzgc.service.community.param.CaptureDetailsDTO" >
+        select deviceid, sum(count) as count
+        from t_device_recognize
+        where community = #{communityId,jdbcType=BIGINT}
+        and peopleid = #{peopleId,jdbcType=VARCHAR}
+        and DATE_FORMAT(currenttime, '%Y%m' ) = #{month,jdbcType=VARCHAR}
+        group by deviceid
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_device_recognize
     where id = #{id,jdbcType=BIGINT}

@@ -10,9 +10,13 @@ import java.io.Serializable;
 @Data
 public class CaptureDetailsDTO implements Serializable {
     @ApiModelProperty(value = "迁入人口ID")
-    private Long peopleId;
+    private String peopleId;
     @ApiModelProperty(value = "查询小区ID")
     private Long communityId;
     @ApiModelProperty(value = "查询月份")
     private String month;
+    @ApiModelProperty(value = "起始行数")
+    private int start;
+    @ApiModelProperty(value = "分页行数")
+    private int limit;
 }

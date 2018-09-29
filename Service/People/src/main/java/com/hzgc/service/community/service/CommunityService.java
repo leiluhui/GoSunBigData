@@ -1,6 +1,8 @@
 package com.hzgc.service.community.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
 import com.hzgc.service.community.model.*;
@@ -43,6 +45,10 @@ public class CommunityService {
     @Autowired
     @SuppressWarnings("unused")
     private DeviceRecognizeMapper deviceRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private Count24HourMapper count24HourMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -187,6 +193,72 @@ public class CommunityService {
             vo.setAddress(people.getAddress());
             vo.setPictureId(people.getPictureId());
         }
+        return vo;
+    }
+
+    public CaptureDetailsVO searchCommunityNewPeopleCaptureDetails(CaptureDetailsDTO param) {
+        CaptureDetailsVO vo = new CaptureDetailsVO();
+        // 小区迁入人口抓拍详情:设备抓拍统计
+        List<CaptureDeviceCount> deviceCountList = new ArrayList<>();
+        List<DeviceRecognize> deviceRecognizes = deviceRecognizeMapper.countCommunityNewPeopleCapture(param);
+        if (deviceRecognizes != null && deviceRecognizes.size() > 0){
+            for (DeviceRecognize deviceRecognize : deviceRecognizes){
+                CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
+                captureDeviceCount.setDeviceId(deviceRecognize.getDeviceid());
+                captureDeviceCount.setCount(deviceRecognize.getCount());
+                deviceCountList.add(captureDeviceCount);
+            }
+            vo.setDeviceCountList(deviceCountList);
+        }
+        // 小区迁入人口抓拍详情:24小时统计
+        List<CaptureHourCount> hourCountList = new ArrayList<>();
+        List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
+        System.out.println(JacksonUtil.toJson(count24Hours));
+        List<String> hourList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+        long longTime = System.currentTimeMillis();
+        for(int i = 0; i < 24 ;i ++){
+            String time = dateFormat.format(new Date(longTime));
+            hourList.add(time);
+            longTime = longTime - 3600000;
+        }
+        for (String hour : hourList){
+            CaptureHourCount count = new CaptureHourCount();
+            count.setHour(hour);
+            String time = hour.replace("-", "").replace(" ", "");
+            if (count24Hours != null && count24Hours.size() > 0){
+                for (Count24Hour count24Hour : count24Hours){
+                    if (time.equals(count24Hour.getHour())){
+                        count.setCount(count24Hour.getCount());
+                    }
+                }
+                hourCountList.add(count);
+            }
+        }
+        vo.setHourCountList(hourCountList);
+        // 小区迁入人口抓拍详情:人员抓拍列表
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
+        List<PeopleRecognize> peopleRecognizes = peopleRecognizeMapper.searchCommunityNewPeopleCaptureData(param.getPeopleId());
+        PageInfo pageInfo = new PageInfo(page.getResult());
+        int total = (int) pageInfo.getTotal();
+        CapturePeopleCount capturePeopleCount = new CapturePeopleCount();
+        capturePeopleCount.setTotal(total);
+        List<CapturePictureInfo> infoList = new ArrayList<>();
+        for (PeopleRecognize peopleRecognize : peopleRecognizes){
+            CapturePictureInfo info = new CapturePictureInfo();
+            info.setDeviceId(peopleRecognize.getDeviceid());
+            // TODO 名字
+            info.setDeviceName(peopleRecognize.getDeviceid());
+            // TODO url 转换
+            info.setPicture(peopleRecognize.getSurl());
+            Date date = peopleRecognize.getCapturetime();
+            if (date != null){
+                info.setCaptureTime(sdf.format(date));
+            }
+            infoList.add(info);
+        }
+        capturePeopleCount.setPictureInfos(infoList);
+        vo.setPeopleCount(capturePeopleCount);
         return vo;
     }
 

@@ -64,7 +64,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleVO>> searchCommunityImportantPeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community important people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getCommunityId() == null || param.getCommunityId() == 0) {
             log.error("Start search community important people, but community id is null");
@@ -85,7 +85,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleVO>> searchCommunityCarePeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community care people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getCommunityId() == null || param.getCommunityId() == 0) {
             log.error("Start search community care people, but community id is null");
@@ -107,7 +107,7 @@ public class CommunityController {
         System.out.println(JacksonUtil.toJson(param));
         if (param == null) {
             log.error("Start search community new people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getCommunityId() == null) {
             log.error("Start search community new people, but community id is null");
@@ -128,7 +128,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleVO>> searchCommunityOutPeople(@RequestBody PeopleDTO param) {
         if (param == null) {
             log.error("Start search community out people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getCommunityId() == null) {
             log.error("Start search community out people, but community id is null");
@@ -149,15 +149,15 @@ public class CommunityController {
     public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleCountDTO param) {
         if (param == null){
             log.error("Start count community new and out people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数不能为空,请检查！");
         }
         if (StringUtils.isBlank(param.getMonth())){
             log.error("Start count community new and out people, but month is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份不能为空,请检查！");
         }
         if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0){
             log.error("Start count community new and out people, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询小区ID列表为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID列表不能为空,请检查！");
         }
         if (param.getMonth() == null || param.getMonth().length() != 6){
             log.error("Start count community new and out people, but month error");
@@ -197,7 +197,7 @@ public class CommunityController {
     public ResponseResult<CommunityPeopleInfoVO> searchPeopleByIdCard(String idCard) {
         if (idCard == null) {
             log.info("Start search people by idCard, but idCard is null");
-            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询身份证为空,请检查!");
+            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询身份证不能为空,请检查!");
         }
         log.info("Start search people by idCard, idCard is:" + idCard);
         CommunityPeopleInfoVO people = communityService.searchPeopleByIdCard(idCard);
@@ -208,7 +208,22 @@ public class CommunityController {
     @ApiOperation(value = "小区迁入人口抓拍详情", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.POST)
     public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(@RequestBody CaptureDetailsDTO param) {
-        return null;
+        if (param.getPeopleId() == null){
+            log.error("Start search community new people capture details, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID不能为空,请检查！");
+        }
+        if (param.getCommunityId() == null){
+            log.error("Start search community new people capture details, but community id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getMonth())){
+            log.error("Start search community new people capture details, but mouth is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份不能为空,请检查！");
+        }
+        log.info("Start search community new people capture details, param is:" + JacksonUtil.toJson(param));
+        CaptureDetailsVO vo = communityService.searchCommunityNewPeopleCaptureDetails(param);
+        log.info("Search community new people capture details successfully");
+        return ResponseResult.init(vo);
     }
 
     @ApiOperation(value = "小区迁出人口最后抓拍查询", response = ResponseResult.class)
@@ -229,7 +244,7 @@ public class CommunityController {
     public ResponseResult<Integer> communityAffirmOut(@RequestBody AffirmOperationDTO param) {
         if (param == null) {
             log.error("Start affirm out operation, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数不能为空,请检查！");
         }
         if (StringUtils.isBlank(param.getPeopleId())) {
             log.error("Start affirm out operation, but people id is null");
@@ -237,11 +252,11 @@ public class CommunityController {
         }
         if (param.getCommunityId() == null) {
             log.error("Start affirm out operation, but community id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
         if (StringUtils.isBlank(param.getMonth())) {
             log.error("Start affirm out operation, but month is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份不能为空,请检查！");
         }
         if (param.getIsconfirm() != 2 && param.getIsconfirm() != 3) {
             log.error("Start affirm out operation, but isconfirm is error");
@@ -258,7 +273,7 @@ public class CommunityController {
     public ResponseResult<Integer> communityAffirmNew(@RequestBody AffirmOperationDTO param) {
         if (param == null) {
             log.error("Start affirm new operation, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "参数不能为空,请检查！");
         }
         if (StringUtils.isBlank(param.getPeopleId())) {
             log.error("Start affirm new operation, but people id is null");
@@ -266,11 +281,11 @@ public class CommunityController {
         }
         if (param.getCommunityId() == null) {
             log.error("Start affirm new operation, but community id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
         if (StringUtils.isBlank(param.getMonth())) {
             log.error("Start affirm new operation, but month is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "月份不能为空,请检查！");
         }
         if (param.getIsconfirm() != 2 && param.getIsconfirm() != 3) {
             log.error("Start affirm new operation, but isconfirm is error");
@@ -291,7 +306,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start search people capture info, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getPeopleId() == null) {
             log.error("Start search people capture info, but people id is null");
@@ -312,7 +327,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleCaptureVO>> searchPeopleTrack1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start search people capture track, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getPeopleId() == null) {
             log.error("Start search people capture track, but people id is null");
@@ -333,7 +348,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start count people capture number, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getPeopleId() == null) {
             log.error("Start count people capture number, but people id is null");
@@ -354,7 +369,7 @@ public class CommunityController {
     public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {
             log.error("Start count people everyday capture number, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
         if (param.getPeopleId() == null) {
             log.error("Start count people everyday capture number, but people id is null");

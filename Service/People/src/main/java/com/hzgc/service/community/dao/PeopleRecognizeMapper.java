@@ -19,5 +19,7 @@ public interface PeopleRecognizeMapper {
 
     List<PeopleRecognize> searchCapture1Month(String peopleid);
 
-    PeopleRecognize searchCommunityOutPeopleLastCapture(String peopleId);
+    PeopleRecognize searchCommunityOutPeopleLastCapture(String peopleid);
+
+    List<PeopleRecognize> searchCommunityNewPeopleCaptureData(String peopleid);
 }

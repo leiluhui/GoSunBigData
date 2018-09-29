@@ -1,6 +1,7 @@
 package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.DeviceRecognize;
+import com.hzgc.service.community.param.CaptureDetailsDTO;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface DeviceRecognizeMapper {
     List<DeviceRecognize> countDeviceCaptureNum1Month(String peopleid);
 
     List<DeviceRecognize> countCaptureNum3Month(String peopleid);
+
+    List<DeviceRecognize> countCommunityNewPeopleCapture(CaptureDetailsDTO param);
 }
