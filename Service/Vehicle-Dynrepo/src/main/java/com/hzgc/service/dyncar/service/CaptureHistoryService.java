@@ -155,7 +155,7 @@ public class CaptureHistoryService {
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
 //                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
 //                String ip = ftpIpMapping.get(hostname);
-                String ip = "172.18.18.100";
+                String ip = "172.18.18.202";
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);

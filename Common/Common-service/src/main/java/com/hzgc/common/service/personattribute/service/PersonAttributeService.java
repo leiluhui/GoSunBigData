@@ -28,7 +28,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : ageMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personAgeValues.add(personAttributeValue);
         }
         personAge.setValues(personAgeValues);
@@ -44,7 +44,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : babyMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personBabyValues.add(personAttributeValue);
         }
         personBaby.setValues(personBabyValues);
@@ -60,7 +60,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : bagMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personBagValues.add(personAttributeValue);
         }
         personBag.setValues(personBagValues);
@@ -76,7 +76,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : bottomColorMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personBottomColorValues.add(personAttributeValue);
         }
         personBottomColor.setValues(personBottomColorValues);
@@ -92,7 +92,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : bottomTypeMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personBottomTypeValues.add(personAttributeValue);
         }
         personBottomType.setValues(personBottomTypeValues);
@@ -108,7 +108,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : hatMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personHatValues.add(personAttributeValue);
         }
         personHat.setValues(personHatValues);
@@ -124,7 +124,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : hairMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personHairValues.add(personAttributeValue);
         }
         personHair.setValues(personHairValues);
@@ -140,7 +140,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : knapsackMap.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personKnapsackValues.add(personAttributeValue);
         }
         personKnapsack.setValues(personKnapsackValues);
@@ -156,7 +156,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : messengerBag.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personMessenegerBagValues.add(personAttributeValue);
         }
         personMessengerBag.setValues(personMessenegerBagValues);
@@ -172,7 +172,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : orientation.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personOrientationValues.add(personAttributeValue);
         }
         personOrientationBag.setValues(personOrientationValues);
@@ -188,7 +188,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : sex.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personSexValues.add(personAttributeValue);
         }
         personSex.setValues(personSexValues);
@@ -204,7 +204,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : shoudlerBag.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personShoudlerBagValues.add(personAttributeValue);
         }
         personShoudlerBag.setValues(personShoudlerBagValues);
@@ -220,7 +220,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : umbrella.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personUmbrellaValues.add(personAttributeValue);
         }
         personUmbrella.setValues(personUmbrellaValues);
@@ -236,7 +236,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : upperColor.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personUpperColorValues.add(personAttributeValue);
         }
         personUpperColor.setValues(personUpperColorValues);
@@ -252,7 +252,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : upperType.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personUpperTypeValues.add(personAttributeValue);
         }
         personUpperType.setValues(personUpperTypeValues);
@@ -268,7 +268,7 @@ public class PersonAttributeService {
         for (Map.Entry<Integer, String> entry : type.entrySet()) {
             PersonAttributeValue personAttributeValue = new PersonAttributeValue();
             personAttributeValue.setDesc(entry.getValue());
-            personAttributeValue.setCode(entry.getKey());
+            personAttributeValue.setCode(String.valueOf(entry.getKey()));
             personCarTypeValues.add(personAttributeValue);
         }
         personCarType.setValues(personCarTypeValues);

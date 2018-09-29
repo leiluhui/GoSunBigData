@@ -107,7 +107,7 @@ public class DynpersonHistoryService {
                 String hostname = (String) hit.getSource().get(PersonTable.HOSTNAME);
 //                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
 //                String ip = ftpIpMapping.get(hostname);
-                String ip = "172.18.18.100";
+                String ip = "172.18.18.202";
                 pictures.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
                 pictures.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
 //                pictures.setSabsolutepath(sabsolutepath);
