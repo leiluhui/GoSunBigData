@@ -17,14 +17,9 @@ object KafkaToTidb {
 
     val dbc = "jdbc:mysql://172.18.18.100:3306/zhaozhe?user=root&password=Hzgc@123"
     classOf[com.mysql.jdbc.Driver]
-    val conn = DriverManager.getConnection(dbc)
     val driver = "com.mysql.jdbc.Driver"
-    val url = "jdbc:mysql://172.18.18.100:3306/zhaozhe"
-    val username = "root"
-    val password = "Hzgc@123"
     Class.forName(driver)
-    val connection = DriverManager.getConnection(url, username, password)
-    val prep = conn.prepareStatement("INSERT INTO t_imsi_reduce (imsi,number,savetime) VALUES (?, ?, ?) ")
+
     val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
     val appName = "KafkaToTidb"
     val conf = new SparkConf().setAppName(appName)
@@ -45,20 +40,23 @@ object KafkaToTidb {
     })
     //second1:窗口长度，second2:滑动间隔
     val result: DStream[(String, Int)] = windowed.reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(3600), Seconds(60))
-    result.filter(x=> x._2 >= 3).foreachRDD(datas => {
-      datas.foreach(data => {
-        val imsi: String = data._1
-        val num = data._2
-        val time = new Date().getTime
-        //将码插入数据库中
-       /* prep.setString(1, imsi)
-        prep.setInt(2, num)
-        prep.setLong(3,time)*/
-       val prep = conn.prepareStatement("INSERT INTO t_imsi_reduce (imsi,number,savetime) VALUES ('11111', 10, 1111111) ")
-        prep.executeUpdate
-        println("===========imsi="+imsi+", num="+num+", time="+time)
-      })
+    result.filter(x=> x._2 >= 10).foreachRDD(it => {
+        it.foreachPartition(datas => {
+          val conn = DriverManager.getConnection(dbc)
+          val prep = conn.prepareStatement("INSERT INTO t_imsi_reduce (imsi,number,savetime) VALUES (?, ?, ?) ")
+          datas.foreach(data => {
+            val imsi: String = data._1
+            val num = data._2
+            val time = new Date().getTime
+            prep.setString(1, imsi)
+            prep.setInt(2, num)
+            prep.setLong(3, time)
+            prep.executeUpdate
+            println("===========imsi="+imsi+", num="+num+", time="+time)
+          })
+        })
     })
+
     ssc.start()
     ssc.awaitTermination()
   }

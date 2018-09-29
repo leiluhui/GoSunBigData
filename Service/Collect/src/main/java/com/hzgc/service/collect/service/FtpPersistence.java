@@ -38,5 +38,6 @@ public class FtpPersistence implements CommandLineRunner {
                 ftpInfoMapper.insertSelective(ftpInfo);
             }
         }
+        ftpRegisterClient.setRefreshDataCallBack(new FtpDiscover());
     }
 }

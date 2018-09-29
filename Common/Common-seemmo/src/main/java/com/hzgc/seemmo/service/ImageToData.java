@@ -300,7 +300,7 @@ public class ImageToData {
                         JSONObject recognize = (JSONObject) js.get("Recognize");
                         //行人数据解析
                         personDataAnalysis(recognize, person_object);
-                        if (null != imagePath && imagePath.length() > 0) {
+                        if (null != imagePath && imagePath.length() > 0 && null != person_rect) {
                             CutImageUtil cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                             cutImageUtil.setSrcpath(imagePath);
                             try {
@@ -345,38 +345,44 @@ public class ImageToData {
                                 //数据解析
                                 personDataAnalysis(recognize, person_object);
                                 if (null != imagePath && imagePath.length() > 0) {
-                                    CutImageUtil cutImageUtil;
+                                    CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
                                         cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
                                                 (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
                                                 (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
-                                    } else {
+                                    }
+                                    if (null != person_rect){
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
                                     try {
-                                        byte[] bytes = cutImageUtil.cut();
-                                        person_object.setCar_data(bytes);
+                                        if (null != cutImageUtil) {
+                                            byte[] bytes = cutImageUtil.cut();
+                                            person_object.setCar_data(bytes);
+                                        }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
                                 if (null != bytess) {
-                                    CutImageUtil cutImageUtil;
+                                    CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
                                         cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
                                                 (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
                                                 (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
-                                    } else {
+                                    }
+                                    if (null != person_rect){
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                     }
                                     try {
-                                        byte[] bytes = cutImageUtil.cut(bytess);
-                                        person_object.setCar_data(bytes);
+                                        if (null != cutImageUtil){
+                                            byte[] bytes = cutImageUtil.cut(bytess);
+                                            person_object.setCar_data(bytes);
+                                        }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
