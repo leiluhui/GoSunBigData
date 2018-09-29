@@ -172,7 +172,7 @@ public class CaptureHistoryService {
         return searchResult;
     }
 
-    private String getLocation(String ipc){
+    private String getLocation(String ipc) {
         //查询相机位置
         ArrayList <String> list = new ArrayList <>();
         list.add(ipc);

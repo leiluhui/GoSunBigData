@@ -52,26 +52,26 @@ public class DynpersonHistoryService {
         SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(captureOption, sortParam);
         SearchHits searchHits = searchResponse.getHits();
         int totalCount = (int) searchHits.getTotalHits();
-        List<Pictures> picturesList = new ArrayList<>();
-            for (SearchHit hit : searchHits) {
-                Pictures pictures = new Pictures();
-                String sabsolutepath = (String) hit.getSource().get(PersonTable.SABSOLUTEPATH);
-                String babsolutepath = (String) hit.getSource().get(PersonTable.BABSOLUTEPATH);
-                String ipcid = (String) hit.getSource().get(PersonTable.IPCID);
-                String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
-                String hostname = (String) hit.getSource().get(PersonTable.HOSTNAME);
-                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
-                pictures.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
-                pictures.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
-                pictures.setDeviceId(ipcid);
-                pictures.setDeviceName(captureOption.getIpcMapping().get(ipcid).getDeviceName());
-                pictures.setTime(timestamp);
+        List <Pictures> picturesList = new ArrayList <>();
+        for (SearchHit hit : searchHits) {
+            Pictures pictures = new Pictures();
+            String sabsolutepath = (String) hit.getSource().get(PersonTable.SABSOLUTEPATH);
+            String babsolutepath = (String) hit.getSource().get(PersonTable.BABSOLUTEPATH);
+            String ipcid = (String) hit.getSource().get(PersonTable.IPCID);
+            String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
+            String hostname = (String) hit.getSource().get(PersonTable.HOSTNAME);
+            UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+            pictures.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+            pictures.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
+            pictures.setDeviceId(ipcid);
+            pictures.setDeviceName(captureOption.getIpcMapping().get(ipcid).getDeviceName());
+            pictures.setTime(timestamp);
 
-                List<PersonAttributes> personAttributes = getPersonAttributes(hit);
+            List <PersonAttributes> personAttributes = getPersonAttributes(hit);
 
-                pictures.setPersonAttributes(personAttributes);
-                picturesList.add(pictures);
-            }
+            pictures.setPersonAttributes(personAttributes);
+            picturesList.add(pictures);
+        }
         singleResults.setTotal(totalCount);
         singleResults.setPictures(picturesList);
         singleResults.setSearchId(UuidUtil.getUuid());
@@ -139,7 +139,7 @@ public class DynpersonHistoryService {
 //                    pictures.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
                     pictures.setSabsolutepath(sabsolutepath);
                     pictures.setBabsolutepath(babsolutepath);
-                    if (null!=captureOption.getIpcMapping().get(ipc)){
+                    if (null != captureOption.getIpcMapping().get(ipc)) {
                         pictures.setDeviceId(ipc);
                         pictures.setDeviceName(captureOption.getIpcMapping().get(ipc).getDeviceName());
                     }
@@ -169,7 +169,7 @@ public class DynpersonHistoryService {
         return singleResults;
     }
 
-    private String getLocation(String ipc){
+    private String getLocation(String ipc) {
         //查询相机位置
         ArrayList <String> list = new ArrayList <>();
         list.add(ipc);
@@ -177,6 +177,7 @@ public class DynpersonHistoryService {
         CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
         return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }
+
     private List <PersonAttributes> getPersonAttributes(SearchHit hit) {
         List <PersonAttributes> personAttributes = new ArrayList <>();
         PersonAttributes personAttribute = new PersonAttributes();
