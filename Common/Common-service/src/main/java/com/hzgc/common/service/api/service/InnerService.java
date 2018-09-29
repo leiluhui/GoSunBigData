@@ -5,7 +5,6 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.basic.StopWatch;
 import com.hzgc.jniface.PictureData;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
