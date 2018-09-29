@@ -89,22 +89,6 @@ public class ElasticSearchDao {
         return totalBQ;
     }
 
-    private void setTimeInterval(BoolQueryBuilder totalBQ, List<TimeInterval> timeIntervals) {
-        //临时存储对象
-        TimeInterval temp;
-        //时间段的BoolQueryBuilder
-        BoolQueryBuilder timeInQB = QueryBuilders.boolQuery();
-        for (TimeInterval timeInterval1 : timeIntervals) {
-            temp = timeInterval1;
-            int start_sj = temp.getStart();
-            String start_ts = String.valueOf(start_sj * 100 / 60 + start_sj % 60);
-            int end_sj = temp.getEnd();
-            String end_ts = String.valueOf(end_sj * 100 / 60 + end_sj % 60);
-            timeInQB.should(QueryBuilders.rangeQuery(FaceTable.TIMESTAMP).gte(start_ts).lte(end_ts));
-            totalBQ.must(timeInQB);
-        }
-    }
-
     private void setStartEndTime(BoolQueryBuilder totalBQ, String startTime, String endTime) {
         totalBQ.must(QueryBuilders.rangeQuery(FaceTable.TIMESTAMP).gte(startTime).lte(endTime));
     }
