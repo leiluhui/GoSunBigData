@@ -64,17 +64,17 @@ public class ImageToData {
             JSONObject jsonObject1 = JsonUtil.stringToJsonObject(jsondata);
             int code = (int) jsonObject1.get("Code");
             if (0 == code) {
-                List<JSONObject> imageResults = (List<JSONObject>) jsonObject1.get("ImageResults");
+                List <JSONObject> imageResults = (List <JSONObject>) jsonObject1.get("ImageResults");
                 ImageResult imageResult = new ImageResult();
                 if ("0".equals(tag)) {
-                    List<Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
                     imageResult.setVehicleList(vehicleList);
                 } else if ("1".equals(tag)) {
-                    List<Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
                     imageResult.setPersonList(personList);
                 } else {
-                    List<Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
-                    List<Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
                     imageResult.setVehicleList(vehicleList);
                     imageResult.setPersonList(personList);
                 }
@@ -89,11 +89,11 @@ public class ImageToData {
 
     //车辆数据封装
     @SuppressWarnings("unchecked")
-    private static List<Vehicle> getCarData(List<JSONObject> imageResults, String imagePath, byte[] bytess) {
-        ArrayList<Vehicle> vehicleList = new ArrayList<>();
+    private static List <Vehicle> getCarData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
+        ArrayList <Vehicle> vehicleList = new ArrayList <>();
         if (imageResults.size() > 0) {
             for (JSONObject js : imageResults) {
-                List<JSONObject> vehicles = (List<JSONObject>) js.get("Vehicles");
+                List <JSONObject> vehicles = (List <JSONObject>) js.get("Vehicles");
                 if (vehicles.size() > 0) {
                     for (JSONObject js1 : vehicles) {
                         Vehicle vehicle_object = new Vehicle();
@@ -151,7 +151,7 @@ public class ImageToData {
                         if (null != color) {
                             int code = (int) color.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) color.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) color.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setVehicle_color((String) jsonObject1.get("Code"));
                             }
@@ -160,7 +160,7 @@ public class ImageToData {
                         if (null != brand) {
                             int code = (int) brand.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) brand.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) brand.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setBrand_name((String) jsonObject1.get("Name"));
                             }
@@ -169,7 +169,7 @@ public class ImageToData {
                         if (null != sunroof) {
                             int code = (int) sunroof.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) sunroof.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) sunroof.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setSunroof_code((String) jsonObject1.get("Code"));
                             }
@@ -198,7 +198,7 @@ public class ImageToData {
                         if (null != mistake) {
                             int code = (int) mistake.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) mistake.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) mistake.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setMistake_code((String) jsonObject1.get("Code"));
                             }
@@ -207,7 +207,7 @@ public class ImageToData {
                         if (null != type) {
                             int code = (int) type.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) type.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) type.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setVehicle_type((String) jsonObject1.get("Code"));
                             }
@@ -216,7 +216,7 @@ public class ImageToData {
                         if (null != rack) {
                             int code = (int) rack.get("Code");
                             if (0 == code) {
-                                List<JSONObject> topList = (List<JSONObject>) rack.get("TopList");
+                                List <JSONObject> topList = (List <JSONObject>) rack.get("TopList");
                                 JSONObject jsonObject1 = topList.get(0);
                                 vehicle_object.setRack_code((String) jsonObject1.get("Code"));
                             }
@@ -282,12 +282,12 @@ public class ImageToData {
 
     //行人的数据封装
     @SuppressWarnings("unchecked")
-    private static List<Person> getPersonData(List<JSONObject> imageResults, String imagePath, byte[] bytess) {
-        ArrayList<Person> personList = new ArrayList<>();
+    private static List <Person> getPersonData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
+        ArrayList <Person> personList = new ArrayList <>();
         if (imageResults.size() > 0) {
             for (JSONObject jsonObject : imageResults) {
-                List<JSONObject> bikes = (List<JSONObject>) jsonObject.get("Bikes");
-                List<JSONObject> pedestrains = (List<JSONObject>) jsonObject.get("Pedestrains");
+                List <JSONObject> bikes = (List <JSONObject>) jsonObject.get("Bikes");
+                List <JSONObject> pedestrains = (List <JSONObject>) jsonObject.get("Pedestrains");
                 if (pedestrains.size() > 0) {
                     for (JSONObject js : pedestrains) {
                         Person person_object = new Person();
@@ -335,7 +335,7 @@ public class ImageToData {
                             JSONObject car_body = (JSONObject) car_detect.get("Body");
                             car_rect = (JSONArray) car_body.get("Rect");
                         }
-                        List<JSONObject> persons = (List<JSONObject>) js.get("Persons");
+                        List <JSONObject> persons = (List <JSONObject>) js.get("Persons");
                         if (persons.size() > 0) {
                             for (JSONObject person : persons) {
                                 JSONArray person_rect = null;
@@ -359,11 +359,7 @@ public class ImageToData {
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
-<<<<<<< HEAD
-                                    if (null != person_rect){
-=======
                                     if (null != person_rect) {
->>>>>>> 6b7470c514cfa7a76ee08f7c5a5a76171b8e8094
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
@@ -385,19 +381,11 @@ public class ImageToData {
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
-<<<<<<< HEAD
-                                    if (null != person_rect){
-                                        cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
-                                    }
-                                    try {
-                                        if (null != cutImageUtil){
-=======
                                     if (null != person_rect) {
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                     }
                                     try {
                                         if (null != cutImageUtil) {
->>>>>>> 6b7470c514cfa7a76ee08f7c5a5a76171b8e8094
                                             byte[] bytes = cutImageUtil.cut(bytess);
                                             person_object.setCar_data(bytes);
                                         }
@@ -421,7 +409,7 @@ public class ImageToData {
         if (null != shoulderBag) {
             int code = (int) shoulderBag.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) shoulderBag.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) shoulderBag.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setShoulderbag_code((String) jsonObject1.get("Code"));
             }
@@ -430,7 +418,7 @@ public class ImageToData {
         if (null != bottomType) {
             int code = (int) bottomType.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) bottomType.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) bottomType.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setBottomtype_code((String) jsonObject1.get("Code"));
             }
@@ -439,7 +427,7 @@ public class ImageToData {
         if (null != umbrella) {
             int code = (int) umbrella.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) umbrella.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) umbrella.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setUmbrella_code((String) jsonObject1.get("Code"));
             }
@@ -448,7 +436,7 @@ public class ImageToData {
         if (null != orientation) {
             int code = (int) orientation.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) orientation.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) orientation.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setOrientation_code((String) jsonObject1.get("Code"));
             }
@@ -457,7 +445,7 @@ public class ImageToData {
         if (null != messengerBag) {
             int code = (int) messengerBag.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) messengerBag.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) messengerBag.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setMessengerbag_code((String) jsonObject1.get("Code"));
             }
@@ -466,7 +454,7 @@ public class ImageToData {
         if (null != upperType) {
             int code = (int) upperType.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) upperType.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) upperType.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setUppertype_code((String) jsonObject1.get("Code"));
             }
@@ -475,7 +463,7 @@ public class ImageToData {
         if (null != age) {
             int code = (int) age.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) age.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) age.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setAge_code((String) jsonObject1.get("Code"));
             }
@@ -484,7 +472,7 @@ public class ImageToData {
         if (null != upperColor) {
             int code = (int) upperColor.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) upperColor.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) upperColor.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setUppercolor_code((String) jsonObject1.get("Code"));
             }
@@ -493,7 +481,7 @@ public class ImageToData {
         if (null != sex) {
             int code = (int) sex.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) sex.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) sex.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setSex_code((String) jsonObject1.get("Code"));
             }
@@ -502,7 +490,7 @@ public class ImageToData {
         if (null != hair) {
             int code = (int) hair.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) hair.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) hair.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setHair_code((String) jsonObject1.get("Code"));
             }
@@ -511,7 +499,7 @@ public class ImageToData {
         if (null != bag) {
             int code = (int) bag.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) bag.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) bag.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setBag_code((String) jsonObject1.get("Code"));
             }
@@ -520,7 +508,7 @@ public class ImageToData {
         if (null != knapsack) {
             int code = (int) knapsack.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) knapsack.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) knapsack.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setKnapsack_code((String) jsonObject1.get("Code"));
             }
@@ -529,7 +517,7 @@ public class ImageToData {
         if (null != baby) {
             int code = (int) baby.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) baby.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) baby.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setBaby_code((String) jsonObject1.get("Code"));
             }
@@ -538,7 +526,7 @@ public class ImageToData {
         if (null != hat) {
             int code = (int) hat.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) hat.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) hat.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setHat_code((String) jsonObject1.get("Code"));
             }
@@ -547,7 +535,7 @@ public class ImageToData {
         if (null != bottomColor) {
             int code = (int) bottomColor.get("Code");
             if (0 == code) {
-                List<JSONObject> topList = (List<JSONObject>) bottomColor.get("TopList");
+                List <JSONObject> topList = (List <JSONObject>) bottomColor.get("TopList");
                 JSONObject jsonObject1 = topList.get(0);
                 person_object.setBottomcolor_code((String) jsonObject1.get("Code"));
             }
