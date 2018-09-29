@@ -66,6 +66,26 @@
         </where>
         group by community
     </select>
+    <!--查询某小区某月迁出人员-->
+    <select id="searchCommunityOutPeople" resultMap="BaseResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleSearchDTO" >
+        select peopleid, isconfirm
+        from t_people_out
+        <where>
+            <if test="month != null" >
+                month = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="communityId != null" >
+                and community = #{communityId,jdbcType=BIGINT}
+            </if>
+            <if test="typeStatus == 1" >
+                and isconfirm in (2, 3)
+            </if>
+            <if test="typeStatus == 2" >
+                and isconfirm = 1
+            </if>
+        </where>
+    </select>
     <!--更新 isconfirm 值-->
     <update id="updateIsconfirm" parameterType="com.hzgc.service.community.param.AffirmOperationDTO">
         update t_people_out

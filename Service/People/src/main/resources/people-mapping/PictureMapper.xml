@@ -51,6 +51,11 @@
         from t_picture
         where id in (select id from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR})
     </select>
+    <!--根据peopleId获取照片id（一条）-->
+    <select id="getPictureIdByPeopleId" resultType="java.lang.Long" parameterType="java.lang.String">
+        select id from t_picture
+        where peopleid = #{peopleid,jdbcType=VARCHAR} limt 1
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_picture
         where id = #{id,jdbcType=BIGINT}

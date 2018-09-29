@@ -44,6 +44,12 @@
         where peopleid = #{peopleid,jdbcType=VARCHAR}
         order by capturetime desc
     </select>
+    <!--小区迁入人口抓拍详情:人员抓拍列表-->
+    <select id="getSurlByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
+        select surl from t_people_recognize
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+        and flag = 10
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_people_recognize
         where id = #{id,jdbcType=BIGINT}

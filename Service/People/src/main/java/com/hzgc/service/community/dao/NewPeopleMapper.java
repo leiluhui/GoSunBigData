@@ -4,6 +4,7 @@ import com.hzgc.service.community.model.CountCommunityPeople;
 import com.hzgc.service.community.model.NewPeople;
 import com.hzgc.service.community.param.AffirmOperationDTO;
 import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
+import com.hzgc.service.community.param.NewAndOutPeopleSearchDTO;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface NewPeopleMapper {
     List<CountCommunityPeople> countTotalNewPeople(NewAndOutPeopleCountDTO param);
 
     List<CountCommunityPeople> countConfirmNewPeople(NewAndOutPeopleCountDTO param);
+
+    List<NewPeople> searchCommunityNewPeople(NewAndOutPeopleSearchDTO param);
 
     Integer updateIsconfirm(AffirmOperationDTO param);
 }

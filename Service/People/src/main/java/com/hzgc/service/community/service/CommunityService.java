@@ -50,6 +50,10 @@ public class CommunityService {
     @SuppressWarnings("unused")
     private Count24HourMapper count24HourMapper;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    private PictureMapper pictureMapper;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public PeopleCountVO countCommunityPeople(Long communityId) {
@@ -162,6 +166,97 @@ public class CommunityService {
             voList.add(vo);
         }
        return voList;
+    }
+
+    public List<NewAndOutPeopleSearchVO> searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
+        List<NewAndOutPeopleSearchVO> voList = new ArrayList<>();
+        // 小区迁入人口查询（疑似与确认）
+        if (param.getType() == 0){
+            List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
+            if (list != null && list.size() > 0){
+                for (NewPeople people : list){
+                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    vo.setPeopleId(people.getPeopleid());
+                    vo.setCommunityId(param.getCommunityId());
+                    vo.setMonth(param.getMonth());
+                    vo.setType(param.getType());
+                    // 未确认迁入
+                    if (people.getIsconfirm() == 1){
+                        vo.setIsconfirm(2);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                            // 未确认迁入人口:预实名
+                            vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                            // 未确认迁入人口:新增
+                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                        }
+                    }
+                    // 已确认迁入
+                    if (people.getIsconfirm() == 2){
+                        vo.setIsconfirm(0);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                        }
+                        vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                    }
+                    // 已确认未迁入
+                    if (people.getIsconfirm() == 3){
+                        vo.setIsconfirm(1);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                            // 已确认未迁入人口:预实名
+                            vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                            // 已确认未迁入人口:新增
+                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                        }
+                    }
+                }
+            }
+        }
+        // 小区迁出人口查询（疑似与确认）
+        if (param.getType() == 1){
+            List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
+            if (list != null && list.size() > 0){
+                for (OutPeople people : list){
+                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    vo.setPeopleId(people.getPeopleid());
+                    vo.setCommunityId(param.getCommunityId());
+                    vo.setMonth(param.getMonth());
+                    vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                    vo.setType(param.getType());
+                    if (people.getIsconfirm() == 1){
+                        vo.setIsconfirm(5);
+                    }
+                    if (people.getIsconfirm() == 2){
+                        vo.setIsconfirm(3);
+                    }
+                    if (people.getIsconfirm() == 3){
+                        vo.setIsconfirm(4);
+                    }
+                    voList.add(vo);
+                }
+            }
+        }
+        return voList;
+    }
+
+    private Long getPictureIdByPeopleId(String peopleId){
+        return pictureMapper.getPictureIdByPeopleId(peopleId);
+    }
+
+    private String getSurlByPeopleId(String peopleId){
+        String sul = peopleRecognizeMapper.getSurlByPeopleId(peopleId);
+        // TODO sul 转换
+        return sul;
     }
 
     public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {

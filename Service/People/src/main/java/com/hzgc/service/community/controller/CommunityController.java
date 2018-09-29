@@ -175,8 +175,39 @@ public class CommunityController {
 
     @ApiOperation(value = "小区迁入迁出人口查询（实有人口展示）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.POST)
-    public ResponseResult<NewAndOutPeopleSearchVO> searchCommunitySuggestOut(@RequestBody NewAndOutPeopleSearchDTO param) {
-        return null;
+    public ResponseResult<List<NewAndOutPeopleSearchVO>> searchCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleSearchDTO param) {
+        if (param == null){
+            log.error("Start search community new and out people, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数不能为空,请检查！");
+        }
+        if (param.getCommunityId() == null){
+            log.error("Start search community new and out people, but region is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getMonth())){
+            log.error("Start search community new and out people, but month is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份不能为空,请检查！");
+        }
+        if (param.getMonth() == null || param.getMonth().length() != 6){
+            log.error("Start search community new and out people, but month error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份有误,请检查！");
+        }
+        if (param.getLimit() == 0) {
+            log.error("Start search community new and out people, but limit is 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        }
+        if (param.getType() != 0 && param.getType() != 1) {
+            log.error("Start search community new and out people, but type error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型有误,请检查！");
+        }
+        if (param.getTypeStatus() != 0 && param.getTypeStatus() != 1 && param.getTypeStatus() != 2) {
+            log.error("Start search community new and out people, but type status error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类别状态有误,请检查！");
+        }
+        log.info("Start search community new and out people, param is :"+ JacksonUtil.toJson(param));
+        List<NewAndOutPeopleSearchVO> voList = communityService.searchCommunityNewAndOutPeople(param);
+        log.info("Search community new and out people successfully!");
+        return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "小区迁入迁出人口信息查询", response = CommunityPeopleInfoVO.class)

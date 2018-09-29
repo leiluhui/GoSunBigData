@@ -22,4 +22,6 @@ public interface PeopleRecognizeMapper {
     PeopleRecognize searchCommunityOutPeopleLastCapture(String peopleid);
 
     List<PeopleRecognize> searchCommunityNewPeopleCaptureData(String peopleid);
+
+    String getSurlByPeopleId(String peopleid);
 }
