@@ -14,8 +14,8 @@ import org.springframework.util.ClassUtils;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@EnableEurekaClient
 @EnableSwagger2
+@EnableEurekaClient
 @EnableKafka
 public class FtpApplication {
     public static void main(String[] args) {

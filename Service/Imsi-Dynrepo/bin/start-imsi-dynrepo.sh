@@ -24,6 +24,9 @@ EUREKA_IP=172.18.18.40     ##注册中心的ip地址
 EUREKA_PORT=9000
 ES_HOST=172.18.18.105
 ZOOKEEPER_HOST=172.18.18.105:2181
+MYSQL_HOST=172.18.18.105:3306
+QUERY_TIME=30
+BOOTSTRAP_SERVERS=172.18.18.100:9092
 
 
 #---------------------------------------------------------------------#
@@ -46,7 +49,10 @@ function start_springCloud()
        nohup java -jar ${IMSI_DYNREPO_JAR} --spring.profiles.active=pro  \
        --eureka.ip=${EUREKA_IP} \
        --eureka.port=${EUREKA_PORT} \
-       --spring.cloud.config.enabled=false 2>&1 &
+       --spring.cloud.config.enabled=false \
+       --mysql.host=${MYSQL_HOST} \
+       --query.time=${QUERY_TIME} \
+       --bootstrap.servers=${BOOTSTRAP_SERVERS} 2>&1 &
    fi
 
 }

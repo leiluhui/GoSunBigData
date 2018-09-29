@@ -2,6 +2,8 @@ package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
@@ -37,36 +39,17 @@ public class CaptureHistoryService {
     private ElasticSearchDao elasticSearchDao;
     @Autowired
     @SuppressWarnings("unused")
-    private Environment environment;
-    @Autowired
-    @SuppressWarnings("unused")
     private CaptureServiceHelper captureServiceHelper;
+    @Autowired
+    private PlatformService platformService;
     @Value(value = "${ftp.port}")
     @SuppressWarnings("unused")
     private String ftpPort;
 
     public List<SingleCaptureResult> getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
-        List<SortParam> sortParams = option.getSort()
-                .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        for (SortParam s : sortParams) {
-            if (s.name().equals(SortParam.TIMEDESC.toString())) {
-                sortParam = EsSearchParam.DESC;
-            } else if (s.name().equals(SortParam.SIMDASC.toString())) {
-                sortParam = EsSearchParam.ASC;
-            }
-        }
-
-        if (sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query needs to be grouped by ipcid");
-            return getCaptureHistory(option, sortParam);
-        } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query don't needs to be grouped by ipcid");
-            return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
-        } else {
-            log.info("The current query is default");
-            return getDefaultCaptureHistory(option, sortParam);
-        }
+        log.info("The current query don't needs to be grouped by ipcid");
+        return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
     }
 
     private List<SingleCaptureResult> getDefaultCaptureHistory(CaptureOption option, String sortParam) {
@@ -166,6 +149,7 @@ public class CaptureHistoryService {
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
                 capturePicture.setDeviceId(ipc);
+                capturePicture.setLocation(getLocation("TEST000007"));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
@@ -178,5 +162,14 @@ public class CaptureHistoryService {
         singleResult.setDeviceName(option.getIpcMapping().get(option.getDeviceIpcs().get(0).getIpc()).getDeviceName());
         results.add(singleResult);
         return results;
+    }
+
+    private String getLocation(String ipc){
+        //查询相机位置
+        ArrayList <String> list = new ArrayList <>();
+        list.add(ipc);
+        Map <String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
+        CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
+        return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }
 }

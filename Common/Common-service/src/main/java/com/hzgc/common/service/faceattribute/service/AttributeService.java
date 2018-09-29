@@ -1,11 +1,9 @@
 package com.hzgc.common.service.faceattribute.service;
 
-import com.alibaba.fastjson.JSON;
 import com.hzgc.common.service.faceattribute.bean.Attribute;
 import com.hzgc.common.service.faceattribute.bean.AttributeValue;
 import com.hzgc.common.service.faceattribute.bean.Logistic;
 import com.hzgc.common.service.faceattribute.enumclass.*;
-import com.hzgc.seemmo.service.ImageToData;
 import com.hzgc.seemmo.service.ReadCarInfo;
 
 import javax.rmi.CORBA.Tie;

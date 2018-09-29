@@ -34,7 +34,7 @@ function stop_springCloud()
 {
     FACE_DYNREPO_PID=`jps | grep ${FACE_DYNREPO_JAR_NAME} | awk '{print $1}'`
     if [ -n "${FACE_DYNREPO_PID}" ];then
-        echo "dynrepo service is exist, exit with 0, kill service now"
+        echo "face-dynrepo service is exist, exit with 0, kill service now"
         kill -9 ${FACE_DYNREPO_PID}
         echo "stop service successfull"
     else

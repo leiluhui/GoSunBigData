@@ -1,7 +1,7 @@
 package com.hzgc.service.dyncar.dao;
 
-import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.common.service.facedynrepo.VehicleTable;
+import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.service.dyncar.bean.CaptureOption;
 import com.hzgc.service.dyncar.bean.VehicleAttribute;
 import lombok.extern.slf4j.Slf4j;
@@ -124,7 +124,7 @@ public class ElasticSearchDao {
             totalBQ.must(boolQueryBuilder);
         }
         //车标分词搜索
-        if (null != brand && pLicence.length() > 0) {
+        if (null != brand && brand.length() > 0) {
             BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
             boolQueryBuilder.should(QueryBuilders.matchQuery(VehicleTable.BRAND_NAME, brand).analyzer(VehicleTable.IK_SMART));
             totalBQ.must(boolQueryBuilder);

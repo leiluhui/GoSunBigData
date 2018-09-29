@@ -1,4 +1,4 @@
-package com.hzgc.service.imsi.model;
+package com.hzgc.common.service.imsi;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class ImsiInfo implements Serializable {
+    private static final long serialVersionUID = 7927252429337935830L;
     //基站序列号
     private String sn;
     //手机IMSI码

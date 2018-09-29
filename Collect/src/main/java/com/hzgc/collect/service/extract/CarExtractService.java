@@ -7,9 +7,7 @@ import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
 package com.hzgc.service.dynperson.dao;
 
-import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.common.service.facedynrepo.PersonTable;
 import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.bean.PersonAttributeValue;
+import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.service.dynperson.bean.CaptureOption;
 import com.hzgc.service.dynperson.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
@@ -36,31 +36,31 @@ public class ElasticSearchDao {
                 .setQuery(queryBuilder)
                 .setFrom(captureOption.getStart())
                 .setSize(captureOption.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
+                .addSort(PersonTable.TIMESTAMP,
                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
 
-    public SearchResponse getCaptureHistory(CaptureOption captureOption, List<String> deviceIpcs, String sortParam) {
+    public SearchResponse getCaptureHistory(CaptureOption captureOption, List <String> deviceIpcs, String sortParam) {
         BoolQueryBuilder queryBuilder = createBoolQueryBuilder(captureOption);
-        setDeviceIdList(queryBuilder,deviceIpcs);
+        setDeviceIdList(queryBuilder, deviceIpcs);
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(queryBuilder)
                 .setFrom(captureOption.getStart())
                 .setSize(captureOption.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
-                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+                .addSort(PersonTable.TIMESTAMP,
+                        Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
 
     public SearchResponse getCaptureHistory(CaptureOption option, String ipc, String sortParam) {
         BoolQueryBuilder queryBuilder = createBoolQueryBuilder(option);
-        BoolQueryBuilder boolQueryBuilder=setDeviceId(queryBuilder, ipc);
+        BoolQueryBuilder boolQueryBuilder = setDeviceId(queryBuilder, ipc);
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(boolQueryBuilder)
                 .setFrom(option.getStart())
                 .setSize(option.getLimit())
-                .addSort( PersonTable.TIMESTAMP,
+                .addSort(PersonTable.TIMESTAMP,
                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
         return requestBuilder.get();
     }
@@ -86,11 +86,11 @@ public class ElasticSearchDao {
         }
 
         BoolQueryBuilder devicebuilder = QueryBuilders.boolQuery();
-        if (option.getDevices().size() > 0){
+        if (option.getDevices().size() > 0) {
 
-        for (String deviceIpc: DeviceToIpcs.getIpcs(option.getDevices())){
-            devicebuilder.should(QueryBuilders.matchPhraseQuery(PersonTable.IPCID,deviceIpc));
-        }
+            for (String deviceIpc : DeviceToIpcs.getIpcs(option.getDevices())) {
+                devicebuilder.should(QueryBuilders.matchPhraseQuery(PersonTable.IPCID, deviceIpc));
+            }
 
         }
         totalBQ.must(devicebuilder);
@@ -101,7 +101,7 @@ public class ElasticSearchDao {
         totalBQ.must(QueryBuilders.rangeQuery(PersonTable.TIMESTAMP).gte(startTime).lte(endTime));
     }
 
-    private void setDeviceIdList(BoolQueryBuilder totalBQ, List<String> deviceId) {
+    private void setDeviceIdList(BoolQueryBuilder totalBQ, List <String> deviceId) {
         // 设备ID 的的boolQueryBuilder
         BoolQueryBuilder devicdIdBQ = QueryBuilders.boolQuery();
         for (String id : deviceId) {
@@ -117,19 +117,16 @@ public class ElasticSearchDao {
         return deviceIdBQ;
     }
 
-    private BoolQueryBuilder setAttribute(BoolQueryBuilder totalBQ, List<PersonAttribute> attributes) {
+    private BoolQueryBuilder setAttribute(BoolQueryBuilder totalBQ, List <PersonAttribute> attributes) {
         // 筛选行人属性
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         for (PersonAttribute attribute : attributes) {
             String identify = attribute.getIdentify().toLowerCase();
-            List<PersonAttributeValue> attributeValues = attribute.getValues();
-            String logic = String.valueOf(attribute.getPersonLogistic());
+            List <PersonAttributeValue> attributeValues = attribute.getValues();
             BoolQueryBuilder attributeBuilder = QueryBuilders.boolQuery();
             for (PersonAttributeValue attributeValue : attributeValues) {
                 String attr = String.valueOf(attributeValue.getCode());
-                if (!attr.equals("0")) {
-                    attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
-                }
+                attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
             }
             boolQueryBuilder.must(attributeBuilder);
         }

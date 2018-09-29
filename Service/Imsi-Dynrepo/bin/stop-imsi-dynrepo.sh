@@ -38,7 +38,7 @@ function stop_springCloud()
         kill -9 ${IMSI_DYNREPO_PID}
         echo "stop service successfull"
     else
-        echo "dyncar service is not start"
+        echo "imsiDynrepo service is not start"
     fi 
 }
 

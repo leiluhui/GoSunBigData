@@ -12,6 +12,8 @@ public class SingleResults implements Serializable {
 
         private int total;
 
+        private Integer deviceTotal;
+
         private List<DevicePictures> devicePicturesList;
 
         private List<Pictures> pictures;

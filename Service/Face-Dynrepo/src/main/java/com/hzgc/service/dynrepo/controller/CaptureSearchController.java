@@ -188,12 +188,6 @@ public class CaptureSearchController {
         }
         Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
         captureOption.setIpcMapping(ipcMapping);
-        if (captureOption.getDeviceIpcs() == null ||
-                captureOption.getDeviceIpcs().size() <= 0 ||
-                captureOption.getDeviceIpcs().get(0) == null) {
-            log.error("Start query capture history, deviceIpcs option is error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-        }
         log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
         List<SingleCaptureResult> searchResultList =
                 captureHistoryService.getCaptureHistory(captureOption);

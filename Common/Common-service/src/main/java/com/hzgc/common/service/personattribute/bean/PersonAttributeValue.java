@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class PersonAttributeValue implements Serializable {
     private  String desc;
-    private  Integer code;
+    private  String code;
 
     public String getDesc() {
         return desc;
@@ -14,11 +14,11 @@ public class PersonAttributeValue implements Serializable {
         this.desc = desc;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 }
