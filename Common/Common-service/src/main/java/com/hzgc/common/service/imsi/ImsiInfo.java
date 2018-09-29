@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 @Data
 public class ImsiInfo implements Serializable {
-    private static final long serialVersionUID = 7927252429337935830L;
-    //基站序列号
-    private String sn;
+    //设备id
+    private String controlsn;
+    //基站
+    private String sourcesn;
     //手机IMSI码
     private String imsi;
     //小区ID

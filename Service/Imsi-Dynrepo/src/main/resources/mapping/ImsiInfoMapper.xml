@@ -2,9 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hzgc.service.imsi.dao.ImsiInfoMapper">
   <resultMap id="BaseResultMap" type="com.hzgc.service.imsi.model.ImsiInfo">
-    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="controlsn" jdbcType="VARCHAR" property="controlsn" />
+    <result column="sourcesn" jdbcType="VARCHAR" property="sourcesn" />
     <result column="imsi" jdbcType="VARCHAR" property="imsi" />
-    <result column="cellId" jdbcType="VARCHAR" property="cellid" />
+    <result column="cellid" jdbcType="VARCHAR" property="cellid" />
     <result column="lac" jdbcType="VARCHAR" property="lac" />
     <result column="mscid" jdbcType="VARCHAR" property="mscid" />
     <result column="imei" jdbcType="VARCHAR" property="imei" />
@@ -15,7 +16,7 @@
     <result column="savetime" jdbcType="BIGINT" property="savetime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, sn, imsi, cellId, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
+    id, sn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -35,7 +36,7 @@
   </delete>
   <insert id="insert" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
     insert into t_imsi (sn, imsi,
-      cellId, lac, mscid, 
+      cellid, lac, mscid,
       imei, freq, biscorpci, 
       attach, standard, time
       )
@@ -48,8 +49,11 @@
   <insert id="insertSelective" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
     insert into t_imsi_all
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="sn != null">
-        sn,
+      <if test="controlsn != null">
+        controlsn,
+      </if>
+      <if test="sourcesn != null">
+        sourcesn,
       </if>
       <if test="imsi != null">
         imsi,
@@ -84,7 +88,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="sn != null">
-        #{sn,jdbcType=VARCHAR},
+        #{controlsn,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sourcesn,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null">
         #{imsi,jdbcType=VARCHAR},
