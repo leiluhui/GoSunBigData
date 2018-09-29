@@ -102,7 +102,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "行人的特征值提取", response = ResponseResult.class)
+    @ApiOperation(value = "行人属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
     public ResponseResult<PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
@@ -132,7 +132,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "获取车辆属性", response = ResponseResult.class)
+    @ApiOperation(value = "车辆属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
     public ResponseResult<CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;

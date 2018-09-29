@@ -1,4 +1,4 @@
-package com.hzgc.service.collect.config;
+package com.hzgc.collect.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("大数据FTP地址绑定服务接口文档")
+                .title("大数据采集服务及人、车、脸属性相关服务接口文档")
                 .version(getApplicationVersion())
                 .build();
     }
