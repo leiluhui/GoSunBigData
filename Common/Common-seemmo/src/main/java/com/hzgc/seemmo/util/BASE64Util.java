@@ -27,4 +27,8 @@ public class BASE64Util {
     public static String getImageStr(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
+
+    public static byte[] base64Str2BinArry(String base64Str) {
+        return Base64.getDecoder().decode(base64Str);
+    }
 }

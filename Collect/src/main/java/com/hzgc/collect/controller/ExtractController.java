@@ -5,22 +5,23 @@ import com.hzgc.collect.service.extract.FaceExtractService;
 import com.hzgc.collect.service.extract.PersonExtractService;
 import com.hzgc.common.service.carattribute.bean.CarAttribute;
 import com.hzgc.common.service.carattribute.service.CarAttributeService;
+import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.faceattribute.bean.Attribute;
 import com.hzgc.common.service.faceattribute.service.AttributeService;
 import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.service.PersonAttributeService;
-import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.jniface.CarPictureData;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.jniface.PictureData;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -102,7 +103,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "行人的特征值提取", response = ResponseResult.class)
+    @ApiOperation(value = "行人属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
     public ResponseResult<PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
@@ -132,7 +133,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "获取车辆属性", response = ResponseResult.class)
+    @ApiOperation(value = "车辆属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
     public ResponseResult<CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
@@ -160,5 +161,12 @@ public class ExtractController {
             log.error("AttributeList is null");
             return ResponseResult.error(RestErrorCode.RECORD_NOT_EXIST);
         }
+    }
+
+    @ApiIgnore(value = "内部调用的人脸提特征接口,入参为图片的Base64字符串")
+    @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BASE64, method = RequestMethod.POST)
+    public ResponseEntity<PictureData> faceFeatureExtract_base64(@RequestBody String baseStr) {
+        PictureData pictureData = faceExtractService.featureExtractByImage(baseStr);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
     }
 }

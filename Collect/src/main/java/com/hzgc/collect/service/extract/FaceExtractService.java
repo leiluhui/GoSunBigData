@@ -2,10 +2,8 @@ package com.hzgc.collect.service.extract;
 
 import com.alibaba.fastjson.JSON;
 import com.hzgc.common.util.basic.UuidUtil;
-import com.hzgc.jniface.FaceAttribute;
-import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.PictureData;
-import com.hzgc.jniface.PictureFormat;
+import com.hzgc.jniface.*;
+import com.hzgc.seemmo.util.BASE64Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +37,9 @@ public class FaceExtractService {
             log.info("Face extract failed, image not contains feature");
             return null;
         }
+    }
+    public PictureData featureExtractByImage(String base64Str) {
+        byte[]  imageBin = BASE64Util.base64Str2BinArry(base64Str);
+        return featureExtractByImage(imageBin);
     }
 }

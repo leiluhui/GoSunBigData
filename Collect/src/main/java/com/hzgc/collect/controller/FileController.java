@@ -1,10 +1,14 @@
 package com.hzgc.collect.controller;
 
 import com.hzgc.collect.service.http.HttpFile;
+import com.hzgc.common.service.api.service.InnerService;
+import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.jniface.PictureData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

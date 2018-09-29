@@ -23,7 +23,11 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
+<<<<<<< HEAD
                 .title("大数据FTP服务接口文档")
+=======
+                .title("大数据采集服务及人、车、脸属性相关服务接口文档")
+>>>>>>> 6b7470c514cfa7a76ee08f7c5a5a76171b8e8094
                 .version(getApplicationVersion())
                 .build();
     }
