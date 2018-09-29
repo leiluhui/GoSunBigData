@@ -18,7 +18,7 @@ class ParseByOption {
 
     private static Logger LOG = Logger.getLogger(ParseByOption.class);
 
-    private static String MID_FIELD = null;
+    private static String MID_FIELD;
 
     static {
         MID_FIELD = FaceTable.IPCID +

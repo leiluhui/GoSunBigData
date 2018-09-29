@@ -105,7 +105,6 @@ public class FaceUtil {
      * @param feature 传入float[]类型的特征值
      * @return 输出指定编码为UTF-8的String
      */
-    @Deprecated
     public static String floatArray2string(float[] feature) {
         if (feature != null && feature.length == 512) {
             StringBuilder sb = new StringBuilder();

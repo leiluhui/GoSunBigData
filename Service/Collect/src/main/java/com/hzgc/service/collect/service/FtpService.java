@@ -3,11 +3,13 @@ package com.hzgc.service.collect.service;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
+import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.service.collect.dao.FtpDeviceInfoMapper;
 import com.hzgc.service.collect.dao.FtpInfoMapper;
 import com.hzgc.service.collect.model.FtpDeviceInfo;
 import com.hzgc.service.collect.model.FtpInfo;
-import com.hzgc.service.collect.util.FtpUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class FtpService implements Serializable {
     @Autowired
     private FtpRegisterClient register;
@@ -26,27 +29,19 @@ public class FtpService implements Serializable {
     private FtpSubscribeClient subscribe;
 
     @Autowired
-    private FtpService ftpService;
-
-    @Autowired
     private FtpInfoMapper ftpInfoMapper;
 
     @Autowired
     private FtpDeviceInfoMapper ftpDeviceInfoMapper;
-
-    public byte[] getPhotoByFtpUrl(String ftpUrl) {
-        // FTP匿名账号Anonymous和密码
-        return FtpUtils.downloadftpFile2Bytes(ftpUrl, "anonymous", null);
-    }
 
     /**
      * 获取Ftp相关配置参数
      *
      * @return ftp相关配置参数
      */
-    public Map <String, String> getProperties(String ftpType, String deviceId) {
-        Map <String, String> map = new HashMap <>();
-        List <FtpRegisterInfo> list = null;
+    public Map<String, String> getProperties(String ftpType, String deviceId) {
+        Map<String, String> map = new HashMap<>();
+        List<FtpRegisterInfo> list = null;
         if ("face".equals(ftpType)) {
             list = register.getFaceFtpRegisterInfoList();
         }
@@ -58,7 +53,7 @@ public class FtpService implements Serializable {
         }
         //分配绑定次数最小的返回
         if (list != null && list.size() > 0) {
-            List <FtpInfo> ftps = ftpInfoMapper.selectByCountAsc();
+            List<FtpInfo> ftps = ftpInfoMapper.selectByCountAsc();
             for (FtpRegisterInfo registerInfo : list) {
                 String ftpIPAddress = registerInfo.getFtpIPAddress();
                 if (ftps.size() > 0) {
@@ -84,20 +79,28 @@ public class FtpService implements Serializable {
         return map;
     }
 
-    /**
-     * 通过主机名获取FTP的IP地址
-     *
-     * @param hostname 主机名
-     * @return IP地址
-     */
-    public String getIPAddress(String hostname) {
-        if (!StringUtils.isBlank(hostname)) {
-            return register.getFtpIpMapping().get(hostname);
-        }
+    private String getIPAddress(String hostname) {
+            String ip =  register.getFtpIpMapping().get(hostname);
+            if (ip != null) {
+                return ip;
+            } else {
+                log.warn("HostName:{} is no found", hostname);
+            }
         return null;
     }
 
-    public boolean openFtpSubscription(String sessionId, List <String> ipcIdList) {
+    public Map<String, UrlInfo> hostName2IpBatch(List<String> hostNameList) {
+        Map<String, UrlInfo> result = new HashMap<>();
+        for (String  hostName: hostNameList) {
+            UrlInfo urlInfo = new UrlInfo();
+            urlInfo.setHostname(hostName);
+            urlInfo.setHttp_ip(getIPAddress(hostName));
+            result.put(hostName, urlInfo);
+        }
+        return result;
+    }
+
+    public boolean openFtpSubscription(String sessionId, List<String> ipcIdList) {
         if (!sessionId.equals("") && !ipcIdList.isEmpty()) {
             subscribe.updateSessionPath(sessionId, ipcIdList);
             return true;
@@ -111,6 +114,21 @@ public class FtpService implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public UrlInfo http_hostName2Ip(String hostNameUrl) {
+        String ipUlr = CollectUrlUtil.httpHostNameToIp(hostNameUrl, register.getFtpIpMapping());
+        UrlInfo urlInfo = new UrlInfo();
+        urlInfo.setHttp_ip(ipUlr);
+        urlInfo.setHttp_hostname(hostNameUrl);
+        return urlInfo;
+    }
+
+    public UrlInfo hostName2Ip(String hostName) {
+        UrlInfo urlInfo = new UrlInfo();
+        urlInfo.setHostname(hostName);
+        urlInfo.setIp(getIPAddress(hostName));
+        return urlInfo;
     }
 }
 

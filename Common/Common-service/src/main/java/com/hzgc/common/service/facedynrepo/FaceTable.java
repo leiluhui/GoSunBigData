@@ -13,7 +13,7 @@ public class FaceTable implements Serializable {
     //小图片的ftp地址 xxx/xxx/xxx/
     public static final String SFTPURL = "sftpurl";
     //大图片的ftp地址 xxx/xxx/xxx/
-    public static final String BFTPURL = "sftpurl";
+    public static final String BFTPURL = "bftpurl";
     //设备id
     public static final String IPCID = "ipcid";
     //主机名称hostname

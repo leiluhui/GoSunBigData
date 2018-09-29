@@ -1,15 +1,15 @@
 package com.hzgc.service.dynrepo.service;
 
-import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.UrlInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
 import com.hzgc.service.dynrepo.bean.CapturedPicture;
 import com.hzgc.service.dynrepo.bean.SingleCaptureResult;
-import com.hzgc.service.dynrepo.bean.SortParam;
 import com.hzgc.service.dynrepo.dao.ElasticSearchDao;
 import com.hzgc.service.dynrepo.dao.EsSearchParam;
 import com.hzgc.service.dynrepo.util.DeviceToIpcs;
@@ -18,22 +18,15 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class CaptureHistoryService {
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private FtpRegisterClient ftpRegisterClient;
     @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;
@@ -42,9 +35,8 @@ public class CaptureHistoryService {
     private CaptureServiceHelper captureServiceHelper;
     @Autowired
     private PlatformService platformService;
-    @Value(value = "${ftp.port}")
-    @SuppressWarnings("unused")
-    private String ftpPort;
+    @Autowired
+    private InnerService innerService;
 
     public List<SingleCaptureResult> getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
@@ -69,10 +61,9 @@ public class CaptureHistoryService {
                 String ipcid = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(ftpIpMapping.get(hostname));
-                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipcid);
                 capturePicture.setTimeStamp(timestamp);
                 persons.add(capturePicture);
@@ -102,11 +93,11 @@ public class CaptureHistoryService {
                     String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                     String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                     String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                    Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                    String ip = ftpIpMapping.get(hostname);
-                    capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
-                    capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
+                    UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                    capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                    capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                     capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getIpc());
+                    capturePicture.setLocation(getLocation(ipc));
                     capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimeStamp(timestamp);
                     if (ipcId.equals(ipc)) {
@@ -144,12 +135,11 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(hostname);
-                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip,ftpPort,babsolutepath));
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipc);
-                capturePicture.setLocation(getLocation("TEST000007"));
+                capturePicture.setLocation(getLocation(ipc));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
@@ -164,11 +154,11 @@ public class CaptureHistoryService {
         return results;
     }
 
-    private String getLocation(String ipc){
+    private String getLocation(String ipc) {
         //查询相机位置
-        ArrayList <String> list = new ArrayList <>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(ipc);
-        Map <String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
+        Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
         CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
         return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }
