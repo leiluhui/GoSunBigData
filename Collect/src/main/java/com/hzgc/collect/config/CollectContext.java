@@ -3,7 +3,6 @@ package com.hzgc.collect.config;
 import com.hzgc.collect.service.ftp.ftplet.FtpHomeDir;
 import com.hzgc.collect.service.ftp.util.BaseProperties;
 import com.hzgc.collect.service.parser.FtpPathBootStrap;
-import com.hzgc.collect.service.processer.KafkaProducer;
 import com.hzgc.collect.service.processer.RocketMQProducer;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +22,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 @Component
 @Data
@@ -62,10 +61,6 @@ public class CollectContext implements Serializable {
     @Value("${ftp.subscribe.switch}")
     @NotNull
     private Boolean ftpSubscribeSwitch;
-
-    @Value("${kafka.bootstrap.servers}")
-    @NotNull
-    private String kafkaBootStrap;
 
     @Value("${kafka.faceobject.topic}")
     @NotNull
@@ -141,9 +136,11 @@ public class CollectContext implements Serializable {
     @Autowired
     private FtpHomeDir ftpHomeDir;
 
-    private List<String> ftpTypeList;
+    @Autowired
+    //Spring-kafka-templage
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    private KafkaProducer kafkaProducer;
+    private List<String> ftpTypeList;
 
     private RocketMQProducer rocketMQProducer;
 
@@ -166,7 +163,6 @@ public class CollectContext implements Serializable {
         }
         initFtpPathBoostrap();
         initFtpHomeDirCheck();
-        initKafkaProducer();
         initRocketMqProducer();
         initFtpRegisterClient();
         initFtpSubscribeClient();
@@ -191,10 +187,6 @@ public class CollectContext implements Serializable {
         ftpHomeDir.periodicallyCheckCurrentRootDir();
     }
 
-    private void initKafkaProducer() {
-        kafkaProducer = new KafkaProducer(getKafkaProducerProperties());
-    }
-
     private void initRocketMqProducer() {
         rocketMQProducer = new RocketMQProducer(rokcetmqCaptureGroup, rocketmqAddress);
     }
@@ -208,16 +200,6 @@ public class CollectContext implements Serializable {
         ftpTypeList = Arrays.asList(ftpType.split(","));
         ftpRegisterClient.createNode(new FtpRegisterInfo(null, null, ftpPathRule,
                 ftpAccount, ftpPassword, ftpIp, hostname, ftpPort + "", ftpType));
-    }
-
-    private Properties getKafkaProducerProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", kafkaBootStrap);
-        properties.setProperty("request.required.acks", "-1");
-        properties.setProperty("retries", "0");
-        properties.setProperty("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        properties.setProperty("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        return properties;
     }
 
     public BaseProperties getUserMangerProperties() {

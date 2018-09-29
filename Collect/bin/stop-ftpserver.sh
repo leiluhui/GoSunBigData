@@ -62,7 +62,7 @@ function stop_springCloud()
 #####################################################################
 function main()
 {
-    stop_springCloud
+    stop_springCloud $1
 }
 
-main
+main $1

@@ -99,6 +99,7 @@ function ftp_protect()
 #####################################################################
 function main()
 {
+    `source /etc/profile`
     `systemctl restart crond`
     drop_caches
     ftp_protect

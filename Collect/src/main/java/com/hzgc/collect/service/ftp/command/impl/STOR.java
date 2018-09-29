@@ -19,12 +19,11 @@ import java.net.SocketException;
 
 public class STOR extends AbstractCommand {
     private final Logger LOG = LoggerFactory.getLogger(STOR.class);
-    private Parser parser = null;
 
     public void execute(final FtpIoSession session,
                         final FtpServerContext context, final FtpRequest request)
             throws IOException, FtpException {
-
+        Parser parser = null;
         try {
 
             // get state variable
@@ -105,14 +104,14 @@ public class STOR extends AbstractCommand {
                 fileName = file.getAbsolutePath();
                 parser = context.getCollectContext().getFtpPathBootStrap().getParser(fileName);
                 if (parser == null) {
-                    LOG.warn("No parser for this fileName [" + fileName + "]");
-                    if (fileName.equals("/DVRWorkDirectory")) {
+                    LOG.warn("No parser for this fileName {" + file.getFileAbsolutePa() + "}");
+                    if (fileName.contains("DVRWorkDirectory")) {
                         outStream = file.createOutputStream(skipLen);
                     } else {
                         outStream = new ByteArrayOutputStream();
                     }
                 } else {
-                    LOG.info("Get parser for this fileName [" + fileName + "]");
+                    LOG.info("Get parser for this fileName {" + fileName + "}");
                     outStream = file.createOutputStream(skipLen);
                 }
                 transSz = dataConnection.transferFromClient(session.getFtpletSession(), outStream);
