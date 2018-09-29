@@ -355,6 +355,7 @@ public class CommunityService {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
+                // TODO url 转换
                 vo.setFtpUrl(people.getBurl());
                 voList.add(vo);
             }
