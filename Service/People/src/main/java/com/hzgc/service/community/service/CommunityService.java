@@ -452,7 +452,9 @@ public class CommunityService {
             int year_start = cal.get(Calendar.YEAR);
             int month_start = cal.get(Calendar.MONTH) + 1;
             int date_start = cal.get(Calendar.DATE);
-            String startDate = year_start + "-" + month_start + "-" + (date_start >= 10 ? date_start : "0" + date_start);
+            String startDate = year_start + "-"
+                    + (month_start >= 10 ? month_start : "0" + month_start) + "-"
+                    + (date_start >= 10 ? date_start : "0" + date_start);
             List<String> dateList = new ArrayList<>();
             dateList.add(startDate);
             try {
