@@ -1,5 +1,6 @@
 package com.hzgc.service.dynperson;
 
+import com.hzgc.common.service.api.config.EnableInnerService;
 import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnablePlatformService
 @EnableHystrix
 @EnableSwagger2
+@EnableInnerService
 public class DynpersonApplication {
     public static void main(String[] args) {
         SpringApplication.run(DynpersonApplication.class,args);
