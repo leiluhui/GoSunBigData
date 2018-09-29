@@ -5,6 +5,7 @@ import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.basic.StopWatch;
 import com.hzgc.jniface.PictureData;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -26,17 +27,11 @@ public class InnerService {
         if (httpHostName != null && !"".equals(httpHostName)) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            ParameterizedTypeReference<UrlInfo>
-                    parameterizedTypeReference = new ParameterizedTypeReference<UrlInfo>() {
-            };
-            ResponseEntity<UrlInfo> result = restTemplate.exchange(
-                    "http://collect" + BigDataPath.HTTP_HOSTNAME_TO_IP,
-                    HttpMethod.GET,
-                    new HttpEntity<>(httpHostName),
-                    parameterizedTypeReference);
+            UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HTTP_HOSTNAME_TO_IP +
+                    "?hostName=" + httpHostName, UrlInfo.class);
             stopWatch.stop();
             log.info("Method httpHostNameToIp, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
-            return result.getBody();
+            return urlInfo;
         } else {
             log.error("Method httpHostNameToIp, httpUrlList is null or size is 0");
             return new UrlInfo();
@@ -47,42 +42,28 @@ public class InnerService {
         if (hostName != null && !"".equals(hostName)) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            ParameterizedTypeReference<UrlInfo>
-                    parameterizedTypeReference = new ParameterizedTypeReference<UrlInfo>() {
-            };
-            ResponseEntity<UrlInfo> result = restTemplate.exchange(
-                    "http://collect" + BigDataPath.HOSTNAME_TO_IP,
-                    HttpMethod.GET,
-                    new HttpEntity<>(hostName),
-                    parameterizedTypeReference);
+            UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP +
+                    "?hostname=" + hostName, UrlInfo.class);
             stopWatch.stop();
             log.info("Method hostName2Ip, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
-            return result.getBody();
+            return urlInfo;
         } else {
             log.error("Method hostName2Ip, httpUrlList is null or size is 0");
             return new UrlInfo();
         }
     }
 
-    public Map<String, UrlInfo> hostName2IpBatch(List<String> hostNameList) {
+    public Map <String, UrlInfo> hostName2IpBatch(List <String> hostNameList) {
         if (hostNameList != null && hostNameList.size() > 0) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            ParameterizedTypeReference<Map<String, UrlInfo>>
-                    parameterizedTypeReference = new ParameterizedTypeReference<Map<String, UrlInfo>>() {
-            };
-            ResponseEntity<Map<String, UrlInfo>> result = restTemplate.exchange(
-                    "http://collect" + BigDataPath.HOSTNAME_TO_IP,
-                    HttpMethod.POST,
-                    new HttpEntity<>(hostNameList),
-                    parameterizedTypeReference
-            );
+            Map <String, UrlInfo> result = restTemplate.postForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP, hostNameList, Map.class);
             stopWatch.stop();
             log.info("Method hostName2IpBatch, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
-            return result.getBody();
+            return result;
         } else {
             log.error("Method hostName2IpBatch, httpUrlList is null or size is 0");
-            return new HashMap<>();
+            return new HashMap <>();
         }
     }
 
@@ -90,12 +71,12 @@ public class InnerService {
         if (base64Str != null && !"".equals(base64Str)) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            ParameterizedTypeReference<PictureData> parameterizedTypeReference =
-                    new ParameterizedTypeReference<PictureData>() {
+            ParameterizedTypeReference <PictureData> parameterizedTypeReference =
+                    new ParameterizedTypeReference <PictureData>() {
                     };
-            ResponseEntity<PictureData> data = restTemplate.exchange("http://collect-ftp" +
+            ResponseEntity <PictureData> data = restTemplate.exchange("http://collect-ftp" +
                             BigDataPath.FEATURE_EXTRACT_BASE64, HttpMethod.POST,
-                    new HttpEntity<>(base64Str), parameterizedTypeReference);
+                    new HttpEntity <>(base64Str), parameterizedTypeReference);
             stopWatch.stop();
             log.info("Method faceFeatureExtract, request seccessull, total time is:{}", stopWatch.getTotalTimeMillis());
             return data.getBody();

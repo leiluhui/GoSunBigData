@@ -1,8 +1,9 @@
 package com.hzgc.service.dyncar.service;
 
-import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.UrlInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.VehicleTable;
 import com.hzgc.common.util.basic.UuidUtil;
@@ -17,8 +18,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,14 +29,12 @@ import java.util.Map;
 public class CaptureHistoryService {
 
     @Autowired
-    private FtpRegisterClient ftpRegisterClient;
-    @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;
     @Autowired
     private PlatformService platformService;
-    @Value("${ftp.port}")
-    private String ftpPort;
+    @Autowired
+    private InnerService innerService;
 
     public SearchResult getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
@@ -153,16 +150,12 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-//                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-//                String ip = ftpIpMapping.get(hostname);
-                String ip = "172.18.18.202";
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, sabsolutepath));
-                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(ip, ftpPort, babsolutepath));
-//                capturePicture.setSabsolutepath(sabsolutepath);
-//                capturePicture.setBabsolutepath(babsolutepath);
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimestamp(timestamp);
                 capturePicture.setDeviceId(ipc);

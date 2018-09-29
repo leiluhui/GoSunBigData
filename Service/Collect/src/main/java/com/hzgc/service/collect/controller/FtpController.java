@@ -14,10 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashMap;
@@ -77,9 +74,9 @@ public class FtpController {
         }
     }
 
-    @ApiIgnore(value = "内部服务:批量hostname转ip")
+    @ApiIgnore(value = "内部服务:hostname转ip")
     @RequestMapping(value = BigDataPath.HOSTNAME_TO_IP, method = RequestMethod.GET)
-    public ResponseEntity<UrlInfo> hostName2Ip(@RequestBody String hostName) {
+    public ResponseEntity<UrlInfo> hostName2Ip(@RequestParam(value = "hostname") String hostName) {
         if (hostName != null && !"".equals(hostName)) {
             UrlInfo urlInfo = ftpService.hostName2Ip(hostName);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(urlInfo);
