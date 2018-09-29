@@ -45,7 +45,7 @@ sh scala_local.sh
 sh azkaban_local.sh
 
 ## 安装 phoenix
-sh phoenix_local.sh
+#sh phoenix_local.sh
 
 ## 安装 kibana
 sh kinbana_local.sh

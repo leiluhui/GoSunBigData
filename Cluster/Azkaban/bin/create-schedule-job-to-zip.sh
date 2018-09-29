@@ -27,6 +27,8 @@ SCHEMA_FILE="schema-merge-parquet-file.sh"
 DISCOVER_FILE="discover.sh"
 OFFLINE_FILE="start-face-offline-alarm-job.sh"
 DYNAMICSHOW_TABLE="get-dynamicshow-table-run.sh"
+MASTER_PROTECT_FILE="master-protect.sh"
+TASKTRACKER_PROTECT_FILE="tasktracker-protect.sh"
 
 DEVICE_RECOGIZE_TABLE="device_recogize_table.sh"
 IMSI_BLACKLIST_TABLE="imsi_blacklist_table.sh"
@@ -38,6 +40,8 @@ OUTPEOPLE_TABLE="outpeople_table.sh"
 cd ../..
 OBJECT_DIR=`pwd`                                 ## 根目录
 CLUSTER_BIN_DIR=/opt/GoSunBigData/Cluster/spark/bin
+FACECOMPARE_BIN_DIR=/opt/GoSunBigData/Cluster/FaceCompare/bin
+PEOMAN_WORKER_BIN_DIR=/opt/GoSunBigData/Cluster/PeopleManager-background/PeopleManager-background-worker/bin
 
 MYSQL=`grep "mysql_host" ${PROJECT_CONF_FILE} | cut -d "=" -f2`
 MYSQLIP=${MYSQL##:*}
@@ -142,6 +146,29 @@ zip person_table_one-day.job.zip person_table_one-day.job
 zip start-face-offline-alarm-job_oneday.job.zip start-face-offline-alarm-job.job
 rm -rf person_table_one-day.job start-face-offline-alarm-job.job schema-parquet-one-hour discover-one-day.job
 
+
+cd ${FACECOMPARE_BIN_DIR}
+if [ ! -f "$MASTER_PROTECT_FILE" ]; then
+    echo "The master-protect.sh is not exist!!!"
+else
+    touch master-protect-five-second.job
+    echo "type=command" >> master-protect-five-second.job
+    echo "cluster_home=${FACECOMPARE_BIN_DIR}" >> master-protect-five-second.job
+    echo "command=sh \${FACECOMPARE_BIN_DIR}/master-protect.sh" >> master-protect-five-second.job
+fi
+if [ ! -f "$TASKTRACKER_PROTECT_FILE" ]; then
+    echo "The tasktracker-protect.sh is not exist!!!"
+else
+    touch task-tracker-five-second.job
+    echo "type=command" >>  task-tracker-five-second.job
+    echo "cluster_home=${FACECOMPARE_BIN_DIR}" >> task-tracker-five-second.job
+    echo "command=sh \${FACECOMPARE_BIN_DIR}/tasktracker-protect.sh" >> task-tracker-five-second.job
+fi
+
+zip master-protect-five-second.zip master-protect-five-second.job
+zip task-tracker-five-second.zip task-tracker-five-second.job
+rm -rf master-protect-five-second.job task-tracker-five-second.job
+
 cd ${AZKABAN_DIR}
 mkdir -p zip
-mv ${BIN_DIR}/24hour_count_table_one_day.zip ${BIN_DIR}/device_recogize_table_one_day.zip ${BIN_DIR}/fusion_imsi_table_one_day.zip ${BIN_DIR}/newpeople_table_one_month.zip ${CLUSTER_BIN_DIR}/discover-one-day.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip zip
+mv ${BIN_DIR}/24hour_count_table_one_day.zip ${BIN_DIR}/device_recogize_table_one_day.zip ${BIN_DIR}/fusion_imsi_table_one_day.zip ${BIN_DIR}/newpeople_table_one_month.zip ${CLUSTER_BIN_DIR}/discover-one-day.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip  ${FACECOMPARE_BIN_DIR}/master-protect-five-second.zip ${FACECOMPARE_BIN_DIR}/task-tracker-five-second.zip  zip
