@@ -55,9 +55,9 @@ public class PeopleVO implements Serializable {
     @ApiModelProperty(value = "车辆列表")
     private List<String> car;
     @ApiModelProperty(value = "照片（人口库查询页使用）")
-    private byte[] picture;
-    @ApiModelProperty(value = "证件照片列表（根据ID查询详细信息使用）")
-    private List<byte[]> idcardPicture;
-    @ApiModelProperty(value = "实采列表（根据ID查询详细信息使用）")
-    private List<byte[]> capturePicture;
+    private Long pictureId;
+    @ApiModelProperty(value = "证件照片ID列表")
+    private List<Long> idcardPictureIds;
+    @ApiModelProperty(value = "实采照片ID列表")
+    private List<Long> capturePictureIds;
 }

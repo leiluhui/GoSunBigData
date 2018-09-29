@@ -26,22 +26,37 @@ import java.util.List;
 @Slf4j
 public class PeopleService {
     @Autowired
-    private CarMapper carMapper;
-    @Autowired
-    private FlagMapper flagMapper;
-    @Autowired
-    private HouseMapper houseMapper;
-    @Autowired
-    private ImsiMapper imsiMapper;
-    @Autowired
+    @SuppressWarnings("unused")
     private PeopleMapper peopleMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
+    private CarMapper carMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private FlagMapper flagMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private HouseMapper houseMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private ImsiMapper imsiMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private PhoneMapper phoneMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
     private PictureMapper pictureMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public final static String IDCARD_PIC = "idcardpic";
+
     public final static String CAPTURE_PIC = "capturepic";
 
     public Integer people_insert(People people) {
@@ -90,10 +105,11 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_insert(String peopleId, String picType, List<byte[]> pics) {
-        for (byte[] bytes : pics) {
+    public Integer people_picture_insert(String peopleId, String picType, List<String> pics) {
+        for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
+            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
             if (IDCARD_PIC.equals(picType)) {
                 picture.setIdcardpic(bytes);
             }
@@ -116,7 +132,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_update(String peopleId, String picType, List<byte[]> pics) {
+    public Integer people_picture_update(String peopleId, String picType, List<String> pics) {
         List<Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = pictureMapper.deleteByPrimaryKey(id);
@@ -125,9 +141,10 @@ public class PeopleService {
                 return 0;
             }
         }
-        for (byte[] bytes : pics) {
+        for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
+            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
             if (IDCARD_PIC.equals(picType)) {
                 picture.setIdcardpic(bytes);
             }
@@ -316,20 +333,23 @@ public class PeopleService {
         PictureVO pictureVO = new PictureVO();
         List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
         if (pictures != null && pictures.size() > 0) {
-            List<byte[]> idcardPics = new ArrayList<>();
-            List<byte[]> capturePics = new ArrayList<>();
+            List<Long> pictureIds = new ArrayList<>();
+            List<Long> idcardPictureIds = new ArrayList<>();
+            List<Long> capturePictureIds = new ArrayList<>();
             for (PictureWithBLOBs picture : pictures) {
                 if (picture != null) {
+                    pictureIds.add(picture.getId());
                     byte[] idcardPic = picture.getIdcardpic();
                     if (idcardPic != null && idcardPic.length > 0) {
-                        idcardPics.add(idcardPic);
+                        idcardPictureIds.add(picture.getId());
                     } else {
-                        capturePics.add(picture.getCapturepic());
+                        capturePictureIds.add(picture.getId());
                     }
                 }
             }
-            pictureVO.setIdcardPics(idcardPics);
-            pictureVO.setCapturePics(capturePics);
+            pictureVO.setPictureIds(pictureIds);
+            pictureVO.setIdcardPics(idcardPictureIds);
+            pictureVO.setCapturePics(capturePictureIds);
         }
         return pictureVO;
     }
@@ -399,17 +419,18 @@ public class PeopleService {
             peopleVO.setCar(carList);
             List<PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
-                List<byte[]> idcardPictureList = new ArrayList<>();
-                List<byte[]> capturePictureList = new ArrayList<>();
+                List<Long> idcardPictureIds = new ArrayList<>();
+                List<Long> capturePictureIds = new ArrayList<>();
                 for (PictureWithBLOBs picture : pictures) {
-                    if (picture.getIdcardpic() != null) {
-                        idcardPictureList.add(picture.getIdcardpic());
+                    byte[] idcardPic = picture.getIdcardpic();
+                    if (idcardPic != null && idcardPic.length > 0) {
+                        idcardPictureIds.add(picture.getId());
                     } else {
-                        capturePictureList.add(picture.getCapturepic());
+                        capturePictureIds.add(picture.getId());
                     }
                 }
-                peopleVO.setIdcardPicture(idcardPictureList);
-                peopleVO.setCapturePicture(capturePictureList);
+                peopleVO.setIdcardPictureIds(idcardPictureIds);
+                peopleVO.setCapturePictureIds(capturePictureIds);
             }
         }
         return peopleVO;
@@ -464,11 +485,7 @@ public class PeopleService {
                     peopleVO.setFlag(flagIdList);
                     if (people.getPicture() != null && people.getPicture().size() > 0) {
                         PictureWithBLOBs picture = people.getPicture().get(0);
-                        if (picture.getIdcardpic() != null) {
-                            peopleVO.setPicture(picture.getIdcardpic());
-                        } else {
-                            peopleVO.setPicture(picture.getCapturepic());
-                        }
+                        peopleVO.setPictureId(picture.getId());
                     }
                     list.add(peopleVO);
                 }

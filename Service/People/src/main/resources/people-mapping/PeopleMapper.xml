@@ -59,9 +59,26 @@
         <collection property="picture" ofType="com.hzgc.service.people.model.PictureWithBLOBs" column="id"
                     select="com.hzgc.service.people.dao.PictureMapper.selectByPeopleId"/>
     </resultMap>
+    <resultMap id="CommunityPeopleMap" type="com.hzgc.service.people.model.People">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
+        <result column="lasttime" property="lasttime" jdbcType="TIMESTAMP"/>
+        <result column="pid" property="pictureId" jdbcType="BIGINT"/>
+    </resultMap>
     <resultMap id="CountResultMap" type="com.hzgc.service.community.model.CountCommunityPeople" >
         <result column="community" property="community" jdbcType="BIGINT" />
         <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
+    <resultMap id="CommunityPeopleInfo" type="com.hzgc.service.people.model.People" >
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
+        <result column="pid" property="pictureId" jdbcType="BIGINT"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
@@ -76,6 +93,13 @@
         <include refid="Base_Column_List"/>
         from t_people
         where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="searchPeopleByIdCard" resultMap="CommunityPeopleInfo" parameterType="java.lang.String">
+        select a.id, a.name, a.idcard, a.sex, a.birthday, a.birthplace, a.address, b.id as pid
+        from t_people a, t_picture b
+        where a.id = b.peopleid
+        and a.idcard = #{idcard,jdbcType=VARCHAR}
+        group by b.peopleid
     </select>
     <!--姓名,身份证号,imis,电话号码模糊匹配和按ID,区域ID精确查找-->
     <select id="searchPeople" resultMap="CollectionResultMap" parameterType="com.hzgc.service.people.param.FilterField">
@@ -113,9 +137,9 @@
     <select id="countCommunityPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
         select count(*) from t_people where community = #{community,jdbcType=BIGINT}
     </select>
-    <!--小区实有人口数量统计-->
+    <!--统计单个区域下所有小区列表-->
     <select id="searchCommunityIdsByRegionId" resultType="java.lang.Long" parameterType="java.lang.Long">
-        select distinct community from t_people where region = #{region,jdbcType=BIGINT}
+        select distinct community from t_people where region = #{region,jdbcType=BIGINT} and community is not null
     </select>
     <!--小区重点人口数量统计-->
     <select id="countImportantPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
@@ -134,49 +158,75 @@
         and t_flag.flagid = 9
     </select>
     <!--小区实有人口查询-->
-    <select id="searchCommunityPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select id, name, idcard, lasttime
-        from t_people
-        where community = #{community,jdbcType=BIGINT}
+    <select id="searchCommunityPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime, b.id as pid
+        from t_people a, t_picture b
+        where a.community = #{community,jdbcType=BIGINT}
+        and a.id = b.peopleid
+        group by b.peopleid
     </select>
     <!--小区重点人口查询-->
-    <select id="searchImportantPeople"  resultMap="BaseResultMap" parameterType="java.lang.Long" >
-        select a.id, a.name, a.idcard, a.lasttime
-        from t_people a, t_flag b
-        where a.id = b.peopleid
-        and b.flagid = 8
+    <select id="searchImportantPeople"  resultMap="CommunityPeopleMap" parameterType="java.lang.Long" >
+        select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_flag b, t_picture c
+        where b.flagid = 8
+        and a.id = b.peopleid
+        and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
+        group by c.peopleid
     </select>
     <!--小区关爱人口查询-->
-    <select id="searchCarePeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select a.id, a.name, a.idcard, a.lasttime
-        from t_people a, t_flag b
-        where a.id = b.peopleid
-        and b.flagid = 9
+    <select id="searchCarePeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_flag b, t_picture c
+        where b.flagid = 9
+        and a.id = b.peopleid
+        and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
+        group by c.peopleid
     </select>
     <!--小区新增人口查询-->
-    <select id="searchNewPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select a.id, a.name, a.idcard, a.lasttime
-        from t_people a, t_confirm_record b
-        where b.flag = 1
+    <select id="searchNewPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_people_new b, t_picture c
+        where b.isconfirm = 2
         and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
         and a.id = b.peopleid
-        and a.community = #{community,jdbcType=BIGINT}
+        and a.id = c.peopleid
+        and b.community = #{community,jdbcType=BIGINT}
+        group by c.peopleid
     </select>
     <!--小区迁出人口查询-->
-    <select id="searchOutPeople" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select a.id, a.name, a.idcard, a.lasttime
-        from t_people a, t_confirm_record b
-        where b.flag = 2
+    <select id="searchOutPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_people_out b, t_picture c
+        where b.isconfirm = 2
         and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
         and a.id = b.peopleid
-        and a.community = #{community,jdbcType=BIGINT}
+        and a.id = c.peopleid
+        and b.community = #{community,jdbcType=BIGINT}
+        group by c.peopleid
+    </select>
+    <!--小区迁入迁出人口信息查询-->
+    <select id="searchCommunityPeopleInfo" resultMap="CommunityPeopleInfo" parameterType="java.lang.String">
+        select a.id, a.name, a.idcard, a.sex, a.birthday, a.birthplace, a.address, b.id as pid
+        from t_people a, t_picture b
+        where a.id = b.peopleid
+        and a.id = #{id,jdbcType=VARCHAR}
+        group by b.peopleid
     </select>
     <!--获取人员最后一次出现时间-->
     <select id="getLastTime" resultType="java.sql.Timestamp" parameterType="java.lang.String">
         select lasttime from t_people where id = #{id,jdbcType=VARCHAR}
     </select>
+    <!--根据人员ID删除小区ID-->
+    <update id="deleteCommunityByPeopleId" parameterType="java.lang.String">
+        update t_people set community = null where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <!--根据人员ID添加小区ID-->
+    <update id="insertCommunityByPeopleId" parameterType="com.hzgc.service.community.param.AffirmOperationDTO">
+        update t_people set community = #{communityId,jdbcType=BIGINT} where id = #{peopleId,jdbcType=VARCHAR}
+    </update>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_people
         where id = #{id,jdbcType=VARCHAR}

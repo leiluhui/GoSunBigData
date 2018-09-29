@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 public class CaptureDetailsVO implements Serializable {
     @ApiModelProperty(value = "各相机点位抓拍统计")
-    private List<CaptureDeviceCount> deviceCounts;
+    private List<CaptureDeviceCount> deviceCountList;
     @ApiModelProperty(value = "24小时抓拍统计")
-    private List<CaptureHourCount> hourCounts;
+    private List<CaptureHourCount> hourCountList;
     @ApiModelProperty(value = "迁入人员抓拍统计（含总条数）")
     private CapturePeopleCount peopleCount;
 }

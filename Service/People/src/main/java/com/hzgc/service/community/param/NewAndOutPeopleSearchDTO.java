@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class NewAndOutPeopleSearchDTO implements Serializable {
     @ApiModelProperty(value = "查询小区ID")
-    private Long community;
+    private Long communityId;
     @ApiModelProperty(value = "查询月份")
     private String month;
     @ApiModelProperty(value = "查询类别（0:迁入,1:迁出）")

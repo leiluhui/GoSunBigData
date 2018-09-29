@@ -25,7 +25,7 @@
     <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.String">
         select capturetime, deviceid, burl
         from t_people_recognize
-        where DATE_FORMAT(capturetime, '%Y%m%d%H%i%S') >= DATE_FORMAT(DATE_SUB(now(),INTERVAL 30 DAY), '%Y%m%d%H%i%S')
+        where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
         and flag = 1
         and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
         and peopleid = #{peopleid,jdbcType=BIGINT}
@@ -35,7 +35,20 @@
         select capturetime, deviceid, surl
         from t_people_recognize
         where peopleid = #{peopleid,jdbcType=VARCHAR}
-        order by capturetime asc
+        order by capturetime desc limit 1
+    </select>
+    <!--小区迁入人口抓拍详情:人员抓拍列表-->
+    <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select capturetime, deviceid, surl
+        from t_people_recognize
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+        order by capturetime desc
+    </select>
+    <!--小区迁入人口抓拍详情:人员抓拍列表-->
+    <select id="getSurlByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
+        select surl from t_people_recognize
+        where peopleid = #{peopleid,jdbcType=VARCHAR}
+        and flag = 10
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_people_recognize

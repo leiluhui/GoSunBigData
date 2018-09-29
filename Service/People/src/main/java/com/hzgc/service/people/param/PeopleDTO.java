@@ -5,6 +5,7 @@ import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -42,9 +43,9 @@ public class PeopleDTO implements Serializable {
     @ApiModelProperty(value = "标签列表")
     private List<Integer> flagId;
     @ApiModelProperty(value = "证件照片列表")
-    private List<byte[]> idCardPic;
+    private List<String> idCardPic;
     @ApiModelProperty(value = "实采照片列表")
-    private List<byte[]> capturePic;
+    private List<String> capturePic;
     @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
     @ApiModelProperty(value = "电话列表")
@@ -56,7 +57,9 @@ public class PeopleDTO implements Serializable {
 
     public People peopleDTOShift_insert(PeopleDTO peopleDTO) {
         People people = new People();
-        people.setId(UuidUtil.getUuid().toUpperCase());
+        if (StringUtils.isBlank(peopleDTO.id)){
+            people.setId(UuidUtil.getUuid().toUpperCase());
+        }
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idCard);
         people.setRegion(peopleDTO.region);

@@ -13,7 +13,7 @@ public class PictureVO implements Serializable {
     @ApiModelProperty(value = "照片ID列表")
     private List<Long> pictureIds;
     @ApiModelProperty(value = "证件照片列表")
-    private List<byte[]> idcardPics;
+    private List<Long> idcardPics;
     @ApiModelProperty(value = "实采照片列表")
-    private List<byte[]> capturePics;
+    private List<Long> capturePics;
 }

@@ -1,15 +1,14 @@
 package com.hzgc.service.community.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
-import com.hzgc.service.community.model.CountCommunityPeople;
+import com.hzgc.service.community.model.*;
 import com.hzgc.service.community.param.*;
 import com.hzgc.service.people.dao.*;
-import com.hzgc.service.community.model.DeviceRecognize;
-import com.hzgc.service.community.model.FusionImsi;
 import com.hzgc.service.people.model.People;
-import com.hzgc.service.community.model.PeopleRecognize;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +23,36 @@ import java.util.*;
 @Slf4j
 public class CommunityService {
     @Autowired
+    @SuppressWarnings("unused")
     private PeopleMapper peopleMapper;
+
     @Autowired
-    private NewPeopleMapper newPeopleMapper;
-    @Autowired
-    private OutPeopleMapper outPeopleMapper;
-    @Autowired
-    private PeopleRecognizeMapper peopleRecognizeMapper;
-    @Autowired
+    @SuppressWarnings("unused")
     private FusionImsiMapper fusionImsiMapper;
+
     @Autowired
+    @SuppressWarnings("unused")
+    private NewPeopleMapper newPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private OutPeopleMapper outPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PeopleRecognizeMapper peopleRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private DeviceRecognizeMapper deviceRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private Count24HourMapper count24HourMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PictureMapper pictureMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -89,6 +107,7 @@ public class CommunityService {
                 if (people.getLasttime() != null) {
                     vo.setLastTime(sdf.format(people.getLasttime()));
                 }
+                vo.setPictureId(people.getPictureId());
                 voList.add(vo);
             }
         }
@@ -149,6 +168,196 @@ public class CommunityService {
        return voList;
     }
 
+    public List<NewAndOutPeopleSearchVO> searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
+        List<NewAndOutPeopleSearchVO> voList = new ArrayList<>();
+        // 小区迁入人口查询（疑似与确认）
+        if (param.getType() == 0){
+            List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
+            if (list != null && list.size() > 0){
+                for (NewPeople people : list){
+                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    vo.setPeopleId(people.getPeopleid());
+                    vo.setCommunityId(param.getCommunityId());
+                    vo.setMonth(param.getMonth());
+                    vo.setType(param.getType());
+                    // 未确认迁入
+                    if (people.getIsconfirm() == 1){
+                        vo.setIsconfirm(2);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                            // 未确认迁入人口:预实名
+                            vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                            // 未确认迁入人口:新增
+                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                        }
+                    }
+                    // 已确认迁入
+                    if (people.getIsconfirm() == 2){
+                        vo.setIsconfirm(0);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                        }
+                        vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                    }
+                    // 已确认未迁入
+                    if (people.getIsconfirm() == 3){
+                        vo.setIsconfirm(1);
+                        if (people.getFlag() == 1){
+                            vo.setFlag(0);
+                            // 已确认未迁入人口:预实名
+                            vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                        }
+                        if (people.getFlag() == 2){
+                            vo.setFlag(1);
+                            // 已确认未迁入人口:新增
+                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                        }
+                    }
+                    voList.add(vo);
+                }
+            }
+        }
+        // 小区迁出人口查询（疑似与确认）
+        if (param.getType() == 1){
+            List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
+            if (list != null && list.size() > 0){
+                for (OutPeople people : list){
+                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    vo.setPeopleId(people.getPeopleid());
+                    vo.setCommunityId(param.getCommunityId());
+                    vo.setMonth(param.getMonth());
+                    vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
+                    vo.setType(param.getType());
+                    if (people.getIsconfirm() == 1){
+                        vo.setIsconfirm(5);
+                    }
+                    if (people.getIsconfirm() == 2){
+                        vo.setIsconfirm(3);
+                    }
+                    if (people.getIsconfirm() == 3){
+                        vo.setIsconfirm(4);
+                    }
+                    voList.add(vo);
+                }
+            }
+        }
+        return voList;
+    }
+
+    private Long getPictureIdByPeopleId(String peopleId){
+        return pictureMapper.getPictureIdByPeopleId(peopleId);
+    }
+
+    private String getSurlByPeopleId(String peopleId){
+        String sul = peopleRecognizeMapper.getSurlByPeopleId(peopleId);
+        // TODO sul 转换
+        return sul;
+    }
+
+    public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {
+        CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
+        People people = peopleMapper.searchCommunityPeopleInfo(peopleId);
+        if (people != null){
+            vo.setId(people.getId());
+            vo.setName(people.getName());
+            vo.setIdCard(people.getIdcard());
+            vo.setSex(people.getSex());
+            vo.setBirthday(people.getBirthday());
+            vo.setBirthplace(people.getBirthplace());
+            vo.setAddress(people.getAddress());
+            vo.setPictureId(people.getPictureId());
+        }
+        return vo;
+    }
+
+    public CommunityPeopleInfoVO searchPeopleByIdCard(String idCard) {
+        CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
+        People people = peopleMapper.searchPeopleByIdCard(idCard);
+        if (people != null){
+            vo.setId(people.getId());
+            vo.setName(people.getName());
+            vo.setSex(people.getSex());
+            vo.setIdCard(people.getIdcard());
+            vo.setBirthday(people.getBirthday());
+            vo.setBirthplace(people.getBirthplace());
+            vo.setAddress(people.getAddress());
+            vo.setPictureId(people.getPictureId());
+        }
+        return vo;
+    }
+
+    public CaptureDetailsVO searchCommunityNewPeopleCaptureDetails(CaptureDetailsDTO param) {
+        CaptureDetailsVO vo = new CaptureDetailsVO();
+        // 小区迁入人口抓拍详情:设备抓拍统计
+        List<CaptureDeviceCount> deviceCountList = new ArrayList<>();
+        List<DeviceRecognize> deviceRecognizes = deviceRecognizeMapper.countCommunityNewPeopleCapture(param);
+        if (deviceRecognizes != null && deviceRecognizes.size() > 0){
+            for (DeviceRecognize deviceRecognize : deviceRecognizes){
+                CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
+                captureDeviceCount.setDeviceId(deviceRecognize.getDeviceid());
+                captureDeviceCount.setCount(deviceRecognize.getCount());
+                deviceCountList.add(captureDeviceCount);
+            }
+            vo.setDeviceCountList(deviceCountList);
+        }
+        // 小区迁入人口抓拍详情:24小时统计
+        List<CaptureHourCount> hourCountList = new ArrayList<>();
+        List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
+        System.out.println(JacksonUtil.toJson(count24Hours));
+        List<String> hourList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+        long longTime = System.currentTimeMillis();
+        for(int i = 0; i < 24 ;i ++){
+            String time = dateFormat.format(new Date(longTime));
+            hourList.add(time);
+            longTime = longTime - 3600000;
+        }
+        for (String hour : hourList){
+            CaptureHourCount count = new CaptureHourCount();
+            count.setHour(hour);
+            String time = hour.replace("-", "").replace(" ", "");
+            if (count24Hours != null && count24Hours.size() > 0){
+                for (Count24Hour count24Hour : count24Hours){
+                    if (time.equals(count24Hour.getHour())){
+                        count.setCount(count24Hour.getCount());
+                    }
+                }
+                hourCountList.add(count);
+            }
+        }
+        vo.setHourCountList(hourCountList);
+        // 小区迁入人口抓拍详情:人员抓拍列表
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
+        List<PeopleRecognize> peopleRecognizes = peopleRecognizeMapper.searchCommunityNewPeopleCaptureData(param.getPeopleId());
+        PageInfo pageInfo = new PageInfo(page.getResult());
+        int total = (int) pageInfo.getTotal();
+        CapturePeopleCount capturePeopleCount = new CapturePeopleCount();
+        capturePeopleCount.setTotal(total);
+        List<CapturePictureInfo> infoList = new ArrayList<>();
+        for (PeopleRecognize peopleRecognize : peopleRecognizes){
+            CapturePictureInfo info = new CapturePictureInfo();
+            info.setDeviceId(peopleRecognize.getDeviceid());
+            // TODO 名字
+            info.setDeviceName(peopleRecognize.getDeviceid());
+            // TODO url 转换
+            info.setPicture(peopleRecognize.getSurl());
+            Date date = peopleRecognize.getCapturetime();
+            if (date != null){
+                info.setCaptureTime(sdf.format(date));
+            }
+            infoList.add(info);
+        }
+        capturePeopleCount.setPictureInfos(infoList);
+        vo.setPeopleCount(capturePeopleCount);
+        return vo;
+    }
+
     public OutPeopleLastCaptureVO searchCommunityOutPeopleLastCapture(String peopleId) {
         OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
@@ -162,10 +371,74 @@ public class CommunityService {
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);
         if (lastTime != null){
             long now = new Date().getTime();
-            int day = Math.toIntExact((lastTime.getTime() - now) / (24 * 60 * 60 * 1000));
+            int day = Math.toIntExact((now - lastTime.getTime()) / (24 * 60 * 60 * 1000));
             vo.setLastDay(day);
         }
         return vo;
+    }
+
+    public Integer communityAffirmOut(AffirmOperationDTO param) {
+        // 已确认迁出
+        if (param.getIsconfirm() == 2){
+            Integer delete = peopleMapper.deleteCommunityByPeopleId(param.getPeopleId());
+            if (delete != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+            Integer update = outPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+        }else if (param.getIsconfirm() == 3) {     // 已确认未迁出
+            Integer update = outPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm out operation failed");
+                return 0;
+            }
+        }else {
+            log.info("Affirm out operation failed, because param: isconfirm error");
+            return 0;
+        }
+        return 1;
+    }
+
+    public Integer communityAffirmNew(AffirmOperationDTO param) {
+        // 已确认迁入
+        if (param.getIsconfirm() == 2){
+            // 已确认迁入:预实名
+            if (param.getFlag() == 0){
+                Integer integer = peopleMapper.insertCommunityByPeopleId(param);
+                if (integer != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+                Integer update = newPeopleMapper.updateIsconfirm(param);
+                if (update != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+            }else if (param.getFlag() == 1){    // 已确认迁入:新增
+                Integer update = newPeopleMapper.updateIsconfirm(param);
+                if (update != 1){
+                    log.info("Affirm new operation failed");
+                    return 0;
+                }
+            }else {
+                log.info("Affirm new operation failed, because param: flag error");
+                return 0;
+            }
+        }else if (param.getIsconfirm() == 3) {     // 已确认未迁入
+            Integer update = newPeopleMapper.updateIsconfirm(param);
+            if (update != 1){
+                log.info("Affirm new operation failed");
+                return 0;
+            }
+        }else {
+            log.info("Affirm new operation failed, because param: isconfirm error");
+            return 0;
+        }
+        return 1;
     }
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
@@ -178,6 +451,7 @@ public class CommunityService {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
+                // TODO url 转换
                 vo.setFtpUrl(people.getBurl());
                 voList.add(vo);
             }
@@ -274,7 +548,9 @@ public class CommunityService {
             int year_start = cal.get(Calendar.YEAR);
             int month_start = cal.get(Calendar.MONTH) + 1;
             int date_start = cal.get(Calendar.DATE);
-            String startDate = year_start + "-" + month_start + "-" + (date_start >= 10 ? date_start : "0" + date_start);
+            String startDate = year_start + "-"
+                    + (month_start >= 10 ? month_start : "0" + month_start) + "-"
+                    + (date_start >= 10 ? date_start : "0" + date_start);
             List<String> dateList = new ArrayList<>();
             dateList.add(startDate);
             try {

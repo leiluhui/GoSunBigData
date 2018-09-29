@@ -18,12 +18,19 @@ import java.util.Map;
 @Service
 public class ParamPickService {
     @Autowired
+    @SuppressWarnings("unused")
     private Edulevel edulevelPick;
+
     @Autowired
+    @SuppressWarnings("unused")
     private Flag flagPick;
+
     @Autowired
+    @SuppressWarnings("unused")
     private Politic politicPick;
+
     @Autowired
+    @SuppressWarnings("unused")
     private Provinces provincesPick;
 
     public List<Param> getEdulevelPick() {
@@ -79,7 +86,7 @@ public class ParamPickService {
         @ApiModelProperty(value = "选项")
         private String param;
 
-        public Param(int index, String param) {
+        Param(int index, String param) {
             this.index = index;
             this.param = param;
         }

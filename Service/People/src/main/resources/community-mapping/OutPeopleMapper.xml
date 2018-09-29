@@ -35,12 +35,12 @@
         select community, count(peopleid) as count
         from t_people_out
         <where>
-            <if test="month != null and month.length() = 6" >
+            <if test="month != null" >
                 month = #{month,jdbcType=VARCHAR}
             </if>
             <if test="communityIdList != null and communityIdList.size() > 0" >
                 and community in
-                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                <foreach collection="communityIdList" item="model" open="(" close=")" separator=",">
                     #{model}
                 </foreach>
             </if>
@@ -54,18 +54,50 @@
         from t_people_out
         <where>
             isconfirm = 2
-            <if test="month != null and month.length() = 6" >
+            <if test="month != null" >
                 and month = #{month,jdbcType=VARCHAR}
             </if>
             <if test="communityIdList != null and communityIdList.size() > 0" >
                 and community in
-                <foreach collection="list" item="model" open="(" close=")" separator=",">
+                <foreach collection="communityIdList" item="model" open="(" close=")" separator=",">
                     #{model}
                 </foreach>
             </if>
         </where>
         group by community
     </select>
+    <!--查询某小区某月迁出人员-->
+    <select id="searchCommunityOutPeople" resultMap="BaseResultMap"
+            parameterType="com.hzgc.service.community.param.NewAndOutPeopleSearchDTO" >
+        select peopleid, isconfirm
+        from t_people_out
+        <where>
+            <if test="month != null" >
+                month = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="communityId != null" >
+                and community = #{communityId,jdbcType=BIGINT}
+            </if>
+            <if test="typeStatus == 1" >
+                and isconfirm in (2, 3)
+            </if>
+            <if test="typeStatus == 2" >
+                and isconfirm = 1
+            </if>
+        </where>
+    </select>
+    <!--更新 isconfirm 值-->
+    <update id="updateIsconfirm" parameterType="com.hzgc.service.community.param.AffirmOperationDTO">
+        update t_people_out
+        <set>
+            <if test="isconfirm != null">
+                isconfirm = #{isconfirm,jdbcType=INTEGER},
+            </if>
+        </set>
+        where peopleid = #{peopleId,jdbcType=BIGINT}
+        and community = #{communityId,jdbcType=BIGINT}
+        and month = #{month,jdbcType=VARCHAR}
+    </update>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_people_out
         where id = #{id,jdbcType=BIGINT}

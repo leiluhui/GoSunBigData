@@ -14,13 +14,14 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Api(value = "/people", tags = "人口库服务")
@@ -267,14 +268,17 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据照片ID查询照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PICID, method = RequestMethod.GET)
-    public ResponseResult<byte[]> searchPictureByPicId(Long pictureId) {
+    public ResponseEntity<byte[]> searchPictureByPicId(Long pictureId) {
         if (pictureId != null) {
             log.error("Start select picture, but picture id is null");
         }
         log.info("Start select picture, picture id is:" + pictureId);
-        byte[] pic = peopleService.searchPictureByPicId(pictureId);
+        byte[] picture = peopleService.searchPictureByPicId(pictureId);
+        if (picture == null || picture.length == 0) {
+            return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
+        }
         log.info("Select picture successfully");
-        return ResponseResult.init(pic);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(picture);
     }
 
     /**
@@ -328,7 +332,7 @@ public class PeopleController {
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_COMMUNITY, method = RequestMethod.GET)
     public ResponseResult<List<Long>> searchCommunityIdsByRegionId(Long regionId) {
         if (regionId == null) {
-            log.info("start search community id list, but region is null");
+            log.info("Start search community id list, but region is null");
             ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
         log.info("Start search community id list, region is:" + regionId);
