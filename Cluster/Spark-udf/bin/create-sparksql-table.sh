@@ -31,39 +31,41 @@ SPARK_PATH=${BIGDATA_CLUSTER_PATH}/Spark/spark
 #####################################################################
 function create_person_table_mid_table() {
     ${SPARK_PATH}/bin/spark-sql -e "CREATE EXTERNAL TABLE IF NOT EXISTS default.person_table( \
-                                    ftpurl        string, \
-                                    ipcid         string, \
-                                    feature       array<float>, \
+                                    id        string, \
+                                    sftpurl        string, \
+                                    bftpurl        string, \
                                     eyeglasses    int, \
+                                    age    int, \
+                                    mask    int, \
                                     gender        int, \
-                                    haircolor     int, \
-                                    hairstyle     int, \
-                                    hat           int, \
                                     huzi          int, \
-                                    tie           int, \
-                                    timeslot      int, \
-                                    exacttime     Timestamp, \
-                                    searchtype    string, \
-                                    sharpness     int) \
+                                    feature       array<float>, \
+                                    bitfeature       string, \
+                                    ipcid         string, \
+                                    timestamp     Timestamp, \
+                                    hostname     string, \
+                                    sabsolutepath     string, \
+                                    babsolutepath     string) \
                                     partitioned by (date string) \
                                     STORED AS PARQUET \
                                     LOCATION '/user/hive/warehouse/person_table';
                                     CREATE EXTERNAL TABLE IF NOT EXISTS default.mid_table( \
-                                    ftpurl        string, \
-                                    feature       array<float>, \
+                                    id        string, \
+                                    sftpurl        string, \
+                                    bftpurl        string, \
                                     eyeglasses    int, \
+                                    age    int, \
+                                    mask    int, \
                                     gender        int, \
-                                    haircolor     int, \
-                                    hairstyle     int, \
-                                    hat           int, \
                                     huzi          int, \
-                                    tie           int, \
-                                    timeslot      int, \
-                                    exacttime     Timestamp, \
-                                    searchtype    string, \
-                                    date          string, \
+                                    feature       array<float>, \
+                                    bitfeature       string, \
                                     ipcid         string, \
-                                    sharpness     int) \
+                                    timestamp     Timestamp, \
+                                    date     string, \
+                                    hostname     string, \
+                                    sabsolutepath     string, \
+                                    babsolutepath     string) \
                                     STORED AS PARQUET \
                                     LOCATION '/user/hive/warehouse/mid_table';
                                     show tables"
