@@ -219,6 +219,7 @@ public class CommunityService {
                             vo.setSul(getSurlByPeopleId(people.getPeopleid()));
                         }
                     }
+                    voList.add(vo);
                 }
             }
         }
