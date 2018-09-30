@@ -1,5 +1,6 @@
 package com.hzgc.service.dynrepo.dao;
 
+import com.hzgc.common.service.personattribute.bean.PersonAttributeValue;
 import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.common.service.faceattribute.bean.Attribute;
 import com.hzgc.common.service.faceattribute.bean.AttributeValue;
@@ -80,7 +81,7 @@ public class ElasticSearchDao {
         if (option.getAttributes() != null && option.getAttributes().size() > 0) {
             setAttribute(totalBQ, option.getAttributes());
         }
-
+//        totalBQ.must(queryBuilder);
         // 开始时间和结束时间存在的时候的处理
         if (option.getStartTime() != null && option.getEndTime() != null &&
                 !option.getStartTime().equals("") && !option.getEndTime().equals("")) {
@@ -96,8 +97,8 @@ public class ElasticSearchDao {
     private void setDeviceIdList(BoolQueryBuilder totalBQ, List<String> deviceId) {
         // 设备ID 的的boolQueryBuilder
         BoolQueryBuilder devicdIdBQ = QueryBuilders.boolQuery();
-        for (Object t : deviceId) {
-            devicdIdBQ.should(QueryBuilders.matchPhraseQuery(FaceTable.IPCID, t).analyzer(EsSearchParam.STANDARD));
+        for (String t : deviceId) {
+            devicdIdBQ.should(QueryBuilders.matchPhraseQuery(FaceTable.IPCID, t));
         }
         totalBQ.must(devicdIdBQ);
     }
@@ -108,22 +109,18 @@ public class ElasticSearchDao {
         totalBQ.must(deviceIdBQ);
     }
 
-    private void setAttribute(BoolQueryBuilder totalBQ, List<Attribute> attributes) {
-        //人脸属性
+    private void setAttribute(BoolQueryBuilder totalBQ, List <Attribute> attributes) {
+        // 筛选行人属性
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         for (Attribute attribute : attributes) {
-            String identify = attribute.getIdentify().toLowerCase();
-            String logic = String.valueOf(attribute.getLogistic());
-            List<AttributeValue> attributeValues = attribute.getValues();
+            String identify = attribute.getIdentify();
+            List <AttributeValue> attributeValues = attribute.getValues();
+            BoolQueryBuilder attributeBuilder = QueryBuilders.boolQuery();
             for (AttributeValue attributeValue : attributeValues) {
-                int attr = attributeValue.getValue();
-                if (attr != 0) {
-                    if (logic.equals(EsSearchParam.OR)) {
-                        totalBQ.should(QueryBuilders.matchQuery(identify, attr).analyzer(EsSearchParam.STANDARD));
-                    } else {
-                        totalBQ.must(QueryBuilders.matchQuery(identify, attr).analyzer(EsSearchParam.STANDARD));
-                    }
-                }
+                Integer attr = attributeValue.getValue();
+                attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
             }
+            totalBQ.must(attributeBuilder);
         }
     }
 

@@ -40,18 +40,18 @@ public class PersonExtractService {
                     personAttribute.setAge(person.getAge_code());
                     personAttribute.setBaby(person.getBaby_code());
                     personAttribute.setBag(person.getBag_code());
-                    personAttribute.setBottomColor(person.getBottomcolor_code());
-                    personAttribute.setBottomType(person.getBottomtype_code());
-                    personAttribute.setCarType(person.getCar_type());
+                    personAttribute.setBottomcolor(person.getBottomcolor_code());
+                    personAttribute.setBottomtype(person.getBottomtype_code());
+                    personAttribute.setCartype(person.getCar_type());
                     personAttribute.setHat(person.getHat_code());
-                    personAttribute.setKnapSack(person.getKnapsack_code());
-                    personAttribute.setMessengerBag(person.getMessengerbag_code());
+                    personAttribute.setKnapsack(person.getKnapsack_code());
+                    personAttribute.setMessengerbag(person.getMessengerbag_code());
                     personAttribute.setOrientation(person.getOrientation_code());
                     personAttribute.setSex(person.getSex_code());
-                    personAttribute.setShoulderBag(person.getShoulderbag_code());
+                    personAttribute.setShoulderbag(person.getShoulderbag_code());
                     personAttribute.setUmbrella(person.getUmbrella_code());
-                    personAttribute.setUpperColor(person.getUppercolor_code());
-                    personAttribute.setUpperType(person.getUppertype_code());
+                    personAttribute.setUppercolor(person.getUppercolor_code());
+                    personAttribute.setUppertype(person.getUppertype_code());
                     personAttribute.setHair(person.getHair_code());
                     personAttributes.add(personAttribute);
                 }
