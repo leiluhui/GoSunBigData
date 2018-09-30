@@ -126,7 +126,7 @@ function main()
     #compression_the_tar
     rsync_GsFaceLib
     add_env
-    remove_snini
+#    remove_snini
 }
 
 #---------------------------------------------------------------------#

@@ -6,8 +6,10 @@ import java.io.Serializable;
 
 @Data
 public class ImsiInfo implements Serializable {
-    //基站序列号
-    private String sn;
+    //设备id
+    private String controlsn;
+    //基站
+    private String sourcesn;
     //手机IMSI码
     private String imsi;
     //小区ID

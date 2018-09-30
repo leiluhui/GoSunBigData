@@ -64,13 +64,6 @@ function start_springCloud()
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function prepare_resource_file()
-{
-  cp ${CONF_DIR}/hbase-site.xml .
-  jar -uf ${VEHICLE_DYNREPO_JAR} hbase-site.xml
-  rm -rf hbase-site.xml
-}
-
 
 #####################################################################
 # 函数名: main
@@ -81,7 +74,6 @@ function prepare_resource_file()
 #####################################################################
 function main()
 {
-    prepare_resource_file
     start_springCloud
 }
 

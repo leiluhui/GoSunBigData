@@ -1,5 +1,6 @@
 package com.hzgc.service.dyncar;
 
+import com.hzgc.common.service.api.config.EnableInnerService;
 import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableHystrix
 @EnableSwagger2
 @EnablePlatformService
+@EnableInnerService
 public class DynCarApplication {
     public static void main(String[] args) {
         SpringApplication.run(DynCarApplication.class,args);
