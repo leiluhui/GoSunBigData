@@ -18,13 +18,12 @@ AZKABAN_DIR=`pwd`  ###azkaban目录
 LOG_DIR=${AZKABAN_DIR}/logs  ###集群log日志目录
 LOG_FILE=${LOG_DIR}/create-schedule-job-to-zip.log  ##log日志文件
 
-cd ../../../../project
+cd ../../../GoSunBigDataDeploy/project
 PROJECT_DIR=`pwd`
 PORJECT_CONF_DIR=${PROJECT_DIR}/conf
 PROJECT_CONF_FILE=${PORJECT_CONF_DIR}/project-conf.properties
 
 SCHEMA_FILE="schema-merge-parquet-file.sh"
-DISCOVER_FILE="discover.sh"
 OFFLINE_FILE="start-face-offline-alarm-job.sh"
 DYNAMICSHOW_TABLE="get-dynamicshow-table-run.sh"
 MASTER_PROTECT_FILE="master-protect.sh"
@@ -57,7 +56,7 @@ if [[ ! -f "${DEVICE_RECOGIZE_TABLE}"  ]]; then
     else
     touch device_recogize_table_one_day.job
     echo "type=command" >> device_recogize_table_one_day.job
-    echo "command=sh ${AZKABAN_DIR}/${DEVICE_RECOGIZE_TABLE}" >> device_recogize_table_one_day.job
+ echo "command=sh ${AZKABAN_DIR}/${DEVICE_RECOGIZE_TABLE}" >> device_recogize_table_one_day.job
 fi
 
 if [[ ! -f "${NEWPEOPLE_TABLE}"  ]]; then
@@ -113,8 +112,7 @@ else
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> person_table-one-hour.job
    echo "command=sh \${cluster_home}/schema-merge-parquet-file.sh person_table now" >> person_table-one-hour.job
    echo "dependencies=mid_table-one-hour" >> person_table-one-hour.job
-
-   touch person_table_one-day.job  ##创建person_table_one-day.job文件
+ touch person_table_one-day.job  ##创建person_table_one-day.job文件
    echo "type=command" >> person_table_one-day.job
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> person_table_one-day.job
    echo "command=sh \${cluster_home}/schema-merge-parquet-file.sh person_table before" >> person_table_one-day.job
@@ -129,22 +127,13 @@ else
    echo "command=sh \${cluster_home}/start-face-offline-alarm-job.sh" >> start-face-offline-alarm-job.job
 fi
 
-if [ ! -f "$DISCOVER_FILE" ]; then
-   echo "The discover.sh is not exist!!!"
-else
-   touch discover-one-day.job       ##创建discover-one-day.job文件
-   echo "type=command" >> discover-one-day.job
-   echo "cluster_home=${CLUSTER_BIN_DIR}" >> discover-one-day.job
-   echo "command=sh \${cluster_home}/discover.sh"  >> discover-one-day.job
-fi
 
 cd ${CLUSTER_BIN_DIR}
 mv mid_table-one-hour.job person_table-one-hour.job  schema-parquet-one-hour
 zip schema-parquet-one-hour.zip schema-parquet-one-hour/*
-zip discover-one-day.zip discover-one-day.job
 zip person_table_one-day.job.zip person_table_one-day.job
 zip start-face-offline-alarm-job_oneday.job.zip start-face-offline-alarm-job.job
-rm -rf person_table_one-day.job start-face-offline-alarm-job.job schema-parquet-one-hour discover-one-day.job
+rm -rf person_table_one-day.job start-face-offline-alarm-job.job schema-parquet-one-hour
 
 
 cd ${FACECOMPARE_BIN_DIR}
@@ -171,4 +160,4 @@ rm -rf master-protect-five-second.job task-tracker-five-second.job
 
 cd ${AZKABAN_DIR}
 mkdir -p zip
-mv ${BIN_DIR}/24hour_count_table_one_day.zip ${BIN_DIR}/device_recogize_table_one_day.zip ${BIN_DIR}/fusion_imsi_table_one_day.zip ${BIN_DIR}/newpeople_table_one_month.zip ${CLUSTER_BIN_DIR}/discover-one-day.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip  ${FACECOMPARE_BIN_DIR}/master-protect-five-second.zip ${FACECOMPARE_BIN_DIR}/task-tracker-five-second.zip  zip
+mv ${BIN_DIR}/../24hour_count_table_one_day.zip ${BIN_DIR}/../device_recogize_table_one_day.zip ${BIN_DIR}/../fusion_imsi_table_one_day.zip ${BIN_DIR}/../newpeople_table_one_month.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip  ${FACECOMPARE_BIN_DIR}/master-protect-five-second.zip ${FACECOMPARE_BIN_DIR}/task-tracker-five-second.zip  zip

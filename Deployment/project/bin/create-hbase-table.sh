@@ -15,12 +15,9 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                                   ### bin 目录
 cd ..
-HBASE_DIR=`pwd`                                 ### hbase 目录
-SQL_DIR=${HBASE_DIR}/sql
-cd ..
-cd ..
-SCRIPT_DIR=`pwd`
-CONF_FILE=${SCRIPT_DIR}/../conf/project-conf.properties
+PROJECT_DIR=`pwd`                                 ### hbase 目录
+SQL_DIR=${PROJECT_DIR}/sql
+CONF_FILE=${PROJECT_DIR}/conf/project-conf.properties
 
 ## bigdata cluster path
 BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
