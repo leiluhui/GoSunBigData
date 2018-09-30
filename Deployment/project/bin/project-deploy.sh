@@ -113,9 +113,9 @@ COLLECT_CONF_DIR=${COLLECT_DIR}/conf                         ##collect模块conf
 COLLECT_PRO_FILE=${COLLECT_CONF_DIR}/application-pro.properties   ##collect模块配置文件
 ## person-dynrepo模块目录
 PERSON_DYN_DIR=${SERVICE_DIR}/Basic/person-dynrepo
-PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/person-dynRepo
+PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/person-dynrepo
 PERSON_DYN_BIN_DIR=${PERSON_DYN_DIR}/bin                           ##person-dynRepo模块脚本存放目录
-PERSON_DYN_START_FILE=${PERSON_DYN_BIN_DIR}/start-person-dynRepo.sh       ##person-dynRepo模块启动脚本
+PERSON_DYN_START_FILE=${PERSON_DYN_BIN_DIR}/start-person-dynrepo.sh       ##person-dynRepo模块启动脚本
 PERSON_DYN_CONF_DIR=${PERSON_DYN_DIR}/conf                         ##person-dynRepo模块conf目录
 PERSON_DYN_PRO_FILE=${PERSON_DYN_CONF_DIR}/application-pro.properties   ##person-dynRepo模块配置文件
 ## vehicle-dynrepo模块部署目录
@@ -214,13 +214,13 @@ function config_projectconf()
 
         ## 修改配置文件 mysql安装节点
         echo "配置 project-conf.properties中的mysql地址"
-        ismini=$(grep 'ISMINICLUSTER' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
-        mysql=$(grep 'Mysql_InstallNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
+        ismini=$(grep ISMINICLUSTER ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
+        mysql=$(grep Mysql_InstallNode ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         if [[ ${ismini} = "no" && (-n ${mysql})  ]]; then
             if [[ ! -e "/opt/tidb-ansible/inventory.ini" ]]; then
                 echo "找不到inventory.ini，tidb可能未安装"
                 else
-                mysql=`grep -n '\[tidb_servers\]' /opt/tidb-ansible/inventory.ini -A 1 | tail -1`:3306
+                mysql=`grep '\[tidb_servers\]' /opt/tidb-ansible/inventory.ini -A 1 | tail -1`:4000
                 echo "部署tidb"
             fi
         elif [[ ${ismini} = "yes" && (-n ${mysql}) ]]; then
@@ -499,6 +499,10 @@ function config_service()
     sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
     echo "start-peoman-worker.sh脚本配置kafka完成......"
 
+    #替换fusion模块中start-fusion.sh脚本中的kafka字段
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置kafka完成......"
+
     #配置es.hosts:
     #从project-conf.properties中读取es所需配置IP
     #根据字段es，查找配置文件，这些值以分号分隔
@@ -546,6 +550,14 @@ function config_service()
     #替换collect模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${COLLECT_START_FILE}
     echo "start-collect.sh脚本配置zookeeper完成......"
+
+    #替换start-peoman-client.sh脚本中的zk字段
+    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    echo "start-peoman-client.sh脚本配置zookeeper完成......."
+
+    #替换start-peoman-worker.sh脚本中的zk字段
+    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置zookeeper完成........"
 
     #替换face-dynrepo模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${DYNREPO_START_FILE}
@@ -648,7 +660,7 @@ function config_service()
     #配置MYSQL_HOST:
     #从project-conf.properties中读取mysql所需配置host和port
 
-    MYSQL_HOST=$(grep mysql_host ${CONF_FILE})
+    MYSQL_HOST=$(grep mysql_host ${CONF_FILE} | cut -d '=' -f2)
     #替换collect模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${COLLECT_START_FILE}
     echo "start-collect.sh脚本配置mysql完成......."
@@ -664,6 +676,10 @@ function config_service()
     #替换peoplemanager模块启动脚本中：key=value(替换key字段的值value)
     sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
     echo "start-peoman-worker.sh脚本配置mysql完成......."
+
+    #替换people模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置mysql完成......."
 
     #####################MQ_NAMESERVER########################
     #配置MQ_NAMESERVER:
