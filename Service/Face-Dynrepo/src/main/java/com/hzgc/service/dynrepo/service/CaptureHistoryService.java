@@ -136,9 +136,7 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                System.out.println(hostname + "*****************");
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
-                System.out.println(JSON.toJSONString(urlInfo) + "**************************");
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipc);
@@ -146,7 +144,7 @@ public class CaptureHistoryService {
                 capturePicture.setLocation(getLocation(ipc));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
-                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
+//                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                 captureList.add(capturePicture);
             }
         }

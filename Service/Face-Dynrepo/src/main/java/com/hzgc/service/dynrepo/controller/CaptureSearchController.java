@@ -100,8 +100,10 @@ public class CaptureSearchController {
             log.error("Start query capture history, capture option is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
-        captureOption.setIpcMapping(ipcMapping);
+        if (captureOption.getDeviceIpcs() != null && captureOption.getDeviceIpcs().size() > 0) {
+            Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
+            captureOption.setIpcMapping(ipcMapping);
+        }
         log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
         List<SingleCaptureResult> searchResultList =
                 captureHistoryService.getCaptureHistory(captureOption);

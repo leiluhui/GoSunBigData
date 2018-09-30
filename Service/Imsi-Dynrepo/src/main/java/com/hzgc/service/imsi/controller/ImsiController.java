@@ -43,4 +43,5 @@ public class ImsiController {
         Map <String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(new ArrayList <>());
         return JSON.toJSONString(cameraInfoByBatchIpc);
     }
+
 }
