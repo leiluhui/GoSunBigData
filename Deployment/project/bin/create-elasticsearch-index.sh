@@ -15,8 +15,9 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                                   ### bin 目录
 cd ..
-SCRIPT_DIR=`pwd`
-CONF_FILE=${SCRIPT_DIR}/../conf/project-conf.properties
+PROJECT_DIR=`pwd`
+SQL_DIR=${PROJECT_DIR}/sql
+CONF_FILE=${PROJECT_DIR}/conf/project-conf.properties
 
 #####################################################################
 # 函数名: index_es_dynamic
@@ -28,7 +29,7 @@ CONF_FILE=${SCRIPT_DIR}/../conf/project-conf.properties
 function index_es_dynamic()
 {
     # 判断脚本是否存在，存在才执行
-    if [ -f "${BIN_DIR}/dynamic-index.sh" ]; then
+    if [ -f "${SQL_DIR}/elasticsearch.sh" ]; then
 
         ### 替换dynamic-index.sh中的节点名，共三处
         # 要替换的节点名，如s106
@@ -38,22 +39,62 @@ function index_es_dynamic()
         ## 第一处
         # 要查找的目标
         a1="curl -XDELETE '"
-        b1="/dynamic?pretty'  -H 'Content-Type: application/json'"
-        replace1="curl -XDELETE '${ES_IP}:9200/dynamic?pretty'  -H 'Content-Type: application/json'"
+        b1="/dynamicface?pretty'  -H 'Content-Type: application/json'"
+        replace1="curl -XDELETE '${ES_IP}:9200/dynamicface?pretty'  -H 'Content-Type: application/json'"
         # ^表示以什么开头，.*a表示以a结尾。替换以a1开头、b1结尾匹配到的字符串为repalce1
-        sed -i "s#^${a1}.*${b1}#${replace1}#g" ${BIN_DIR}/dynamic-index.sh
+        sed -i "s#^${a1}.*${b1}#${replace1}#g" ${SQL_DIR}/elasticsearch.sh
 
         ## 第二处
         a2="curl -XPUT '"
-        b2="/dynamic?pretty' -H 'Content-Type: application/json' -d'"
-        replace2="curl -XPUT '${ES_IP}:9200/dynamic?pretty' -H 'Content-Type: application/json' -d'"
-        sed -i "s#^${a2}.*${b2}#${replace2}#g" ${BIN_DIR}/dynamic-index.sh
+        b2="/dynamicface?pretty' -H 'Content-Type: application/json' -d'"
+        replace2="curl -XPUT '${ES_IP}:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d'"
+        sed -i "s#^${a2}.*${b2}#${replace2}#g" ${SQL_DIR}/elasticsearch.sh
 
         ## 第三处
         a3="curl -XPUT '"
-        b3="/dynamic/_settings' -d '{"
-        replace3="curl -XPUT '${ES_IP}:9200/dynamic/_settings' -d '{"
-        sed -i "s#^${a3}.*${b3}#${replace3}#g" ${BIN_DIR}/dynamic-index.sh
+        b3="/dynamicface/_settings' -d '{"
+        replace3="curl -XPUT '${ES_IP}:9200/dynamicface/_settings' -d '{"
+        sed -i "s#^${a3}.*${b3}#${replace3}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第四处
+        # 要查找的目标
+        a1="curl -XDELETE '"
+        b1="/dynamicperson?pretty'  -H 'Content-Type: application/json'"
+        replace1="curl -XDELETE '${ES_IP}:9200/dynamicperson?pretty'  -H 'Content-Type: application/json'"
+        # ^表示以什么开头，.*a表示以a结尾。替换以a1开头、b1结尾匹配到的字符串为repalce1
+        sed -i "s#^${a1}.*${b1}#${replace1}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第五处
+        a2="curl -XPUT '"
+        b2="/dynamicperson?pretty' -H 'Content-Type: application/json' -d'"
+        replace2="curl -XPUT '${ES_IP}:9200/dynamicperson?pretty' -H 'Content-Type: application/json' -d'"
+        sed -i "s#^${a2}.*${b2}#${replace2}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第六处
+        a3="curl -XPUT '"
+        b3="/dynamicperson/_settings' -d '{"
+        replace3="curl -XPUT '${ES_IP}:9200/dynamicperson/_settings' -d '{"
+        sed -i "s#^${a3}.*${b3}#${replace3}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第七处
+        # 要查找的目标
+        a1="curl -XDELETE '"
+        b1="/dynamiccar?pretty'  -H 'Content-Type: application/json'"
+        replace1="curl -XDELETE '${ES_IP}:9200/dynamiccar?pretty'  -H 'Content-Type: application/json'"
+        # ^表示以什么开头，.*a表示以a结尾。替换以a1开头、b1结尾匹配到的字符串为repalce1
+        sed -i "s#^${a1}.*${b1}#${replace1}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第八处
+        a2="curl -XPUT '"
+        b2="/dynamiccar?pretty' -H 'Content-Type: application/json' -d'"
+        replace2="curl -XPUT '${ES_IP}:9200/dynamicacr?pretty' -H 'Content-Type: application/json' -d'"
+        sed -i "s#^${a2}.*${b2}#${replace2}#g" ${SQL_DIR}/elasticsearch.sh
+
+        ## 第九处
+        a3="curl -XPUT '"
+        b3="/dynamiccar/_settings' -d '{"
+        replace3="curl -XPUT '${ES_IP}:9200/dynamiccar/_settings' -d '{"
+        sed -i "s#^${a3}.*${b3}#${replace3}#g" ${SQL_DIR}/elasticsearch.sh
 
 		##获取分片、副本数
         Shards=$(grep number_of_shards ${CONF_FILE} | cut -d '=' -f2)
@@ -64,19 +105,19 @@ function index_es_dynamic()
         ##获取最大分页搜素文档数
         Max_Result_Window=$(grep max_result_window ${CONF_FILE} | cut -d '=' -f2)
 
-        sed -i "s#^\"min_gram\"#\"min_gram\":${Min_Gram}#g" ${BIN_DIR}/dynamic-index.sh
-        sed -i "s#^\"max_gram\"#\"max_gram\":${Max_Gram}#g" ${BIN_DIR}/dynamic-index.sh
-        sed -i "s#^\"number_of_shards\"#\"number_of_shards\":${Shards}#g" ${BIN_DIR}/dynamic-index.sh
-        sed -i "s#^\"number_of_replicas\"#\"number_of_replicas\":${Replicas}#g" ${BIN_DIR}/dynamic-index.sh
-        sed -i "s#^\"max_result_window\"#\"max_result_window\":${Max_Result_Window}#g" ${BIN_DIR}/dynamic-index.sh
+        sed -i "s#^\"min_gram\"#\"min_gram\":${Min_Gram}#g" ${SQL_DIR}/elasticsearch.sh
+        sed -i "s#^\"max_gram\"#\"max_gram\":${Max_Gram}#g" ${SQL_DIR}/elasticsearch.sh
+        sed -i "s#^\"number_of_shards\"#\"number_of_shards\":${Shards}#g" ${SQL_DIR}/elasticsearch.sh
+        sed -i "s#^\"number_of_replicas\"#\"number_of_replicas\":${Replicas}#g" ${SQL_DIR}/elasticsearch.sh
+        sed -i "s#^\"max_result_window\"#\"max_result_window\":${Max_Result_Window}#g" ${SQL_DIR}/elasticsearch.sh
 
 
-        sh ${BIN_DIR}/elasticsearch.sh
+        sh ${SQL_DIR}/elasticsearch.sh
 		if [ $? = 0 ];then
-			echo "修改dynamic-index.sh成功并执行......"
+			echo "修改elasticsearch.sh成功并执行......"
 		fi
     else
-        echo "dynamic-index.sh不存在...."
+        echo "elasticsearch.sh不存在...."
     fi
 }
 

@@ -2,9 +2,9 @@
 ## 动态信息库person 表的映射
 
 ## 删除索引
-##curl -XDELETE 's100:9200/dynamic?pretty'  -H 'Content-Type: application/json'
-##curl -XDELETE 's100:9200/person?pretty' -H 'Content-Type:application/json'
-##curl -XDELETE 's100:9200/car?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 's100:9200/dynamicface?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 's100:9200/dynamicperson?pretty' -H 'Content-Type:application/json'
+##curl -XDELETE 's100:9200/dynamiccar?pretty'  -H 'Content-Type: application/json'
 
 curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -85,7 +85,7 @@ curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d
         }
     }'
 
-curl -XPUT 's100:9200/dynamicperson/_settings' -d '{
+curl -XPUT 's100:9200/dynamicface/_settings' -d '{
     "index": {
         "max_result_window": 1000000000
     }
