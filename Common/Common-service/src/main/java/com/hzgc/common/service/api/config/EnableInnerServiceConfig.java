@@ -10,8 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class EnableInnerServiceConfig {
 
-    @ConditionalOnMissingBean(RestTemplate.class)
-    @Bean
+    @Bean(name = "inner")
     @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();

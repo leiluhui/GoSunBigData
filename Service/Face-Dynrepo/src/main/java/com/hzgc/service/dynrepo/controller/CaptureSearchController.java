@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -121,8 +120,11 @@ public class CaptureSearchController {
             log.error("Start query capture history, capture option is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        Map<String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
-        captureOption.setIpcMapping(ipcMapping);
+
+        if (captureOption.getDeviceIpcs() != null && captureOption.getDeviceIpcs().size() > 0) {
+            Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
+            captureOption.setIpcMapping(ipcMapping);
+        }
         log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
         List<SingleCaptureResult> searchResultList =
                 captureHistoryService.getCaptureHistory(captureOption);
