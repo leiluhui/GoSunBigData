@@ -45,15 +45,13 @@ public class ConsumerImsi implements Runnable {
         log.info("Comsumer is started to accept kafka info");
         while (true) {
             ConsumerRecords <String, String> records = consumer.poll(10000);
-            System.out.println(records.isEmpty());
             for (ConsumerRecord <String, String> record : records) {
                 ImsiInfo imsiInfo = JacksonUtil.toObject(record.value(),ImsiInfo.class);
-                System.out.println(record.value());
                 int i = imsiInfoMapper.insertSelective(imsiInfo);
                 if (i > 0) {
                     log.info("Insert imsi info is successful");
                 } else {
-                    log.info("Insert imsi info is failed");
+                    log.info("Insert imsi info is failed, record is " + record.value());
                 }
             }
         }
