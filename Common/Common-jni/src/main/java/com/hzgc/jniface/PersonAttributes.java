@@ -8,31 +8,31 @@ public class PersonAttributes {
 
     private String bag;
 
-    private String bottomColor;
+    private String bottomcolor;
 
-    private String bottomType;
+    private String bottomtype;
 
     private String hat;
 
     private String hair;
 
-    private String knapSack;
+    private String knapsack;
 
-    private String MessengerBag;
+    private String messengerbag;
 
     private String orientation;
 
     private String sex;
 
-    private String shoulderBag;
+    private String shoulderbag;
 
     private String umbrella;
 
-    private String upperColor;
+    private String uppercolor;
 
-    private String upperType;
+    private String uppertype;
 
-    private String carType;
+    private String cartype;
 
     public String getAge() {
         return age;
@@ -58,21 +58,15 @@ public class PersonAttributes {
         this.bag = bag;
     }
 
-    public String getBottomColor() {
-        return bottomColor;
+    public String getBottomcolor() {
+        return bottomcolor;
     }
 
-    public void setBottomColor(String bottomColor) {
-        this.bottomColor = bottomColor;
+    public void setBottomcolor(String bottomcolor) {
+        this.bottomcolor = bottomcolor;
     }
 
-    public String getBottomType() {
-        return bottomType;
-    }
 
-    public void setBottomType(String bottomType) {
-        this.bottomType = bottomType;
-    }
 
     public String getHat() {
         return hat;
@@ -82,20 +76,21 @@ public class PersonAttributes {
         this.hat = hat;
     }
 
-    public String getKnapSack() {
-        return knapSack;
+    public String getHair() {
+        return hair;
     }
 
-    public void setKnapSack(String knapSack) {
-        this.knapSack = knapSack;
+    public void setHair(String hair) {
+        this.hair = hair;
     }
 
-    public String getMessengerBag() {
-        return MessengerBag;
+
+    public String getMessengerbag() {
+        return messengerbag;
     }
 
-    public void setMessengerBag(String messengerBag) {
-        MessengerBag = messengerBag;
+    public void setMessengerbag(String messengerbag) {
+        this.messengerbag = messengerbag;
     }
 
     public String getOrientation() {
@@ -114,12 +109,12 @@ public class PersonAttributes {
         this.sex = sex;
     }
 
-    public String getShoulderBag() {
-        return shoulderBag;
+    public String getShoulderbag() {
+        return shoulderbag;
     }
 
-    public void setShoulderBag(String shoulderBag) {
-        this.shoulderBag = shoulderBag;
+    public void setShoulderbag(String shoulderbag) {
+        this.shoulderbag = shoulderbag;
     }
 
     public String getUmbrella() {
@@ -130,35 +125,43 @@ public class PersonAttributes {
         this.umbrella = umbrella;
     }
 
-    public String getUpperColor() {
-        return upperColor;
+    public String getUppercolor() {
+        return uppercolor;
     }
 
-    public void setUpperColor(String upperColor) {
-        this.upperColor = upperColor;
+    public void setUppercolor(String uppercolor) {
+        this.uppercolor = uppercolor;
     }
 
-    public String getUpperType() {
-        return upperType;
+    public String getUppertype() {
+        return uppertype;
     }
 
-    public void setUpperType(String upperType) {
-        this.upperType = upperType;
+    public void setUppertype(String uppertype) {
+        this.uppertype = uppertype;
     }
 
-    public String getHair() {
-        return hair;
+    public String getCartype() {
+        return cartype;
     }
 
-    public void setHair(String hair) {
-        this.hair = hair;
+    public void setCartype(String cartype) {
+        this.cartype = cartype;
     }
 
-    public String getCarType() {
-        return carType;
+    public String getBottomtype() {
+        return bottomtype;
     }
 
-    public void setCarType(String carType) {
-        this.carType = carType;
+    public void setBottomtype(String bottomtype) {
+        this.bottomtype = bottomtype;
+    }
+
+    public String getKnapsack() {
+        return knapsack;
+    }
+
+    public void setKnapsack(String knapsack) {
+        this.knapsack = knapsack;
     }
 }

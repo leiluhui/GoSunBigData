@@ -76,7 +76,7 @@ public class FtpController {
 
     @ApiIgnore(value = "内部服务:hostname转ip")
     @RequestMapping(value = BigDataPath.HOSTNAME_TO_IP, method = RequestMethod.GET)
-    public ResponseEntity<UrlInfo> hostName2Ip(@RequestParam(value = "hostname") String hostName) {
+    public ResponseEntity<UrlInfo> hostName2Ip(@RequestParam(value = "hostName") String hostName) {
         if (hostName != null && !"".equals(hostName)) {
             UrlInfo urlInfo = ftpService.hostName2Ip(hostName);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(urlInfo);

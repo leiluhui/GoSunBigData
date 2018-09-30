@@ -27,7 +27,7 @@ public class InnerService {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HTTP_HOSTNAME_TO_IP +
-                    "?hostName=" + httpHostName, UrlInfo.class);
+                    "?hostNameUrl=" + httpHostName, UrlInfo.class);
             stopWatch.stop();
             log.info("Method httpHostNameToIp, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
             return urlInfo;
@@ -42,7 +42,7 @@ public class InnerService {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP +
-                    "?hostname=" + hostName, UrlInfo.class);
+                    "?hostName=" + hostName, UrlInfo.class);
             stopWatch.stop();
             log.info("Method hostName2Ip, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
             return urlInfo;

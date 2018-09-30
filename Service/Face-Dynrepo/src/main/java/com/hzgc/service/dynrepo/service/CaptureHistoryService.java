@@ -1,5 +1,6 @@
 package com.hzgc.service.dynrepo.service;
 
+import com.alibaba.fastjson.JSON;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.service.api.bean.UrlInfo;
@@ -135,10 +136,12 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
+                System.out.println(hostname + "*****************");
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipc);
+                ipc = "TEST000007";
                 capturePicture.setLocation(getLocation(ipc));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
