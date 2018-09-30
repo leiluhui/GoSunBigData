@@ -13,9 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class EnablePlatformServiceConfig {
-    @ConditionalOnMissingBean(RestTemplate.class)
-    @Bean
-    @LoadBalanced
+    @Bean(name = "platform")
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
