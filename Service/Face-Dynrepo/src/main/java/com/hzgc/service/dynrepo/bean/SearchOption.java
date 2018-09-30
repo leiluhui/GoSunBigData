@@ -5,6 +5,7 @@ import com.hzgc.jniface.PictureData;
 import com.hzgc.seemmo.util.JsonUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.util.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;

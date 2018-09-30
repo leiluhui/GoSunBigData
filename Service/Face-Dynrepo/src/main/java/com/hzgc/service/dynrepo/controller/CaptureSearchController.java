@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,7 @@ public class CaptureSearchController {
             log.error("Start search picture, but threshold is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(searchOption.getDeviceIpcs());
+        Map<String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(searchOption.getDeviceIpcs());
         searchOption.setIpcMapping(ipcMapping);
         if (searchOption.getDeviceIpcs() == null
                 || searchOption.getDeviceIpcs().size() <= 0
@@ -92,10 +93,9 @@ public class CaptureSearchController {
      */
     @ApiOperation(value = "获取历史搜图结果", response = SearchResult.class)
     @RequestMapping(value = BigDataPath.DYNREPO_SEARCHRESULT, method = RequestMethod.POST)
-    @ApiImplicitParam(name = "searchResultOption", value = "历史结果查询参数", paramType = "body")
     @SuppressWarnings("unused")
     public ResponseResult<SearchResult> getSearchResult(
-            @RequestBody SearchResultOption searchResultOption) {
+            @RequestBody @ApiParam(value = "历史搜图结果查询参数") SearchResultOption searchResultOption) {
         SearchResult searchResult;
         if (searchResultOption != null) {
             searchResult = captureSearchService.getSearchResult(searchResultOption);
@@ -121,7 +121,7 @@ public class CaptureSearchController {
             log.error("Start query capture history, capture option is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
-        Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
+        Map<String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDeviceIpcs());
         captureOption.setIpcMapping(ipcMapping);
         log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
         List<SingleCaptureResult> searchResultList =
