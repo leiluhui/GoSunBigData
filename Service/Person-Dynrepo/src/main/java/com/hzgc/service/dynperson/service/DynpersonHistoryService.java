@@ -95,6 +95,7 @@ public class DynpersonHistoryService {
                 String ipc = (String) hit.getSource().get(PersonTable.IPCID);
                 String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(PersonTable.HOSTNAME);
+                hostname = "s202";
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 pictures.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 pictures.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
@@ -186,10 +187,10 @@ public class DynpersonHistoryService {
         personAttribute.setBaby((String) hit.getSource().get(PersonTable.BABY));
         personAttribute.setBag((String) hit.getSource().get(PersonTable.BAG));
         personAttribute.setBottomcolor((String) hit.getSource().get(PersonTable.BOTTOMCOLOR));
-        personAttribute.setBottomType((String) hit.getSource().get(PersonTable.BOTTOMTYPE));
+        personAttribute.setBottomtype((String) hit.getSource().get(PersonTable.BOTTOMTYPE));
         personAttribute.setCartype((String) hit.getSource().get(PersonTable.CARTYPE));
         personAttribute.setHat((String) hit.getSource().get(PersonTable.HAT));
-        personAttribute.setKnapSack((String) hit.getSource().get(PersonTable.KNAPSACK));
+        personAttribute.setKnapsack((String) hit.getSource().get(PersonTable.KNAPSACK));
         personAttribute.setMessengerbag((String) hit.getSource().get(PersonTable.MESSENGERBAG));
         personAttribute.setOrientation((String) hit.getSource().get(PersonTable.ORIENTATION));
         personAttribute.setSex((String) hit.getSource().get(PersonTable.SEX));
