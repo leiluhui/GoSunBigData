@@ -1,11 +1,13 @@
 package com.hzgc.service.dynrepo.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.PictureData;
+import com.hzgc.seemmo.util.JsonUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,13 +26,4 @@ public class SearchOption extends CaptureOption implements Serializable {
 
     //阈值
     private float similarity;
-
-    //搜索的时间区间，为空或者没有传入这个参数时候搜索整天
-    private List<TimeInterval> periodTimes;
-
-    /**
-     * 是否开启清晰度评价，true为开启，false为不开启
-     */
-    @JsonIgnore
-    private boolean isClean;
 }

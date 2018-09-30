@@ -5,6 +5,7 @@ import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.FaceTable;
+import com.hzgc.jniface.PictureData;
 import com.hzgc.service.dynrepo.bean.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ public class CaptureServiceHelper {
     private PlatformService queryService;
 
     @Autowired
+    @SuppressWarnings("unused")
     private InnerService innerService;
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -113,7 +116,7 @@ public class CaptureServiceHelper {
      * @param option           查询结果的查询参数
      * @return 返回分页查询结果
      */
-    private List<CapturedPicture> pageSplit(List<CapturedPicture> capturedPictures, SearchResultOption option) {
+    List<CapturedPicture> pageSplit(List<CapturedPicture> capturedPictures, SearchResultOption option) {
         int offset = option.getStart();
         int count = option.getLimit();
         List<CapturedPicture> subCapturePictureList;
@@ -186,6 +189,7 @@ public class CaptureServiceHelper {
 
     SearchResult parseResultNotOnePerson(ResultSet resultSet, SearchOption option, String searchId) {
         SearchResult searchResult = new SearchResult();
+        Map<String, List<CapturedPicture>> mapSet = new HashMap<>();
         List<SingleSearchResult> singleResultList = new ArrayList<>();
         try {
             while (resultSet.next()) {
@@ -201,6 +205,8 @@ public class CaptureServiceHelper {
                 String sabsolutepath = resultSet.getString(FaceTable.SABSOLUTEPATH);
                 //hostname
                 String hostname = resultSet.getString(FaceTable.HOSTNAME);
+                //picture gourp id
+                String picid = resultSet.getString(FaceTable.GROUP_FIELD);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
@@ -210,8 +216,28 @@ public class CaptureServiceHelper {
                 capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
+                if (mapSet.containsKey(picid)) {
+                    mapSet.get(picid).add(capturedPicture);
+                } else {
+                    List<CapturedPicture> pictureList = new ArrayList<>();
+                    pictureList.add(capturedPicture);
+                    mapSet.put(picid, pictureList);
+                }
             }
             searchResult.setSearchId(searchId);
+            for (int i = 0; i < option.getImages().size(); i++) {
+                SingleSearchResult singleSearchResult = new SingleSearchResult();
+                String picId = option.getImages().get(i).getImageID();
+                if (mapSet.containsKey(picId)) {
+                    singleSearchResult.setPictures(mapSet.get(picId));
+                    singleSearchResult.setTotal(mapSet.get(picId).size());
+                    List<PictureData> list = new ArrayList<>();
+                    list.add(option.getImages().get(i));
+                    singleSearchResult.setPictureDatas(list);
+                    singleSearchResult.setSearchId(picId);
+                    singleResultList.add(singleSearchResult);
+                }
+            }
             searchResult.setSingleResults(singleResultList);
         } catch (SQLException e) {
             e.printStackTrace();

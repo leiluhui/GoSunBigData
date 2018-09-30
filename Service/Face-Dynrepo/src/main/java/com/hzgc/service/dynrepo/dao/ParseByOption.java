@@ -23,7 +23,13 @@ class ParseByOption {
     static {
         MID_FIELD = FaceTable.IPCID +
                 ", " +
-                FaceTable.TIMESTAMP;
+                FaceTable.TIMESTAMP +
+                ", " +
+                FaceTable.SABSOLUTEPATH +
+                ", " +
+                FaceTable.BABSOLUTEPATH +
+                ", " +
+                FaceTable.HOSTNAME;
     }
 
     static String getFinalSQLwithOption(SearchOption option, boolean printSql) throws SQLException {

@@ -46,5 +46,7 @@ public class FaceTable implements Serializable {
     public static final String SIMILARITY = "similarity";
     //hive中特征值比对udf函数
     public static final String FUNCTION_NAME = "compare";
+    //图片分组ID
+    public static final String GROUP_FIELD = "picid";
 
 }

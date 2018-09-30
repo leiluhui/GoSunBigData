@@ -85,6 +85,27 @@ public class CaptureSearchController {
     }
 
     /**
+     * 历史搜索记录查询
+     *
+     * @param searchResultOption 以图搜图入参
+     * @return SearchResult
+     */
+    @ApiOperation(value = "获取历史搜图结果", response = SearchResult.class)
+    @RequestMapping(value = BigDataPath.DYNREPO_SEARCHRESULT, method = RequestMethod.POST)
+    @ApiImplicitParam(name = "searchResultOption", value = "历史结果查询参数", paramType = "body")
+    @SuppressWarnings("unused")
+    public ResponseResult<SearchResult> getSearchResult(
+            @RequestBody SearchResultOption searchResultOption) {
+        SearchResult searchResult;
+        if (searchResultOption != null) {
+            searchResult = captureSearchService.getSearchResult(searchResultOption);
+        } else {
+            searchResult = null;
+        }
+        return ResponseResult.init(searchResult);
+    }
+
+    /**
      * 抓拍历史记录查询
      *
      * @param captureOption 以图搜图入参
