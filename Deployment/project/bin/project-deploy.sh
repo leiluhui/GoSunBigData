@@ -98,7 +98,7 @@ DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-face-dispatch.sh       ##face-disp
 DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##face-dispatch模块conf目录
 DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##face-dispatch模块配置文件
 ## face-dynrepo模块部署目录
-DYNREPO_DIR=${SERVICE_DIR}/Basic/face-dynRepo
+DYNREPO_DIR=${SERVICE_DIR}/Basic/face-dynrepo
 DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dynRepo
 DYNREPO_BIN_DIR=${DYNREPO_DIR}/bin                           ##face-dynrepo模块脚本存放目录
 DYNREPO_START_FILE=${DYNREPO_BIN_DIR}/start-face-dynrepo.sh       ##face-dynrepo模块启动脚本
@@ -112,7 +112,7 @@ COLLECT_START_FILE=${COLLECT_BIN_DIR}/start-collect.sh       ##collect模块启�
 COLLECT_CONF_DIR=${COLLECT_DIR}/conf                         ##collect模块conf目录
 COLLECT_PRO_FILE=${COLLECT_CONF_DIR}/application-pro.properties   ##collect模块配置文件
 ## person-dynrepo模块目录
-PERSON_DYN_DIR=${SERVICE_DIR}/Basic/person-dynRepo
+PERSON_DYN_DIR=${SERVICE_DIR}/Basic/person-dynrepo
 PERSON_DYN_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/person-dynRepo
 PERSON_DYN_BIN_DIR=${PERSON_DYN_DIR}/bin                           ##person-dynRepo模块脚本存放目录
 PERSON_DYN_START_FILE=${PERSON_DYN_BIN_DIR}/start-person-dynRepo.sh       ##person-dynRepo模块启动脚本
@@ -133,7 +133,7 @@ IMSI_DIR=${SERVICE_DIR}/Cloud/imsi-dynrepo
 IMSI_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/imsi-dynrepo
 IMSI_BIN_DIR=${IMSI_DIR}/bin                                ##imsi模块脚本存放目录
 IMSI_START_FILE=${IMSI_BIN_DIR}/start-imsi-dynrepo.sh         ##imsi模块启动脚本
-IMSI_START_FILE=${IMSI_DIR}/conf                              ##imsi模块conf目录
+IMSI_CONF_FILE=${IMSI_DIR}/conf                              ##imsi模块conf目录
 IMSI_PRO_FILE=${IMSI_START_FILE}/application-pro.properties   ##imsi模块配置文件
 ## people模块部署目录(未完成)
 PEOPLE_DIR=${SERVICE_DIR}/Cloud/people
@@ -217,7 +217,7 @@ function config_projectconf()
         ismini=$(grep 'ISMINICLUSTER' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         mysql=$(grep 'Mysql_InstallNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         if [[ ${ismini} = "no" && (-n ${mysql})  ]]; then
-            if [[ -e "/opt/tidb-ansible/inventory.ini" ]]; then
+            if [[ ! -e "/opt/tidb-ansible/inventory.ini" ]]; then
                 echo "找不到inventory.ini，tidb可能未安装"
                 else
                 mysql=`grep -n '\[tidb_servers\]' /opt/tidb-ansible/inventory.ini -A 1 | tail -1`:3306
@@ -436,16 +436,16 @@ function config_sparkjob()
     sed -i "s#^rocketmq.nameserver=.*#rocketmq.nameserver=${rockpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     # 根据job_peoplemanager_mysql_alarm_url字段设置常驻人口管理告警信息MYSQL数据库地址
-    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.alarm.url  | awk '{print $1}') ]
-    value=$(grep job_peoplemanager_mysql_alarm_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-    value="job.peoplemanager.mysql.alarm.url=${value}"
-    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
-
-     # 根据job_peoplemanager_mysql_device_url字段设置常驻人口管理告警信息MYSQL数据库地址
-    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.device.url  | awk '{print $1}') ]
-    value=$(grep job_peoplemanager_mysql_device_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-    value="job.peoplemanager.mysql.device.url==${value}"
-    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
+#    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.alarm.url  | awk '{print $1}') ]
+#    value=$(grep job_peoplemanager_mysql_alarm_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
+#    value="job.peoplemanager.mysql.alarm.url=${value}"
+#    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
+#
+#     # 根据job_peoplemanager_mysql_device_url字段设置常驻人口管理告警信息MYSQL数据库地址
+#    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.device.url  | awk '{print $1}') ]
+#    value=$(grep job_peoplemanager_mysql_device_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
+#    value="job.peoplemanager.mysql.device.url==${value}"
+#    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     echo "配置完毕......"  | tee  -a  ${SPARK_LOG_FILE}
 
@@ -725,7 +725,7 @@ function config_facecompare(){
 function distribute_facecompare(){
     CLUSTERNODELIST=$(grep 'Cluster_HostName' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
     CLUSTERNODE=(${CLUSTERNODELIST//;/ })
-    CLUSTER_NODE_NUM=${CLUSTERNODELIST[@]}
+    CLUSTER_NODE_NUM=${#CLUSTERNODELIST[@]}
     num=0
     for node in ${CLUSTERNODE} ;do
         scp -r ${FACECOMPARE_DIR} root@${node}:/opt/

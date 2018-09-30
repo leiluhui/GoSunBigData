@@ -87,7 +87,7 @@ function index_es_dynamic()
         ## 第八处
         a2="curl -XPUT '"
         b2="/dynamiccar?pretty' -H 'Content-Type: application/json' -d'"
-        replace2="curl -XPUT '${ES_IP}:9200/dynamicacr?pretty' -H 'Content-Type: application/json' -d'"
+        replace2="curl -XPUT '${ES_IP}:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'"
         sed -i "s#^${a2}.*${b2}#${replace2}#g" ${SQL_DIR}/elasticsearch.sh
 
         ## 第九处
