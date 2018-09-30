@@ -29,7 +29,11 @@ class ParseByOption {
                 ", " +
                 FaceTable.BABSOLUTEPATH +
                 ", " +
-                FaceTable.HOSTNAME;
+                FaceTable.HOSTNAME +
+                ", " +
+                FaceTable.GENDER +
+                ", " +
+                FaceTable.AGE;
     }
 
     static String getFinalSQLwithOption(SearchOption option, boolean printSql) throws SQLException {

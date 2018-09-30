@@ -46,11 +46,14 @@ public class CaptureServiceHelper {
      * @param result 查询结果
      * @param option 查询结果的查询参数
      */
-    void sortByParamsAndPageSplit(SearchResult result, SearchResultOption option) {
+    SearchResult sortByParamsAndPageSplit(SearchResult result, SearchResultOption option) {
         List<Integer> paramListInt = option.getSort();
         List<SortParam> paramList = paramListInt.stream().map(param -> SortParam.values()[param]).collect(toList());
         List<Boolean> isAscArr = new ArrayList<>();
         List<String> sortNameArr = new ArrayList<>();
+        SearchResult searchResult = new SearchResult();
+        List<SingleSearchResult> singleSearchResults = new ArrayList<>();
+        searchResult.setSearchId(result.getSearchId());
         for (SortParam aParamList : paramList) {
             switch (aParamList) {
                 case TIMEASC:
@@ -83,9 +86,13 @@ public class CaptureServiceHelper {
         } else {
             for (SingleSearchResult singleResult : result.getSingleResults()) {
                 CapturePictureSortUtil.sort(singleResult.getPictures(), sortNameArr, isAscArr);
-                singleResult.setPictures(pageSplit(singleResult.getPictures(), option));
+                SingleSearchResult tempSingleResult = new SingleSearchResult();
+                tempSingleResult.setPictures(pageSplit(singleResult.getPictures(), option));
+                singleSearchResults.add(tempSingleResult);
             }
+            searchResult.setSingleResults(singleSearchResults);
         }
+        return searchResult;
     }
 
     /**
@@ -161,6 +168,8 @@ public class CaptureServiceHelper {
                 //小图路径
                 String sabsolutepath = resultSet.getString(FaceTable.SABSOLUTEPATH);
                 String hostname = resultSet.getString(FaceTable.HOSTNAME);
+                int gender = resultSet.getInt(FaceTable.GENDER);
+                int age = resultSet.getInt(FaceTable.AGE);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
@@ -170,6 +179,8 @@ public class CaptureServiceHelper {
                 capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
+                capturedPicture.setAge(age);
+                capturedPicture.setGender(gender);
                 capturedPictureList.add(capturedPicture);
             }
 
@@ -207,6 +218,8 @@ public class CaptureServiceHelper {
                 String hostname = resultSet.getString(FaceTable.HOSTNAME);
                 //picture gourp id
                 String picid = resultSet.getString(FaceTable.GROUP_FIELD);
+                int gender = resultSet.getInt(FaceTable.GENDER);
+                int age = resultSet.getInt(FaceTable.AGE);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
@@ -216,6 +229,8 @@ public class CaptureServiceHelper {
                 capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
+                capturedPicture.setGender(gender);
+                capturedPicture.setAge(age);
                 if (mapSet.containsKey(picid)) {
                     mapSet.get(picid).add(capturedPicture);
                 } else {

@@ -33,7 +33,12 @@ public class CaptureSearchService {
     private MemoryDao memoryDao;
 
     public SearchResult searchPicture(SearchOption option, String searchId) throws SQLException {
-        SearchResult searchResult = null;
+        SearchResult searchResult;
+        SearchResult retrunResult = new SearchResult();
+        if (option.getDeviceIpcs() != null && option.getDeviceIpcs().size() > 0) {
+            retrunResult.setDeivceCount(option.getDeviceIpcs().size());
+            retrunResult.setDeivceCount(option.getDeviceIpcs().size());
+        }
         ResultSet resultSet;
         long start = System.currentTimeMillis();
         SearchCallBack searchCallBack = sparkJDBCDao.searchPicture(option);
@@ -47,26 +52,32 @@ public class CaptureSearchService {
             }
             //存储搜索历史记录
             SearchCollection collection = new SearchCollection();
+            searchResult.setDeivceCount(retrunResult.getDeivceCount());
             collection.setSearchOption(option);
             collection.setSearchResult(searchResult);
             boolean flag = memoryDao.insertSearchRes(collection);
-            if (searchResult.getSingleResults().size() > 0) {
+            if (memoryDao.getSearchRes(searchId).getSingleResults().size() > 0) {
                 if (flag) {
                     log.info("The search history saved successful, search id is:" + searchId);
                 } else {
                     log.warn("The search history saved failure, search id is:" + searchId);
                 }
+                retrunResult.setSearchId(searchResult.getSearchId());
+                List<SingleSearchResult> singleSearchResults = new ArrayList<>();
                 for (SingleSearchResult singleResult : searchResult.getSingleResults()) {
-                    singleResult.setPictures(captureServiceHelper.pageSplit(singleResult.getPictures(),
+                    SingleSearchResult tempSingleResult = new SingleSearchResult();
+                    tempSingleResult.setPictures(captureServiceHelper.pageSplit(singleResult.getPictures(),
                             option.getStart(),
                             option.getLimit()));
+                    singleSearchResults.add(tempSingleResult);
                 }
+                retrunResult.setSingleResults(singleSearchResults);
             }
         } else {
             log.info("Start search picture, search result set is null");
         }
         sparkJDBCDao.closeConnection(searchCallBack.getConnection(), searchCallBack.getStatement());
-        return searchResult;
+        return retrunResult;
     }
 
     /**
@@ -82,8 +93,9 @@ public class CaptureSearchService {
             log.info("Start query searchResult, SearchResultOption is " + JacksonUtil.toJson(resultOption));
             if (searchResult != null) {
                 if (resultOption.getSort() != null && resultOption.getSort().size() > 0) {
-                    captureServiceHelper.sortByParamsAndPageSplit(searchResult, resultOption);
-                    for (SingleSearchResult singleSearchResult : searchResult.getSingleResults()) {
+                    SearchResult returnSearchResult = captureServiceHelper.sortByParamsAndPageSplit(searchResult, resultOption);
+                    returnSearchResult.setDeivceCount(searchResult.getDeivceCount());
+                    for (SingleSearchResult singleSearchResult : returnSearchResult.getSingleResults()) {
                         if (singleSearchResult.getDevicePictures() != null) {
                             for (GroupByIpc groupByIpc : singleSearchResult.getDevicePictures()) {
                                 for (CapturedPicture capturedPicture : groupByIpc.getPictures()) {
