@@ -185,18 +185,18 @@ public class DynpersonHistoryService {
         personAttribute.setHair((String) hit.getSource().get(PersonTable.HAIR));
         personAttribute.setBaby((String) hit.getSource().get(PersonTable.BABY));
         personAttribute.setBag((String) hit.getSource().get(PersonTable.BAG));
-        personAttribute.setBottomColor((String) hit.getSource().get(PersonTable.BOTTOMCOLOR));
+        personAttribute.setBottomcolor((String) hit.getSource().get(PersonTable.BOTTOMCOLOR));
         personAttribute.setBottomType((String) hit.getSource().get(PersonTable.BOTTOMTYPE));
-        personAttribute.setCarType((String) hit.getSource().get(PersonTable.CARTYPE));
+        personAttribute.setCartype((String) hit.getSource().get(PersonTable.CARTYPE));
         personAttribute.setHat((String) hit.getSource().get(PersonTable.HAT));
         personAttribute.setKnapSack((String) hit.getSource().get(PersonTable.KNAPSACK));
-        personAttribute.setMessengerBag((String) hit.getSource().get(PersonTable.MESSENGERBAG));
+        personAttribute.setMessengerbag((String) hit.getSource().get(PersonTable.MESSENGERBAG));
         personAttribute.setOrientation((String) hit.getSource().get(PersonTable.ORIENTATION));
         personAttribute.setSex((String) hit.getSource().get(PersonTable.SEX));
-        personAttribute.setShoulderBag((String) hit.getSource().get(PersonTable.SHOULDERBAG));
+        personAttribute.setShoulderbag((String) hit.getSource().get(PersonTable.SHOULDERBAG));
         personAttribute.setUmbrella((String) hit.getSource().get(PersonTable.UMBRELLA));
-        personAttribute.setUpperColor((String) hit.getSource().get(PersonTable.UPPERCOLOR));
-        personAttribute.setUpperType((String) hit.getSource().get(PersonTable.UPPERTYPE));
+        personAttribute.setUppercolor((String) hit.getSource().get(PersonTable.UPPERCOLOR));
+        personAttribute.setUppertype((String) hit.getSource().get(PersonTable.UPPERTYPE));
 
         personAttributes.add(personAttribute);
         return personAttributes;
