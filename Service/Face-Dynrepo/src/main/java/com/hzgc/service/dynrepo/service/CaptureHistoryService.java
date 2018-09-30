@@ -138,6 +138,7 @@ public class CaptureHistoryService {
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
                 System.out.println(hostname + "*****************");
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                System.out.println(JSON.toJSONString(urlInfo) + "**************************");
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipc);

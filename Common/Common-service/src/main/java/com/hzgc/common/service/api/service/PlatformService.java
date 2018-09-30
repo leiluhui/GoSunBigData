@@ -27,7 +27,7 @@ public class PlatformService {
     public List<Region> getRegionByIds(List<Long> ids) {
         if (ids != null && ids.size() > 0) {
             log.info("Method:getRegionName, region ids is:" + JSON.toJSONString(ids));
-            List<Region> list = restTemplate.postForObject("http://region/internal/region/query_region_info_by_ids", ids, List.class);
+            List<Region> list = restTemplate.postForObject("http://172.18.18.40:8888/api/v1/region/internal/region/query_region_info_by_ids", ids, List.class);
             if (list == null || list.size() <= 0) {
                 log.info("Get region name failed, because result is null");
                 return null;
@@ -42,7 +42,7 @@ public class PlatformService {
     public String getCommunityName(Long communityId) {
         if (communityId != null) {
             log.info("Method:getCommunityName, community id " + communityId);
-            String name = restTemplate.getForObject("http://region/internal/region/query_region_name_by_id?id=" + communityId, String.class);
+            String name = restTemplate.getForObject("http://172.18.18.40:8888/api/v1/region/internal/region/query_region_name_by_id?id=" + communityId, String.class);
             if (name == null || name.length() <= 0) {
                 log.info("Get region name failed, because result is null");
                 return null;
@@ -61,7 +61,7 @@ public class PlatformService {
                     new ParameterizedTypeReference<Map<String, CameraQueryDTO>>() {
                     };
             ResponseEntity<Map<String, CameraQueryDTO>> responseEntity =
-                    restTemplate.exchange("http://device/internal/cameras/query_camera_by_codes", HttpMethod.POST,
+                    restTemplate.exchange("http://172.18.18.40:8888/api/v1/device/internal/cameras/query_camera_by_codes", HttpMethod.POST,
                             new HttpEntity<>(ipcList), parameterizedTypeReference);
             return responseEntity.getBody();
         } else {
