@@ -16,36 +16,15 @@
     <result column="savetime" jdbcType="BIGINT" property="savetime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, sn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
+    id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_imsi
-    where id = #{id,jdbcType=INTEGER}
-  </select>
+
   <select id="selectByTime" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
     select
     <include refid="Base_Column_List" />
     from t_imsi_all
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_imsi
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
-    insert into t_imsi (sn, imsi,
-      cellid, lac, mscid,
-      imei, freq, biscorpci, 
-      attach, standard, time
-      )
-    values #{sn,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR},
-      #{cellid,jdbcType=VARCHAR}, #{lac,jdbcType=VARCHAR}, #{mscid,jdbcType=VARCHAR}, 
-      #{imei,jdbcType=VARCHAR}, #{freq,jdbcType=VARCHAR}, #{biscorpci,jdbcType=VARCHAR}, 
-      #{attach,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
     insert into t_imsi_all
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -87,10 +66,10 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="sn != null">
+      <if test="controlsn != null">
         #{controlsn,jdbcType=VARCHAR},
       </if>
-      <if test="sn != null">
+      <if test="sourcesn != null">
         #{sourcesn,jdbcType=VARCHAR},
       </if>
       <if test="imsi != null">
@@ -125,58 +104,5 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
-    update t_imsi
-    <set>
-      <if test="sn != null">
-        sn = #{sn,jdbcType=VARCHAR},
-      </if>
-      <if test="imsi != null">
-        imsi = #{imsi,jdbcType=VARCHAR},
-      </if>
-      <if test="cellid != null">
-        cellId = #{cellid,jdbcType=VARCHAR},
-      </if>
-      <if test="lac != null">
-        lac = #{lac,jdbcType=VARCHAR},
-      </if>
-      <if test="mscid != null">
-        mscid = #{mscid,jdbcType=VARCHAR},
-      </if>
-      <if test="imei != null">
-        imei = #{imei,jdbcType=VARCHAR},
-      </if>
-      <if test="freq != null">
-        freq = #{freq,jdbcType=VARCHAR},
-      </if>
-      <if test="biscorpci != null">
-        biscorpci = #{biscorpci,jdbcType=VARCHAR},
-      </if>
-      <if test="attach != null">
-        attach = #{attach,jdbcType=VARCHAR},
-      </if>
-      <if test="standard != null">
-        standard = #{standard,jdbcType=VARCHAR},
-      </if>
-      <if test="time != null">
-        time = #{time,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
-    update t_imsi
-    set sn = #{sn,jdbcType=VARCHAR},
-      imsi = #{imsi,jdbcType=VARCHAR},
-      cellId = #{cellid,jdbcType=VARCHAR},
-      lac = #{lac,jdbcType=VARCHAR},
-      mscid = #{mscid,jdbcType=VARCHAR},
-      imei = #{imei,jdbcType=VARCHAR},
-      freq = #{freq,jdbcType=VARCHAR},
-      biscorpci = #{biscorpci,jdbcType=VARCHAR},
-      attach = #{attach,jdbcType=VARCHAR},
-      standard = #{standard,jdbcType=VARCHAR},
-      time = #{time,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>
