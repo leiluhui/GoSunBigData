@@ -3,6 +3,7 @@ package com.hzgc.service.community.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
 import com.hzgc.service.community.model.*;
@@ -53,6 +54,10 @@ public class CommunityService {
     @Autowired
     @SuppressWarnings("unused")
     private PictureMapper pictureMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PlatformService platformService;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -136,8 +141,7 @@ public class CommunityService {
         for (Long communityId : communityIdList){
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             vo.setCommunityId(communityId);
-            // TODO 名字
-            vo.setCommunityName(String.valueOf(communityId));
+            vo.setCommunityName(platformService.getMergerName(communityId));
             vo.setMonth(param.getMonth());
             for (CountCommunityPeople suggestNew : totalNewCount){
                 if (suggestNew.getCommunity().equals(communityId)){
@@ -298,7 +302,9 @@ public class CommunityService {
         if (deviceRecognizes != null && deviceRecognizes.size() > 0){
             for (DeviceRecognize deviceRecognize : deviceRecognizes){
                 CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
-                captureDeviceCount.setDeviceId(deviceRecognize.getDeviceid());
+                String deviceName = platformService.getDeviceName(deviceRecognize.getDeviceid());
+                // TODO imsi device name
+                captureDeviceCount.setDeviceName(deviceName != null ? deviceName : deviceRecognize.getDeviceid());
                 captureDeviceCount.setCount(deviceRecognize.getCount());
                 deviceCountList.add(captureDeviceCount);
             }
@@ -340,8 +346,7 @@ public class CommunityService {
         for (PeopleRecognize peopleRecognize : peopleRecognizes){
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
-            // TODO 名字
-            info.setDeviceName(peopleRecognize.getDeviceid());
+            info.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
             info.setPicture(peopleRecognize.getSurl());
             Date date = peopleRecognize.getCapturetime();
             if (date != null){
@@ -359,8 +364,7 @@ public class CommunityService {
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
         if (peopleRecognize != null){
             vo.setDeviceId(peopleRecognize.getDeviceid());
-            // TODO 名字
-            vo.setDeviceName("名字");
+            vo.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
             vo.setPicture(peopleRecognize.getSurl());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
@@ -446,8 +450,7 @@ public class CommunityService {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setDeviceId(people.getDeviceid());
-                // TODO url 转换
+                vo.setDeviceId(platformService.getDeviceName(people.getDeviceid()));
                 vo.setFtpUrl(people.getBurl());
                 voList.add(vo);
             }
@@ -456,6 +459,7 @@ public class CommunityService {
             for (FusionImsi imsi : imsiList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
+                // TODO imsi device name
                 vo.setDeviceId(imsi.getDeviceid());
                 vo.setImsi(imsi.getImsi());
                 voList.add(vo);
