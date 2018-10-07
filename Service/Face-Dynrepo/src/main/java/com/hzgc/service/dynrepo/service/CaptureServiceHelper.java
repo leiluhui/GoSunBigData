@@ -87,7 +87,9 @@ public class CaptureServiceHelper {
             for (SingleSearchResult singleResult : result.getSingleResults()) {
                 CapturePictureSortUtil.sort(singleResult.getPictures(), sortNameArr, isAscArr);
                 SingleSearchResult tempSingleResult = new SingleSearchResult();
-                tempSingleResult.setPictures(pageSplit(singleResult.getPictures(), option));
+                List<CapturedPicture> pageList = pageSplit(singleResult.getPictures(), option);
+                tempSingleResult.setPictures(pageList);
+                tempSingleResult.setTotal(singleResult.getTotal());
                 singleSearchResults.add(tempSingleResult);
             }
             searchResult.setSingleResults(singleSearchResults);

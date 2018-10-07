@@ -46,11 +46,11 @@ public class CaptureHistoryService {
     //根据ipcid进行分类
     private SearchResult getCaptureHistory(CaptureOption option, String sortParam) {
         SearchResult searchResult = new SearchResult();
-        List <GroupByIpc> groupByIpcs = new ArrayList <>();
-        List <String> ipcs = DeviceToIpcs.getIpcs(option.getDevices());
+        List<GroupByIpc> groupByIpcs = new ArrayList<>();
+        List<String> ipcs = DeviceToIpcs.getIpcs(option.getDevices());
         SingleSearchResult singleSearchResult = new SingleSearchResult();
         for (String ipcId : ipcs) {
-            List <CapturedPicture> capturedPictureList = new ArrayList <>();
+            List<CapturedPicture> capturedPictureList = new ArrayList<>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, ipcId, sortParam);
             SearchHits searchHits = searchResponse.getHits();
             GroupByIpc groupByIpc = new GroupByIpc();
@@ -102,7 +102,7 @@ public class CaptureHistoryService {
         SearchHit[] hits = searchHits.getHits();
         SearchResult searchResult = new SearchResult();
         SingleSearchResult singleSearchResult = new SingleSearchResult();
-        List <CapturedPicture> pictures = new ArrayList <>();
+        List<CapturedPicture> pictures = new ArrayList<>();
         CapturedPicture capturePicture;
         if (hits.length > 0) {
             for (SearchHit hit : hits) {
@@ -134,10 +134,10 @@ public class CaptureHistoryService {
     }
 
     //多个ipcid查询
-    private SearchResult getCaptureHistory(CaptureOption option, List <String> deviceIds, String sortParam) {
+    private SearchResult getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam) {
         SearchResult searchResult = new SearchResult();
         SingleSearchResult singleSearchResult = new SingleSearchResult();
-        List <CapturedPicture> captureList = new ArrayList <>();
+        List<CapturedPicture> captureList = new ArrayList<>();
         SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, deviceIds, sortParam);
         SearchHits searchHits = searchResponse.getHits();
         SearchHit[] hits = searchHits.getHits();
@@ -175,9 +175,9 @@ public class CaptureHistoryService {
 
     private String getLocation(String ipc) {
         //查询相机位置
-        ArrayList <String> list = new ArrayList <>();
+        ArrayList<String> list = new ArrayList<>();
         list.add(ipc);
-        Map <String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
+        Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
         CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
         return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }

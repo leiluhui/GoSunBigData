@@ -29,19 +29,6 @@ public class FtpController {
     @Autowired
     private FtpService ftpService;
 
-    /**
-     * 获取Ftp相关配置参数
-     *
-     * @return ftp相关配置参数
-     */
-    @ApiOperation(value = "获取可绑定ftp地址信息")
-    @ApiImplicitParam(name = "ftpType", value = "ftp类型", required = true, dataType = "String", paramType = "query")
-    @RequestMapping(value = BigDataPath.FTP_GET_PROPERTIES, method = RequestMethod.GET)
-    public ResponseResult<Map<String, String>> getFtpAddress(@ApiParam(value = "ftp类型") String ftpType, String deviceId) {
-        Map<String, String> map = ftpService.getProperties(ftpType, deviceId);
-        return ResponseResult.init(map);
-    }
-
     @ApiOperation(value = "打开抓拍订阅")
     @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_OPEN, method = RequestMethod.POST)
     public ResponseResult<Boolean> openFtpSubscription(String userId, @RequestBody List<String> ipcIdList) {

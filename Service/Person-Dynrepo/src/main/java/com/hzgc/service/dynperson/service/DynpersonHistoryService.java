@@ -22,6 +22,7 @@ import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +31,12 @@ import java.util.Map;
 @Slf4j
 public class DynpersonHistoryService {
 
-    @Autowired
     private PlatformService platformService;
 
     @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;
 
-    @Autowired
     private InnerService innerService;
 
     public SingleResults getCaptureHistory(CaptureOption captureOption) {

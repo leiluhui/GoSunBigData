@@ -305,27 +305,27 @@
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dispatch/conf</outputDirectory>
         </fileSet>
-        <!--Face-DynRepo目录-->
+        <!--Face-Dynrepo目录-->
         <fileSet>
-            <directory>../Service/Face-DynRepo/target</directory>
+            <directory>../Service/Face-Dynrepo/target</directory>
             <includes>
                 <include>face-dynrepo-${project.parent.version}.jar</include>
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Face-DynRepo/bin</directory>
+            <directory>../Service/Face-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Face-DynRepo/src/main/resources</directory>
+            <directory>../Service/Face-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynRepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/conf</outputDirectory>
         </fileSet>
         <!--Person-Dynrepo目录-->
         <fileSet>

@@ -1,16 +1,10 @@
 package com.hzgc.service.collect.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.UrlInfo;
-import com.hzgc.service.collect.dao.FtpDeviceInfoMapper;
-import com.hzgc.service.collect.dao.FtpInfoMapper;
-import com.hzgc.service.collect.model.FtpDeviceInfo;
-import com.hzgc.service.collect.model.FtpInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,57 +21,6 @@ public class FtpService implements Serializable {
 
     @Autowired
     private FtpSubscribeClient subscribe;
-
-    @Autowired
-    private FtpInfoMapper ftpInfoMapper;
-
-    @Autowired
-    private FtpDeviceInfoMapper ftpDeviceInfoMapper;
-
-    /**
-     * 获取Ftp相关配置参数
-     *
-     * @return ftp相关配置参数
-     */
-    public Map<String, String> getProperties(String ftpType, String deviceId) {
-        Map<String, String> map = new HashMap<>();
-        List<FtpRegisterInfo> list = null;
-        if ("face".equals(ftpType)) {
-            list = register.getFaceFtpRegisterInfoList();
-        }
-        if ("person".equals(ftpType)) {
-            list = register.getPersonFtpRegisterInfoList();
-        }
-        if ("car".equals(ftpType)) {
-            list = register.getCarFtpRegisterInfoList();
-        }
-        //分配绑定次数最小的返回
-        if (list != null && list.size() > 0) {
-            List<FtpInfo> ftps = ftpInfoMapper.selectByCountAsc();
-            for (FtpRegisterInfo registerInfo : list) {
-                String ftpIPAddress = registerInfo.getFtpIPAddress();
-                if (ftps.size() > 0) {
-                    for (FtpInfo ftpInfo : ftps) {
-                        if (ftpIPAddress.equals(ftpInfo.getIp())) {
-                            //绑定ip和设备id
-                            FtpDeviceInfo ftpDeviceInfo = new FtpDeviceInfo();
-                            ftpDeviceInfo.setDeviceid(deviceId);
-                            ftpDeviceInfo.setIp(ftpIPAddress);
-                            ftpDeviceInfoMapper.insertSelective(ftpDeviceInfo);
-                            map.put("ftpIp", registerInfo.getFtpIPAddress());
-                            map.put("ftpPort", registerInfo.getFtpPort());
-                            map.put("proxyIP", registerInfo.getProxyIP());
-                            map.put("proxyPort", registerInfo.getProxyPort());
-                            map.put("username", registerInfo.getFtpAccountName());
-                            map.put("password", registerInfo.getFtpPassword());
-                            map.put("pathRule", registerInfo.getPathRule());
-                        }
-                    }
-                }
-            }
-        }
-        return map;
-    }
 
     private String getIPAddress(String hostname) {
             String ip =  register.getFtpIpMapping().get(hostname);
