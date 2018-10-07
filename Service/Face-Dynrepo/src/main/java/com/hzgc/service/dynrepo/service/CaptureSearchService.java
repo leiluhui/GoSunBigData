@@ -37,7 +37,6 @@ public class CaptureSearchService {
         SearchResult retrunResult = new SearchResult();
         if (option.getDeviceIpcs() != null && option.getDeviceIpcs().size() > 0) {
             retrunResult.setDeivceCount(option.getDeviceIpcs().size());
-            retrunResult.setDeivceCount(option.getDeviceIpcs().size());
         }
         ResultSet resultSet;
         long start = System.currentTimeMillis();
@@ -69,6 +68,8 @@ public class CaptureSearchService {
                     tempSingleResult.setPictures(captureServiceHelper.pageSplit(singleResult.getPictures(),
                             option.getStart(),
                             option.getLimit()));
+                    tempSingleResult.setSearchId(singleResult.getSearchId());
+                    tempSingleResult.setTotal(singleResult.getTotal());
                     singleSearchResults.add(tempSingleResult);
                 }
                 retrunResult.setSingleResults(singleSearchResults);
@@ -88,12 +89,13 @@ public class CaptureSearchService {
      */
     public SearchResult getSearchResult(SearchResultOption resultOption) {
         SearchResult searchResult = null;
+        SearchResult returnSearchResult = null;
         if (resultOption.getSearchId() != null && !"".equals(resultOption.getSearchId())) {
             searchResult = memoryDao.getSearchRes(resultOption.getSearchId());
             log.info("Start query searchResult, SearchResultOption is " + JacksonUtil.toJson(resultOption));
             if (searchResult != null) {
                 if (resultOption.getSort() != null && resultOption.getSort().size() > 0) {
-                    SearchResult returnSearchResult = captureServiceHelper.sortByParamsAndPageSplit(searchResult, resultOption);
+                    returnSearchResult = captureServiceHelper.sortByParamsAndPageSplit(searchResult, resultOption);
                     returnSearchResult.setDeivceCount(searchResult.getDeivceCount());
                     for (SingleSearchResult singleSearchResult : returnSearchResult.getSingleResults()) {
                         if (singleSearchResult.getDevicePictures() != null) {
@@ -145,7 +147,7 @@ public class CaptureSearchService {
         } else {
             log.info("SearchId is null");
         }
-        return searchResult;
+        return returnSearchResult;
     }
 
     /**
