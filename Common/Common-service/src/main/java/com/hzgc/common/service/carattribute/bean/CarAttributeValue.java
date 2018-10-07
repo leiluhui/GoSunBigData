@@ -10,7 +10,7 @@ public class CarAttributeValue implements Serializable {
     /**
      * 属性的值
      */
-    private Integer value;
+    private String value;
 
     /**
      * 值描述
@@ -22,11 +22,11 @@ public class CarAttributeValue implements Serializable {
      */
     private long count;
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

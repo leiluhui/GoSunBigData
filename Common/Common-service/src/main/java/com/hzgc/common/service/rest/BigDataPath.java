@@ -17,8 +17,11 @@ public class BigDataPath {
     public static final String FTP_GET_IP = "/hostname_convert";
     public static final String FTP_SUBSCRIPTION_OPEN = "/subscribe_open";
     public static final String FTP_SUBSCRIPTION_CLOSE = "/subscribe_close";
+    public static final String HTTP_HOSTNAME_TO_IP = "/http_hostname_to_ip";
+    public static final String HOSTNAME_TO_IP = "/hostname_to_ip";
 
     public static final String FEATURE_EXTRACT_BIN = "/extract_bin";
+    public static final String FEATURE_EXTRACT_BASE64 = "/extract_base64";
     public static final String FEATURE_EXTRACT_FTP = "/extract_ftp";
     public static final String FACE_ATTRIBUTE = "/attribute";
     public static final String FEATURE_EXTRACT_BYTES = "/extract_bytes";

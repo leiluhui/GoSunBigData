@@ -18,12 +18,22 @@ class ParseByOption {
 
     private static Logger LOG = Logger.getLogger(ParseByOption.class);
 
-    private static String MID_FIELD = null;
+    private static String MID_FIELD;
 
     static {
         MID_FIELD = FaceTable.IPCID +
                 ", " +
-                FaceTable.TIMESTAMP;
+                FaceTable.TIMESTAMP +
+                ", " +
+                FaceTable.SABSOLUTEPATH +
+                ", " +
+                FaceTable.BABSOLUTEPATH +
+                ", " +
+                FaceTable.HOSTNAME +
+                ", " +
+                FaceTable.GENDER +
+                ", " +
+                FaceTable.AGE;
     }
 
     static String getFinalSQLwithOption(SearchOption option, boolean printSql) throws SQLException {
@@ -119,7 +129,9 @@ class ParseByOption {
                 strBuilder.append("(select ")
                         .append("'")
                         .append(option.getImages().get(i).getImageID())
-                        .append("', ")
+                        .append("' as ")
+                        .append(FaceTable.GROUP_FIELD)
+                        .append(", ")
                         .append(MID_FIELD)
                         .append(", ")
                         .append(getAttributes(option))

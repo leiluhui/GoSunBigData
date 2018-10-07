@@ -20,7 +20,7 @@ CONF_DIR=${FUSION_DIR}/conf
 #---------------------------------------------------------------------#
 #                          springcloud配置参数                        #
 #---------------------------------------------------------------------#
-EUREKA_IP=172.18.18.201     ##注册中心的ip地址
+EUREKA_IP=172.18.18.191     ##注册中心的ip地址
 EUREKA_PORT=9000
 KAFKA_HOST=172.18.18.100:9092
 
@@ -62,13 +62,6 @@ function start_springCloud()
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function prepare_resource_file()
-{
-  cp ${CONF_DIR}/hbase-site.xml .
-  jar -uf ${FUSION_JAR} hbase-site.xml
-  rm -rf hbase-site.xml
-}
-
 
 #####################################################################
 # 函数名: main
@@ -79,7 +72,6 @@ function prepare_resource_file()
 #####################################################################
 function main()
 {
-    prepare_resource_file
     start_springCloud
 }
 

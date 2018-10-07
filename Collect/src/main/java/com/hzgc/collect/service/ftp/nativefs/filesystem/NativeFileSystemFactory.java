@@ -106,7 +106,7 @@ public class NativeFileSystemFactory implements FileSystemFactory {
                             + homeDirStr);
                 }
             }
-            log.info("Create file system view, user info is: ?", JacksonUtil.toJson(user));
+            log.debug("Create file system view, user info is: {}", JacksonUtil.toJson(user));
             return new NativeFileSystemView(user,
                     caseInsensitive, collectContext);
         } finally {

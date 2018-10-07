@@ -38,12 +38,10 @@ public class JobRegister implements Serializable {
      */
     public void regist(String registInfo,String Data) throws InterruptedException {
         String registPath = Constant.rootPath + "/" + registInfo;
-        zkClient.createNode(registPath, Data.getBytes(), CreateMode.EPHEMERAL);
-        Thread.sleep(1000000);
+        zkClient.createNode(registPath, Data.getBytes(), CreateMode.PERSISTENT);
     }
 
     public void update(String path,String Data) throws Exception{
         zkClient.setNodeDate(path,Data.getBytes());
-        Thread.sleep(100000);
     }
 }

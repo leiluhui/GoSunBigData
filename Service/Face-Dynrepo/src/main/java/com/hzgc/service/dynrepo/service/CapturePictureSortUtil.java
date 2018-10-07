@@ -5,41 +5,7 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
-public class CapturePictureSortUtil {
-
-    /*
-     * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等，支持正数、负数、0）、char、String、java.util.Date
-     *
-     * @param list        排序对象
-     * @param sortNameArr list元素的属性名称
-     * @param isAsc       true升序，false降序
-     */
-    public static <CapturedPicture> void sort(List<CapturedPicture> list, final boolean isAsc, final String... sortNameArr) {
-        list.sort((a, b) -> {
-            int ret = 0;
-            if (a == null && b == null) {
-                return 0;
-            }
-            if (a == null) {
-                return -1;
-            }
-            if (b == null) {
-                return 1;
-            }
-            try {
-                for (String sortName : sortNameArr) {
-                    ret = CapturePictureSortUtil.compareObject(sortName, isAsc, a, b);
-                    if (0 != ret) {
-                        break;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return ret;
-        });
-    }
+class CapturePictureSortUtil {
 
     /**
      * 给list的每个属性都指定是升序还是降序

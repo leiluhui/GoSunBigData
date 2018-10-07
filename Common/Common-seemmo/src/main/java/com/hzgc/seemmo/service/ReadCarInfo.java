@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ReadCarInfo {
 
-    private final Map<String, Map<Integer, String>> vehicleMap = new HashMap<>();
+    private final Map <String, Map <Integer, String>> vehicleMap = new HashMap <>();
 
     public ReadCarInfo() {
         vehicleMap.put(CarData.BELT_MAINDRIVER, ReadCarInfo.otherProperties());
@@ -25,8 +25,8 @@ public class ReadCarInfo {
         vehicleMap.put(CarData.VEHICLE_TYPE, ReadCarInfo.carKindInfo());
     }
 
-    public static Map<Integer, String> objectTypeInfo() {
-        HashMap<Integer, String> objectType = new HashMap<>();
+    public static Map <Integer, String> objectTypeInfo() {
+        HashMap <Integer, String> objectType = new HashMap <>();
         objectType.put(0, "未知类型");
         objectType.put(1, "行人");
         objectType.put(2, "自行车");
@@ -36,11 +36,12 @@ public class ReadCarInfo {
         objectType.put(6, "巴士");
         objectType.put(7, "面包车");
         objectType.put(8, "卡车");
+        objectType.put(999, "不限");
         return objectType;
     }
 
-    public static Map<Integer, String> plateTypeInfo() {
-        HashMap<Integer, String> plateType = new HashMap<>();
+    public static Map <Integer, String> plateTypeInfo() {
+        HashMap <Integer, String> plateType = new HashMap <>();
         plateType.put(1, "黄牌(大型汽车)");
         plateType.put(2, "蓝牌(小型汽车)");
         plateType.put(3, "使馆");
@@ -54,31 +55,34 @@ public class ReadCarInfo {
         plateType.put(31, "武警");
         plateType.put(32, "军车");
         plateType.put(99, "无法确定");
+        plateType.put(999, "不限");
         return plateType;
     }
 
-    public static Map<Integer, String> plateColorInfo() {
-        HashMap<Integer, String> plateColor = new HashMap<>();
+    public static Map <Integer, String> plateColorInfo() {
+        HashMap <Integer, String> plateColor = new HashMap <>();
         plateColor.put(1, "黄");
         plateColor.put(2, "蓝");
         plateColor.put(3, "黑");
         plateColor.put(4, "白");
+        plateColor.put(999, "不限");
         return plateColor;
     }
 
-    public static Map<Integer, String> plateFlagInfo() {
-        HashMap<Integer, String> plateFlag = new HashMap<>();
+    public static Map <Integer, String> plateFlagInfo() {
+        HashMap <Integer, String> plateFlag = new HashMap <>();
         plateFlag.put(0, "空牌");
         plateFlag.put(1, "单牌");
         plateFlag.put(2, "双牌");
         plateFlag.put(3, "非车牌");
         plateFlag.put(4, "车牌太小");
         plateFlag.put(5, "车牌未检测到");
+        plateFlag.put(999, "不限");
         return plateFlag;
     }
 
-    public static Map<Integer, String> carColorInfo() {
-        HashMap<Integer, String> carColor = new HashMap<>();
+    public static Map <Integer, String> carColorInfo() {
+        HashMap <Integer, String> carColor = new HashMap <>();
         carColor.put(1, "黑色");
         carColor.put(2, "蓝色");
         carColor.put(3, "棕色");
@@ -92,11 +96,12 @@ public class ReadCarInfo {
         carColor.put(11, "青色");
         carColor.put(12, "深灰色");
         carColor.put(13, "金色");
+        carColor.put(999, "不限");
         return carColor;
     }
 
-    public static Map<Integer, String> carKindInfo() {
-        HashMap<Integer, String> carKind = new HashMap<>();
+    public static Map <Integer, String> carKindInfo() {
+        HashMap <Integer, String> carKind = new HashMap <>();
         carKind.put(0, "其他");
         carKind.put(1, "轿车");
         carKind.put(2, "越野车");
@@ -119,25 +124,28 @@ public class ReadCarInfo {
         carKind.put(19, "工程抢修车");
         carKind.put(20, "救援车");
         carKind.put(21, "栏板卡车");
+        carKind.put(999, "不限");
         return carKind;
     }
 
-    public static Map<Integer, String> mistakeInfo() {
-        HashMap<Integer, String> mistake = new HashMap<>();
+    public static Map <Integer, String> mistakeInfo() {
+        HashMap <Integer, String> mistake = new HashMap <>();
         mistake.put(0, "front");
         mistake.put(1, "back");
         mistake.put(3, "side");
+        mistake.put(999, "不限");
         return mistake;
     }
 
-    public static Map<Integer, String> otherProperties() {
-        HashMap<Integer, String> otherPropertis = new HashMap<>();
+    public static Map <Integer, String> otherProperties() {
+        HashMap <Integer, String> otherPropertis = new HashMap <>();
         otherPropertis.put(1, "无");
         otherPropertis.put(2, "有");
+        otherPropertis.put(999, "不限");
         return otherPropertis;
     }
 
-    public Map<String, Map<Integer, String>> getVehicleMap() {
+    public Map <String, Map <Integer, String>> getVehicleMap() {
         return vehicleMap;
     }
 }

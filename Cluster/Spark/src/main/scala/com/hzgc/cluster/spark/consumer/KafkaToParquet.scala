@@ -1,9 +1,9 @@
 package com.hzgc.cluster.spark.consumer
 
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.{Base64, Properties}
 
-import com.google.common.base.Stopwatch
 import com.hzgc.cluster.spark.util.PropertiesUtil
 import com.hzgc.common.collect.bean.{CarObject, FaceObject, PersonObject}
 import com.hzgc.common.service.facedynrepo.{FaceTable, PersonTable, VehicleTable}
@@ -25,13 +25,18 @@ import org.apache.spark.streaming.{Durations, StreamingContext}
 object KafkaToParquet {
   val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
 
-  case class Face(id: String, sftpurl: String, bftpurl: String, timestamp: Timestamp, ipcid: String, hostname: String,
+  case class Face(id: String, sftpurl: String, bftpurl: String, timestamp: Timestamp, date: String, ipcid: String, hostname: String,
                   babsolutepath: String, sabsolutepath: String, eyeglasses: Int, gender: Int, age: Int, mask: Int,
                   huzi: Int, feature: Array[Float], bitfeature: String) {
-    def toEsMap: Map[String, Any] = Map("id" -> id, "sftpurl" -> sftpurl, "bftpurl" -> bftpurl, "timestamp" -> timestamp.toString,
+    def toEsMap: Map[String, Any] = Map("id" -> id, "sftpurl" -> sftpurl, "bftpurl" -> bftpurl,
+      "timestamp" -> sqlTimeStamp2FormatString(timestamp),
       "ipcid" -> ipcid, "hostname" -> hostname, "babsolutepath" -> babsolutepath, "sabsolutepath" -> sabsolutepath,
       "eyeglasses" -> eyeglasses, "gender" -> gender, "age" -> age, "mask" -> mask, "huzi" -> huzi,
       "feature" -> FaceUtil.floatFeature2Base64Str(feature), "bitfeature" -> bitfeature)
+    def sqlTimeStamp2FormatString(timestamp: Timestamp): String = {
+      val dataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+      dataFormat.format(timestamp)
+    }
   }
 
   case class Person(id: String, sftpurl: String, bftpurl: String, timestamp: String, ipcid: String, hostname: String,
@@ -80,8 +85,8 @@ object KafkaToParquet {
     val zkFacePath = properties.getProperty("job.kafkaToParquet.zkFacePath")
     val zkPersonPath = properties.getProperty("job.kafkaToParquet.zkPersonPath")
     val zkCarPath = properties.getProperty("job.kafkaToParquet.zkCarPath")
-    val esNodes = properties.getProperty("job.offLine.esNodes")
-    val esPort = properties.getProperty("job.offLine.esPort")
+    val esNodes = properties.getProperty("job.kafkaToParquet.esNodes")
+    val esPort = properties.getProperty("job.kafkaToParquet.esPort")
 
     val zkClient = new ZkClient(zkHosts)
     val conf = new SparkConf().setAppName(appName)
@@ -111,8 +116,9 @@ object KafkaToParquet {
     val kafkaDF = messages.map(data => (data._1, JacksonUtil.toObject(data._2, classOf[FaceObject])))
       .map(faceobject => {
         Face(faceobject._1, faceobject._2.getsFtpUrl(), faceobject._2.getbFtpUrl(),
-          Timestamp.valueOf(faceobject._2.getTimeStamp), faceobject._2.getIpcId, faceobject._2.getHostname,
-          faceobject._2.getbAbsolutePath(), faceobject._2.getsAbsolutePath(), faceobject._2.getAttribute.getEyeglasses,
+          Timestamp.valueOf(faceobject._2.getTimeStamp), faceobject._2.getTimeStamp.split(" ")(0),
+          faceobject._2.getIpcId, faceobject._2.getHostname, faceobject._2.getbAbsolutePath(),
+          faceobject._2.getsAbsolutePath(), faceobject._2.getAttribute.getEyeglasses,
           faceobject._2.getAttribute.getGender, faceobject._2.getAttribute.getAge, faceobject._2.getAttribute.getMask,
           faceobject._2.getAttribute.getHuzi, faceobject._2.getAttribute.getFeature,
           Base64.getEncoder.encodeToString(faceobject._2.getAttribute.getBitFeature))
@@ -192,7 +198,8 @@ object KafkaToParquet {
   private def readOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, topic: String): Option[Map[TopicAndPartition, Long]] = {
     log.info("=========================== Read Offsets =============================")
     log.info("Reading offsets from Zookeeper")
-    val stopwatch = Stopwatch.createUnstarted()
+    val stopwatch = new com.hzgc.common.util.basic.StopWatch()
+    stopwatch.start()
     val (offsetsRangesStrOpt, _) = ZkUtils.readDataMaybeNull(zkClient, zkPath)
     offsetsRangesStrOpt match {
       case Some(offsetsRangesStr) =>
@@ -202,10 +209,12 @@ object KafkaToParquet {
           .map {
             case Array(partitionStr, offsetStr) => TopicAndPartition(topic, partitionStr.toInt) -> offsetStr.toLong
           }.toMap
-        log.info("Done reading offsets from Zookeeper. Took " + stopwatch)
+        stopwatch.stop()
+        log.info("Done reading offsets from Zookeeper. Took " + stopwatch.getTotalTimeMillis)
         Some(offsets)
       case None =>
-        log.info("No offsets found in Zookeeper. Took " + stopwatch)
+        stopwatch.stop()
+        log.info("No offsets found in Zookeeper. Took " + stopwatch.getTotalTimeMillis)
         log.info("==================================================================")
         None
     }
@@ -214,14 +223,16 @@ object KafkaToParquet {
   private def saveOffsets(zkClient: ZkClient, zkHosts: String, zkPath: String, rdd: RDD[_]): Unit = {
     log.info("==========================Save Offsets============================")
     log.info("Saving offsets to Zookeeper")
-    val stopwatch = Stopwatch.createUnstarted()
+    val stopwatch = new com.hzgc.common.util.basic.StopWatch()
+    stopwatch.start()
     val offsetsRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
     offsetsRanges.foreach(offsetRange => log.debug(s"Using $offsetRange"))
     val offsetsRangesStr = offsetsRanges.map(offsetRange => s"${offsetRange.partition}:${offsetRange.fromOffset}")
       .mkString(",")
     log.info("Writing offsets to Zookeeper zkClient=" + zkClient + " zkHosts=" + zkHosts + "zkPath=" + zkPath + " offsetsRangesStr:" + offsetsRangesStr)
     ZkUtils.updatePersistentPath(zkClient, zkPath, offsetsRangesStr)
-    log.info("Done updating offsets in Zookeeper. Took " + stopwatch)
+    stopwatch.stop()
+    log.info("Done updating offsets in Zookeeper. Took " + stopwatch.getTotalTimeMillis)
     log.info("==================================================================")
   }
 }

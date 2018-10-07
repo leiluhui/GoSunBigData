@@ -30,8 +30,17 @@ public class CapturedPicture implements Serializable {
     //图片的相似度
     private Float similarity;
 
+    //性别
+    private int gender;
+
+    //年龄
+    private int age;
+
     //图片的附加信息，扩展预留
     private Map<String, Object> extend;
+
+    //位置信息
+    private String location;
 
     //时间戳
     @JsonProperty("time")

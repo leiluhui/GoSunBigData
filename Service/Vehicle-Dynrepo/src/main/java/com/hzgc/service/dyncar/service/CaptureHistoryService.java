@@ -1,62 +1,45 @@
 package com.hzgc.service.dyncar.service;
 
-import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.util.ConverFtpurl;
+import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.UrlInfo;
+import com.hzgc.common.service.api.service.InnerService;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.VehicleTable;
-import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.CarAttribute;
 import com.hzgc.service.dyncar.bean.*;
 import com.hzgc.service.dyncar.dao.ElasticSearchDao;
 import com.hzgc.service.dyncar.dao.EsSearchParam;
-import com.hzgc.service.dyncar.dao.SortParam;
 import com.hzgc.service.dyncar.util.DeviceToIpcs;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class CaptureHistoryService {
 
     @Autowired
-    private
-    FtpRegisterClient ftpRegisterClient;
-    @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;
     @Autowired
-    @SuppressWarnings("unused")
-    private Environment environment;
-    @Value("${ftp.port}")
-    private String ftpPort;
+    private PlatformService platformService;
+    @Autowired
+    private InnerService innerService;
 
     public SearchResult getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
-        List<SortParam> sortParams = option.getSort()
-                .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        log.info("The current query is default");
-        SearchResult searchResult ;
-        if (sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query needs to be grouped by ipcid");
-            searchResult = getCaptureHistory(option, sortParam);
-        } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query don't needs to be grouped by ipcid");
-            searchResult = getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam);
-        } else {
-            log.info("The current query is default");
-            searchResult = getDefaultCaptureHistory(option, sortParam);
-        }
+        log.info("The current query don't needs to be grouped by ipcid");
+        SearchResult searchResult = getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam);
         return searchResult;
     }
 
@@ -65,14 +48,13 @@ public class CaptureHistoryService {
         SearchResult searchResult = new SearchResult();
         List<GroupByIpc> groupByIpcs = new ArrayList<>();
         List<String> ipcs = DeviceToIpcs.getIpcs(option.getDevices());
+        SingleSearchResult singleSearchResult = new SingleSearchResult();
         for (String ipcId : ipcs) {
             List<CapturedPicture> capturedPictureList = new ArrayList<>();
             SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, ipcId, sortParam);
             SearchHits searchHits = searchResponse.getHits();
             GroupByIpc groupByIpc = new GroupByIpc();
             SearchHit[] hits = searchHits.getHits();
-            System.out.println(hits.length);
-            System.out.println(searchHits.getTotalHits());
             CapturedPicture capturePicture;
             if (hits.length > 0) {
                 for (SearchHit hit : hits) {
@@ -82,30 +64,34 @@ public class CaptureHistoryService {
                     String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                     String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                     String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                    Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                    String ip = ftpIpMapping.get(hostname);
+//                    Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
+//                    String ip = ftpIpMapping.get(hostname);
                     //参数封装
                     CarAttribute carAttribute = carDataPackage(hit);
                     capturePicture.setCarAttribute(carAttribute);
-                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
-                    capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getDeviceCode());
+//                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
+//                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+                    capturePicture.setBabsolutepath(babsolutepath);
+                    capturePicture.setSabsolutepath(sabsolutepath);
+                    capturePicture.setDeviceId(ipc);
                     capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimestamp(timestamp);
                     if (ipcId.equals(ipc)) {
                         capturedPictureList.add(capturePicture);
                     }
                 }
+                groupByIpc.setPictures(capturedPictureList);
+                groupByIpc.setDeviceId(ipcId);
+                groupByIpc.setTotal(capturedPictureList.size());
+                groupByIpc.setDeviceName(option.getIpcMapping().get(ipcId).getDeviceName());
+                groupByIpcs.add(groupByIpc);
+                singleSearchResult.setTotal(groupByIpcs.size());
             }
-            groupByIpc.setPictures(capturedPictureList);
-            groupByIpc.setDeviceId(option.getIpcMapping().get(ipcId).getDeviceName());
-            groupByIpc.setTotal(capturedPictureList.size());
-            groupByIpc.setDeviceName(option.getIpcMapping().get(ipcId).getDeviceName());
-            groupByIpcs.add(groupByIpc);
         }
-        searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
+        singleSearchResult.setDevicePictures(groupByIpcs);
+        searchResult.setSingleSearchResult(singleSearchResult);
         searchResult.setSearchId(UuidUtil.getUuid());
-        log.info("Capture history results:" + JacksonUtil.toJson(groupByIpcs));
+        log.info("Capture history results:" + JacksonUtil.toJson(searchResult));
         return searchResult;
     }
 
@@ -126,13 +112,13 @@ public class CaptureHistoryService {
                 String ipcid = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(hostname);
+//                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
+//                String ip = ftpIpMapping.get(hostname);
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
+//                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
+//                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipcid);
                 capturePicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
                 capturePicture.setTimestamp(timestamp);
@@ -150,8 +136,7 @@ public class CaptureHistoryService {
     //多个ipcid查询
     private SearchResult getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam) {
         SearchResult searchResult = new SearchResult();
-        ArrayList<GroupByIpc> groupByIpcs = new ArrayList<>();
-        GroupByIpc groupByIpc = new GroupByIpc();
+        SingleSearchResult singleSearchResult = new SingleSearchResult();
         List<CapturedPicture> captureList = new ArrayList<>();
         SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, deviceIds, sortParam);
         SearchHits searchHits = searchResponse.getHits();
@@ -165,27 +150,36 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                Map<String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(hostname);
+                hostname = "s202";
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 //参数封装
                 CarAttribute carAttribute = carDataPackage(hit);
                 capturePicture.setCarAttribute(carAttribute);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip, ftpPort, babsolutepath));
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setTimestamp(timestamp);
                 capturePicture.setDeviceId(ipc);
                 capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
+                capturePicture.setLocation(getLocation(ipc));
                 captureList.add(capturePicture);
             }
         }
-        groupByIpc.setTotal((int) searchHits.getTotalHits());
-        groupByIpc.setPictures(captureList);
-        groupByIpc.setDeviceId(option.getDevices().get(0).toString());
-        groupByIpc.setDeviceName(option.getIpcMapping().get(option.getDevices().get(0).getDeviceCode()).getDeviceName());
-        groupByIpcs.add(groupByIpc);
-        searchResult.getSingleSearchResult().setDevicePictures(groupByIpcs);
+        singleSearchResult.setDeviceTotal(option.getIpcMapping().entrySet().size());
+        singleSearchResult.setTotal((int) searchHits.getTotalHits());
+        singleSearchResult.setPictures(captureList);
+        singleSearchResult.setSearchId(UuidUtil.getUuid());
+        searchResult.setSingleSearchResult(singleSearchResult);
         return searchResult;
+    }
+
+    private String getLocation(String ipc) {
+        //查询相机位置
+        ArrayList<String> list = new ArrayList<>();
+        list.add(ipc);
+        Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
+        CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
+        return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }
 
     //数据封装

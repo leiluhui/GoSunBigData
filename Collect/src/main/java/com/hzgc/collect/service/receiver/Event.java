@@ -1,5 +1,6 @@
 package com.hzgc.collect.service.receiver;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hzgc.collect.service.parser.Parser;
 
 public class Event {
@@ -13,6 +14,7 @@ public class Event {
     private String sRelativePath;       //小图存储绝对路径(不带ftp根目录)
     private String bRelativePath;       //大图存储绝对路径(不带ftp根目录)
     private String hostname;             // 图片保存主机:hostname
+    @JsonIgnore
     private Parser parser;              //对应设备解析器
 
     public static Event builder(){

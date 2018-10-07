@@ -25,4 +25,6 @@ public class Pictures implements Serializable {
 
     private String sHttpPath;
 
+    private String location;
+
 }

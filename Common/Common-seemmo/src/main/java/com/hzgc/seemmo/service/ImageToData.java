@@ -8,6 +8,7 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.util.CutImageUtil;
 import com.hzgc.seemmo.util.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -17,9 +18,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class ImageToData {
 
     private static CloseableHttpClient httpClient = null;
@@ -33,52 +36,60 @@ public class ImageToData {
     }
 
     //执行post请求
-    public static String executeHttpPost(String url, String imageJsonString) {
+    private static String executeHttpPost(String url, String imageJsonString) {
         try {
             httpClient = getHttpClient();
             HttpPost httpPost = new HttpPost(url);
-            StringEntity stringEntity = new StringEntity(imageJsonString);
+            StringEntity stringEntity = new StringEntity(imageJsonString, Charset.forName("UTF-8"));
             stringEntity.setContentType("application/json");
             httpPost.setEntity(stringEntity);
             CloseableHttpResponse res = httpClient.execute(httpPost);
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(res.getEntity());
+            } else {
+                log.warn(EntityUtils.toString(res.getEntity()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return null;
     }
 
     //获取数据 0表示获取车的数据，1表示获取人的数据，其他表示获取所有
     @SuppressWarnings("unchecked")
-    public static ImageResult getData(String result, String imagePath, String tag, byte[] bytes) {
-        JSONObject jsonObject = JsonUtil.stringToJsonObject(result);
-        int code = (int) jsonObject.get("code");
-        if (0 == code) {
-            JSONObject data = (JSONObject) jsonObject.get("data");
-            List <JSONObject> imageResults = (List <JSONObject>) data.get("ImageResults");
-            ImageResult imageResult = new ImageResult();
-            if ("0".equals(tag)) {
-                List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
-                imageResult.setVehicleList(vehicleList);
-            } else if ("1".equals(tag)) {
-                List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
-                imageResult.setPersonList(personList);
-            } else {
-                List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
-                List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
-                imageResult.setVehicleList(vehicleList);
-                imageResult.setPersonList(personList);
+    private static ImageResult getData(String result, String imagePath, String tag, byte[] bytes) {
+        try {
+            JSONObject jsonObject = JsonUtil.stringToJsonObject(result);
+            String jsondata = (String) jsonObject.get("data");
+            JSONObject jsonObject1 = JsonUtil.stringToJsonObject(jsondata);
+            int code = (int) jsonObject1.get("Code");
+            if (0 == code) {
+                List <JSONObject> imageResults = (List <JSONObject>) jsonObject1.get("ImageResults");
+                ImageResult imageResult = new ImageResult();
+                if ("0".equals(tag)) {
+                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                    imageResult.setVehicleList(vehicleList);
+                } else if ("1".equals(tag)) {
+                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                    imageResult.setPersonList(personList);
+                } else {
+                    List <Vehicle> vehicleList = ImageToData.getCarData(imageResults, imagePath, bytes);
+                    List <Person> personList = ImageToData.getPersonData(imageResults, imagePath, bytes);
+                    imageResult.setVehicleList(vehicleList);
+                    imageResult.setPersonList(personList);
+                }
+                return imageResult;
             }
-            return imageResult;
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
+
         return null;
     }
 
     //车辆数据封装
     @SuppressWarnings("unchecked")
-    public static List <Vehicle> getCarData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
+    private static List <Vehicle> getCarData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
         ArrayList <Vehicle> vehicleList = new ArrayList <>();
         if (imageResults.size() > 0) {
             for (JSONObject js : imageResults) {
@@ -271,7 +282,7 @@ public class ImageToData {
 
     //行人的数据封装
     @SuppressWarnings("unchecked")
-    public static List <Person> getPersonData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
+    private static List <Person> getPersonData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
         ArrayList <Person> personList = new ArrayList <>();
         if (imageResults.size() > 0) {
             for (JSONObject jsonObject : imageResults) {
@@ -293,9 +304,9 @@ public class ImageToData {
                             person_rect = (JSONArray) person_body.get("Rect");
                         }
                         JSONObject recognize = (JSONObject) js.get("Recognize");
-                        //行人数据解析
+                        //ÐÐÈËÊý¾Ý½âÎö
                         personDataAnalysis(recognize, person_object);
-                        if (null != imagePath && imagePath.length() > 0) {
+                        if (null != imagePath && imagePath.length() > 0 && null != person_rect) {
                             CutImageUtil cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                             cutImageUtil.setSrcpath(imagePath);
                             try {
@@ -337,41 +348,47 @@ public class ImageToData {
                                     }
                                 }
                                 JSONObject recognize = (JSONObject) person.get("Recognize");
-                                //数据解析
+                                //Êý¾Ý½âÎö
                                 personDataAnalysis(recognize, person_object);
                                 if (null != imagePath && imagePath.length() > 0) {
-                                    CutImageUtil cutImageUtil;
+                                    CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
                                         cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
                                                 (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
                                                 (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
-                                    } else {
+                                    }
+                                    if (null != person_rect) {
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
                                     try {
-                                        byte[] bytes = cutImageUtil.cut();
-                                        person_object.setCar_data(bytes);
+                                        if (null != cutImageUtil) {
+                                            byte[] bytes = cutImageUtil.cut();
+                                            person_object.setCar_data(bytes);
+                                        }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
                                 if (null != bytess) {
-                                    CutImageUtil cutImageUtil;
+                                    CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
                                         cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
                                                 (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
                                                 (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
                                         cutImageUtil.setSrcpath(imagePath);
-                                    } else {
+                                    }
+                                    if (null != person_rect) {
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                                     }
                                     try {
-                                        byte[] bytes = cutImageUtil.cut(bytess);
-                                        person_object.setCar_data(bytes);
+                                        if (null != cutImageUtil) {
+                                            byte[] bytes = cutImageUtil.cut(bytess);
+                                            person_object.setCar_data(bytes);
+                                        }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
@@ -387,7 +404,7 @@ public class ImageToData {
     }
 
     @SuppressWarnings("unchecked")
-    public static void personDataAnalysis(JSONObject recognize, Person person_object) {
+    private static void personDataAnalysis(JSONObject recognize, Person person_object) {
         JSONObject shoulderBag = (JSONObject) recognize.get("ShoulderBag");
         if (null != shoulderBag) {
             int code = (int) shoulderBag.get("Code");
@@ -531,7 +548,7 @@ public class ImageToData {
      * @param tag:0表示车只提取车属性，1表示提取人属性，其余表示提取所有
      * 获取图片的结构化信息
      * */
-    public static ImageResult getImageResult(String url, String imagePath, String tag) {
+    private static ImageResult getImageResult(String url, String imagePath, String tag) {
         String imageJsonString = JsonUtil.objectToJsonString(imagePath);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
         return ImageToData.getData(s, imagePath, tag, null);

@@ -19,15 +19,15 @@ public class MemeoryCache {
     @SuppressWarnings("unused")
     private PictureMapper pictureMapper;
 
-    @Value("face.float.threshold")
+    @Value("${face.float.threshold}")
     @SuppressWarnings("unused")
     private float floatThreshold;
 
-    @Value("face.float.compare.open")
+    @Value("${face.float.compare.open}")
     @SuppressWarnings("unused")
     private boolean isOpen;
 
-    @Value("face.bit.threshold")
+    @Value("${face.bit.threshold}")
     @SuppressWarnings("unused")
     private float featureThreshold;
 
@@ -75,6 +75,7 @@ public class MemeoryCache {
             CompareResult compareResult = compareResList.get(0);
             ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
             FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
+            log.info("=========================faceFeatureInfo="+faceFeatureInfo);
             int index = faceFeatureInfo.getIndex();
             String pictureKey = indexToPictureKey.get(index);
             List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
@@ -103,7 +104,8 @@ public class MemeoryCache {
                     return null;
                 }
             } else {
-                if (faceFeatureInfo.getScore() >= 90) {
+                log.info("=================score="+faceFeatureInfo.getScore());
+                if (faceFeatureInfo.getScore() >= featureThreshold) {
                     return comparePicture;
                 } else {
                     return null;

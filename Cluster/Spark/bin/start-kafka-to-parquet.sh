@@ -16,14 +16,13 @@ transport-netty3-client-5.5.0.jar
 lang-mustache-client-5.5.0.jar
 jackson-core-2.8.10.jar
 common-util-1.0.jar
-common-es-1.0.jar
 spark-streaming-kafka-0-8_2.11-2.2.0.jar
 zkclient-0.3.jar
 common-jni-1.0.jar
+elasticsearch-spark-20_2.11-5.5.0.jar
 kafka_2.11-0.8.2.1.jar
 elasticsearch-5.5.0.jar
 common-seemmo-1.0.jar
-elasticsearch-hadoop-6.2.4.jar
 kafka-clients-1.0.0.jar
 common-collect-1.0.jar
 metrics-core-2.2.0.jar

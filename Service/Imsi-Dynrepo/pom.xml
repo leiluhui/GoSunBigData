@@ -82,7 +82,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hzgc.service.com.hzgc.service.imsi.ImsiApplication</mainClass>
+                    <mainClass>com.hzgc.service.imsi.ImsiApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -23,7 +23,7 @@ public class ReceiverImpl implements Receiver, Serializable {
         if (event != null) {
             try {
                 queue.put(event);
-                log.info("current queue is:" + queueID + ", the size  waiting is th queue is:" + getQueue().size());
+                log.info("current queue is:" + queueID + ", the size of waiting is " + getQueue().size());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

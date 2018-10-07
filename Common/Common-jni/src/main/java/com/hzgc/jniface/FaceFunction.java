@@ -28,7 +28,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> bigPictureCheck(byte[] pictureStream, String pictureFormat);
 
@@ -37,7 +37,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> faceCheck(byte[] pictureStream, String pictureFormat);
 
@@ -46,7 +46,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> personCheck(byte[] pictureStream, String pictureFormat);
 
@@ -55,7 +55,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> carCheck(byte[] pictureStream, String pictureFormat);
 
@@ -64,7 +64,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> faceAndPersonCheck(byte[] pictureStream, String pictureFormat);
 
@@ -73,7 +73,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> faceAndCarCheck(byte[] pictureStream, String pictureFormat);
 
@@ -82,7 +82,7 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
-     * @return 检测结果,检测不到返回 null
+     * @return 检测结果, 检测不到返回 null
      */
     public static native ArrayList<SmallImage> personAndCarCheck(byte[] pictureStream, String pictureFormat);
 
@@ -91,26 +91,40 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 小图二进制图片
      * @param pictureFormat 图片格式
-     * @return 提取结果,提取不到则返回 null
+     * @return 提取结果, 提取不到则返回 null
      */
     public static native FaceAttribute faceFeatureExtract(byte[] pictureStream, String pictureFormat);
 
 
     /**
      * 人脸比对粗筛
+     *
      * @param featureList 要查询的特征值集合,即可查单条或者多条
-     * @param queryList 被比对的特征值集合
-     * @param topN 取前 n 条
+     * @param queryList   被比对的特征值集合
+     * @param topN        取前 n 条
      * @return 比对结果
      */
     public static native ArrayList<CompareResult> faceCompareBit(byte[][] featureList, byte[][] queryList, int topN);
 
     /**
      * 人脸比对精筛
-     * @param diku  数据底库
+     *
+     * @param diku      数据底库
      * @param queryList 图片数据
-     * @param topN 取前 n 条
+     * @param topN      取前 n 条
      * @return 比对结果
      */
     public static native ArrayList<CompareResult> faceCompareFloat(float[][] diku, float[][] queryList, int topN);
+
+    public static void main(String[] args) {
+        FaceFunction.init();
+//        FaceFunction.bigPictureCheck(new byte[0], "JPG");
+        FaceFunction.faceCheck(new byte[0], "JPG");
+        System.out.println("1");
+        FaceFunction.faceCheck(new byte[0], "JPG");
+        System.out.println("2");
+        FaceFunction.faceCheck(new byte[0], "JPG");
+        System.out.println("3");
+        System.out.println(FaceFunction.bigPictureCheck(new byte[0], "JPG"));
+    }
 }

@@ -8,8 +8,7 @@ import com.hzgc.common.rpc.util.Constant;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,8 @@ import java.util.List;
  * 将会通知ConnectManager来刷新连接
  */
 public class ServiceDiscovery extends ZookeeperClient {
-    private static final Logger logger = LoggerFactory.getLogger(ServiceDiscovery.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ServiceDiscovery.class);
+    private static Logger logger = Logger.getLogger(ServiceDiscovery.class);
     private volatile List<String> workerList = new ArrayList<>();
     public ServiceDiscovery(String zkAddress, Constant constant) {
         super(zkAddress, constant);
@@ -39,9 +39,8 @@ public class ServiceDiscovery extends ZookeeperClient {
             //此种类型的StartMode意思为已存在节点不作为变化事件
             pathCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
             pathCache.getListenable().addListener((client, event) -> {
-                logger.info("Child event [type:{}, path:{}]",
-                        event.getType(),
-                        event.getData() != null ? event.getData().getPath() : null);
+                logger.info("Child event [type:" + event.getType() + ", path:"
+                                + (event.getData() != null ? event.getData().getPath() : null) + "]");
                 switch (event.getType()) {
                     case CHILD_ADDED:
                         refreshData(pathCache.getCurrentData());
@@ -85,7 +84,7 @@ public class ServiceDiscovery extends ZookeeperClient {
      * 此方法会调用ConnectManager的updateConnectedServer方法用来更新连接信息
      */
     private void updateConnectedServer() {
-        logger.info("Service discovery triggered updating connected server nodes:{}", Arrays.toString(this.workerList.toArray()));
+        logger.info("Service discovery triggered updating connected server nodes:" + Arrays.toString(this.workerList.toArray()));
         if (this.workerList.size() > 0) {
             ConnectManager.getInstance().updateConnectedServer(this.workerList);
         }

@@ -13,7 +13,7 @@ public class FaceTable implements Serializable {
     //小图片的ftp地址 xxx/xxx/xxx/
     public static final String SFTPURL = "sftpurl";
     //大图片的ftp地址 xxx/xxx/xxx/
-    public static final String BFTPURL = "sftpurl";
+    public static final String BFTPURL = "bftpurl";
     //设备id
     public static final String IPCID = "ipcid";
     //主机名称hostname
@@ -46,5 +46,7 @@ public class FaceTable implements Serializable {
     public static final String SIMILARITY = "similarity";
     //hive中特征值比对udf函数
     public static final String FUNCTION_NAME = "compare";
+    //图片分组ID
+    public static final String GROUP_FIELD = "picid";
 
 }

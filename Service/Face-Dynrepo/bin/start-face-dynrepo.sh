@@ -41,7 +41,7 @@ function start_springCloud()
 {
    FACE_DYNREPO_PID=`jps | grep ${FACE_DYNREPO_JAR_NAME} | awk '{print $1}'`
    if [ -n "${FACE_DYNREPO_PID}" ];then
-       echo "dynrepo service already started"
+       echo "face-dynrepo service already started"
    else
        nohup java -jar ${FACE_DYNREPO_JAR} --spring.profiles.active=pro  \
        --eureka.ip=${EUREKA_IP} \
@@ -64,13 +64,6 @@ function start_springCloud()
 # 返回值: N/A
 # 其他: N/A
 #####################################################################
-function prepare_resource_file()
-{
-  cp ${CONF_DIR}/hbase-site.xml .
-  jar -uf ${FACE_DYNREPO_JAR} hbase-site.xml
-  rm -rf hbase-site.xml
-}
-
 
 #####################################################################
 # 函数名: main
@@ -81,7 +74,6 @@ function prepare_resource_file()
 #####################################################################
 function main()
 {
-    prepare_resource_file
     start_springCloud
 }
 

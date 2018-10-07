@@ -26,6 +26,9 @@ public class CapturedPicture implements Serializable {
     // 时间
     private String timestamp;
 
+    //位置信息
+    private String location;
+
     //车辆属性
     private CarAttribute carAttribute;
 

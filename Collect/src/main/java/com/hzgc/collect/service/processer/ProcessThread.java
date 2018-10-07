@@ -20,18 +20,21 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class ProcessThread implements Runnable {
     private BlockingQueue<Event> queue;
     private CollectContext collectContext;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final static String FACE = "face";
     private final static String PERSON = "person";
     private final static String CAR = "car";
@@ -55,7 +58,7 @@ public class ProcessThread implements Runnable {
                 //continue;
                 //}
                 if (collectContext.getFtpTypeList().contains("face")) {
-                    ArrayList<SmallImage> smallImageList = FaceFunction.bigPictureCheck(bytes, PictureFormat.JPG);
+                    ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG);
                     if (smallImageList != null && smallImageList.size() > 0) {
                         int index = 1;
                         for (SmallImage smallImage : smallImageList) {
@@ -85,21 +88,22 @@ public class ProcessThread implements Runnable {
                             }
                             index++;
                         }
+                    } else {
+                        log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                     }
-                } else {
-                    log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                 }
 
                 List<Person> personList = null;
                 List<Vehicle> vehicleList = null;
-                if (collectContext.getFtpTypeList().contains("person") || collectContext.getFtpTypeList().contains("car")) {
-                    ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
-                    if (result != null) {
-                        personList = result.getPersonList();
-                        vehicleList = result.getVehicleList();
-                    }
+                ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
+                if (result != null) {
+                    personList = result.getPersonList();
+                    vehicleList = result.getVehicleList();
+                } else {
+                    log.error("Person or Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
                 if (collectContext.getFtpTypeList().contains("person") && personList != null && personList.size() > 0) {
+                    log.info("Person check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Person person : personList) {
                         if (person.getCar_data() == null || person.getCar_data().length == 0) {
@@ -118,8 +122,12 @@ public class ProcessThread implements Runnable {
                         }
                         index++;
                     }
+                } else {
+                    log.warn("Person check failed, file name is:{}", event.getbAbsolutePath());
                 }
+
                 if (collectContext.getFtpTypeList().contains("car") && vehicleList != null && vehicleList.size() > 0) {
+                    log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
                         if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
@@ -138,6 +146,8 @@ public class ProcessThread implements Runnable {
                         }
                         index++;
                     }
+                } else {
+                    log.warn("Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
             }
         } catch (InterruptedException e) {
@@ -160,11 +170,19 @@ public class ProcessThread implements Runnable {
                 .setsRelativePath(event.getsRelativePath())
                 .setbRelativePath(event.getbRelativePath())
                 .setId(faceId);
-        collectContext.getKafkaProducer().sendKafkaMessage(
-                collectContext.getKafkaFaceObjectTopic(),
-                faceId,
-                JacksonUtil.toJson(faceObject),
-                new KafkaCallBack(event.getsFtpUrl(), sdf.format(System.currentTimeMillis())));
+        ListenableFuture<SendResult<String, String>> resultFuture =
+                collectContext.getKafkaTemplate().send(collectContext.getKafkaFaceObjectTopic(),
+                        faceId,
+                        JacksonUtil.toJson(faceObject));
+        try {
+            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
+            if (metaData != null) {
+                log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
+                        metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void sendKafka(Event event, Person person) {
@@ -183,11 +201,22 @@ public class ProcessThread implements Runnable {
                 .setbRelativePath(event.getbRelativePath())
                 .setId(pesonId);
 
-        collectContext.getKafkaProducer().sendKafkaMessage(
-                collectContext.getKafkaPersonObjectTopic(),
-                pesonId,
-                JacksonUtil.toJson(personObject),
-                new KafkaCallBack(event.getsFtpUrl(), sdf.format(System.currentTimeMillis())));
+        try {
+            ListenableFuture<SendResult<String, String>> resultFuture =
+                    collectContext.getKafkaTemplate().send(collectContext.getKafkaPersonObjectTopic(),
+                            pesonId,
+                            JacksonUtil.toJson(personObject));
+            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
+            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
+            if (metaData != null) {
+                log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
+                        metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
+            } else {
+                log.error("Send kafka failed! metaData is null");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void sendKafka(Event event, Vehicle vehicle) {
@@ -205,11 +234,21 @@ public class ProcessThread implements Runnable {
                 .setsRelativePath(event.getsRelativePath())
                 .setbRelativePath(event.getbRelativePath())
                 .setId(carId);
-        collectContext.getKafkaProducer().sendKafkaMessage(
-                collectContext.getKafkaCarObjectTopic(),
-                carId,
-                JacksonUtil.toJson(carObject),
-                new KafkaCallBack(event.getsFtpUrl(), sdf.format(System.currentTimeMillis())));
+        try {
+            ListenableFuture<SendResult<String, String>> resultFuture =
+                    collectContext.getKafkaTemplate().send(collectContext.getKafkaCarObjectTopic(),
+                            carId,
+                            JacksonUtil.toJson(carObject));
+            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
+            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
+            if (metaData != null) {
+                log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
+                        metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getMessage());
+        }
+
     }
 
     private void sendRocketMQ(Event event, String topic) {

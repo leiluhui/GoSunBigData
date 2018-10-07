@@ -446,7 +446,7 @@ public class PeopleService {
     public SearchPeopleVO searchPeople(FilterField field) {
         SearchPeopleVO vo = new SearchPeopleVO();
         List<PeopleVO> list = new ArrayList<>();
-        Page page = PageHelper.offsetPage(field.getStart(), field.getLimit());
+        Page page = PageHelper.offsetPage(field.getStart(), field.getLimit(), true);
         List<People> peoples = peopleMapper.searchPeople(field);
         PageInfo info = new PageInfo(page.getResult());
         int total = (int) info.getTotal();

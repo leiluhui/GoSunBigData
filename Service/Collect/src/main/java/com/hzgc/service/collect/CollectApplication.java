@@ -1,34 +1,19 @@
 package com.hzgc.service.collect;
 
-import com.hzgc.common.service.carattribute.service.CarAttributeService;
-import com.hzgc.common.service.faceattribute.service.AttributeService;
-import com.hzgc.common.service.personattribute.service.PersonAttributeService;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.context.annotation.Bean;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 @EnableEurekaClient
+@EnableSwagger2
 public class CollectApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CollectApplication.class, args);
-    }
-
-    @Bean
-    AttributeService attributeService() {
-        return new AttributeService();
-    }
-
-    @Bean
-    PersonAttributeService personAttributeService() {
-        return new PersonAttributeService();
-    }
-
-    @Bean
-    CarAttributeService carAttributeService() {
-        return new CarAttributeService();
     }
 }

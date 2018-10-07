@@ -2,9 +2,9 @@
 ## 动态信息库person 表的映射
 
 ## 删除索引
-##curl -XDELETE 's100:9200/dynamic?pretty'  -H 'Content-Type: application/json'
-##curl -XDELETE 's100:9200/person?pretty' -H 'Content-Type:application/json'
-##curl -XDELETE 's100:9200/car?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 's100:9200/dynamicface?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 's100:9200/dynamicperson?pretty' -H 'Content-Type:application/json'
+##curl -XDELETE 's100:9200/dynamiccar?pretty'  -H 'Content-Type: application/json'
 
 curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d'
 {
@@ -62,10 +62,10 @@ curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d
          			    "type": "keyword"
          			},
          			"bitfeature": {
-         			    "type": "keyword",
+         			    "type": "keyword"
          			},
          			"ipcid": {
-         				"type": "keyword",
+         				"type": "keyword"
          			},
          			"timestamp": {
          				"type": "date",
@@ -85,7 +85,7 @@ curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d
         }
     }'
 
-curl -XPUT 's100:9200/dynamicperson/_settings' -d '{
+curl -XPUT 's100:9200/dynamicface/_settings' -d '{
     "index": {
         "max_result_window": 1000000000
     }
@@ -172,7 +172,7 @@ curl -XPUT 's100:9200/dynamicperson?pretty' -H 'Content-Type: application/json' 
                         "type": "keyword"
                     },
                     "bitfeature": {
-                        "type": "keyword",
+                        "type": "keyword"
                     },
 					"ipcid": {
 						"type": "keyword"
@@ -234,7 +234,7 @@ curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
          			"sftpurl": {
          				"type": "keyword"
          			},
-         			"sftpurl": {
+         			"bftpurl": {
          				"type": "keyword"
          			},
          			"sabsolutepath": {
@@ -250,7 +250,7 @@ curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
                         "type": "keyword"
                     },
                     "bitfeature": {
-                        "type": "keyword",
+                        "type": "keyword"
                     },
          			"vehicle_object_type": {
          				"type": "keyword"
@@ -294,7 +294,7 @@ curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
 						"type": "keyword"
 					},
 					"plate_color_code": {
-						"type": "integer"
+						"type": "keyword"
 					},
 					"plate_type_code": {
 						"type": "keyword"

@@ -3,12 +3,13 @@ package com.hzgc.service.imsi.model;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 public class ImsiInfo implements Serializable {
-    //基站序列号
-    private String sn;
+    //设备id
+    private String controlsn;
+    //基站
+    private String sourcesn;
     //手机IMSI码
     private String imsi;
     //小区ID
@@ -28,7 +29,7 @@ public class ImsiInfo implements Serializable {
     //运营商制式
     private String standard;
     //时间
-    private Long time;
+    private Long savetime;
     //开始时间
     private Long startTime;
     //结束时间

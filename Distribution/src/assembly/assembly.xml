@@ -32,6 +32,52 @@
             <outputDirectory>project/bin</outputDirectory>
         </fileSet>
 
+        <!--peoplemanager-background-->
+        <!--peoplemanager-background-client-->
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/target</directory>
+            <includes>
+                <include>peoman-client-1.0.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/conf</outputDirectory>
+        </fileSet>
+        <!--peoplemanager-background-worker-->
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-worker/target</directory>
+            <includes>
+                <include>peoman-worker-1.0.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-worker/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-worker/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-worker/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/PeopleManager-background/PeopleManager-background-worker/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/peoplemanager/peoplemanager-worker/conf</outputDirectory>
+        </fileSet>
+
         <!--spark目录-->
         <fileSet>
             <directory>../Cluster/Spark/target/spark-${project.parent.version}</directory>
@@ -40,7 +86,6 @@
             </excludes>
             <outputDirectory>component/GoSunBigData/Cluster/spark</outputDirectory>
         </fileSet>
-
         <fileSet>
             <directory>../Cluster/Spark/target/spark-${project.parent.version}/bin</directory>
             <includes>
@@ -57,7 +102,6 @@
             </includes>
             <outputDirectory>component/GoSunBigData/Cluster/spark/lib</outputDirectory>
         </fileSet>
-
         <fileSet>
             <directory>../Cluster/Spark-udf/target/</directory>
             <includes>
@@ -65,7 +109,6 @@
             </includes>
             <outputDirectory>project/bin/spark/lib</outputDirectory>
         </fileSet>
-
         <fileSet>
             <directory>../Cluster/Spark-udf/bin</directory>
             <includes>
@@ -74,107 +117,102 @@
             <outputDirectory>project/bin/spark</outputDirectory>
         </fileSet>
 
-        <!--phoenix-udf目录-->
-        <fileSet>
-            <directory>../Cluster/Phoenix-udf/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>project/bin/phoenix/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/Phoenix-udf/sql</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>project/bin/phoenix/sql</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/Phoenix-udf/target/</directory>
-            <includes>
-                <include>phoenix-udf-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>project/bin/phoenix/lib</outputDirectory>
-        </fileSet>
-
-        <!--es目录-->
-        <fileSet>
-            <directory>../Cluster/ES/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>project/bin/es</outputDirectory>
-        </fileSet>
-
-        <!--hbase目录-->
-        <fileSet>
-            <directory>../Cluster/HBase/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>project/bin/hbase/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/HBase/sql</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>project/bin/hbase/sql</outputDirectory>
-        </fileSet>
-
         <!--azkaban-->
         <fileSet>
-            <directory>../Cluster/Azkaban/bin</directory>
+            <directory>../Cluster/Azkaban</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Cluster/azkaban/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Cluster/azkaban</outputDirectory>
+        </fileSet>
+
+        <!--FaceCompare相关配置-->
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Worker/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/conf</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Master/src/main/resources</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/conf</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Worker/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Master/bin</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/bin</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Worker/target/worker-1.0/lib</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Master/target/master-1.0/lib</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Worker/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Master/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Cluster/FaceCompare/Client/target</directory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <outputDirectory>component/GoSunBigData/Cluster/FaceCompare/client</outputDirectory>
         </fileSet>
 
         <!--cloudService-->
-        <!--Visual目录-->
+        <!--Fusion目录-->
         <fileSet>
-            <directory>../Service/Visual/target</directory>
+            <directory>../Service/Fusion/target</directory>
             <includes>
-                <include>visual-${project.parent.version}.jar</include>
+                <include>fusion-${project.parent.version}.jar</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/lib</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/fusion/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Visual/bin</directory>
+            <directory>../Service/Fusion/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/bin</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/fusion/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Visual/src/main/resources</directory>
+            <directory>../Service/Fusion/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/visual/conf</outputDirectory>
-        </fileSet>
-        <!--PeopleManager目录-->
-        <fileSet>
-            <directory>../Service/PeopleManager/target</directory>
-            <includes>
-                <include>peoplemanager-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/PeopleManager/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/PeopleManager/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Cloud/peoplemanager/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Cloud/fusion/conf</outputDirectory>
         </fileSet>
         <!--Imsi-Dynrepo目录-->
         <fileSet>
@@ -222,7 +260,7 @@
         </fileSet>
 
 
-        <!--huitongService目录-->
+        <!--BasicService目录-->
         <!--Collect目录-->
         <fileSet>
             <directory>../Service/Collect/target</directory>
@@ -244,28 +282,6 @@
                 <include>**</include>
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/collect/bin</outputDirectory>
-        </fileSet>
-        <!--Alarm目录-->
-        <fileSet>
-            <directory>../Service/Alarm/target</directory>
-            <includes>
-                <include>alarm-${project.parent.version}.jar</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Alarm/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Service/Alarm/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/GoSunBigData/Service/Basic/alarm/conf</outputDirectory>
         </fileSet>
         <!--Face-Dispatch目录-->
         <fileSet>
@@ -289,27 +305,27 @@
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dispatch/conf</outputDirectory>
         </fileSet>
-        <!--Face-DynRepo目录-->
+        <!--Face-Dynrepo目录-->
         <fileSet>
-            <directory>../Service/Face-DynRepo/target</directory>
+            <directory>../Service/Face-Dynrepo/target</directory>
             <includes>
                 <include>face-dynrepo-${project.parent.version}.jar</include>
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/lib</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Face-DynRepo/bin</directory>
+            <directory>../Service/Face-Dynrepo/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
             <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Service/Face-DynRepo/src/main/resources</directory>
+            <directory>../Service/Face-Dynrepo/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynRepo/conf</outputDirectory>
+            <outputDirectory>component/GoSunBigData/Service/Basic/face-dynrepo/conf</outputDirectory>
         </fileSet>
         <!--Person-Dynrepo目录-->
         <fileSet>
@@ -363,88 +379,25 @@
             <outputDirectory>bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Collect/target/collect-ftp-1.0/bin</directory>
+            <directory>../Collect/target</directory>
+            <includes>
+                <include>collect-ftp-1.0.jar</include>
+            </includes>
+            <outputDirectory>component/Collect/lib</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Collect/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
             <outputDirectory>component/Collect/bin</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>../Collect/target/collect-ftp-1.0/lib</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/Collect/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Collect/target/collect-ftp-1.0/conf</directory>
+            <directory>../Collect/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
             <outputDirectory>component/Collect/conf</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Worker/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/conf</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Master/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/conf</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Worker/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Master/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Worker/target/worker-1.0/lib</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Master/target/master-1.0/lib</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Worker/target</directory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Master/target</directory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../FaceCompare/Client/target</directory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-            <outputDirectory>component/FaceCompare/client</outputDirectory>
         </fileSet>
 
         <!--> Deployment模块 <-->

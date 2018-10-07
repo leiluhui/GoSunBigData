@@ -17,9 +17,4 @@ public class BeanConfig {
     AttributeService attributeService() {
         return new AttributeService();
     }
-
-    @Bean
-    public FtpRegisterClient ftpRegisterClient() {
-        return new FtpRegisterClient(environment.getProperty("zk.address"));
-    }
 }

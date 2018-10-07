@@ -86,16 +86,11 @@ public class FaceUtil {
 
     public static float featureCompare(float[] currentFeature, float[] historyFeature) {
         double similarityDegree = 0;
-        double currentFeatureMultiple = 0;
-        double historyFeatureMultiple = 0;
         for (int i = 0; i < currentFeature.length; i++) {
             similarityDegree = similarityDegree + currentFeature[i] * historyFeature[i];
-            currentFeatureMultiple = currentFeatureMultiple + Math.pow(currentFeature[i], 2);//pow 返回currentFeature[i] 平方
-            historyFeatureMultiple = historyFeatureMultiple + Math.pow(historyFeature[i], 2);
         }
 
-        double tempSim = similarityDegree / Math.sqrt(currentFeatureMultiple) / Math.sqrt(historyFeatureMultiple);//sqrt 平方根 余弦相似度
-        double actualValue = new BigDecimal((0.5 + (tempSim / 2)) * 100).//余弦相似度表示为cosineSIM=0.5cosθ+0.5
+        double actualValue = new BigDecimal((0.5 + (similarityDegree / 2)) * 100).//余弦相似度表示为cosineSIM=0.5cosθ+0.5
                 setScale(2, BigDecimal.ROUND_HALF_UP).//ROUND_HALF_UP=4 保留两位小数四舍五入
                 doubleValue();
         if (actualValue >= 100) {
@@ -110,7 +105,6 @@ public class FaceUtil {
      * @param feature 传入float[]类型的特征值
      * @return 输出指定编码为UTF-8的String
      */
-    @Deprecated
     public static String floatArray2string(float[] feature) {
         if (feature != null && feature.length == 512) {
             StringBuilder sb = new StringBuilder();

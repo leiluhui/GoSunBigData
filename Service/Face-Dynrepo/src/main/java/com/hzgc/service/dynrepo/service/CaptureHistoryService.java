@@ -1,13 +1,16 @@
 package com.hzgc.service.dynrepo.service;
 
-import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.util.ConverFtpurl;
+import com.alibaba.fastjson.JSON;
+import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.UrlInfo;
+import com.hzgc.common.service.api.service.InnerService;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
 import com.hzgc.service.dynrepo.bean.CapturedPicture;
 import com.hzgc.service.dynrepo.bean.SingleCaptureResult;
-import com.hzgc.service.dynrepo.bean.SortParam;
 import com.hzgc.service.dynrepo.dao.ElasticSearchDao;
 import com.hzgc.service.dynrepo.dao.EsSearchParam;
 import com.hzgc.service.dynrepo.util.DeviceToIpcs;
@@ -16,57 +19,30 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class CaptureHistoryService {
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private FtpRegisterClient ftpRegisterClient;
     @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;
     @Autowired
     @SuppressWarnings("unused")
-    private Environment environment;
-    @Autowired
-    @SuppressWarnings("unused")
     private CaptureServiceHelper captureServiceHelper;
-    @Value(value = "${ftp.port}")
-    @SuppressWarnings("unused")
-    private String ftpPort;
+    @Autowired
+    private PlatformService platformService;
+    @Autowired
+    private InnerService innerService;
 
     public List<SingleCaptureResult> getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
-        List<SortParam> sortParams = option.getSort()
-                .stream().map(param -> SortParam.values()[param]).collect(Collectors.toList());
-        for (SortParam s : sortParams) {
-            if (s.name().equals(SortParam.TIMEDESC.toString())) {
-                sortParam = EsSearchParam.DESC;
-            } else if (s.name().equals(SortParam.SIMDASC.toString())) {
-                sortParam = EsSearchParam.ASC;
-            }
-        }
-
-        if (sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query needs to be grouped by ipcid");
-            return getCaptureHistory(option, sortParam);
-        } else if (!sortParams.get(0).name().equals(SortParam.IPC.toString())) {
-            log.info("The current query don't needs to be grouped by ipcid");
-            return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
-        } else {
-            log.info("The current query is default");
-            return getDefaultCaptureHistory(option, sortParam);
-        }
+        log.info("The current query don't needs to be grouped by ipcid");
+        return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
     }
 
     private List<SingleCaptureResult> getDefaultCaptureHistory(CaptureOption option, String sortParam) {
@@ -86,10 +62,9 @@ public class CaptureHistoryService {
                 String ipcid = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(ftpIpMapping.get(hostname));
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipcid);
                 capturePicture.setTimeStamp(timestamp);
                 persons.add(capturePicture);
@@ -119,11 +94,11 @@ public class CaptureHistoryService {
                     String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                     String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                     String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                    Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                    String ip = ftpIpMapping.get(hostname);
-                    capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                    capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                    UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                    capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                    capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                     capturePicture.setDeviceId(option.getIpcMapping().get(ipc).getIpc());
+                    capturePicture.setLocation(getLocation(ipc));
                     capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                     capturePicture.setTimeStamp(timestamp);
                     if (ipcId.equals(ipc)) {
@@ -161,14 +136,15 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(FaceTable.IPCID);
                 String timestamp = (String) hit.getSource().get(FaceTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(FaceTable.HOSTNAME);
-                Map <String, String> ftpIpMapping = ftpRegisterClient.getFtpIpMapping();
-                String ip = ftpIpMapping.get(hostname);
-                capturePicture.setSabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,sabsolutepath));
-                capturePicture.setBabsolutepath(ConverFtpurl.toHttpPath(ip,ftpPort,babsolutepath));
+                UrlInfo urlInfo = innerService.hostName2Ip(hostname);
+                capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
+                capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturePicture.setDeviceId(ipc);
+                ipc = "TEST000007";
+                capturePicture.setLocation(getLocation(ipc));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
-                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
+//                capturePicture.setDeviceName(option.getIpcMapping().get(ipc).getDeviceName());
                 captureList.add(capturePicture);
             }
         }
@@ -178,5 +154,14 @@ public class CaptureHistoryService {
         singleResult.setDeviceName(option.getIpcMapping().get(option.getDeviceIpcs().get(0).getIpc()).getDeviceName());
         results.add(singleResult);
         return results;
+    }
+
+    private String getLocation(String ipc) {
+        //查询相机位置
+        ArrayList<String> list = new ArrayList<>();
+        list.add(ipc);
+        Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(list);
+        CameraQueryDTO cameraQueryDTO = cameraInfoByBatchIpc.get(ipc);
+        return cameraQueryDTO.getRegion() + cameraQueryDTO.getCommunity();
     }
 }

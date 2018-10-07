@@ -3,8 +3,7 @@ package com.hzgc.common.rpc.client.result;
 import com.hzgc.common.rpc.protocol.RpcRequest;
 import com.hzgc.common.rpc.protocol.RpcResponse;
 import com.hzgc.common.rpc.util.RpcConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.*;
 
@@ -14,7 +13,8 @@ import java.util.concurrent.*;
  * 在这里RPCFuture主要处理rpc进程间通信的请求结果
  */
 public class RPCFuture implements Future<Object> {
-    private static final Logger logger = LoggerFactory.getLogger(RPCFuture.class);
+//    private static final Logger logger = LoggerFactory.getLogger(RPCFuture.class);
+    private static Logger logger = Logger.getLogger(RPCFuture.class);
     //客户端向服务端发送的rpc请求消息体
     private RpcRequest rpcRequest;
     //服务端向客户端响应的rpc消息体
@@ -114,10 +114,10 @@ public class RPCFuture implements Future<Object> {
         countDownLatch.countDown();
         long responseTime = System.currentTimeMillis() - this.startTime;
         if (responseTime > RpcConfig.getRpcClientResponseTimeThreshold()) {
-            logger.warn("Service response time is too slow, request id is:{}, response time is:{}ms",
-                    rpcResponse.getRequestId(), responseTime);
+            logger.warn("Service response time is too slow, request id is:" + rpcResponse.getRequestId()
+                            + ", response time is:" + responseTime + "ms");
         } else {
-            logger.debug("Service response time is {}", responseTime);
+            logger.debug("Service response time is " + responseTime);
         }
     }
 }

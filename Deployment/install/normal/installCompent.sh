@@ -61,7 +61,7 @@ else
     sh hbaseInstall.sh
 
     ##安装phoenix
-    sh phoenixInstall.sh
+#    sh phoenixInstall.sh
 
     ##安装hive
     sh hiveInstall.sh
@@ -86,6 +86,9 @@ else
 
     ##安装kibana
     sh kibanaInstall.sh
+
+    ##安装lts
+    sh ltsInstall.sh
 
     ##安装azkaban
     sh azkabanInstall.sh

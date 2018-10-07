@@ -1,8 +1,6 @@
 package com.hzgc.collect.service.http;
 
 import com.hzgc.common.util.basic.FileUtil;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +64,7 @@ public class HttpFile {
                         img.getScaledInstance(newWidth, newHeight,
                                 Image.SCALE_SMOOTH), 0, 0, null);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-                encoder.encode(tag);
+                ImageIO.write(tag, "jpg", out);
                 out.close();
                 return out.toByteArray();
             }

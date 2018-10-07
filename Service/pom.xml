@@ -14,7 +14,6 @@
     <modules>
         <module>Collect</module>
         <module>People</module>
-        <module>Face-Dispatch</module>
         <module>Face-Dynrepo</module>
         <module>Imsi-Dynrepo</module>
         <module>Person-Dynrepo</module>
