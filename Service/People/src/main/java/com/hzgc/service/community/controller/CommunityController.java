@@ -354,64 +354,40 @@ public class CommunityController {
     }
 
     @ApiOperation(value = "聚焦人员轨迹查询", response = PeopleCaptureVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.POST)
-    public ResponseResult<List<PeopleCaptureVO>> searchPeopleTrack1Month(@RequestBody PeopleCaptureDTO param) {
-        if (param == null) {
-            log.error("Start search people capture track, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
-        }
-        if (param.getPeopleId() == null) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.GET)
+    public ResponseResult<List<PeopleCaptureVO>> searchPeopleTrack1Month(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
             log.error("Start search people capture track, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "聚焦人员ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search people capture track, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
-        }
-        log.info("Start search people capture track, param is:" + JacksonUtil.toJson(param));
-        List<PeopleCaptureVO> voList = communityService.searchPeopleTrack1Month(param);
+        log.info("Start search people capture track, people id is:" + peopleId);
+        List<PeopleCaptureVO> voList = communityService.searchPeopleTrack1Month(peopleId);
         log.info("Search people capture track successfully");
         return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "统计聚焦人员每个设备抓拍次数（设备热力图）", response = PeopleCaptureCountVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.POST)
-    public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(@RequestBody PeopleCaptureDTO param) {
-        if (param == null) {
-            log.error("Start count people capture number, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
-        }
-        if (param.getPeopleId() == null) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH, method = RequestMethod.GET)
+    public ResponseResult<List<PeopleCaptureCountVO>> countDeviceCaptureNum1Month(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
             log.error("Start count people capture number, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "聚焦人员ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start count people capture number, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
-        }
-        log.info("Start count people capture number, param is:" + JacksonUtil.toJson(param));
-        List<PeopleCaptureCountVO> voList = communityService.countDeviceCaptureNum1Month(param);
+        log.info("Start count people capture number, people id is:" + peopleId);
+        List<PeopleCaptureCountVO> voList = communityService.countDeviceCaptureNum1Month(peopleId);
         log.info("Count people capture number successfully");
         return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "统计聚焦人员每天抓拍次数（最近三个月）", response = PeopleCaptureCountVO.class)
-    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.POST)
-    public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(@RequestBody PeopleCaptureDTO param) {
-        if (param == null) {
-            log.error("Start count people everyday capture number, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
-        }
-        if (param.getPeopleId() == null) {
+    @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_3MONTH, method = RequestMethod.GET)
+    public ResponseResult<List<PeopleCaptureCountVO>> countCaptureNum3Month(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
             log.error("Start count people everyday capture number, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "聚焦人员ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start count people everyday capture number, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
-        }
-        log.info("Start count people everyday capture number, param is:" + JacksonUtil.toJson(param));
-        List<PeopleCaptureCountVO> voList = communityService.countCaptureNum3Month(param);
+        log.info("Start count people everyday capture number, people id is:" + peopleId);
+        List<PeopleCaptureCountVO> voList = communityService.countCaptureNum3Month(peopleId);
         log.info("Count people everyday capture number successfully");
         return ResponseResult.init(voList);
     }

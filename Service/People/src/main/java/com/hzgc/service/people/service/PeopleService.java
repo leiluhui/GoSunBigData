@@ -419,6 +419,7 @@ public class PeopleService {
             peopleVO.setCar(carList);
             List<PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
+                peopleVO.setPictureId(pictures.get(0).getId());
                 List<Long> idcardPictureIds = new ArrayList<>();
                 List<Long> capturePictureIds = new ArrayList<>();
                 for (PictureWithBLOBs picture : pictures) {

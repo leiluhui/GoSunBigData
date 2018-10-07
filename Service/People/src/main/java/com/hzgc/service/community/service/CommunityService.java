@@ -255,9 +255,7 @@ public class CommunityService {
     }
 
     private String getSurlByPeopleId(String peopleId){
-        String sul = peopleRecognizeMapper.getSurlByPeopleId(peopleId);
-        // TODO sul 转换
-        return sul;
+        return peopleRecognizeMapper.getSurlByPeopleId(peopleId);
     }
 
     public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {
@@ -311,20 +309,19 @@ public class CommunityService {
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         System.out.println(JacksonUtil.toJson(count24Hours));
         List<String> hourList = new ArrayList<>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
         long longTime = System.currentTimeMillis();
         for(int i = 0; i < 24 ;i ++){
+            longTime = longTime - 3600000;
             String time = dateFormat.format(new Date(longTime));
             hourList.add(time);
-            longTime = longTime - 3600000;
         }
         for (String hour : hourList){
             CaptureHourCount count = new CaptureHourCount();
-            count.setHour(hour);
-            String time = hour.replace("-", "").replace(" ", "");
+            count.setHour(hour.substring(8,10));
             if (count24Hours != null && count24Hours.size() > 0){
                 for (Count24Hour count24Hour : count24Hours){
-                    if (time.equals(count24Hour.getHour())){
+                    if (hour.equals(count24Hour.getHour())){
                         count.setCount(count24Hour.getCount());
                     }
                 }
@@ -345,7 +342,6 @@ public class CommunityService {
             info.setDeviceId(peopleRecognize.getDeviceid());
             // TODO 名字
             info.setDeviceName(peopleRecognize.getDeviceid());
-            // TODO url 转换
             info.setPicture(peopleRecognize.getSurl());
             Date date = peopleRecognize.getCapturetime();
             if (date != null){
@@ -469,15 +465,16 @@ public class CommunityService {
         return voList;
     }
 
-    public List<PeopleCaptureVO> searchPeopleTrack1Month(PeopleCaptureDTO param) {
+    public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
-        List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
-        List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(param.getPeopleId());
+        List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(peopleId);
+        List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(peopleId);
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
+                vo.setFtpUrl(people.getSurl());
                 voList.add(vo);
             }
         }
@@ -486,6 +483,7 @@ public class CommunityService {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
                 vo.setDeviceId(imsi.getDeviceid());
+                vo.setImsi(imsi.getImsi());
                 voList.add(vo);
             }
         }
@@ -506,9 +504,9 @@ public class CommunityService {
         });
     }
 
-    public List<PeopleCaptureCountVO> countDeviceCaptureNum1Month(PeopleCaptureDTO param) {
+    public List<PeopleCaptureCountVO> countDeviceCaptureNum1Month(String peopleId) {
         List<PeopleCaptureCountVO> voList = new ArrayList<>();
-        List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countDeviceCaptureNum1Month(param.getPeopleId());
+        List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countDeviceCaptureNum1Month(peopleId);
         if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             List<String> deviceIdList = new ArrayList<>();
             for (DeviceRecognize device : deviceRecognizeList) {
@@ -533,9 +531,9 @@ public class CommunityService {
         return voList;
     }
 
-    public List<PeopleCaptureCountVO> countCaptureNum3Month(PeopleCaptureDTO param) {
+    public List<PeopleCaptureCountVO> countCaptureNum3Month(String peopleId) {
         List<PeopleCaptureCountVO> voList = new ArrayList<>();
-        List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countCaptureNum3Month(param.getPeopleId());
+        List<DeviceRecognize> deviceRecognizeList = deviceRecognizeMapper.countCaptureNum3Month(peopleId);
         if (deviceRecognizeList != null && deviceRecognizeList.size() > 0) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Calendar cal = Calendar.getInstance();

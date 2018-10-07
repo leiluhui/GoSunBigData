@@ -23,7 +23,7 @@
     </select>
     <!--聚焦人员该小区一个月内(30天)抓拍、电围数据查询-->
     <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select capturetime, deviceid, burl
+        select capturetime, deviceid, burl, surl
         from t_people_recognize
         where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
         and flag = 1
