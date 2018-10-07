@@ -1,5 +1,5 @@
 #!/bin/bash
-IP=172.18.18.119
+IP=172.18.18.202
 PORT=4000
  mysql -u root -h ${IP} -P ${PORT} << EOF
 use people;
