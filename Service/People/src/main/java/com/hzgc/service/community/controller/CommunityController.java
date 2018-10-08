@@ -157,7 +157,7 @@ public class CommunityController {
         }
         if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0){
             log.error("Start count community new and out people, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID列表不能为空,请检查！");
+            return ResponseResult.init(null);
         }
         if (param.getMonth() == null || param.getMonth().length() != 6){
             log.error("Start count community new and out people, but month error");
