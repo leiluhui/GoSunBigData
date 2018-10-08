@@ -1,7 +1,7 @@
 package com.hzgc.common.service.api.service;
 
-import com.alibaba.fastjson.JSON;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.DetectorQueryDTO;
 import com.hzgc.common.service.api.bean.Region;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +71,7 @@ public class PlatformService {
      */
     private List<Region> getRegionByIds(List<Long> ids) {
         if (ids != null && ids.size() > 0) {
-            log.info("Method:getRegionByIds, ids:" + JSON.toJSONString(ids));
+            log.info("Method:getRegionByIds, ids:" + Arrays.toString(ids.toArray()));
             ParameterizedTypeReference<Region[]> parameterizedTypeReference =
                     new ParameterizedTypeReference<Region[]>() {
                     };

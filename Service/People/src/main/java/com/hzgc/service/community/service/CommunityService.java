@@ -172,14 +172,14 @@ public class CommunityService {
        return voList;
     }
 
-    public List<NewAndOutPeopleSearchVO> searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
-        List<NewAndOutPeopleSearchVO> voList = new ArrayList<>();
+    public NewAndOutPeopleSearchVO searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
+        List<NewAndOutPeopleSearch> newAndOutPeopleSearchList = new ArrayList<>();
         // 小区迁入人口查询（疑似与确认）
         if (param.getType() == 0){
             List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
             if (list != null && list.size() > 0){
                 for (NewPeople people : list){
-                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
                     vo.setPeopleId(people.getPeopleid());
                     vo.setCommunityId(param.getCommunityId());
                     vo.setMonth(param.getMonth());
@@ -223,7 +223,7 @@ public class CommunityService {
                             vo.setSul(getSurlByPeopleId(people.getPeopleid()));
                         }
                     }
-                    voList.add(vo);
+                    newAndOutPeopleSearchList.add(vo);
                 }
             }
         }
@@ -232,7 +232,7 @@ public class CommunityService {
             List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
             if (list != null && list.size() > 0){
                 for (OutPeople people : list){
-                    NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                    NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
                     vo.setPeopleId(people.getPeopleid());
                     vo.setCommunityId(param.getCommunityId());
                     vo.setMonth(param.getMonth());
@@ -247,11 +247,26 @@ public class CommunityService {
                     if (people.getIsconfirm() == 3){
                         vo.setIsconfirm(4);
                     }
-                    voList.add(vo);
+                    newAndOutPeopleSearchList.add(vo);
                 }
             }
         }
-        return voList;
+        NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+        int totalNum = newAndOutPeopleSearchList.size();
+        vo.setTotalNum(totalNum);
+        // 分页配置
+        int offset = param.getStart();
+        int count = param.getLimit();
+        int size = newAndOutPeopleSearchList.size();
+        if (offset > -1 && size > (offset + count - 1)) {
+            //结束行小于总数，取起始行开始后续count条数据
+            newAndOutPeopleSearchList = newAndOutPeopleSearchList.subList(offset, offset + count);
+        } else {
+            //结束行大于总数，则返回起始行开始的后续所有数据
+            newAndOutPeopleSearchList = newAndOutPeopleSearchList.subList(offset, size);
+        }
+        vo.setVoList(newAndOutPeopleSearchList);
+        return vo;
     }
 
     private Long getPictureIdByPeopleId(String peopleId){
@@ -302,8 +317,10 @@ public class CommunityService {
         if (deviceRecognizes != null && deviceRecognizes.size() > 0){
             for (DeviceRecognize deviceRecognize : deviceRecognizes){
                 CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
-                String deviceName = platformService.getDeviceName(deviceRecognize.getDeviceid());
-                // TODO imsi device name
+                String deviceName = platformService.getCameraDeviceName(deviceRecognize.getDeviceid());
+                if (StringUtils.isBlank(deviceName)){
+                    deviceName = platformService.getImsiDeviceName(deviceRecognize.getDeviceid());
+                }
                 captureDeviceCount.setDeviceName(deviceName != null ? deviceName : deviceRecognize.getDeviceid());
                 captureDeviceCount.setCount(deviceRecognize.getCount());
                 deviceCountList.add(captureDeviceCount);
@@ -346,7 +363,7 @@ public class CommunityService {
         for (PeopleRecognize peopleRecognize : peopleRecognizes){
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
-            info.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
+            info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             info.setPicture(peopleRecognize.getSurl());
             Date date = peopleRecognize.getCapturetime();
             if (date != null){
@@ -364,7 +381,7 @@ public class CommunityService {
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
         if (peopleRecognize != null){
             vo.setDeviceId(peopleRecognize.getDeviceid());
-            vo.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
+            vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             vo.setPicture(peopleRecognize.getSurl());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
@@ -443,14 +460,13 @@ public class CommunityService {
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
-        PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
         List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(param.getPeopleId());
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setDeviceId(platformService.getDeviceName(people.getDeviceid()));
+                vo.setDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
                 vo.setFtpUrl(people.getBurl());
                 voList.add(vo);
             }
@@ -459,13 +475,22 @@ public class CommunityService {
             for (FusionImsi imsi : imsiList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
-                // TODO imsi device name
-                vo.setDeviceId(imsi.getDeviceid());
+                vo.setDeviceId(platformService.getImsiDeviceName(imsi.getDeviceid()));
                 vo.setImsi(imsi.getImsi());
                 voList.add(vo);
             }
         }
         this.listSort(voList);
+        int offset = param.getStart();
+        int count = param.getLimit();
+        int size = voList.size();
+        if (offset > -1 && size > (offset + count - 1)) {
+            //结束行小于总数，取起始行开始后续count条数据
+            voList = voList.subList(offset, offset + count);
+        } else {
+            //结束行大于总数，则返回起始行开始的后续所有数据
+            voList = voList.subList(offset, size);
+        }
         return voList;
     }
 

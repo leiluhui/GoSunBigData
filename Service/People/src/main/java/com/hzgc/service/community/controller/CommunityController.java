@@ -157,7 +157,7 @@ public class CommunityController {
         }
         if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0){
             log.error("Start count community new and out people, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID列表不能为空,请检查！");
+            return ResponseResult.init(null);
         }
         if (param.getMonth() == null || param.getMonth().length() != 6){
             log.error("Start count community new and out people, but month error");
@@ -168,14 +168,15 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
         }
         log.info("Start count community new and out people, param is :"+ JacksonUtil.toJson(param));
+        int totalNum = param.getCommunityIdList().size();
         List<NewAndOutPeopleCounVO> voList = communityService.countCommunityNewAndOutPeople(param);
         log.info("Count community new and out people successfully!");
-        return ResponseResult.init(voList);
+        return ResponseResult.init(voList, totalNum);
     }
 
     @ApiOperation(value = "小区迁入迁出人口查询（实有人口展示）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.POST)
-    public ResponseResult<List<NewAndOutPeopleSearchVO>> searchCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleSearchDTO param) {
+    public ResponseResult<NewAndOutPeopleSearchVO> searchCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleSearchDTO param) {
         if (param == null){
             log.error("Start search community new and out people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数不能为空,请检查！");
@@ -205,9 +206,9 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类别状态有误,请检查！");
         }
         log.info("Start search community new and out people, param is :"+ JacksonUtil.toJson(param));
-        List<NewAndOutPeopleSearchVO> voList = communityService.searchCommunityNewAndOutPeople(param);
+        NewAndOutPeopleSearchVO vo = communityService.searchCommunityNewAndOutPeople(param);
         log.info("Search community new and out people successfully!");
-        return ResponseResult.init(voList);
+        return ResponseResult.init(vo, vo != null ? vo.getTotalNum() : 0);
     }
 
     @ApiOperation(value = "小区迁入迁出人口信息查询", response = CommunityPeopleInfoVO.class)
