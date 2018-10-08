@@ -13,17 +13,20 @@ public class FileUtil {
         FileInputStream fis = null;
         byte[] buffer = new byte[1024];
         try {
-            File imageFile = new File(filePath);
-            if (!imageFile.exists()) {
-                imageFile.mkdir();
+            if (filePath != null && filePath.length() > 0) {
+                File imageFile = new File(filePath);
+                if (!imageFile.exists()) {
+                    imageFile.mkdir();
+                }
+                fis = new FileInputStream(imageFile);
+                baos = new ByteArrayOutputStream();
+                int len;
+                while ((len = fis.read(buffer)) > -1) {
+                    baos.write(buffer, 0, len);
+                }
+                bytes = baos.toByteArray();
             }
-            fis = new FileInputStream(imageFile);
-            baos = new ByteArrayOutputStream();
-            int len;
-            while ((len = fis.read(buffer)) > -1) {
-                baos.write(buffer, 0, len);
-            }
-            bytes = baos.toByteArray();
+
         } catch (IOException e) {
             log.error(e.getMessage());
         } finally {
