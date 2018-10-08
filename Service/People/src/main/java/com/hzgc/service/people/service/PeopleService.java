@@ -372,6 +372,7 @@ public class PeopleService {
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
+            peopleVO.setRegionId(people.getRegion());
             peopleVO.setRegion(platformService.getMergerName(people.getRegion()));
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());

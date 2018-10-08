@@ -1,6 +1,7 @@
 package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
@@ -15,10 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -37,6 +35,10 @@ public class CaptureServiceHelper {
     @Autowired
     @SuppressWarnings("unused")
     private InnerService innerService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PlatformService platformService;
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -157,6 +159,8 @@ public class CaptureServiceHelper {
         SingleSearchResult singleSearchResult = new SingleSearchResult();
         SearchResult searchResult = new SearchResult();
         List<CapturedPicture> capturedPictureList = new ArrayList<>();
+        Map<String, CameraQueryDTO> cameraQueryDTOMap = platformService.getCameraInfoByBatchIpc(
+                option.getDeviceIpcs().stream().map(Device::getIpc).collect(toList()));
         try {
             while (resultSet.next()) {
                 //设备id
@@ -177,8 +181,15 @@ public class CaptureServiceHelper {
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
-                capturedPicture.setDeviceId(option.getIpcMapping().get(ipcid).getIpc());
-                capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
+                String ipcId = option.getIpcMapping().get(ipcid).getIpc();
+                capturedPicture.setDeviceId(ipcId);
+                CameraQueryDTO cameraInfo = cameraQueryDTOMap.get(ipcId);
+                if (cameraInfo != null) {
+                    capturedPicture.setLocation(cameraInfo.getRegion() + cameraInfo.getCommunity());
+                    capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
+                } else {
+                    log.warn("Ipc id:{} is not found from platform service");
+                }
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
                 capturedPicture.setAge(age);
@@ -228,7 +239,15 @@ public class CaptureServiceHelper {
                 capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 capturedPicture.setDeviceId(option.getIpcMapping().get(ipcid).getIpc());
-                capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
+                String ipcId = option.getIpcMapping().get(ipcid).getIpc();
+                capturedPicture.setDeviceId(ipcId);
+                CameraQueryDTO cameraInfo = platformService.getCameraInfoByBatchIpc(Collections.singletonList(ipcId)).get(ipcId);
+                if (cameraInfo != null) {
+                    capturedPicture.setLocation(cameraInfo.getRegion() + cameraInfo.getCommunity());
+                    capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
+                } else {
+                    log.warn("Ipc id:{} is not found from platform service");
+                }
                 capturedPicture.setTimeStamp(format.format(timestamp));
                 capturedPicture.setSimilarity(similaritys);
                 capturedPicture.setGender(gender);

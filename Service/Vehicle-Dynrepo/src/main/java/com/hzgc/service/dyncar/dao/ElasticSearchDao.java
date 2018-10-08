@@ -2,6 +2,7 @@ package com.hzgc.service.dyncar.dao;
 
 import com.hzgc.common.service.facedynrepo.VehicleTable;
 import com.hzgc.common.util.es.ElasticSearchHelper;
+import com.hzgc.seemmo.bean.carbean.CarData;
 import com.hzgc.service.dyncar.bean.CaptureOption;
 import com.hzgc.service.dyncar.bean.VehicleAttribute;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class ElasticSearchDao {
     }
 
     //根据多个ipcid进行查询总共的
-    public SearchResponse getCaptureHistory(CaptureOption option, List<String> ipcList, String sortParam) {
+    public SearchResponse getCaptureHistory(CaptureOption option, List <String> ipcList, String sortParam) {
         BoolQueryBuilder queryBuilder = createBoolQueryBuilder(option);
         setDeviceIdList(queryBuilder, ipcList);
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
@@ -97,7 +98,7 @@ public class ElasticSearchDao {
     }
 
     //多个ipcid查询
-    private void setDeviceIdList(BoolQueryBuilder totalBQ, List<String> deviceId) {
+    private void setDeviceIdList(BoolQueryBuilder totalBQ, List <String> deviceId) {
         // 设备ID 的的boolQueryBuilder
         BoolQueryBuilder devicdIdBQ = QueryBuilders.boolQuery();
         for (Object t : deviceId) {
@@ -130,14 +131,21 @@ public class ElasticSearchDao {
             totalBQ.must(boolQueryBuilder);
         }
         List <VehicleAttribute> attributes = option.getAttributes();
-        if (null != attributes && attributes.size() > 0){
+        if (null != attributes && attributes.size() > 0) {
             for (VehicleAttribute attribute : attributes) {
                 String attributeName = attribute.getAttributeName();
+                if (attributeName.equals(CarData.VEHICLE_OBJECT_TYPE) || attributeName.equals(CarData.MISTAKE_CODE)
+                        || attributeName.equals(CarData.SUNROOF_CODE) || attributeName.equals(CarData.BRAND_NAME)
+                        || attributeName.equals(CarData.PLATE_LICENCE)) {
+                    continue;
+                }
                 List <String> attributeValues = attribute.getAttributeCodes();
                 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
                 if (null != attributeValues && attributeValues.size() > 0) {
                     for (String code : attributeValues) {
-                        boolQueryBuilder.should(QueryBuilders.matchQuery(attributeName, code));
+                        if (null != code) {
+                            boolQueryBuilder.should(QueryBuilders.matchQuery(attributeName, code));
+                        }
                     }
                 }
                 totalBQ.must(boolQueryBuilder);

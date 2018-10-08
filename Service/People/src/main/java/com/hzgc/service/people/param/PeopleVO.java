@@ -17,6 +17,8 @@ public class PeopleVO implements Serializable {
     @ApiModelProperty(value = "身份证")
     private String idCard;
     @ApiModelProperty(value = "区域ID")
+    private Long regionId;
+    @ApiModelProperty(value = "区域")
     private String region;
     @ApiModelProperty(value = "户籍")
     private String household;

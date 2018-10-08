@@ -5,13 +5,13 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PeopleRecognizeMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(PeopleRecognize record);
 
     int insertSelective(PeopleRecognize record);
 
-    PeopleRecognize selectByPrimaryKey(Long id);
+    PeopleRecognize selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(PeopleRecognize record);
 
