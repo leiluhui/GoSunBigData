@@ -31,8 +31,8 @@ import java.util.Map;
 @Slf4j
 public class DynpersonHistoryService {
 
+    @Autowired
     private PlatformService platformService;
-
     @Autowired
     @SuppressWarnings("unused")
     private ElasticSearchDao elasticSearchDao;

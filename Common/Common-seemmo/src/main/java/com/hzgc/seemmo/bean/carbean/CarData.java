@@ -1,7 +1,7 @@
 package com.hzgc.seemmo.bean.carbean;
 
 public class CarData {
-    public static final String VEHICLE_BOJECT_TYPE = "vehicle_object_type";
+    public static final String VEHICLE_OBJECT_TYPE = "vehicle_object_type";
     public static final String BELT_MAINDRIVER = "belt_maindriver";
     public static final String BELT_CODRIVER = "belt_codriver";
     public static final String CALL_CODE = "call_code";
