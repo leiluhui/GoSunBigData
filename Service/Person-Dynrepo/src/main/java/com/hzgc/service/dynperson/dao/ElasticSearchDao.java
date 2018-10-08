@@ -125,8 +125,10 @@ public class ElasticSearchDao {
             List <PersonAttributeValue> attributeValues = attribute.getValues();
             BoolQueryBuilder attributeBuilder = QueryBuilders.boolQuery();
             for (PersonAttributeValue attributeValue : attributeValues) {
-                String attr = String.valueOf(attributeValue.getCode());
-                attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
+                String attr = attributeValue.getCode();
+                if (null != attr) {
+                    attributeBuilder.should(QueryBuilders.matchQuery(identify, attr));
+                }
             }
             boolQueryBuilder.must(attributeBuilder);
         }
