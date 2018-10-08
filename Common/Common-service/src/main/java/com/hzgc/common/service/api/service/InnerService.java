@@ -4,9 +4,8 @@ import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.basic.StopWatch;
 import com.hzgc.jniface.PictureData;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
@@ -41,30 +43,43 @@ public class InnerService {
 
     public UrlInfo hostName2Ip(String hostName) {
         if (hostName != null && !"".equals(hostName)) {
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-            UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP +
-                    "?hostName=" + hostName, UrlInfo.class);
-            stopWatch.stop();
-            log.info("Method hostName2Ip, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
-            return urlInfo;
+            UrlInfo cacheUrlInfo = HostNameSingleton.getInstance().getHostNameInfo(hostName);
+            if (cacheUrlInfo != null) {
+                return cacheUrlInfo;
+            } else {
+                StopWatch stopWatch = new StopWatch();
+                stopWatch.start();
+                UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP +
+                        "?hostName=" + hostName, UrlInfo.class);
+                stopWatch.stop();
+                log.info("Method hostName2Ip, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
+                HostNameSingleton.getInstance().setHostNameInfo(hostName, urlInfo);
+                return urlInfo;
+            }
+
         } else {
             log.error("Method hostName2Ip, httpUrlList is null or size is 0");
             return new UrlInfo();
         }
     }
 
-    public Map <String, UrlInfo> hostName2IpBatch(List <String> hostNameList) {
+    public Map<String, UrlInfo> hostName2IpBatch(List<String> hostNameList) {
         if (hostNameList != null && hostNameList.size() > 0) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            Map <String, UrlInfo> result = restTemplate.postForObject("http://collect" + BigDataPath.HOSTNAME_TO_IP, hostNameList, Map.class);
+            ParameterizedTypeReference<Map<String, UrlInfo>> parameterizedTypeReference =
+                    new ParameterizedTypeReference<Map<String, UrlInfo>>() {};
+            ResponseEntity<Map<String, UrlInfo>> responseEntity =
+                    restTemplate.exchange("http://collect" + BigDataPath.HOSTNAME_TO_IP,
+                            HttpMethod.POST,
+                            new HttpEntity<>(hostNameList),
+                            parameterizedTypeReference);
             stopWatch.stop();
             log.info("Method hostName2IpBatch, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
-            return result;
+            return responseEntity.getBody();
         } else {
             log.error("Method hostName2IpBatch, httpUrlList is null or size is 0");
-            return new HashMap <>();
+            return new HashMap<>();
         }
     }
 
@@ -72,12 +87,12 @@ public class InnerService {
         if (base64Str != null && !"".equals(base64Str)) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            ParameterizedTypeReference <PictureData> parameterizedTypeReference =
-                    new ParameterizedTypeReference <PictureData>() {
+            ParameterizedTypeReference<PictureData> parameterizedTypeReference =
+                    new ParameterizedTypeReference<PictureData>() {
                     };
-            ResponseEntity <PictureData> data = restTemplate.exchange("http://collect-ftp" +
+            ResponseEntity<PictureData> data = restTemplate.exchange("http://collect-ftp" +
                             BigDataPath.FEATURE_EXTRACT_BASE64, HttpMethod.POST,
-                    new HttpEntity <>(base64Str), parameterizedTypeReference);
+                    new HttpEntity<>(base64Str), parameterizedTypeReference);
             stopWatch.stop();
             log.info("Method faceFeatureExtract, request seccessull, total time is:{}", stopWatch.getTotalTimeMillis());
             return data.getBody();
@@ -87,3 +102,52 @@ public class InnerService {
         }
     }
 }
+
+class HostNameSingleton {
+    private Map<String, HostNameInfo> hostNameInfoMap = new ConcurrentHashMap<>();
+    private static HostNameSingleton instance = new HostNameSingleton();
+
+    private HostNameSingleton() {
+    }
+
+    public static HostNameSingleton getInstance() {
+        return instance;
+    }
+
+    UrlInfo getHostNameInfo(String hostName) {
+        if (hostName != null && hostName.length() > 0) {
+            HostNameInfo hostNameInfo = hostNameInfoMap.get(hostName);
+            if (hostNameInfo != null) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - hostNameInfo.getTimeStamp() <= 15000) {
+                    return hostNameInfo.getUrlInfo();
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    void setHostNameInfo(String hostName, UrlInfo urlInfo) {
+        if (hostName != null && hostName.length() > 0 && urlInfo != null) {
+            HostNameInfo hostNameInfo = new HostNameInfo();
+            hostNameInfo.setHostName(hostName);
+            hostNameInfo.setUrlInfo(urlInfo);
+            hostNameInfo.setTimeStamp(System.currentTimeMillis());
+            hostNameInfoMap.put(hostName, hostNameInfo);
+        }
+    }
+
+
+    @Data
+    private static class HostNameInfo {
+        private String hostName;
+        private long timeStamp;
+        private UrlInfo urlInfo;
+    }
+}
+

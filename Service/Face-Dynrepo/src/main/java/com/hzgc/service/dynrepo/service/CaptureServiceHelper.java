@@ -37,6 +37,7 @@ public class CaptureServiceHelper {
     private InnerService innerService;
 
     @Autowired
+    @SuppressWarnings("unused")
     private PlatformService platformService;
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -158,6 +159,8 @@ public class CaptureServiceHelper {
         SingleSearchResult singleSearchResult = new SingleSearchResult();
         SearchResult searchResult = new SearchResult();
         List<CapturedPicture> capturedPictureList = new ArrayList<>();
+        Map<String, CameraQueryDTO> cameraQueryDTOMap = platformService.getCameraInfoByBatchIpc(
+                option.getDeviceIpcs().stream().map(Device::getIpc).collect(toList()));
         try {
             while (resultSet.next()) {
                 //设备id
@@ -180,7 +183,7 @@ public class CaptureServiceHelper {
                 capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
                 String ipcId = option.getIpcMapping().get(ipcid).getIpc();
                 capturedPicture.setDeviceId(ipcId);
-                CameraQueryDTO cameraInfo = platformService.getCameraInfoByBatchIpc(Collections.singletonList(ipcId)).get(ipcId);
+                CameraQueryDTO cameraInfo = cameraQueryDTOMap.get(ipcId);
                 if (cameraInfo != null) {
                     capturedPicture.setLocation(cameraInfo.getRegion() + cameraInfo.getCommunity());
                     capturedPicture.setDeviceName(option.getIpcMapping().get(ipcid).getDeviceName());
