@@ -38,7 +38,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
-    public ResponseResult <Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) throws Exception {
+    public ResponseResult <Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start insert people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口信息为空，请检查！");
