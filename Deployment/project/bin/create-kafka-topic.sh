@@ -15,16 +15,10 @@ cd `dirname $0`
 BIN_DIR=`pwd`                                         ### bin目录：脚本所在目录
 cd ..
 SPARK_DIR=`pwd`                                         ### spark模块部署目录
-CONF_DIR=$SPARK_DIR/../conf                            ### 配置文件目录
+CONF_DIR=$SPARK_DIR/conf                            ### 配置文件目录
 LOG_DIR=$SPARK_DIR/logs                                 ### log日志目录
 LOG_FILE=$LOG_DIR/create-kafka-topic.log              ### log日志目录
-
-cd ../..
 CONF_FILE=${CONF_DIR}/project-deploy.properties   ### 项目配置文件
-
-cd ../hzgc/conf
-CONF_HZGC_DIR=`pwd`                                   ### 集群配置文件目录
-
 ## 最终安装的根目录，所有bigdata 相关的根目录：/opt/hzgc/bigdata
 INSTALL_HOME=$(grep install_homedir $CONF_FILE |cut -d '=' -f2)
 ## KAFKA_INSTALL_HOME kafka 安装目录

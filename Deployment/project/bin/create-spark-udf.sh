@@ -13,13 +13,13 @@
 #---------------------------------------------------------------------#
 
 cd `dirname $0`
-SPARK_DIR=`pwd`                         ### spark 目录
+SPARK_DIR=`pwd`/spark                         ### spark 目录
 ## log 日记目录
 LOG_DIR=${SPARK_DIR}/logs
 ##  log 日记文件
 LOG_FILE=${LOG_DIR}/add-udf.log
 
-cd ../..
+cd ..
 SCRIPT_DIR=`pwd`
 CONF_FILE=${SCRIPT_DIR}/conf/project-deploy.properties
 

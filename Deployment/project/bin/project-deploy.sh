@@ -71,10 +71,6 @@ FACECOMPARE_WORKER_FILE=${FACECOMPARE_CONF_DIR}/worker.properties
 
 ## cluster-spark模块配置文件目录
 CONF_SPARK_DIR=${SPARK_DIR}/conf
-## common log日志目录
-COMMON_LOG_DIR=${COMMON_DIR}/logs
-## common log日志文件
-COMMON_LOG_FILE=${COMMON_LOG_DIR}/config-project.log
 ## service的log日志目录
 SERVICE_LOG_DIR=${SERVICE_DIR}/logs
 ## Service log日志文件
@@ -85,7 +81,6 @@ SPARK_LOG_DIR=${SPARK_DIR}/logs
 SPARK_LOG_FILE=${SPARK_LOG_DIR}/config-cluster.log
 
 mkdir -p ${SPARK_LOG_DIR}
-mkdir -p ${COMMON_LOG_DIR}
 mkdir -p ${SERVICE_LOG_DIR}
 
 ## Basic服务
@@ -215,22 +210,22 @@ function config_projectconf()
         ## 修改配置文件 mysql安装节点
         echo "配置 project-deploy.properties中的mysql地址"
         ismini=$(grep ISMINICLUSTER ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
-        mysql=$(grep Mysql_InstallNode ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
-        if [[ ${ismini} = "no" && (-n ${mysql})  ]]; then
+        MYSQL=$(grep Mysql_InstallNode ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
+        if [[ ${ismini} = "no" && (-n ${MYSQL})  ]]; then
             if [[ ! -e "/opt/tidb-ansible/inventory.ini" ]]; then
                 echo "找不到inventory.ini，tidb可能未安装"
                 else
-                mysql=`grep '\[tidb_servers\]' /opt/tidb-ansible/inventory.ini -A 1 | tail -1`:4000
+                MYSQL=`grep '\[tidb_servers\]' /opt/tidb-ansible/inventory.ini -A 1 | tail -1`:4000
                 echo "部署tidb"
             fi
-        elif [[ ${ismini} = "yes" && (-n ${mysql}) ]]; then
+        elif [[ ${ismini} = "yes" && (-n ${MYSQL}) ]]; then
             echo "mysql ip为tidb的ip"
-            mysql=${mysql%%,*}:4000
+            MYSQL=${MYSQL%%,*}:4000
         else
             echo "mysql为当前节点ip"
-            mysql=`host -i`:3306
+            MYSQL=`host -i`:3306
         fi
-        sed -i "s#mysql_host=.*#mysql_host=${mysql}#g" ${CONF_FILE}
+        sed -i "s#mysql_host=.*#mysql_host=${MYSQL}#g" ${CONF_FILE}
 
 }
 
@@ -341,6 +336,7 @@ function distribute_service()
 
     ## 拷贝GoSun到opt目录下
     cp -r ${GOSUN_HOME} /opt
+    rm -rf /opt/GoSunBigData/Service/logs
 
     echo "配置完毕......" | tee -a ${SERVICE_LOG_FILE}
 
@@ -426,14 +422,14 @@ function config_sparkjob()
     echo $espro
     echo "++++++++++++++++++++++++++++++++++"
     #替换sparkJob.properties中：key=value(替换key字段的值value)
-    sed -i "s#^es.hosts=.*#es.hosts=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToParquet.esNodes=.*#job.kafkaToParquet.esNodes=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
 
     #根据字段rocketmq_nameserver，查找配置文件中，rocketmq的nameserver安装节点所在IP端口号的值，这些值以分号分割
-    ROCK_IP=$(grep rocketmq_nameserver ${CONF_FILE} | cut -d '=' -f2)
-    rockpro=''
-    rockpro=$rockpro$ROCK_IP":9876"
-    #替换sparkJob.properties中：key=value(替换key字段的值value)
-    sed -i "s#^rocketmq.nameserver=.*#rocketmq.nameserver=${rockpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
+#    ROCK_IP=$(grep rocketmq_nameserver ${CONF_FILE} | cut -d '=' -f2)
+#    rockpro=''
+#    rockpro=$rockpro$ROCK_IP":9876"
+#    #替换sparkJob.properties中：key=value(替换key字段的值value)
+#    sed -i "s#^rocketmq.nameserver=.*#rocketmq.nameserver=${rockpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     # 根据job_peoplemanager_mysql_alarm_url字段设置常驻人口管理告警信息MYSQL数据库地址
 #    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.alarm.url  | awk '{print $1}') ]
@@ -502,6 +498,10 @@ function config_service()
     #替换fusion模块中start-fusion.sh脚本中的kafka字段
     sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${FUSION_START_FILE}
     echo "start-fusion.sh脚本配置kafka完成......"
+
+    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
+    sed -i "s#^BOOTSTRAP_SERVERS=.*#BOOTSTRAP_SERVERS=${kafkapro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置es完成......"
 
     #配置es.hosts:
     #从project-deploy.properties中读取es所需配置IP
