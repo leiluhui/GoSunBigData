@@ -177,6 +177,7 @@ public class PeopleService {
         return message;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
