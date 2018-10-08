@@ -94,7 +94,6 @@ public class DynpersonHistoryService {
                 String ipc = (String) hit.getSource().get(PersonTable.IPCID);
                 String timestamp = (String) hit.getSource().get(PersonTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(PersonTable.HOSTNAME);
-                System.out.println("********************" + hostname);
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 pictures.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 pictures.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
