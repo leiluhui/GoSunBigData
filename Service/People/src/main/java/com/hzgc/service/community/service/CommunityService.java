@@ -317,8 +317,10 @@ public class CommunityService {
         if (deviceRecognizes != null && deviceRecognizes.size() > 0){
             for (DeviceRecognize deviceRecognize : deviceRecognizes){
                 CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
-                String deviceName = platformService.getDeviceName(deviceRecognize.getDeviceid());
-                // TODO imsi device name
+                String deviceName = platformService.getCameraDeviceName(deviceRecognize.getDeviceid());
+                if (StringUtils.isBlank(deviceName)){
+                    deviceName = platformService.getImsiDeviceName(deviceRecognize.getDeviceid());
+                }
                 captureDeviceCount.setDeviceName(deviceName != null ? deviceName : deviceRecognize.getDeviceid());
                 captureDeviceCount.setCount(deviceRecognize.getCount());
                 deviceCountList.add(captureDeviceCount);
@@ -361,7 +363,7 @@ public class CommunityService {
         for (PeopleRecognize peopleRecognize : peopleRecognizes){
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
-            info.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
+            info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             info.setPicture(peopleRecognize.getSurl());
             Date date = peopleRecognize.getCapturetime();
             if (date != null){
@@ -379,7 +381,7 @@ public class CommunityService {
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
         if (peopleRecognize != null){
             vo.setDeviceId(peopleRecognize.getDeviceid());
-            vo.setDeviceName(platformService.getDeviceName(peopleRecognize.getDeviceid()));
+            vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             vo.setPicture(peopleRecognize.getSurl());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
@@ -464,7 +466,7 @@ public class CommunityService {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setDeviceId(platformService.getDeviceName(people.getDeviceid()));
+                vo.setDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
                 vo.setFtpUrl(people.getBurl());
                 voList.add(vo);
             }
@@ -473,12 +475,12 @@ public class CommunityService {
             for (FusionImsi imsi : imsiList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
-                // TODO imsi device name
-                vo.setDeviceId(imsi.getDeviceid());
+                vo.setDeviceId(platformService.getImsiDeviceName(imsi.getDeviceid()));
                 vo.setImsi(imsi.getImsi());
                 voList.add(vo);
             }
         }
+        this.listSort(voList);
         int offset = param.getStart();
         int count = param.getLimit();
         int size = voList.size();
@@ -489,7 +491,6 @@ public class CommunityService {
             //结束行大于总数，则返回起始行开始的后续所有数据
             voList = voList.subList(offset, size);
         }
-        this.listSort(voList);
         return voList;
     }
 

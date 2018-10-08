@@ -1,12 +1,9 @@
 package com.hzgc.common.service.api.service;
 
-import com.alibaba.fastjson.JSON;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.bean.DetectorQueryDTO;
 import com.hzgc.common.service.api.bean.Region;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -46,19 +43,36 @@ public class PlatformService {
         return null;
     }
 
-    public String getDeviceName(String deviceId){
+    public String getCameraDeviceName(String deviceId){
         if (deviceId != null){
-            log.info("Method:getDeviceName, deviceId:" + deviceId);
+            log.info("Method:getCameraDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, CameraQueryDTO> map = getCameraInfoByBatchIpc(ids);
             if (map != null && map.size() > 0 && map.get(deviceId) != null) {
                 return map.get(deviceId).getCameraName();
             }else {
-                log.info("Get device info failed, because result is null");
+                log.info("Get camera device info failed, because result is null");
             }
         }else {
-            log.error("Method:getDeviceName, id is null");
+            log.error("Method:getCameraDeviceName, id is null");
+        }
+        return null;
+    }
+
+    public String getImsiDeviceName(String deviceId){
+        if (deviceId != null){
+            log.info("Method:getImsiDeviceName, deviceId:" + deviceId);
+            List<String> ids = new ArrayList<>();
+            ids.add(deviceId);
+            Map<String, DetectorQueryDTO> map = getImsiDeviceInfoByBatchId(ids);
+            if (map != null && map.size() > 0 && map.get(deviceId) != null) {
+                return map.get(deviceId).getDetectorName();
+            }else {
+                log.info("Get imsi device info failed, because result is null");
+            }
+        }else {
+            log.error("Method:getImsiDeviceName, id is null");
         }
         return null;
     }
@@ -70,7 +84,7 @@ public class PlatformService {
      */
     private List<Region> getRegionByIds(List<Long> ids) {
         if (ids != null && ids.size() > 0) {
-            log.info("Method:getRegionByIds, ids:" + JSON.toJSONString(ids));
+            log.info("Method:getRegionByIds, ids:" + Arrays.toString(ids.toArray()));
             ParameterizedTypeReference<Region[]> parameterizedTypeReference =
                     new ParameterizedTypeReference<Region[]>() {};
             ResponseEntity<Region[]> responseEntity = restTemplate.exchange("http://172.18.18.40:8888/api/v1/region/internal/region/query_region_info_by_ids",
@@ -94,6 +108,22 @@ public class PlatformService {
             return responseEntity.getBody();
         } else {
             log.error("Method:getCameraInfoByBatchIpc, ipc list is null");
+            return new HashMap<>();
+        }
+    }
+
+    public Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
+        if (idList != null) {
+            log.info("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));
+            ParameterizedTypeReference<Map<String, DetectorQueryDTO>> parameterizedTypeReference =
+                    new ParameterizedTypeReference<Map<String, DetectorQueryDTO>>() {
+                    };
+            ResponseEntity<Map<String, DetectorQueryDTO>> responseEntity =
+                    restTemplate.exchange("http://172.18.18.40:8888/api/v1/device/internal/detectors/query_detector_by_sns", HttpMethod.POST,
+                            new HttpEntity<>(idList), parameterizedTypeReference);
+            return responseEntity.getBody();
+        } else {
+            log.error("Method:getImsiDeviceInfoByBatchId, id list is null");
             return new HashMap<>();
         }
     }
