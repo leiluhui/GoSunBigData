@@ -17,4 +17,6 @@ public class CarData {
     public static final String RACK_CODE = "rack_code";
     public static final String SUNROOF_CODE = "sunroof_code";
     public static final String VEHICLE_TYPE = "vehicle_type";
+    public static final String PLATE_LICENCE = "plate_licence";
+    public static final String BRAND_NAME = "brand_name";
 }

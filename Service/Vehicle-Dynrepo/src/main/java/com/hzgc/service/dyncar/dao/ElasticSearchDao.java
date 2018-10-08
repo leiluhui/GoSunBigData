@@ -135,14 +135,14 @@ public class ElasticSearchDao {
             for (VehicleAttribute attribute : attributes) {
                 String attributeName = attribute.getAttributeName();
                 if (attributeName.equals(CarData.VEHICLE_OBJECT_TYPE) || attributeName.equals(CarData.MISTAKE_CODE)
-                        || attributeName.equals(CarData.SUNROOF_CODE)) {
+                        || attributeName.equals(CarData.SUNROOF_CODE) || attributeName.equals(CarData.BRAND_NAME)
+                        || attributeName.equals(CarData.PLATE_LICENCE)) {
                     continue;
                 }
                 List <String> attributeValues = attribute.getAttributeCodes();
                 BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
                 if (null != attributeValues && attributeValues.size() > 0) {
                     for (String code : attributeValues) {
-                        log.info("**********************************" + code);
                         if (null != code) {
                             boolQueryBuilder.should(QueryBuilders.matchQuery(attributeName, code));
                         }
