@@ -1,9 +1,10 @@
 package com.hzgc.service.people.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class People {
+public class People implements Serializable {
     private String id;
 
     private String name;

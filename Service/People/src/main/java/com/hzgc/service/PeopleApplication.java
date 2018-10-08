@@ -20,10 +20,5 @@ public class PeopleApplication {
     public static void main(String[] args) {
         SpringApplication.run(PeopleApplication.class, args);
     }
-
-    @Bean
-    RestTemplate restTemplate (){
-        return new RestTemplate();
-    }
 }
 

@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class Phone {
+import java.io.Serializable;
+
+public class Phone implements Serializable {
     private Long id;
 
     private String peopleid;

@@ -3,12 +3,11 @@ package com.hzgc.service.people.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
-import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
-import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
@@ -59,7 +58,7 @@ public class PeopleService {
 
     @Autowired
     @SuppressWarnings("unused")
-    private PeopleService peopleService;
+    private InnerService innerService;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -71,7 +70,7 @@ public class PeopleService {
     public ReturnMessage insertPeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
         log.info("Start Insert people info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people_insert(people);
+        Integer status = people_insert(people);
         if (status != 1) {
             log.info("Insert people to t_people info failed");
             ReturnMessage message = new ReturnMessage();
@@ -84,7 +83,7 @@ public class PeopleService {
                 peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
                 peopleDTO.getCar() != null) {
             if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
-                Integer insertStatus = peopleService.people_flag_insert(people.getId(), peopleDTO.getFlagId());
+                Integer insertStatus = people_flag_insert(people.getId(), peopleDTO.getFlagId());
                 if (insertStatus == 1) {
                     log.info("Insert flag to t_flag successfully");
                 } else {
@@ -96,7 +95,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
+                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
                         peopleDTO.getIdCardPic());
                 if (insertStatus == 1) {
                     log.info("Insert idCard pic to t_picture successfully");
@@ -109,7 +108,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
+                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
                         peopleDTO.getCapturePic());
                 if (insertStatus == 1) {
                     log.info("Insert capture pic to t_picture successfully");
@@ -122,7 +121,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
-                Integer insertStatus = peopleService.people_imsi_insert(people.getId(), peopleDTO.getImsi());
+                Integer insertStatus = people_imsi_insert(people.getId(), peopleDTO.getImsi());
                 if (insertStatus == 1) {
                     log.info("Insert imsi to t_imsi successfully");
                 } else {
@@ -134,7 +133,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
-                Integer insertStatus = peopleService.people_phone_insert(people.getId(), peopleDTO.getPhone());
+                Integer insertStatus = people_phone_insert(people.getId(), peopleDTO.getPhone());
                 if (insertStatus == 1) {
                     log.info("Insert phone to t_phone successfully");
                 } else {
@@ -146,7 +145,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
-                Integer insertStatus = peopleService.people_house_insert(people.getId(), peopleDTO.getHouse());
+                Integer insertStatus = people_house_insert(people.getId(), peopleDTO.getHouse());
                 if (insertStatus == 1) {
                     log.info("Insert house to t_house successfully");
                 } else {
@@ -158,7 +157,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
-                Integer insertStatus = peopleService.people_car_insert(people.getId(), peopleDTO.getCar());
+                Integer insertStatus = people_car_insert(people.getId(), peopleDTO.getCar());
                 if (insertStatus == 1) {
                     log.info("Insert car to t_car successfully");
                 } else {
@@ -181,7 +180,7 @@ public class PeopleService {
     public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people_update(people);
+        Integer status = people_update(people);
         if (status != 1) {
             log.info("Update t_people info failed");
             ReturnMessage message = new ReturnMessage();
@@ -194,7 +193,7 @@ public class PeopleService {
                 peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
                 peopleDTO.getCar() != null) {
             if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
-                Integer insertStatus = peopleService.people_flag_update(people.getId(), peopleDTO.getFlagId());
+                Integer insertStatus = people_flag_update(people.getId(), peopleDTO.getFlagId());
                 if (insertStatus == 1) {
                     log.info("Update flag to t_flag successfully");
                 } else {
@@ -206,7 +205,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.IDCARD_PIC,
+                Integer insertStatus = people_picture_update(people.getId(), PeopleService.IDCARD_PIC,
                         peopleDTO.getIdCardPic());
                 if (insertStatus == 1) {
                     log.info("Update idCard pic to t_picture successfully");
@@ -219,7 +218,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.CAPTURE_PIC,
+                Integer insertStatus = people_picture_update(people.getId(), PeopleService.CAPTURE_PIC,
                         peopleDTO.getCapturePic());
                 if (insertStatus == 1) {
                     log.info("Update capture pic to t_picture successfully");
@@ -232,7 +231,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
-                Integer insertStatus = peopleService.people_imsi_update(people.getId(), peopleDTO.getImsi());
+                Integer insertStatus = people_imsi_update(people.getId(), peopleDTO.getImsi());
                 if (insertStatus == 1) {
                     log.info("Update imsi to t_imsi successfully");
                 } else {
@@ -244,7 +243,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
-                Integer insertStatus = peopleService.people_phone_update(people.getId(), peopleDTO.getPhone());
+                Integer insertStatus = people_phone_update(people.getId(), peopleDTO.getPhone());
                 if (insertStatus == 1) {
                     log.info("Update phone to t_phone successfully");
                 } else {
@@ -256,7 +255,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
-                Integer insertStatus = peopleService.people_house_update(people.getId(), peopleDTO.getHouse());
+                Integer insertStatus = people_house_update(people.getId(), peopleDTO.getHouse());
                 if (insertStatus == 1) {
                     log.info("Update house to t_house successfully");
                 } else {
@@ -268,7 +267,7 @@ public class PeopleService {
                 }
             }
             if (peopleDTO.getCar() != null) {
-                Integer insertStatus = peopleService.people_car_update(people.getId(), peopleDTO.getCar());
+                Integer insertStatus = people_car_update(people.getId(), peopleDTO.getCar());
                 if (insertStatus == 1) {
                     log.info("Update car to t_car successfully");
                 } else {
@@ -344,7 +343,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
@@ -379,7 +378,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;

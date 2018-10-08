@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class House {
+import java.io.Serializable;
+
+public class House implements Serializable {
     private Long id;
 
     private String peopleid;

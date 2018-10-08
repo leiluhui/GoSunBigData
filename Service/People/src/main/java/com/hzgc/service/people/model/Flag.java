@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class Flag {
+import java.io.Serializable;
+
+public class Flag implements Serializable {
     private Long id;
 
     private String peopleid;

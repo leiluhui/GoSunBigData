@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class Imsi {
+import java.io.Serializable;
+
+public class Imsi implements Serializable {
     private Long id;
 
     private String peopleid;

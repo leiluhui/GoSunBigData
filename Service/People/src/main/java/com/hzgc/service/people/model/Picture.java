@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class Picture {
+import java.io.Serializable;
+
+public class Picture implements Serializable {
     private Long id;
 
     private String peopleid;
