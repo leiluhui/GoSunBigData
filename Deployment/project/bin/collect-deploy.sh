@@ -14,7 +14,7 @@ cd `dirname $0`
 BIN_DIR=`pwd`
 cd ../..
 CONF_DIR=${BIN_DIR}/../conf
-CONF_FILE=${CONF_DIR}/project-conf.properties
+CONF_FILE=${CONF_DIR}/project-deploy.properties
 
 ## 安装包根目录
 ROOT_HOME=`pwd`   ##ClusterBuildScripts
@@ -31,7 +31,7 @@ COllECT_CONF_DIR=${COLLECT_HOME}/conf
 ## collect模块配置文件
 COllECT_START_FILE=${COllECT_BIN_DIR}/start-ftpserver.sh
 ## haproxy-ftp映射配置文件
-HAPROXY_FTP_CONF_FILE=${BIN_DIR}/../conf/haproxy-ftp.properties
+HAPROXY_FTP_CONF_FILE=${BIN_DIR}/../conf/collect-deploy.properties
 ## FTP服务器地址
 FTPIP=$(grep 'FTPIP' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
 ## 集群节点地址

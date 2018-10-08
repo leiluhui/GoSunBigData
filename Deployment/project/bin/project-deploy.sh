@@ -14,7 +14,7 @@ cd `dirname $0`
 BIN_DIR=`pwd`
 cd ../..
 CONF_DIR=${BIN_DIR}/../conf
-CONF_FILE=${CONF_DIR}/project-conf.properties
+CONF_FILE=${CONF_DIR}/project-deploy.properties
 ## 安装包根目录
 ROOT_HOME=`pwd`   ##ClusterBuildScripts
 ## 集群配置文件目录
@@ -182,27 +182,27 @@ function config_projectconf()
       #  fi
         ## 修改common模块配置文件
         ## 修改配置文件 zookeeper安装节点
-        echo "配置$ project-conf.properties中的zookeeper地址"
+        echo "配置$ project-deploy.properties中的zookeeper地址"
         zookeeper=$(grep 'Zookeeper_InstallNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         sed -i "s#zookeeper_installnode=.*#zookeeper_installnode=${zookeeper}#g" ${CONF_FILE}
 
         ## 修改配置文件 kafka安装节点
-        echo "配置 project-conf.properties中的kafka地址"
+        echo "配置 project-deploy.properties中的kafka地址"
         kafka=$(grep 'Kafka_InstallNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         sed -i "s#kafka_install_node=.*#kafka_install_node=${kafka}#g" ${CONF_FILE}
 
         ## 修改配置文件 rocketmq安装节点
-        echo "配置 project-conf.properties中的rocketmq地址"
+        echo "配置 project-deploy.properties中的rocketmq地址"
         rocketmq=$(grep 'RocketMQ_Namesrv' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         sed -i "s#rocketmq_nameserver=.*#rocketmq_nameserver=${rocketmq}#g" ${CONF_FILE}
 
          ## 修改配置文件 es安装节点
-        echo "配置 project-conf.properties中的rocketmq地址"
+        echo "配置 project-deploy.properties中的rocketmq地址"
         es=$(grep 'ES_InstallNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2 | cut -d ';' -f1)
         sed -i "s#es_service_node=.*#es_service_node=${es}#g" ${CONF_FILE}
 
         ## 修改配置文件 jdbc_service节点
-         echo "配置 project-conf.properties中的jdbc_service地址"
+         echo "配置 project-deploy.properties中的jdbc_service地址"
         sparknode=$(grep 'Spark_ServiceNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         sparknamenode=$(grep 'Spark_NameNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         if [[ "${sparknode}" =~ "${sparknamenode}" ]]; then
@@ -213,7 +213,7 @@ function config_projectconf()
         fi
 
         ## 修改配置文件 mysql安装节点
-        echo "配置 project-conf.properties中的mysql地址"
+        echo "配置 project-deploy.properties中的mysql地址"
         ismini=$(grep ISMINICLUSTER ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         mysql=$(grep Mysql_InstallNode ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
         if [[ ${ismini} = "no" && (-n ${mysql})  ]]; then
@@ -384,7 +384,7 @@ function config_sparkjob()
     echo "" | tee -a ${SPARK_LOG_FILE}
     echo "配置cluster/spark/conf/sparkJob 文件......"  | tee  -a  ${SPARK_LOG_FILE}
 
-    ### 从project-conf.properties读取sparkJob所需配置IP
+    ### 从project-deploy.properties读取sparkJob所需配置IP
     # 根据字段kafka，查找配置文件中，Kafka的安装节点所在IP端口号的值，这些值以分号分割
 	KAFKA_IP=$(grep kafka_install_node ${CONF_FILE}|cut -d '=' -f2)
     # 将这些分号分割的ip用放入数组
@@ -472,7 +472,7 @@ function config_service()
     echo "开始配置service底下的各个模块......" | tee -a ${SERVICE_LOG_FILE}
 
     #单独给静态库配置pro配置文件：
-    #从project-conf.properties中读取kafka配置IP
+    #从project-deploy.properties中读取kafka配置IP
     KAFKA_IP=$(grep kafka_install_node $CONF_FILE | cut -d '=' -f2)
     #将这些分号分割的ip用于放入数组中
     kafka_arr=(${KAFKA_IP//;/ })
@@ -504,7 +504,7 @@ function config_service()
     echo "start-fusion.sh脚本配置kafka完成......"
 
     #配置es.hosts:
-    #从project-conf.properties中读取es所需配置IP
+    #从project-deploy.properties中读取es所需配置IP
     #根据字段es，查找配置文件，这些值以分号分隔
     ES_IP=$(grep es_service_node $CONF_FILE | cut -d '=' -f2)
     #将这些分号分割的ip用于放入数组中
@@ -540,7 +540,7 @@ function config_service()
 
     #####################ZOOKEEPER_HOST#########################
     #配置zookeeper：
-    #从project-conf.properties中读取zookeeper所需配置IP
+    #从project-deploy.properties中读取zookeeper所需配置IP
     #根据字段zookeeper，查找配置文件，这些值以分号分隔
     ZK_HOSTS=$(grep zookeeper_installnode $CONF_FILE | cut -d '=' -f2)
     zk_arr=(${ZK_HOSTS//;/ })
@@ -587,7 +587,7 @@ function config_service()
 
     #####################EUREKA_IP#########################
     #配置eureka_node:
-    #从project-conf.properties中读取eureka_node所需配置ip
+    #从project-deploy.properties中读取eureka_node所需配置ip
     #根据字段eureka_node，查找配置文件，这些值以分号分隔
     EUREKA_NODE_HOSTS=$(grep spring_cloud_eureka_node $CONF_FILE | cut -d '=' -f2)
     eureka_node_arr=(${EUREKA_NODE_HOSTS//;/ })
@@ -628,7 +628,7 @@ function config_service()
 
     #####################EUREKA_PORT#########################
     #配置eureka_port:
-    #从project-conf.properties中读取eureka_port所需配置port
+    #从project-deploy.properties中读取eureka_port所需配置port
     #根据字段eureka_port,查找配置文件
     EUREKA_PORT=$(grep spring_cloud_eureka_port $CONF_FILE | cut -d '=' -f2)
 
@@ -658,7 +658,7 @@ function config_service()
 
     #####################MYSQL_HOST#########################
     #配置MYSQL_HOST:
-    #从project-conf.properties中读取mysql所需配置host和port
+    #从project-deploy.properties中读取mysql所需配置host和port
 
     MYSQL_HOST=$(grep mysql_host ${CONF_FILE} | cut -d '=' -f2)
     #替换collect模块启动脚本中：key=value(替换key字段的值value)
@@ -683,7 +683,7 @@ function config_service()
 
     #####################MQ_NAMESERVER########################
     #配置MQ_NAMESERVER:
-    #从project-conf.properties中读取所需配置的rocketmq_nameserver
+    #从project-deploy.properties中读取所需配置的rocketmq_nameserver
     mq_nameserver=$(grep "RocketMQ_Namesrv" ${CLUSTER_CONF_FILE} | cut -d "=" -f2)
     sed -i "s#^MQ_NAMESERVER=.*#MQ_NAMESERVER=${mq_nameserver}:9876#g" ${PEOPLEMANAGER_WORKER_START_FILE}
     echo echo "start-peoman-worker.sh脚本配置rocketmq完成......."
@@ -763,7 +763,7 @@ function distribute_facecompare(){
 ##############################################################################
 function main()
 {
-  config_projectconf      ##配置project-conf.properties
+  config_projectconf      ##配置project-deploy.properties
   ## cluster模块
   copy_xml_to_spark       ##复制集群xml文件到cluster/spark目录下
   config_sparkjob         ##配置sparkjob.properties

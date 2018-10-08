@@ -21,7 +21,7 @@ LOG_FILE=${LOG_DIR}/create-schedule-job-to-zip.log  ##log日志文件
 cd ../../../GoSunBigDataDeploy/project
 PROJECT_DIR=`pwd`
 PORJECT_CONF_DIR=${PROJECT_DIR}/conf
-PROJECT_CONF_FILE=${PORJECT_CONF_DIR}/project-conf.properties
+PROJECT_CONF_FILE=${PORJECT_CONF_DIR}/project-deploy.properties
 
 SCHEMA_FILE="schema-merge-parquet-file.sh"
 OFFLINE_FILE="start-face-offline-alarm-job.sh"
@@ -36,6 +36,9 @@ FUSION_IMSI_TABLE="fusion_imsi_table.sh"
 HOUR_COUNT_TABLE="24hour_count_table.sh"
 OUTPEOPLE_TABLE="outpeople_table.sh"
 
+mkdir -p ${AZKABAN_DIR}/job
+AZKABAN_JOB_DIR=${AZKABAN_DIR}/job
+
 cd ../..
 OBJECT_DIR=`pwd`                                 ## 根目录
 CLUSTER_BIN_DIR=/opt/GoSunBigData/Cluster/spark/bin
@@ -43,34 +46,42 @@ FACECOMPARE_BIN_DIR=/opt/GoSunBigData/Cluster/FaceCompare/bin
 PEOMAN_WORKER_BIN_DIR=/opt/GoSunBigData/Cluster/PeopleManager-background/PeopleManager-background-worker/bin
 
 MYSQL=`grep "mysql_host" ${PROJECT_CONF_FILE} | cut -d "=" -f2`
-MYSQLIP=${MYSQL##:*}
-MYSQLPORT=${MYSQL%%:*}
+MYSQLIP=${MYSQL%%:*}
+MYSQLPORT=${MYSQL##*:}
 
-cd ${AZKABAN_DIR}
+cd ${AZKABAN_DIR}/bin
 
 sed -i "s#^IP=.*#IP=${MYSQLIP}#g" `grep -r "IP=" ./*.sh | awk -F ":" '{print $1}'`
-sed -i "s#^IP=.*#PORT=${MYSQLPORT}#g" `grep -r "PORT=" ./*.sh | awk -F ":" '{print $1}'`
+sed -i "s#^PORT=.*#PORT=${MYSQLPORT}#g" `grep -r "PORT=" ./*.sh | awk -F ":" '{print $1}'`
 
 if [[ ! -f "${DEVICE_RECOGIZE_TABLE}"  ]]; then
     echo "the device_recogize_table_one_day.sh is not exist!!!"
     else
-    touch device_recogize_table_one_day.job
-    echo "type=command" >> device_recogize_table_one_day.job
+    touch ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
+    echo "type=command" > device_recogize_table_one_day.job
  echo "command=sh ${AZKABAN_DIR}/${DEVICE_RECOGIZE_TABLE}" >> device_recogize_table_one_day.job
 fi
 
 if [[ ! -f "${NEWPEOPLE_TABLE}"  ]]; then
     echo "the newpeople_table_one_month.sh is not exist!!!"
     else
-    touch newpeople_table_one_month.job
-    echo "type=command" >> newpeople_table_one_month.job
+    touch ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
+    echo "type=command" > newpeople_table_one_month.job
     echo "command=sh ${AZKABAN_DIR}/${NEWPEOPLE_TABLE}" >> newpeople_table_one_month.job
+fi
+
+if [[ ! -f "${OUTPEOPLE_TABLE}"  ]]; then
+    echo "the outpeople_table_one_month.sh is not exist!!!"
+    else
+    touch ${AZKABAN_JOB_DIR}/outpeople_table_one_month.job
+    echo "type=command" > outpeople_table_one_month.job
+    echo "command=sh ${AZKABAN_DIR}/${OUTPEOPLE_TABLE}" >> outpeople_table_one_month.job
 fi
 
 if [[ ! -f "${IMSI_BLACKLIST_TABLE}"  ]]; then
     echo "the imsi_blacklist_table_one_day.sh is not exist!!!"
     else
-    touch imsi_blacklist_table_one_day.job
+    touch ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
     echo "type=command" >> imsi_blacklist_table_one_day.job
     echo "command=sh ${AZKABAN_DIR}/${IMSI_BLACKLIST_TABLE}" >> imsi_blacklist_table_one_day.job
 fi
@@ -78,8 +89,8 @@ fi
 if [[ ! -f "${FUSION_IMSI_TABLE}"  ]]; then
     echo "the fusion_imsi_table_one_day.sh is not exist!!!"
     else
-    touch fusion_imsi_table_one_day.job
-    echo "type=command" >> fusion_imsi_table_one_day.job
+    touch ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
+    echo "type=command" > fusion_imsi_table_one_day.job
     echo "command=sh ${AZKABAN_DIR}/${FUSION_IMSI_TABLE}" >> fusion_imsi_table_one_day.job
     echo "dependencies=imsi_blacklist_table_one_day" >> fusion_imsi_table_one_day.job
 fi
@@ -87,8 +98,8 @@ fi
 if [[ ! -f "${HOUR_COUNT_TABLE}"  ]]; then
     echo "the 24hour_count_table_one_day.sh is not exist!!!"
     else
-    touch 24hour_count_table_one_day.job
-    echo "type=command" >> 24hour_count_table_one_day.job
+    touch ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
+    echo "type=command" > 24hour_count_table_one_day.job
     echo "command=sh ${AZKABAN_DIR}/${HOUR_COUNT_TABLE}" >> 24hour_count_table_one_day.job
 fi
 
@@ -96,6 +107,7 @@ zip device_recogize_table_one_day.zip device_recogize_table_one_day.job
 zip fusion_imsi_table_one_day.zip fusion_imsi_table_one_day.job imsi_blacklist_table_one_day.job
 zip 24hour_count_table_one_day.zip 24hour_count_table_one_day.job
 zip newpeople_table_one_month.zip newpeople_table_one_month.job
+zip outpeople_table_one_month.zip outpeople_table_one_month.job
 
 cd ${CLUSTER_BIN_DIR}  ##进入cluster的bin目录
 mkdir -p schema-parquet-one-hour
@@ -160,4 +172,4 @@ rm -rf master-protect-five-second.job task-tracker-five-second.job
 
 cd ${AZKABAN_DIR}
 mkdir -p zip
-mv ${BIN_DIR}/../24hour_count_table_one_day.zip ${BIN_DIR}/../device_recogize_table_one_day.zip ${BIN_DIR}/../fusion_imsi_table_one_day.zip ${BIN_DIR}/../newpeople_table_one_month.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip  ${FACECOMPARE_BIN_DIR}/master-protect-five-second.zip ${FACECOMPARE_BIN_DIR}/task-tracker-five-second.zip  zip
+mv ${AZKABAN_JOB_DIR}/outpeople_table_one_month.zip ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.zip ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.zip ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.zip ${AZKABAN_JOB_DIR}/newpeople_table_one_month.zip  ${CLUSTER_BIN_DIR}/schema-parquet-one-hour.zip ${CLUSTER_BIN_DIR}/person_table_one-day.job.zip ${CLUSTER_BIN_DIR}/start-face-offline-alarm-job_oneday.job.zip  ${FACECOMPARE_BIN_DIR}/master-protect-five-second.zip ${FACECOMPARE_BIN_DIR}/task-tracker-five-second.zip  zip

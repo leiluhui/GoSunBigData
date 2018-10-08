@@ -25,7 +25,7 @@ WORKER_BIN=${WORKER_DIR}/bin                  ##worker的bin目录地址
 cd /opt/GoSunBigDataDeploy/project/
 PROJECT_DIR=`pwd`                             ##project目录所在地址
 PROJECT_CONF_DIR=${PROJECT_DIR}/conf          ##project的conf目录地址
-PROJECT_FILE=${PROJECT_CONF_DIR}/project-conf.properties
+PROJECT_FILE=${PROJECT_CONF_DIR}/project-deploy.properties
 PROJECT_BIN_DIR=${PROJECT_DIR}/bin            ##project的bin目录地址
 
 

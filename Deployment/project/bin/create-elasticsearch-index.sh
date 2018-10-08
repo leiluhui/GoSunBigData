@@ -17,7 +17,7 @@ BIN_DIR=`pwd`                                   ### bin 目录
 cd ..
 PROJECT_DIR=`pwd`
 SQL_DIR=${PROJECT_DIR}/sql
-CONF_FILE=${PROJECT_DIR}/conf/project-conf.properties
+CONF_FILE=${PROJECT_DIR}/conf/project-deploy.properties
 
 #####################################################################
 # 函数名: index_es_dynamic

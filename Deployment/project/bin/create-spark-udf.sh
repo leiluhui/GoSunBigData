@@ -21,7 +21,7 @@ LOG_FILE=${LOG_DIR}/add-udf.log
 
 cd ../..
 SCRIPT_DIR=`pwd`
-CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
+CONF_FILE=${SCRIPT_DIR}/conf/project-deploy.properties
 
 ## udf jar version
 UDF_VERSION=`ls ${SPARK_DIR}/lib | grep ^spark-udf-[0-9].[0-9].[0-9].jar$`
