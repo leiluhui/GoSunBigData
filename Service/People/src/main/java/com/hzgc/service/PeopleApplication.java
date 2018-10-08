@@ -1,5 +1,6 @@
 package com.hzgc.service;
 
+import com.hzgc.common.service.api.config.EnableInnerService;
 import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableEurekaClient
 @EnablePlatformService
 @EnableTransactionManagement
+@EnableInnerService
 @MapperScan(basePackages = {"com.hzgc.service.people.dao","com.hzgc.service.community.dao"})
 public class PeopleApplication {
     public static void main(String[] args) {

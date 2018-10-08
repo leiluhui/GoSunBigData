@@ -167,7 +167,7 @@ public class PeopleController {
      * @param param 查询条件参数封装
      * @return peopleVO 查询返回参数封装
      */
-    @ApiOperation(value = "根据条件查询人员", response = PeopleVO.class)
+    @ApiOperation(value = "根据条件查询人员", response = SearchPeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
     public ResponseResult <SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
         if (param == null) {
@@ -190,7 +190,7 @@ public class PeopleController {
         return ResponseResult.init(vo, vo != null ? vo.getTotal() : 0);
     }
 
-    @ApiOperation(value = "统计单个区域下所有小区列表", response = PeopleVO.class)
+    @ApiOperation(value = "统计单个区域下所有小区列表", response = List.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_COMMUNITY, method = RequestMethod.GET)
     public ResponseResult <List <Long>> searchCommunityIdsByRegionId(Long regionId) {
         if (regionId == null) {
