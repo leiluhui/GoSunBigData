@@ -150,7 +150,6 @@ public class CaptureHistoryService {
                 String ipc = (String) hit.getSource().get(VehicleTable.IPCID);
                 String timestamp = (String) hit.getSource().get(VehicleTable.TIMESTAMP);
                 String hostname = (String) hit.getSource().get(VehicleTable.HOSTNAME);
-                hostname = "s202";
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
