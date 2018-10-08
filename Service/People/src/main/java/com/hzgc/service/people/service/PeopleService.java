@@ -3,6 +3,7 @@ package com.hzgc.service.people.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
@@ -52,6 +53,10 @@ public class PeopleService {
     @Autowired
     @SuppressWarnings("unused")
     private PictureMapper pictureMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PlatformService platformService;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -367,7 +372,7 @@ public class PeopleService {
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
-            peopleVO.setRegion(String.valueOf(people.getRegion()));
+            peopleVO.setRegion(platformService.getMergerName(people.getRegion()));
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
@@ -377,7 +382,7 @@ public class PeopleService {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
-            peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+            peopleVO.setCommunity(platformService.getMergerName(people.getCommunity()));
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -419,6 +424,7 @@ public class PeopleService {
             peopleVO.setCar(carList);
             List<PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
+                peopleVO.setPictureId(pictures.get(0).getId());
                 List<Long> idcardPictureIds = new ArrayList<>();
                 List<Long> capturePictureIds = new ArrayList<>();
                 for (PictureWithBLOBs picture : pictures) {
@@ -457,7 +463,7 @@ public class PeopleService {
                     peopleVO.setId(people.getId());
                     peopleVO.setName(people.getName());
                     peopleVO.setIdCard(people.getIdcard());
-                    peopleVO.setRegion(String.valueOf(people.getRegion()));
+                    peopleVO.setRegion(platformService.getMergerName(people.getRegion()));
                     peopleVO.setHousehold(people.getHousehold());
                     peopleVO.setAddress(people.getAddress());
                     peopleVO.setSex(people.getSex());
@@ -467,7 +473,7 @@ public class PeopleService {
                     peopleVO.setEduLevel(people.getEdulevel());
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
-                    peopleVO.setCommunity(String.valueOf(people.getCommunity()));
+                    //peopleVO.setCommunity(String.valueOf(people.getCommunity()));
                     if (people.getLasttime() != null) {
                         peopleVO.setLastTime(sdf.format(people.getLasttime()));
                     }
