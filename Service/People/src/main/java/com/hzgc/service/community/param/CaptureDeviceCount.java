@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class CaptureDeviceCount implements Serializable {
     @ApiModelProperty(value = "相机ID")
-    private String deviceId;
+    private String deviceName;
     @ApiModelProperty(value = "抓拍统计")
     private int count;
 }
