@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class PeopleRecognize {
-    private Long id;
+    private String id;
     private String peopleid;
     private Long community;
     private Long pictureid;

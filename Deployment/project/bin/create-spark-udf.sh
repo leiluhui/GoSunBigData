@@ -13,15 +13,15 @@
 #---------------------------------------------------------------------#
 
 cd `dirname $0`
-SPARK_DIR=`pwd`                         ### spark 目录
+SPARK_DIR=`pwd`/spark                         ### spark 目录
 ## log 日记目录
 LOG_DIR=${SPARK_DIR}/logs
 ##  log 日记文件
 LOG_FILE=${LOG_DIR}/add-udf.log
 
-cd ../..
+cd ..
 SCRIPT_DIR=`pwd`
-CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
+CONF_FILE=${SCRIPT_DIR}/conf/project-deploy.properties
 
 ## udf jar version
 UDF_VERSION=`ls ${SPARK_DIR}/lib | grep ^spark-udf-[0-9].[0-9].[0-9].jar$`

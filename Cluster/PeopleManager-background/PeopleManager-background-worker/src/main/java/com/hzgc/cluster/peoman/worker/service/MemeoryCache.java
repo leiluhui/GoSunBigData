@@ -2,6 +2,7 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.PictureMapper;
 import com.hzgc.cluster.peoman.worker.model.Picture;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,10 +73,12 @@ public class MemeoryCache {
             queryList[0] = bitFeature;
             ArrayList<CompareResult> compareResList =
                     FaceFunction.faceCompareBit(bitFeatureList.toArray(new byte[0][]), queryList, 1);
+            if(compareResList == null) {
+                return null;
+            }
             CompareResult compareResult = compareResList.get(0);
             ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
             FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
-            log.info("=========================faceFeatureInfo="+faceFeatureInfo);
             int index = faceFeatureInfo.getIndex();
             String pictureKey = indexToPictureKey.get(index);
             List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
@@ -104,7 +107,6 @@ public class MemeoryCache {
                     return null;
                 }
             } else {
-                log.info("=================score="+faceFeatureInfo.getScore());
                 if (faceFeatureInfo.getScore() >= featureThreshold) {
                     return comparePicture;
                 } else {

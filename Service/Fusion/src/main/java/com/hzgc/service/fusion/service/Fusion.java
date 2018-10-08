@@ -23,7 +23,7 @@ import java.util.Properties;
 
 @Slf4j
 @Component
-public class Gusion implements Runnable {
+public class Fusion implements Runnable {
 
     @Value("${kafka.bootstrap.servers}")
     private String kafkaHost;

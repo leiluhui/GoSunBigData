@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 public class ImsiFusion implements CommandLineRunner{
 
     @Autowired
-    private Gusion gusion;
+    private Fusion fusion;
 
     @Override
     public void run(String... strings) throws Exception {
-        gusion.initConsumer();
-        Thread thread = new Thread(gusion);
+        fusion.initConsumer();
+        Thread thread = new Thread(fusion);
         thread.start();
     }
 }

@@ -28,7 +28,7 @@ COllECT_CONF_DIR=${COLLECT_HOME}/conf
 ## collect模块配置文件
 COllECT_CONF_FILE=${COllECT_CONF_DIR}/collect.properties
 ## haproxy-ftp映射配置文件
-HAPROXY_FTP_CONF_FILE=${BIN_DIR}/../conf/haproxy-ftp.properties
+HAPROXY_FTP_CONF_FILE=${BIN_DIR}/../conf/collect-deploy.properties
 ## FTP服务器地址
 FTPIP=$(grep 'FTPIP' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
 ## 集群节点地址
@@ -105,7 +105,7 @@ function distribute_collect()
            ssh root@${ip} "sed -i 's#^ftp.ip=.*#ftp.ip=${ip}#g' ${COLLECT_INSTALL_HOME}/conf/collect.properties"
            echo "${ip}上修改配置文件完成.................." | tee -a $LOG_FILE
 
-           ##同步haproxy-ftp.properties配置文件
+           ##同步collect-deploy.properties配置文件
            contain=`grep "${ip}" ${HAPROXY_FTP_CONF_FILE}`
            if [[ -n ${contain} ]]; then
                mainnum=`echo ${contain}| cut -d '=' -f1 | cut -d '.' -f3`
