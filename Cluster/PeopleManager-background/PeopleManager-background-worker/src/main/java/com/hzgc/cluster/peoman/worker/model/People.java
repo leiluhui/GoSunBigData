@@ -1,7 +1,6 @@
 package com.hzgc.cluster.peoman.worker.model;
 
 import java.util.Date;
-import java.util.List;
 
 public class People {
     private String id;
