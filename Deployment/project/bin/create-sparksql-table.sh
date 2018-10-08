@@ -14,9 +14,9 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                                   ### bin 目录
 
-cd ../..
+cd ..
 SCRIPT_DIR=`pwd`
-CONF_FILE=${SCRIPT_DIR}/conf/project-conf.properties
+CONF_FILE=${SCRIPT_DIR}/conf/project-deploy.properties
 ## bigdata cluster path
 BIGDATA_CLUSTER_PATH=$(grep install_homedir ${CONF_FILE} |cut -d '=' -f2)
 ## bigdata hive path
