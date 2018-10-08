@@ -16,6 +16,7 @@ import com.hzgc.service.people.param.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,15 +63,16 @@ public class PeopleService {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public final static String IDCARD_PIC = "idcardpic";
+    private final static String IDCARD_PIC = "idcardpic";
 
-    public final static String CAPTURE_PIC = "capturepic";
+    private final static String CAPTURE_PIC = "capturepic";
 
+    @Transactional(rollbackFor = Exception.class)
     public ReturnMessage insertPeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
         log.info("Start Insert people info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people_insert(people);
-        if (status == null || status != 1) {
+        if (status != 1) {
             log.info("Insert people to t_people info failed");
             ReturnMessage message = new ReturnMessage();
             message.setStatus(0);
@@ -179,7 +181,7 @@ public class PeopleService {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
         Integer status = peopleService.people_update(people);
-        if (status == null || status != 1) {
+        if (status != 1) {
             log.info("Update t_people info failed");
             ReturnMessage message = new ReturnMessage();
             message.setStatus(0);
@@ -284,15 +286,15 @@ public class PeopleService {
         return message;
     }
 
-    public Integer people_insert(People people) {
+    private Integer people_insert(People people) {
         return peopleMapper.insertSelective(people);
     }
 
-    public Integer people_update(People people) {
+    private Integer people_update(People people) {
         return peopleMapper.updateByPrimaryKeySelective(people);
     }
 
-    public Integer people_flag_insert(String peopleId, List <Integer> flags) {
+    private Integer people_flag_insert(String peopleId, List <Integer> flags) {
         for (Integer integer : flags) {
             com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
             flag.setPeopleid(peopleId);
@@ -307,7 +309,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_flag_update(String peopleId, List <Integer> flags) {
+    private Integer people_flag_update(String peopleId, List <Integer> flags) {
         List <Long> idList = flagMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = flagMapper.deleteByPrimaryKey(id);
@@ -330,7 +332,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_insert(String peopleId, String picType, List <String> pics) {
+    private Integer people_picture_insert(String peopleId, String picType, List <String> pics) {
         for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
@@ -357,7 +359,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_update(String peopleId, String picType, List <String> pics) {
+    private Integer people_picture_update(String peopleId, String picType, List <String> pics) {
         List <Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = pictureMapper.deleteByPrimaryKey(id);
@@ -392,7 +394,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_imsi_insert(String peopleId, List <String> imsis) {
+    private Integer people_imsi_insert(String peopleId, List <String> imsis) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
             imsi.setPeopleid(peopleId);
@@ -406,7 +408,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_imsi_update(String peopleId, List <String> imsis) {
+    private Integer people_imsi_update(String peopleId, List <String> imsis) {
         List <Long> idList = imsiMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = imsiMapper.deleteByPrimaryKey(id);
@@ -428,7 +430,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_phone_insert(String peopleId, List <String> phones) {
+    private Integer people_phone_insert(String peopleId, List <String> phones) {
         for (String s : phones) {
             Phone phone = new Phone();
             phone.setPeopleid(peopleId);
@@ -442,7 +444,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_phone_update(String peopleId, List <String> phones) {
+    private Integer people_phone_update(String peopleId, List <String> phones) {
         List <Long> idList = phoneMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = phoneMapper.deleteByPrimaryKey(id);
@@ -464,7 +466,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_house_insert(String peopleId, List <String> houses) {
+    private Integer people_house_insert(String peopleId, List <String> houses) {
         for (String s : houses) {
             House house = new House();
             house.setPeopleid(peopleId);
@@ -478,7 +480,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_house_update(String peopleId, List <String> houses) {
+    private Integer people_house_update(String peopleId, List <String> houses) {
         List <Long> idList = houseMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = houseMapper.deleteByPrimaryKey(id);
@@ -500,7 +502,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_car_insert(String peopleId, List <String> cars) {
+    private Integer people_car_insert(String peopleId, List <String> cars) {
         for (String s : cars) {
             Car car = new Car();
             car.setPeopleid(peopleId);
@@ -514,7 +516,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_car_update(String peopleId, List <String> cars) {
+    private Integer people_car_update(String peopleId, List <String> cars) {
         List <Long> idList = carMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = carMapper.deleteByPrimaryKey(id);
