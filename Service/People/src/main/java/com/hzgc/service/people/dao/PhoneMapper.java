@@ -1,9 +1,10 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Phone;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
-
+@CacheNamespace
 public interface PhoneMapper {
     int deleteByPrimaryKey(Long id);
 

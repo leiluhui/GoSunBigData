@@ -3,10 +3,13 @@ package com.hzgc.service.people.dao;
 import com.hzgc.service.community.param.AffirmOperationDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.FilterField;
+import org.apache.ibatis.annotations.CacheNamespace;
+import org.apache.ibatis.annotations.Options;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+@CacheNamespace
 public interface PeopleMapper {
     int deleteByPrimaryKey(String id);
 

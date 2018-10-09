@@ -1,9 +1,11 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Car;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
 
+@CacheNamespace
 public interface CarMapper {
     int deleteByPrimaryKey(Long id);
 

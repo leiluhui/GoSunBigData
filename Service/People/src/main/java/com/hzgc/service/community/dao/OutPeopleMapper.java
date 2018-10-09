@@ -5,9 +5,11 @@ import com.hzgc.service.community.model.OutPeople;
 import com.hzgc.service.community.param.AffirmOperationDTO;
 import com.hzgc.service.community.param.NewAndOutPeopleCountDTO;
 import com.hzgc.service.community.param.NewAndOutPeopleSearchDTO;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
 
+@CacheNamespace
 public interface OutPeopleMapper {
     int deleteByPrimaryKey(Long id);
 

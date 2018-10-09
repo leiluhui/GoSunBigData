@@ -1,9 +1,11 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.House;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
 
+@CacheNamespace
 public interface HouseMapper {
     int deleteByPrimaryKey(Long id);
 
