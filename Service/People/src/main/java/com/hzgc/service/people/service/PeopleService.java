@@ -72,13 +72,13 @@ public class PeopleService {
         log.info("Start Insert people info, param is:" + JacksonUtil.toJson(people));
         Integer status = people_insert(people);
         if (status != 1) {
-            log.info("Insert people to t_people info failed");
+            log.info("Insert people to t_people failed");
             ReturnMessage message = new ReturnMessage();
             message.setStatus(0);
             message.setMessage("添加人口信息失败");
             return message;
         }
-        log.info("Insert t_people info successfully");
+        log.info("Insert people to t_people successfully");
         if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
                 peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
                 peopleDTO.getCar() != null) {
@@ -182,13 +182,13 @@ public class PeopleService {
         log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
         Integer status = people_update(people);
         if (status != 1) {
-            log.info("Update t_people info failed");
+            log.info("Update people to t_people failed");
             ReturnMessage message = new ReturnMessage();
             message.setStatus(0);
             message.setMessage("修改人口失败");
             return message;
         }
-        log.info("Update t_people info successfully");
+        log.info("Update people to t_people successfully");
         if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
                 peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
                 peopleDTO.getCar() != null) {

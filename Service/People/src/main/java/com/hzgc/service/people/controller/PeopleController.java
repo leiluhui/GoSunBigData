@@ -131,8 +131,9 @@ public class PeopleController {
     @ApiOperation(value = "根据照片ID查询照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PICID, method = RequestMethod.GET)
     public ResponseEntity <byte[]> searchPictureByPicId(Long pictureId) {
-        if (pictureId != null) {
+        if (pictureId == null) {
             log.error("Start select picture, but picture id is null");
+            ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(null);
         }
         log.info("Start select picture, picture id is:" + pictureId);
         byte[] picture = peopleService.searchPictureByPicId(pictureId);
@@ -154,6 +155,7 @@ public class PeopleController {
     public ResponseResult <PictureVO> searchPictureByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select picture, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
         }
         log.info("Start select picture, people id is:" + peopleId);
         PictureVO pictureVO = peopleService.searchPictureByPeopleId(peopleId);
