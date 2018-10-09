@@ -345,8 +345,8 @@ public class PeopleService {
             }
             FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.info("Face feature extract failed, insert picture to t_picture failed");
-                return 0;
+                log.error("Face feature extract failed, insert picture to t_picture failed");
+                throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
             }
             picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
             picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
@@ -380,8 +380,8 @@ public class PeopleService {
             }
             FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.info("Face feature extract failed, insert picture to t_picture failed");
-                return 0;
+                log.error("Face feature extract failed, insert picture to t_picture failed");
+                throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
             }
             picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
             picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
