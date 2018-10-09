@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -399,6 +400,7 @@ public class CommunityService {
         return vo;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Integer communityAffirmOut(AffirmOperationDTO param) {
         // 已确认迁出
         if (param.getIsconfirm() == 2){
@@ -425,6 +427,7 @@ public class CommunityService {
         return 1;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Integer communityAffirmNew(AffirmOperationDTO param) {
         // 已确认迁入
         if (param.getIsconfirm() == 2){
