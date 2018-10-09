@@ -46,35 +46,35 @@ public class PlatformService {
         return null;
     }
 
-    public String getCameraDeviceName(String deviceId){
-        if (deviceId != null){
+    public String getCameraDeviceName(String deviceId) {
+        if (deviceId != null) {
             log.info("Method:getCameraDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, CameraQueryDTO> map = getCameraInfoByBatchIpc(ids);
             if (map != null && map.size() > 0 && map.get(deviceId) != null) {
                 return map.get(deviceId).getCameraName();
-            }else {
+            } else {
                 log.info("Get camera device info failed, because result is null");
             }
-        }else {
+        } else {
             log.error("Method:getCameraDeviceName, id is null");
         }
         return null;
     }
 
-    public String getImsiDeviceName(String deviceId){
-        if (deviceId != null){
+    public String getImsiDeviceName(String deviceId) {
+        if (deviceId != null) {
             log.info("Method:getImsiDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, DetectorQueryDTO> map = getImsiDeviceInfoByBatchId(ids);
             if (map != null && map.size() > 0 && map.get(deviceId) != null) {
                 return map.get(deviceId).getDetectorName();
-            }else {
+            } else {
                 log.info("Get imsi device info failed, because result is null");
             }
-        }else {
+        } else {
             log.error("Method:getImsiDeviceName, id is null");
         }
         return null;
@@ -119,7 +119,10 @@ public class PlatformService {
     }
 
     public Map<String, CameraQueryDTO> getCameraInfoByBatchIpc(List<String> ipcList) {
-        if (ipcList != null) {
+        ParameterizedTypeReference<Map<String, CameraQueryDTO>> parameterizedTypeReference =
+                new ParameterizedTypeReference<Map<String, CameraQueryDTO>>() {
+                };
+        if (ipcList != null && ipcList.size() > 0) {
             Map<String, CameraQueryDTO> returnResult = new HashMap<>();
             for (String ipcId : ipcList) {
                 if (ipcId != null) {
@@ -128,15 +131,12 @@ public class PlatformService {
                         returnResult.put(ipcId, cameraQuery);
                     } else {
                         log.info("Method:getCameraInfoByBatchIpc, ipc list is:" + Arrays.toString(ipcList.toArray()));
-                        ParameterizedTypeReference<Map<String, CameraQueryDTO>> parameterizedTypeReference =
-                                new ParameterizedTypeReference<Map<String, CameraQueryDTO>>() {
-                                };
                         ResponseEntity<Map<String, CameraQueryDTO>> responseEntity =
                                 restTemplate.exchange("http://platform:8888/api/v1/device/internal/cameras/query_camera_by_codes",
                                         HttpMethod.POST,
                                         new HttpEntity<>(Collections.singletonList(ipcId)),
                                         parameterizedTypeReference);
-                        Map<String, CameraQueryDTO> searchMap =  responseEntity.getBody();
+                        Map<String, CameraQueryDTO> searchMap = responseEntity.getBody();
                         CameraQueryDTO searchCamera = searchMap.get(ipcId);
                         if (searchCamera != null) {
                             returnResult.put(ipcId, searchCamera);
@@ -146,6 +146,13 @@ public class PlatformService {
                 }
             }
             return returnResult;
+        } else if (ipcList != null) {
+            ResponseEntity<Map<String, CameraQueryDTO>> responseEntity =
+                    restTemplate.exchange("http://platform:8888/api/v1/device/internal/cameras/query_camera_by_codes",
+                            HttpMethod.POST,
+                            new HttpEntity<>(ipcList),
+                            parameterizedTypeReference);
+            return responseEntity.getBody();
         } else {
             log.error("Method:getCameraInfoByBatchIpc, ipc list is null");
             return new HashMap<>();

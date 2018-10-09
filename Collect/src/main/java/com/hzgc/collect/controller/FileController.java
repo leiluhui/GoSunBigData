@@ -25,7 +25,7 @@ public class FileController {
     private HttpFile httpFile;
 
     @RequestMapping("/image")
-    @ApiOperation(value = "获取原图片", produces = "image/jpeg")
+    @ApiOperation(value = "获取原图片", produces = "image/jpeg", httpMethod = "GET")
     public ResponseEntity<byte[]> getImage(@RequestParam(name = "url") String path) {
         log.info("Receive file path:" + path);
         byte[] image;
@@ -41,7 +41,7 @@ public class FileController {
     }
 
     @RequestMapping("/image_zip")
-    @ApiOperation(value = "获取压缩图片", produces = "image/jpeg")
+    @ApiOperation(value = "获取压缩图片", produces = "image/jpeg", httpMethod = "GET")
     public ResponseEntity<byte[]> getZipImage(@RequestParam(name = "url") String path) {
         log.info("Receive file path:" + path + ", zip image");
         byte[] image;
