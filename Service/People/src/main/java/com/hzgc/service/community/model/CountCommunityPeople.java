@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class CountCommunityPeople {
+import java.io.Serializable;
+
+public class CountCommunityPeople implements Serializable {
     private Long community;
     private int count;
 

@@ -5,7 +5,6 @@ import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.people.param.SearchPeopleDTO;
-import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
 import io.swagger.annotations.Api;
@@ -28,6 +27,7 @@ import java.util.List;
 @Slf4j
 public class PeopleController {
     @Autowired
+    @SuppressWarnings("unused")
     private PeopleService peopleService;
 
     /**
@@ -38,7 +38,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
-    public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
+    public ResponseResult <Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start insert people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口信息为空，请检查！");
@@ -56,86 +56,17 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口区域为空，请检查！");
         }
 
-        log.info("Start add people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
-        log.info("Start add object info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people_insert(people);
-        if (status == null || status != 1) {
-            log.info("Insert people to t_people info failed");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口信息失败");
-        }
-        log.info("Insert t_people info successfully");
-        if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
-                peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
-                peopleDTO.getCar() != null) {
-            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
-                Integer insertStatus = peopleService.people_flag_insert(people.getId(), peopleDTO.getFlagId());
-                if (insertStatus == 1) {
-                    log.info("Insert flag to t_flag successfully");
-                } else {
-                    log.info("Insert flag to t_flag failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口标签表失败");
-                }
+        log.info("Start insert people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
+        ReturnMessage message = peopleService.insertPeople(peopleDTO);
+        if (message != null) {
+            if (message.getStatus() == 0) {
+                return ResponseResult.error(message.getStatus(), message.getMessage());
             }
-            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
-                        peopleDTO.getIdCardPic());
-                if (insertStatus == 1) {
-                    log.info("Insert idCard pic to t_picture successfully");
-                } else {
-                    log.info("Insert idCard pic to t_picture failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口证件照片表失败");
-                }
-            }
-            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
-                        peopleDTO.getCapturePic());
-                if (insertStatus == 1) {
-                    log.info("Insert capture pic to t_picture successfully");
-                } else {
-                    log.info("Insert capture pic to t_picture failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口实采照片表失败");
-                }
-            }
-            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
-                Integer insertStatus = peopleService.people_imsi_insert(people.getId(), peopleDTO.getImsi());
-                if (insertStatus == 1) {
-                    log.info("Insert imsi to t_imsi successfully");
-                } else {
-                    log.info("Insert imsi to t_imsi failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口imsi表失败");
-                }
-            }
-            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
-                Integer insertStatus = peopleService.people_phone_insert(people.getId(), peopleDTO.getPhone());
-                if (insertStatus == 1) {
-                    log.info("Insert phone to t_phone successfully");
-                } else {
-                    log.info("Insert phone to t_phone failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口联系方式表失败");
-                }
-            }
-            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
-                Integer insertStatus = peopleService.people_house_insert(people.getId(), peopleDTO.getHouse());
-                if (insertStatus == 1) {
-                    log.info("Insert house to t_house successfully");
-                } else {
-                    log.info("Insert house to t_house failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口房产信息表失败");
-                }
-            }
-            if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
-                Integer insertStatus = peopleService.people_car_insert(people.getId(), peopleDTO.getCar());
-                if (insertStatus == 1) {
-                    log.info("Insert car to t_car successfully");
-                } else {
-                    log.info("Insert car to t_car failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口车辆信息表失败");
-                }
+            if (message.getStatus() == 1) {
+                return ResponseResult.init(1);
             }
         }
-        log.info("Insert people info successfully");
-        return ResponseResult.init(1);
+        return ResponseResult.error(0, "添加人口失败！");
     }
 
     /**
@@ -146,7 +77,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "修改人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_UPDATE, method = RequestMethod.PUT)
-    public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
+    public ResponseResult <Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start update people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口信息为空，请检查！");
@@ -160,85 +91,16 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口区域为空，请检查！");
         }
         log.info("Start update people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
-        People people = peopleDTO.peopleDTOShift_update(peopleDTO);
-        log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
-        Integer status = peopleService.people_update(people);
-        if (status == null || status != 1) {
-            log.info("Update t_people info failed");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口失败");
-        }
-        log.info("Update t_people info successfully");
-        if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
-                peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
-                peopleDTO.getCar() != null) {
-            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
-                Integer insertStatus = peopleService.people_flag_update(people.getId(), peopleDTO.getFlagId());
-                if (insertStatus == 1) {
-                    log.info("Update flag to t_flag successfully");
-                } else {
-                    log.info("Update flag to t_flag failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口标签表失败");
-                }
+        ReturnMessage message = peopleService.updatePeople(peopleDTO);
+        if (message != null) {
+            if (message.getStatus() == 0) {
+                return ResponseResult.error(message.getStatus(), message.getMessage());
             }
-            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.IDCARD_PIC,
-                        peopleDTO.getIdCardPic());
-                if (insertStatus == 1) {
-                    log.info("Update idCard pic to t_picture successfully");
-                } else {
-                    log.info("Update idCard pic to t_picture failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口证件照片表失败");
-                }
-            }
-            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-                Integer insertStatus = peopleService.people_picture_update(people.getId(), PeopleService.CAPTURE_PIC,
-                        peopleDTO.getCapturePic());
-                if (insertStatus == 1) {
-                    log.info("Update capture pic to t_picture successfully");
-                } else {
-                    log.info("Update capture pic to t_picture failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口实采照片表失败");
-                }
-            }
-            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
-                Integer insertStatus = peopleService.people_imsi_update(people.getId(), peopleDTO.getImsi());
-                if (insertStatus == 1) {
-                    log.info("Update imsi to t_imsi successfully");
-                } else {
-                    log.info("Update imsi to t_imsi failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口imsi表失败");
-                }
-            }
-            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
-                Integer insertStatus = peopleService.people_phone_update(people.getId(), peopleDTO.getPhone());
-                if (insertStatus == 1) {
-                    log.info("Update phone to t_phone successfully");
-                } else {
-                    log.info("Update phone to t_phone failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口联系方式表失败");
-                }
-            }
-            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
-                Integer insertStatus = peopleService.people_house_update(people.getId(), peopleDTO.getHouse());
-                if (insertStatus == 1) {
-                    log.info("Update house to t_house successfully");
-                } else {
-                    log.info("Update house to t_house failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口房产信息表失败");
-                }
-            }
-            if (peopleDTO.getCar() != null) {
-                Integer insertStatus = peopleService.people_car_update(people.getId(), peopleDTO.getCar());
-                if (insertStatus == 1) {
-                    log.info("Update car to t_car successfully");
-                } else {
-                    log.info("Update car to t_car failed");
-                    return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口车辆信息表失败");
-                }
+            if (message.getStatus() == 1) {
+                return ResponseResult.init(1);
             }
         }
-        log.info("Update people info successfully");
-        return ResponseResult.init(1);
+        return ResponseResult.error(0, "修改人口失败！");
     }
 
     /**
@@ -249,7 +111,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据ID查询人口信息", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
-    public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
+    public ResponseResult <PeopleVO> selectByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select people info, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
@@ -268,7 +130,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据照片ID查询照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PICID, method = RequestMethod.GET)
-    public ResponseEntity<byte[]> searchPictureByPicId(Long pictureId) {
+    public ResponseEntity <byte[]> searchPictureByPicId(Long pictureId) {
         if (pictureId != null) {
             log.error("Start select picture, but picture id is null");
         }
@@ -289,7 +151,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据人员全局ID查询照片", response = PictureVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PEOPLEID, method = RequestMethod.GET)
-    public ResponseResult<PictureVO> searchPictureByPeopleId(String peopleId) {
+    public ResponseResult <PictureVO> searchPictureByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select picture, but people id is null");
         }
@@ -307,7 +169,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据条件查询人员", response = SearchPeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
-    public ResponseResult<SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
+    public ResponseResult <SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
         if (param == null) {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
@@ -330,13 +192,13 @@ public class PeopleController {
 
     @ApiOperation(value = "统计单个区域下所有小区列表", response = List.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_COMMUNITY, method = RequestMethod.GET)
-    public ResponseResult<List<Long>> searchCommunityIdsByRegionId(Long regionId) {
+    public ResponseResult <List <Long>> searchCommunityIdsByRegionId(Long regionId) {
         if (regionId == null) {
             log.info("Start search community id list, but region is null");
             ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
         log.info("Start search community id list, region is:" + regionId);
-        List<Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
+        List <Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
         log.info("Search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
         return ResponseResult.init(communityIds);
     }

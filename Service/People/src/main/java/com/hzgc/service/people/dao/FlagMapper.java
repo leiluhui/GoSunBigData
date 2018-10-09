@@ -1,9 +1,11 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.people.model.Flag;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
 
+@CacheNamespace
 public interface FlagMapper {
     int deleteByPrimaryKey(Long id);
 

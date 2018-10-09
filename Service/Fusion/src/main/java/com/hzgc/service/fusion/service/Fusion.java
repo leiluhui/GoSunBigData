@@ -12,6 +12,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ import java.util.Properties;
 
 @Slf4j
 @Component
-public class Gusion implements Runnable {
+public class Fusion implements Runnable {
 
     @Value("${kafka.bootstrap.servers}")
     private String kafkaHost;
@@ -57,11 +58,12 @@ public class Gusion implements Runnable {
         properties.put("session.timeout.ms", "30000");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        consumer = new KafkaConsumer<String, String>(properties);
+        consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Collections.singletonList(fusionTopic));
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void run() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         while (true) {

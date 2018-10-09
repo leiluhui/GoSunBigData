@@ -26,7 +26,7 @@ OBJECT_DIR=`pwd`                                      ### 项目根目录
 
 CLUSTER_BUILD_DIR=${OBJECT_DIR}/common                   ### common 目录
 CONF_CLUSTER_DIR=${CLUSTER_BUILD_DIR}/conf               ### 配置文件目录
-CONF_FILE=${CONF_CLUSTER_DIR}/project-conf.properties    ### 项目配置文件
+CONF_FILE=${CONF_CLUSTER_DIR}/project-deploy.properties    ### 项目配置文件
 
 ## 安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep install_homedir ${CONF_FILE}|cut -d '=' -f2)
@@ -81,7 +81,7 @@ function config_sparkJob()
     echo "" | tee -a ${LOG_FILE}
     echo "配置cluster/spark/conf/sparkJob 文件......"  | tee  -a  ${LOG_FILE}
 
-    ### 从project-conf.properties读取sparkJob所需配置IP
+    ### 从project-deploy.properties读取sparkJob所需配置IP
     # 根据字段kafka，查找配置文件中，Kafka的安装节点所在IP端口号的值，这些值以分号分割
 	KAFKA_IP=$(grep kafka_install_node ${CONF_FILE}|cut -d '=' -f2)
     # 将这些分号分割的ip用放入数组

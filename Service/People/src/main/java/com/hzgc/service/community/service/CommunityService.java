@@ -3,6 +3,7 @@ package com.hzgc.service.community.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.community.dao.*;
@@ -58,6 +59,10 @@ public class CommunityService {
     @Autowired
     @SuppressWarnings("unused")
     private PlatformService platformService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private InnerService innerService;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -364,7 +369,7 @@ public class CommunityService {
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
             info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            info.setPicture(peopleRecognize.getSurl());
+            info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             Date date = peopleRecognize.getCapturetime();
             if (date != null){
                 info.setCaptureTime(sdf.format(date));
@@ -382,7 +387,7 @@ public class CommunityService {
         if (peopleRecognize != null){
             vo.setDeviceId(peopleRecognize.getDeviceid());
             vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            vo.setPicture(peopleRecognize.getSurl());
+            vo.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);
@@ -467,7 +472,7 @@ public class CommunityService {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
-                vo.setFtpUrl(people.getBurl());
+                vo.setFtpUrl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
                 voList.add(vo);
             }
         }
@@ -503,7 +508,7 @@ public class CommunityService {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setDeviceId(people.getDeviceid());
-                vo.setFtpUrl(people.getSurl());
+                vo.setFtpUrl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
                 voList.add(vo);
             }
         }

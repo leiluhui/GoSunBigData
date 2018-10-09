@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class ImsiBlackList {
+import java.io.Serializable;
+
+public class ImsiBlackList implements Serializable {
     private Long id;
 
     private String imsi;

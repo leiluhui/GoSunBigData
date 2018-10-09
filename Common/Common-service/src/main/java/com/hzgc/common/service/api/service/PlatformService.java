@@ -46,22 +46,56 @@ public class PlatformService {
         return null;
     }
 
-    public String getDeviceName(String deviceId) {
-        if (deviceId != null) {
-            log.info("Method:getDeviceName, deviceId:" + deviceId);
+    public String getCameraDeviceName(String deviceId){
+        if (deviceId != null){
+            log.info("Method:getCameraDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, CameraQueryDTO> map = getCameraInfoByBatchIpc(ids);
             if (map != null && map.size() > 0 && map.get(deviceId) != null) {
                 return map.get(deviceId).getCameraName();
-            } else {
-                log.info("Get device info failed, because result is null");
+            }else {
+                log.info("Get camera device info failed, because result is null");
             }
-        } else {
-            log.error("Method:getDeviceName, id is null");
+        }else {
+            log.error("Method:getCameraDeviceName, id is null");
         }
         return null;
     }
+
+    public String getImsiDeviceName(String deviceId){
+        if (deviceId != null){
+            log.info("Method:getImsiDeviceName, deviceId:" + deviceId);
+            List<String> ids = new ArrayList<>();
+            ids.add(deviceId);
+            Map<String, DetectorQueryDTO> map = getImsiDeviceInfoByBatchId(ids);
+            if (map != null && map.size() > 0 && map.get(deviceId) != null) {
+                return map.get(deviceId).getDetectorName();
+            }else {
+                log.info("Get imsi device info failed, because result is null");
+            }
+        }else {
+            log.error("Method:getImsiDeviceName, id is null");
+        }
+        return null;
+    }
+
+    private Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
+        if (idList != null) {
+            log.info("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));
+            ParameterizedTypeReference<Map<String, DetectorQueryDTO>> parameterizedTypeReference =
+                    new ParameterizedTypeReference<Map<String, DetectorQueryDTO>>() {
+                    };
+            ResponseEntity<Map<String, DetectorQueryDTO>> responseEntity =
+                    restTemplate.exchange("http://platform:8888/api/v1/device/internal/detectors/query_detector_by_sns", HttpMethod.POST,
+                            new HttpEntity<>(idList), parameterizedTypeReference);
+            return responseEntity.getBody();
+        } else {
+            log.error("Method:getImsiDeviceInfoByBatchId, id list is null");
+            return new HashMap<>();
+        }
+    }
+
 
     /**
      * 获取区域/社区信息

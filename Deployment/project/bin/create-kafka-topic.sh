@@ -2,7 +2,7 @@
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
 ## Filename:    create_kafka_topic
-## Description: 创建Kafka topic，相关参数从配置文件project-conf.properties中配置
+## Description: 创建Kafka topic，相关参数从配置文件project-deploy.properties中配置
 ## Author:      mashencai
 ## Created:     2017-12-01
 ################################################################################
@@ -15,16 +15,10 @@ cd `dirname $0`
 BIN_DIR=`pwd`                                         ### bin目录：脚本所在目录
 cd ..
 SPARK_DIR=`pwd`                                         ### spark模块部署目录
-CONF_DIR=$SPARK_DIR/../conf                            ### 配置文件目录
+CONF_DIR=$SPARK_DIR/conf                            ### 配置文件目录
 LOG_DIR=$SPARK_DIR/logs                                 ### log日志目录
 LOG_FILE=$LOG_DIR/create-kafka-topic.log              ### log日志目录
-
-cd ../..
-CONF_FILE=${CONF_DIR}/project-conf.properties    ### 项目配置文件
-
-cd ../hzgc/conf
-CONF_HZGC_DIR=`pwd`                                   ### 集群配置文件目录
-
+CONF_FILE=${CONF_DIR}/project-deploy.properties   ### 项目配置文件
 ## 最终安装的根目录，所有bigdata 相关的根目录：/opt/hzgc/bigdata
 INSTALL_HOME=$(grep install_homedir $CONF_FILE |cut -d '=' -f2)
 ## KAFKA_INSTALL_HOME kafka 安装目录
@@ -82,6 +76,7 @@ function create_kafka_topic()
 	else
 		echo "创建 feature topic 失败...." | tee -a $LOG_FILE
 	fi
+
     # 创建kafka person topic
     ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
@@ -95,6 +90,7 @@ function create_kafka_topic()
 	else
 		echo "创建 preson topic 失败...." | tee -a $LOG_FILE
 	fi
+
     # 创建kafka car topic
     ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
@@ -108,6 +104,49 @@ function create_kafka_topic()
 	else
 		echo "创建 car topic 失败...." | tee -a $LOG_FILE
 	fi
+
+	#创建kafka PeoMan-Fusion topic
+    ./kafka-topic.sh --create \
+    --zookeeper ${zkpro} \
+    --replication-factor ${repl_factor} \
+    --partitions ${part_num} \
+    --topic PeoMan-Fusion >> ${LOG_FILE} 2>&1 &
+
+    if [ $? = 0 ];then
+        echo "创建 PeoMan-Fusion topic 成功...."  | tee  -a  $LOG_FILE
+        echo "kafka PeoMan-Fusion topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+    else
+        echo "创建 PeoMan-Fusion topic 失败...." | tee -a $LOG_FILE
+    fi
+
+    #创建kafka PeoMan-Inner topic
+    ./kafka-topic.sh --create \
+    --zookeeper ${zkpro} \
+    --replication-factor ${repl_factor} \
+    --partitions ${part_num} \
+    --topic PeoMan-Inner >> ${LOG_FILE} 2>&1 &
+
+    if [ $? = 0 ];then
+        echo "创建 PeoMan-Inner topic 成功...."  | tee  -a  $LOG_FILE
+        echo "kafka PeoMan-Inner topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+    else
+        echo "创建 PeoMan-Inner topic 失败...." | tee -a $LOG_FILE
+    fi
+
+    #创建kafka face topic
+    ./kafka-topic.sh --create \
+    --zookeeper ${zkpro} \
+    --replication-factor ${repl_factor} \
+    --partitions ${part_num} \
+    --topic face  >> ${LOG_FILE} 2>&1 &
+
+    if [ $? = 0 ];then
+        echo "创建 face topic 成功...."  | tee  -a  $LOG_FILE
+        echo "kafka face topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+    else
+        echo "创建 face topic 失败...." | tee -a $LOG_FILE
+    fi
+
 
     # 列出所有topic
 	echo ""  | tee -a $LOG_FILE

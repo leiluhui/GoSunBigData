@@ -1,9 +1,10 @@
 package com.hzgc.service.fusion.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class FusionImsi {
+public class FusionImsi implements Serializable {
     private Long id;
 
     private String peopleid;

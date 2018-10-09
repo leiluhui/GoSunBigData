@@ -1,6 +1,8 @@
 package com.hzgc.service.people.model;
 
-public class PictureWithBLOBs extends Picture {
+import java.io.Serializable;
+
+public class PictureWithBLOBs extends Picture implements Serializable {
     private byte[] idcardpic;
 
     private byte[] capturepic;
