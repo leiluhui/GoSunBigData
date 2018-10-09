@@ -122,6 +122,7 @@ public class FaceUtil {
 
     /**
      * 将float特征值转为Base64加密的String类型
+     *
      * @param feature float特征值
      * @return Base64加密的String类型
      */
@@ -139,6 +140,7 @@ public class FaceUtil {
 
     /**
      * 将Base64加密的特征值转为float特征值
+     *
      * @param base64Str Base64加密的特征值
      * @return float特征值
      */
@@ -156,6 +158,7 @@ public class FaceUtil {
 
     /**
      * 将bit特征值转为Base64字符串
+     *
      * @param bitFeature bit特征值
      * @return Base64字符串
      */
@@ -168,6 +171,7 @@ public class FaceUtil {
 
     /**
      * 将Base64字符串转为bit特征值
+     *
      * @param base64Str Base64字符串
      * @return bit特征值
      */
