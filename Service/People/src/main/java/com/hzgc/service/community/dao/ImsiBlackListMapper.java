@@ -1,7 +1,9 @@
 package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.ImsiBlackList;
+import org.apache.ibatis.annotations.CacheNamespace;
 
+@CacheNamespace
 public interface ImsiBlackListMapper {
     int deleteByPrimaryKey(Long id);
 

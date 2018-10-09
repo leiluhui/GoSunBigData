@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class OutPeople {
+import java.io.Serializable;
+
+public class OutPeople implements Serializable {
     private Long id;
 
     private String peopleid;

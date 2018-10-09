@@ -3,21 +3,19 @@ package com.hzgc.service.people.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
-import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
-import com.hzgc.jniface.PictureFormat;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
-import com.hzgc.service.people.param.FilterField;
-import com.hzgc.service.people.param.PeopleVO;
-import com.hzgc.service.people.param.PictureVO;
-import com.hzgc.service.people.param.SearchPeopleVO;
+import com.hzgc.service.people.param.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,21 +56,245 @@ public class PeopleService {
     @SuppressWarnings("unused")
     private PlatformService platformService;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    private InnerService innerService;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public final static String IDCARD_PIC = "idcardpic";
+    private final static String IDCARD_PIC = "idcardpic";
 
-    public final static String CAPTURE_PIC = "capturepic";
+    private final static String CAPTURE_PIC = "capturepic";
 
-    public Integer people_insert(People people) {
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnMessage insertPeople(PeopleDTO peopleDTO) {
+        People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
+        log.info("Start Insert people info, param is:" + JacksonUtil.toJson(people));
+        Integer status = people_insert(people);
+        if (status != 1) {
+            log.info("Insert people to t_people info failed");
+            ReturnMessage message = new ReturnMessage();
+            message.setStatus(0);
+            message.setMessage("添加人口信息失败");
+            return message;
+        }
+        log.info("Insert t_people info successfully");
+        if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
+                peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
+                peopleDTO.getCar() != null) {
+            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
+                Integer insertStatus = people_flag_insert(people.getId(), peopleDTO.getFlagId());
+                if (insertStatus == 1) {
+                    log.info("Insert flag to t_flag successfully");
+                } else {
+                    log.info("Insert flag to t_flag failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口标签表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
+                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic());
+                if (insertStatus == 1) {
+                    log.info("Insert idCard pic to t_picture successfully");
+                } else {
+                    log.info("Insert idCard pic to t_picture failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口证件照片表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
+                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic());
+                if (insertStatus == 1) {
+                    log.info("Insert capture pic to t_picture successfully");
+                } else {
+                    log.info("Insert capture pic to t_picture failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口实采照片表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
+                Integer insertStatus = people_imsi_insert(people.getId(), peopleDTO.getImsi());
+                if (insertStatus == 1) {
+                    log.info("Insert imsi to t_imsi successfully");
+                } else {
+                    log.info("Insert imsi to t_imsi failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口imsi表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
+                Integer insertStatus = people_phone_insert(people.getId(), peopleDTO.getPhone());
+                if (insertStatus == 1) {
+                    log.info("Insert phone to t_phone successfully");
+                } else {
+                    log.info("Insert phone to t_phone failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口联系方式表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
+                Integer insertStatus = people_house_insert(people.getId(), peopleDTO.getHouse());
+                if (insertStatus == 1) {
+                    log.info("Insert house to t_house successfully");
+                } else {
+                    log.info("Insert house to t_house failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口房产信息表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
+                Integer insertStatus = people_car_insert(people.getId(), peopleDTO.getCar());
+                if (insertStatus == 1) {
+                    log.info("Insert car to t_car successfully");
+                } else {
+                    log.info("Insert car to t_car failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("添加人口车辆信息表失败");
+                    return message;
+                }
+            }
+        }
+        log.info("Insert people info successfully");
+        ReturnMessage message = new ReturnMessage();
+        message.setStatus(1);
+        message.setMessage("添加成功");
+        return message;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
+        People people = peopleDTO.peopleDTOShift_update(peopleDTO);
+        log.info("Start update object info, param is:" + JacksonUtil.toJson(people));
+        Integer status = people_update(people);
+        if (status != 1) {
+            log.info("Update t_people info failed");
+            ReturnMessage message = new ReturnMessage();
+            message.setStatus(0);
+            message.setMessage("修改人口失败");
+            return message;
+        }
+        log.info("Update t_people info successfully");
+        if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
+                peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
+                peopleDTO.getCar() != null) {
+            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
+                Integer insertStatus = people_flag_update(people.getId(), peopleDTO.getFlagId());
+                if (insertStatus == 1) {
+                    log.info("Update flag to t_flag successfully");
+                } else {
+                    log.info("Update flag to t_flag failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口标签表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
+                Integer insertStatus = people_picture_update(people.getId(), PeopleService.IDCARD_PIC,
+                        peopleDTO.getIdCardPic());
+                if (insertStatus == 1) {
+                    log.info("Update idCard pic to t_picture successfully");
+                } else {
+                    log.info("Update idCard pic to t_picture failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口证件照片表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
+                Integer insertStatus = people_picture_update(people.getId(), PeopleService.CAPTURE_PIC,
+                        peopleDTO.getCapturePic());
+                if (insertStatus == 1) {
+                    log.info("Update capture pic to t_picture successfully");
+                } else {
+                    log.info("Update capture pic to t_picture failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口实采照片表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
+                Integer insertStatus = people_imsi_update(people.getId(), peopleDTO.getImsi());
+                if (insertStatus == 1) {
+                    log.info("Update imsi to t_imsi successfully");
+                } else {
+                    log.info("Update imsi to t_imsi failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口imsi表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
+                Integer insertStatus = people_phone_update(people.getId(), peopleDTO.getPhone());
+                if (insertStatus == 1) {
+                    log.info("Update phone to t_phone successfully");
+                } else {
+                    log.info("Update phone to t_phone failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口联系方式表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
+                Integer insertStatus = people_house_update(people.getId(), peopleDTO.getHouse());
+                if (insertStatus == 1) {
+                    log.info("Update house to t_house successfully");
+                } else {
+                    log.info("Update house to t_house failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口房产信息表失败");
+                    return message;
+                }
+            }
+            if (peopleDTO.getCar() != null) {
+                Integer insertStatus = people_car_update(people.getId(), peopleDTO.getCar());
+                if (insertStatus == 1) {
+                    log.info("Update car to t_car successfully");
+                } else {
+                    log.info("Update car to t_car failed");
+                    ReturnMessage message = new ReturnMessage();
+                    message.setStatus(0);
+                    message.setMessage("修改人口车辆信息表失败");
+                    return message;
+                }
+            }
+        }
+        log.info("Update people info successfully");
+        ReturnMessage message = new ReturnMessage();
+        message.setStatus(1);
+        message.setMessage("修改成功");
+        return message;
+    }
+
+    private Integer people_insert(People people) {
         return peopleMapper.insertSelective(people);
     }
 
-    public Integer people_update(People people) {
+    private Integer people_update(People people) {
         return peopleMapper.updateByPrimaryKeySelective(people);
     }
 
-    public Integer people_flag_insert(String peopleId, List<Integer> flags) {
+    private Integer people_flag_insert(String peopleId, List <Integer> flags) {
         for (Integer integer : flags) {
             com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
             flag.setPeopleid(peopleId);
@@ -87,8 +309,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_flag_update(String peopleId, List<Integer> flags) {
-        List<Long> idList = flagMapper.selectIdByPeopleId(peopleId);
+    private Integer people_flag_update(String peopleId, List <Integer> flags) {
+        List <Long> idList = flagMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = flagMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -110,7 +332,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_insert(String peopleId, String picType, List<String> pics) {
+    private Integer people_picture_insert(String peopleId, String picType, List <String> pics) {
         for (String photo : pics) {
             PictureWithBLOBs picture = new PictureWithBLOBs();
             picture.setPeopleid(peopleId);
@@ -121,7 +343,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
@@ -137,8 +359,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_picture_update(String peopleId, String picType, List<String> pics) {
-        List<Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
+    private Integer people_picture_update(String peopleId, String picType, List <String> pics) {
+        List <Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = pictureMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -156,7 +378,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(bytes, PictureFormat.JPG);
+            FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.info("Face feature extract failed, insert picture to t_picture failed");
                 return 0;
@@ -172,7 +394,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_imsi_insert(String peopleId, List<String> imsis) {
+    private Integer people_imsi_insert(String peopleId, List <String> imsis) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
             imsi.setPeopleid(peopleId);
@@ -186,8 +408,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_imsi_update(String peopleId, List<String> imsis) {
-        List<Long> idList = imsiMapper.selectIdByPeopleId(peopleId);
+    private Integer people_imsi_update(String peopleId, List <String> imsis) {
+        List <Long> idList = imsiMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = imsiMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -208,7 +430,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_phone_insert(String peopleId, List<String> phones) {
+    private Integer people_phone_insert(String peopleId, List <String> phones) {
         for (String s : phones) {
             Phone phone = new Phone();
             phone.setPeopleid(peopleId);
@@ -222,8 +444,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_phone_update(String peopleId, List<String> phones) {
-        List<Long> idList = phoneMapper.selectIdByPeopleId(peopleId);
+    private Integer people_phone_update(String peopleId, List <String> phones) {
+        List <Long> idList = phoneMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = phoneMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -244,7 +466,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_house_insert(String peopleId, List<String> houses) {
+    private Integer people_house_insert(String peopleId, List <String> houses) {
         for (String s : houses) {
             House house = new House();
             house.setPeopleid(peopleId);
@@ -258,8 +480,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_house_update(String peopleId, List<String> houses) {
-        List<Long> idList = houseMapper.selectIdByPeopleId(peopleId);
+    private Integer people_house_update(String peopleId, List <String> houses) {
+        List <Long> idList = houseMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = houseMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -280,7 +502,7 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_car_insert(String peopleId, List<String> cars) {
+    private Integer people_car_insert(String peopleId, List <String> cars) {
         for (String s : cars) {
             Car car = new Car();
             car.setPeopleid(peopleId);
@@ -294,8 +516,8 @@ public class PeopleService {
         return 1;
     }
 
-    public Integer people_car_update(String peopleId, List<String> cars) {
-        List<Long> idList = carMapper.selectIdByPeopleId(peopleId);
+    private Integer people_car_update(String peopleId, List <String> cars) {
+        List <Long> idList = carMapper.selectIdByPeopleId(peopleId);
         for (Long id : idList) {
             int status = carMapper.deleteByPrimaryKey(id);
             if (status != 1) {
@@ -336,11 +558,11 @@ public class PeopleService {
 
     public PictureVO searchPictureByPeopleId(String peopleId) {
         PictureVO pictureVO = new PictureVO();
-        List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
+        List <PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
         if (pictures != null && pictures.size() > 0) {
-            List<Long> pictureIds = new ArrayList<>();
-            List<Long> idcardPictureIds = new ArrayList<>();
-            List<Long> capturePictureIds = new ArrayList<>();
+            List <Long> pictureIds = new ArrayList <>();
+            List <Long> idcardPictureIds = new ArrayList <>();
+            List <Long> capturePictureIds = new ArrayList <>();
             for (PictureWithBLOBs picture : pictures) {
                 if (picture != null) {
                     pictureIds.add(picture.getId());
@@ -393,41 +615,41 @@ public class PeopleService {
             if (people.getUpdatetime() != null) {
                 peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
             }
-            List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-            List<Integer> flagIdList = new ArrayList<>();
+            List <com.hzgc.service.people.model.Flag> flags = people.getFlag();
+            List <Integer> flagIdList = new ArrayList <>();
             for (com.hzgc.service.people.model.Flag flag : flags) {
                 flagIdList.add(flag.getFlagid());
             }
             peopleVO.setFlag(flagIdList);
-            List<Imsi> imsis = people.getImsi();
-            List<String> imsiList = new ArrayList<>();
+            List <Imsi> imsis = people.getImsi();
+            List <String> imsiList = new ArrayList <>();
             for (Imsi imsi : imsis) {
                 imsiList.add(imsi.getImsi());
             }
             peopleVO.setImsi(imsiList);
-            List<Phone> phones = people.getPhone();
-            List<String> phoneList = new ArrayList<>();
+            List <Phone> phones = people.getPhone();
+            List <String> phoneList = new ArrayList <>();
             for (Phone phone : phones) {
                 phoneList.add(phone.getPhone());
             }
             peopleVO.setPhone(phoneList);
-            List<House> houses = people.getHouse();
-            List<String> houseList = new ArrayList<>();
+            List <House> houses = people.getHouse();
+            List <String> houseList = new ArrayList <>();
             for (House house : houses) {
                 houseList.add(house.getHouse());
             }
             peopleVO.setHouse(houseList);
-            List<Car> cars = people.getCar();
-            List<String> carList = new ArrayList<>();
+            List <Car> cars = people.getCar();
+            List <String> carList = new ArrayList <>();
             for (Car car : cars) {
                 carList.add(car.getCar());
             }
             peopleVO.setCar(carList);
-            List<PictureWithBLOBs> pictures = people.getPicture();
+            List <PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
                 peopleVO.setPictureId(pictures.get(0).getId());
-                List<Long> idcardPictureIds = new ArrayList<>();
-                List<Long> capturePictureIds = new ArrayList<>();
+                List <Long> idcardPictureIds = new ArrayList <>();
+                List <Long> capturePictureIds = new ArrayList <>();
                 for (PictureWithBLOBs picture : pictures) {
                     byte[] idcardPic = picture.getIdcardpic();
                     if (idcardPic != null && idcardPic.length > 0) {
@@ -451,9 +673,9 @@ public class PeopleService {
      */
     public SearchPeopleVO searchPeople(FilterField field) {
         SearchPeopleVO vo = new SearchPeopleVO();
-        List<PeopleVO> list = new ArrayList<>();
+        List <PeopleVO> list = new ArrayList <>();
         Page page = PageHelper.offsetPage(field.getStart(), field.getLimit(), true);
-        List<People> peoples = peopleMapper.searchPeople(field);
+        List <People> peoples = peopleMapper.searchPeople(field);
         PageInfo info = new PageInfo(page.getResult());
         int total = (int) info.getTotal();
         vo.setTotal(total);
@@ -484,8 +706,8 @@ public class PeopleService {
                     if (people.getUpdatetime() != null) {
                         peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
                     }
-                    List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-                    List<Integer> flagIdList = new ArrayList<>();
+                    List <com.hzgc.service.people.model.Flag> flags = people.getFlag();
+                    List <Integer> flagIdList = new ArrayList <>();
                     for (com.hzgc.service.people.model.Flag flag : flags) {
                         flagIdList.add(flag.getFlagid());
                     }
@@ -502,7 +724,7 @@ public class PeopleService {
         return vo;
     }
 
-    public List<Long> searchCommunityIdsByRegionId(Long regionId) {
+    public List <Long> searchCommunityIdsByRegionId(Long regionId) {
         return peopleMapper.searchCommunityIdsByRegionId(regionId);
     }
 }

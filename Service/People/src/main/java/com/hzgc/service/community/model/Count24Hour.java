@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class Count24Hour {
+import java.io.Serializable;
+
+public class Count24Hour implements Serializable {
     private Long id;
 
     private String peopleid;

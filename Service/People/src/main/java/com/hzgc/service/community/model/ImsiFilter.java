@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class ImsiFilter {
+import java.io.Serializable;
+
+public class ImsiFilter implements Serializable {
     private Long id;
 
     private String imsi;

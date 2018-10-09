@@ -1,6 +1,8 @@
 package com.hzgc.service.community.model;
 
-public class DeviceRecognize {
+import java.io.Serializable;
+
+public class DeviceRecognize implements Serializable {
     private Long id;
 
     private String peopleid;

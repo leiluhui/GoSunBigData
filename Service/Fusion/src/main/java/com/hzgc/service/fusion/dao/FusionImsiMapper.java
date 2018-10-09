@@ -1,9 +1,11 @@
 package com.hzgc.service.fusion.dao;
 
 import com.hzgc.service.fusion.model.FusionImsi;
+import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
+@CacheNamespace
 public interface FusionImsiMapper {
     int deleteByPrimaryKey(Long id);
 

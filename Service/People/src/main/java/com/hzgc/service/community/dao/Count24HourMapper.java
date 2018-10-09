@@ -2,9 +2,11 @@ package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.Count24Hour;
 import com.hzgc.service.community.param.CaptureDetailsDTO;
+import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
 
+@CacheNamespace
 public interface Count24HourMapper {
     int deleteByPrimaryKey(Long id);
 
