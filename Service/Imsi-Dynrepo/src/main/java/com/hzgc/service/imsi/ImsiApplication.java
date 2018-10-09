@@ -1,7 +1,5 @@
 package com.hzgc.service.imsi;
 
-import com.hzgc.common.service.api.config.EnableInnerService;
-import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
