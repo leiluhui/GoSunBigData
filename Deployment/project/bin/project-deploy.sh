@@ -395,6 +395,8 @@ function config_sparkjob()
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
     sed -i "s#^kafka.metadata.broker.list=.*#kafka.metadata.broker.list=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     sed -i "s#^job.faceObjectConsumer.broker.list=.*#job.faceObjectConsumer.broker.list=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.kafka=.*#job.kafkaToTidb.kafka=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+
 
     # 根据字段zookeeper_installnode，查找配置文件中，Zk的安装节点所在IP端口号的值，这些值以分号分割
     ZK_IP=$(grep zookeeper_installnode ${CONF_FILE}|cut -d '=' -f2)
@@ -410,6 +412,7 @@ function config_sparkjob()
     zkpro=${zkpro%?}
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
     sed -i "s#^job.zkDirAndPort=.*#job.zkDirAndPort=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.zookeeper=.*#job.kafkaToTidb.zookeeper=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     # 替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^phoenix.jdbc.url=jdbc:phoenix:.*#phoenix.jdbc.url=jdbc:phoenix:${phoenixpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
@@ -423,6 +426,7 @@ function config_sparkjob()
     echo "++++++++++++++++++++++++++++++++++"
     #替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^job.kafkaToParquet.esNodes=.*#job.kafkaToParquet.esNodes=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.jdbc.ip=.*#job.kafkaToTidb.jdbc.ip=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
 
     #根据字段rocketmq_nameserver，查找配置文件中，rocketmq的nameserver安装节点所在IP端口号的值，这些值以分号分割
 #    ROCK_IP=$(grep rocketmq_nameserver ${CONF_FILE} | cut -d '=' -f2)
