@@ -78,6 +78,7 @@ public class Fusion implements Runnable {
                         for (ImsiInfo imsi : imsiList){
                             FusionImsi fusionImsi = new FusionImsi();
                             fusionImsi.setPeopleid(record.key());
+                            fusionImsi.setCommunity(Long.parseLong(imsi.getCellid()));
                             fusionImsi.setDeviceid(imsi.getSn());
                             fusionImsi.setReceivetime(new Date(imsi.getTime()));
                             fusionImsi.setImsi(imsi.getImsi());
