@@ -50,6 +50,9 @@ public class ProcessThread implements Runnable {
         try {
             while ((event = queue.take()) != null) {
                 byte[] bytes = FileUtil.fileToByteArray(event.getbAbsolutePath());
+                if (bytes == null) {
+                    continue;
+                }
                 Parser parser = event.getParser();
                 //BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
                 //取消分辨率判断

@@ -105,11 +105,7 @@ public class STOR extends AbstractCommand {
                 parser = context.getCollectContext().getFtpPathBootStrap().getParser(fileName);
                 if (parser == null) {
                     LOG.warn("No parser for this fileName {" + file.getFileAbsolutePa() + "}");
-                    if (fileName.contains("DVRWorkDirectory")) {
-                        outStream = file.createOutputStream(skipLen);
-                    } else {
-                        outStream = new ByteArrayOutputStream();
-                    }
+                    outStream = new ByteArrayOutputStream();
                 } else {
                     LOG.info("Get parser for this fileName {" + fileName + "}");
                     outStream = file.createOutputStream(skipLen);

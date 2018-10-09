@@ -18,7 +18,7 @@ public class DaHuaParser_HDBW5238R extends AbstractParser {
 
     @Override
     public boolean canParse(String path) {
-        if (path.contains("unknown") || !path.contains(".jpg")) {
+        if (path.contains("unknown") || !path.contains(".jpg") || path.contains("DVRWorkDirectory")) {
             return false;
         }
         String tmpStr = path.substring(path.lastIndexOf("[") + 1, path.lastIndexOf("]"));
