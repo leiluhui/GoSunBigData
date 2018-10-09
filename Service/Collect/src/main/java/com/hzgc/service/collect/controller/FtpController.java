@@ -31,7 +31,7 @@ public class FtpController {
 
     @ApiOperation(value = "打开抓拍订阅")
     @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_OPEN, method = RequestMethod.POST)
-    public ResponseResult<Boolean> openFtpSubscription(String userId, @RequestBody List<String> ipcIdList) {
+    public ResponseResult <Boolean> openFtpSubscription(String userId, @RequestBody List <String> ipcIdList) {
         if (StringUtils.isBlank(userId) || ipcIdList.isEmpty()) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
@@ -41,7 +41,7 @@ public class FtpController {
 
     @ApiOperation(value = "关闭抓拍订阅")
     @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_CLOSE, method = RequestMethod.POST)
-    public ResponseResult<Boolean> closeFtpSubscription(String userId) {
+    public ResponseResult <Boolean> closeFtpSubscription(String userId) {
         if (StringUtils.isBlank(userId)) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
@@ -51,19 +51,19 @@ public class FtpController {
 
     @ApiIgnore(value = "内部服务:批量hostname转ip")
     @RequestMapping(value = BigDataPath.HOSTNAME_TO_IP, method = RequestMethod.POST)
-    public ResponseEntity<Map<String, UrlInfo>> hostName2IpBatch(@RequestBody List<String> hostNameList) {
+    public ResponseEntity <Map <String, UrlInfo>> hostName2IpBatch(@RequestBody List <String> hostNameList) {
         if (hostNameList != null && hostNameList.size() > 0) {
-            Map<String, UrlInfo> result = ftpService.hostName2IpBatch(hostNameList);
+            Map <String, UrlInfo> result = ftpService.hostName2IpBatch(hostNameList);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         } else {
             log.error("Method:hostName2Ip, hostNameList is null or size is 0");
-            return ResponseEntity.badRequest().body(new HashMap<>());
+            return ResponseEntity.badRequest().body(new HashMap <>());
         }
     }
 
     @ApiIgnore(value = "内部服务:hostname转ip")
     @RequestMapping(value = BigDataPath.HOSTNAME_TO_IP, method = RequestMethod.GET)
-    public ResponseEntity<UrlInfo> hostName2Ip(@RequestParam(value = "hostName") String hostName) {
+    public ResponseEntity <UrlInfo> hostName2Ip(@RequestParam(value = "hostName") String hostName) {
         if (hostName != null && !"".equals(hostName)) {
             UrlInfo urlInfo = ftpService.hostName2Ip(hostName);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(urlInfo);
@@ -74,9 +74,9 @@ public class FtpController {
 
     @ApiIgnore(value = "内部服务:带hostname的httpurl转为带ip的url")
     @RequestMapping(value = BigDataPath.HTTP_HOSTNAME_TO_IP, method = RequestMethod.GET)
-    public ResponseEntity<UrlInfo> http_hostName2Ip(@RequestBody String hostNameUrl) {
+    public ResponseEntity <UrlInfo> http_hostName2Ip(String hostNameUrl) {
         if (hostNameUrl != null && !"".equals(hostNameUrl)) {
-            UrlInfo urlInfo =  ftpService.http_hostName2Ip(hostNameUrl);
+            UrlInfo urlInfo = ftpService.http_hostName2Ip(hostNameUrl);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(urlInfo);
         } else {
             return ResponseEntity.badRequest().build();
