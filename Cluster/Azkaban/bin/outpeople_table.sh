@@ -11,7 +11,7 @@ FROM(
     FROM (
         SELECT id, community, DATE_FORMAT(lasttime,"%Y%m") AS time
         FROM t_people
-        WHERE lasttime <= DATE_SUB(now(),INTERVAL 1 DAY)
+        WHERE lasttime <= DATE_SUB(now(),INTERVAL 3 MONTH)
           AND community is NOT NULL
     ) AS people LEFT JOIN t_picture
     ON people.id = t_picture.peopleid
