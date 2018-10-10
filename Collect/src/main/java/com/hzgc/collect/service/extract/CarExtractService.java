@@ -28,7 +28,7 @@ public class CarExtractService {
     public CarPictureData carExtractByImage(byte[] imageBytes) {
         ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "0");
         if (imageResult == null) {
-            log.error("imageResult is null !");
+            log.info("imageResult is null");
             return null;
         }
         CarPictureData carPictureData = new CarPictureData();

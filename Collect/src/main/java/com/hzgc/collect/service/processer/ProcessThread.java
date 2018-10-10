@@ -141,7 +141,7 @@ public class ProcessThread implements Runnable {
                         boolean boo = ImageUtil.save(smallImagePath, vehicle.getVehicle_data());
                         if (boo) {
                             String smallFtpUrlPath = parser.ftpUrl_b2s(event.getbFtpUrl(), CAR, index);
-                            event.setbAbsolutePath(smallImagePath)
+                            event.setsAbsolutePath(smallImagePath)
                                     .setsFtpUrl(smallFtpUrlPath)
                                     .setsRelativePath(parser.path_b2s(event.getbRelativePath(), CAR, index));
                             this.sendKafka(event, vehicle);

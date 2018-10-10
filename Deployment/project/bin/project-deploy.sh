@@ -46,11 +46,10 @@ cd ${COMPONENT_HOME}/GoSunBigData
 ## GoSunBigData 目录
 GOSUN_HOME=`pwd`
 GOSUNINSTALL_HOME=/opt/GoSunBigData
-## common模块目录
-COMMON_DIR=${GOSUN_HOME}/Common
-COMMON_INSTALL_DIR=${GOSUNINSTALL_HOME}/Common
 ## cluster模块目录
 CLUSTER_DIR=${GOSUN_HOME}/Cluster
+CLUSTER_INSTALL_DIR=${GOSUNINSTALL_HOME}/Cluster
+PEOPLEMANAGER_INSTALL_DIR=${CLUSTER_INSTALL_DIR}/peoplemanager
 ## service模块目录
 SERVICE_DIR=${GOSUN_HOME}/Service
 SERVICE_INSTALL_DIR=${GOSUNINSTALL_HOME}/Service
@@ -336,8 +335,28 @@ function distribute_service()
 
     ## 拷贝GoSun到opt目录下
     cp -r ${GOSUN_HOME} /opt
-    rm -rf /opt/GoSunBigData/Service/logs
 
+    ## 分发peoplemanager
+    CLUSTERNODELIST=$(grep 'Cluster_HostName' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
+    CLUSTERNODE=(${CLUSTERNODELIST//;/ })
+    CLUSTER_NODE_NUM=${#CLUSTERNODELIST[@]}
+    localhost=`hostname -i`
+    num=0
+    for hostname in ${CLUSTERNODE}
+    do
+      if [[ ${localhost} != ${hostname} ]]; then
+          ssh root@${hostname} "if [ ! -x "${PEOPLEMANAGER_INSTALL_DIR}" ];then mkdir -p "${PEOPLEMANAGER_INSTALL_DIR}"; fi"
+          rsync -rvl ${PEOPLEMANAGER_DIR} root@${hostname}:${PEOPLEMANAGER_INSTALL_DIR} >/dev/null
+          ssh root@${hostname} "chmod -R 755 ${PEOPLEMANAGER_INSTALL_DIR}"
+          echo "${hostname}上分发fusion完毕........" | tee -a ${SERVICE_LOG_FILE}
+      fi
+      if [[ ${num} -lt ${CLUSTER_NODE_NUM} ]]; then
+           ssh root@${hostname} "sed -i 's#lts.tasktracker.node-group=.*#lts.tasktracker.node-group=worker-${num}#g' ${PEOPLEMANAGER_INSTALL_DIR}/peoplemanager-worker/conf/application-pro.properties"
+           ((num++))
+      fi
+    done
+
+    rm -rf /opt/GoSunBigData/Service/logs
     echo "配置完毕......" | tee -a ${SERVICE_LOG_FILE}
 
 }
@@ -395,6 +414,8 @@ function config_sparkjob()
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
     sed -i "s#^kafka.metadata.broker.list=.*#kafka.metadata.broker.list=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     sed -i "s#^job.faceObjectConsumer.broker.list=.*#job.faceObjectConsumer.broker.list=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.kafka=.*#job.kafkaToTidb.kafka=${sparkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+
 
     # 根据字段zookeeper_installnode，查找配置文件中，Zk的安装节点所在IP端口号的值，这些值以分号分割
     ZK_IP=$(grep zookeeper_installnode ${CONF_FILE}|cut -d '=' -f2)
@@ -410,6 +431,7 @@ function config_sparkjob()
     zkpro=${zkpro%?}
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
     sed -i "s#^job.zkDirAndPort=.*#job.zkDirAndPort=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.zookeeper=.*#job.kafkaToTidb.zookeeper=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     # 替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^phoenix.jdbc.url=jdbc:phoenix:.*#phoenix.jdbc.url=jdbc:phoenix:${phoenixpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
@@ -423,6 +445,7 @@ function config_sparkjob()
     echo "++++++++++++++++++++++++++++++++++"
     #替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^job.kafkaToParquet.esNodes=.*#job.kafkaToParquet.esNodes=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
+    sed -i "s#^job.kafkaToTidb.jdbc.ip=.*#job.kafkaToTidb.jdbc.ip=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
 
     #根据字段rocketmq_nameserver，查找配置文件中，rocketmq的nameserver安装节点所在IP端口号的值，这些值以分号分割
 #    ROCK_IP=$(grep rocketmq_nameserver ${CONF_FILE} | cut -d '=' -f2)
@@ -745,11 +768,11 @@ function distribute_facecompare(){
     num=0
     for node in ${CLUSTERNODE} ;do
         scp -r ${FACECOMPARE_DIR} root@${node}:/opt/
-        sed -i "s#master.ip=.*#master.ip=${node}#g" /opt/FaceCompare/conf/master.properties
-        sed -i "s#worker.address=.*#worker.address=${node}#g" /opt/FaceCompare/conf/worker.properties
+        ssh root@${node} "sed -i 's#master.ip=.*#master.ip=${node}#g' /opt/FaceCompare/conf/master.properties"
+        ssh root@${node} "sed -i 's#worker.address=.*#worker.address=${node}#g' /opt/FaceCompare/conf/worker.properties"
 
         if [[ ${num} -lt ${CLUSTER_NODE_NUM} ]]; then
-            sed -i "s#tasktracker.group=.*#tasktracker.group=facecompare-compareTask${num}#g" /opt/FaceCompare/conf/worker.properties
+            ssh root@${node} "sed -i 's#tasktracker.group=.*#tasktracker.group=facecompare-compareTask${num}#g' /opt/FaceCompare/conf/worker.properties"
             ((num++))
         fi
     done

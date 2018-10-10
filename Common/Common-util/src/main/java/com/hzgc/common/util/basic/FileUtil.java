@@ -16,7 +16,7 @@ public class FileUtil {
             if (filePath != null && filePath.length() > 0) {
                 File imageFile = new File(filePath);
                 if (!imageFile.exists()) {
-                    imageFile.mkdir();
+                    return bytes;
                 }
                 fis = new FileInputStream(imageFile);
                 baos = new ByteArrayOutputStream();
