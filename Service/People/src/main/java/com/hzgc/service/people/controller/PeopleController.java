@@ -38,7 +38,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
-    public ResponseResult <Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
+    public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start insert people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口信息为空，请检查！");
@@ -77,7 +77,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "修改人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_UPDATE, method = RequestMethod.PUT)
-    public ResponseResult <Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
+    public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start update people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口信息为空，请检查！");
@@ -111,7 +111,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据ID查询人口信息", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
-    public ResponseResult <PeopleVO> selectByPeopleId(String peopleId) {
+    public ResponseResult<PeopleVO> selectByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select people info, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
@@ -130,7 +130,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据照片ID查询照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PICID, method = RequestMethod.GET)
-    public ResponseEntity <byte[]> searchPictureByPicId(Long pictureId) {
+    public ResponseEntity<byte[]> searchPictureByPicId(Long pictureId) {
         if (pictureId == null) {
             log.error("Start select picture, but picture id is null");
             ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(null);
@@ -152,7 +152,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据人员全局ID查询照片", response = PictureVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PEOPLEID, method = RequestMethod.GET)
-    public ResponseResult <PictureVO> searchPictureByPeopleId(String peopleId) {
+    public ResponseResult<PictureVO> searchPictureByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {
             log.error("Start select picture, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
@@ -171,7 +171,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据条件查询人员", response = SearchPeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_PEOPLE, method = RequestMethod.POST)
-    public ResponseResult <SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
+    public ResponseResult<SearchPeopleVO> searchPeople(@RequestBody @ApiParam(value = "查询条件") SearchPeopleDTO param) {
         if (param == null) {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
@@ -194,13 +194,13 @@ public class PeopleController {
 
     @ApiOperation(value = "统计单个区域下所有小区列表", response = List.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SELECT_COMMUNITY, method = RequestMethod.GET)
-    public ResponseResult <List <Long>> searchCommunityIdsByRegionId(Long regionId) {
+    public ResponseResult<List<Long>> searchCommunityIdsByRegionId(Long regionId) {
         if (regionId == null) {
             log.info("Start search community id list, but region is null");
             ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
         log.info("Start search community id list, region is:" + regionId);
-        List <Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
+        List<Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
         log.info("Search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
         return ResponseResult.init(communityIds);
     }

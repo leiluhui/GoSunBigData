@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value ="24小时抓拍统计")
+@ApiModel(value = "24小时抓拍统计")
 @Data
 public class CaptureHourCount implements Serializable {
     @ApiModelProperty(value = "时间点（小时）")
