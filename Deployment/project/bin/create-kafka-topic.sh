@@ -147,6 +147,19 @@ function create_kafka_topic()
         echo "创建 face topic 失败...." | tee -a $LOG_FILE
     fi
 
+   #创建kafka imsi topic
+    ./kafka-topic.sh --create \
+    --zookeeper ${zkpro} \
+    --replication-factor ${repl_factor} \
+    --partitions ${part_num} \
+    --topic imsi  >> ${LOG_FILE} 2>&1 &
+
+    if [ $? = 0 ];then
+        echo "创建 imsi topic 成功...."  | tee  -a  $LOG_FILE
+        echo "kafka imsi topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+    else
+        echo "创建 imsi topic 失败...." | tee -a $LOG_FILE
+    fi
 
     # 列出所有topic
 	echo ""  | tee -a $LOG_FILE

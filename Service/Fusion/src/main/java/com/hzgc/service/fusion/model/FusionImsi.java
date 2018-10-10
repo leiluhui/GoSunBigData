@@ -11,6 +11,8 @@ public class FusionImsi implements Serializable {
 
     private String deviceid;
 
+    private Long community;
+
     private Date receivetime;
 
     private String imsi;
@@ -53,5 +55,12 @@ public class FusionImsi implements Serializable {
 
     public void setImsi(String imsi) {
         this.imsi = imsi == null ? null : imsi.trim();
+    }
+
+    public Long getCommunity() {
+        return community;
+    }
+    public void setCommunity(Long community) {
+        this.community = community;
     }
 }
