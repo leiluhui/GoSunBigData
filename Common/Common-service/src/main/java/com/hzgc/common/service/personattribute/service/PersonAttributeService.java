@@ -258,11 +258,11 @@ public class PersonAttributeService {
         personUpperType.setValues(personUpperTypeValues);
         personAttributes.add(personUpperType);
 
-        //车辆类型
+        //骑车类型
         Map<Integer, String> type = personMap.get("car_type");
         PersonAttribute personCarType = new PersonAttribute();
         personCarType.setIdentify("cartype");
-        personCarType.setDesc("车辆类型");
+        personCarType.setDesc("骑车类型");
         personCarType.setPersonLogistic(PersonLogistic.AND);
         List<PersonAttributeValue> personCarTypeValues = new ArrayList<>();
         for (Map.Entry<Integer, String> entry : type.entrySet()) {

@@ -561,12 +561,18 @@ public class ImageToData {
     private static ImageResult getImageResult(String url, String imagePath, String tag) {
         String imageJsonString = JsonUtil.objectToJsonString(imagePath);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
+        if (null == s) {
+            return null;
+        }
         return ImageToData.getData(s, imagePath, tag, null);
     }
 
     public static ImageResult getImageResult(String url, byte[] bytes, String tag) {
         String imageJsonString = JsonUtil.objectToJsonString(bytes);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
+        if (null == s) {
+            return null;
+        }
         return ImageToData.getData(s, null, tag, bytes);
     }
 
@@ -576,6 +582,6 @@ public class ImageToData {
 //        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\123.jpg");
 //        data = new byte[inputStream.available()];
 //        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\123.jpg", "66");
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\1.jpg", "66");
     }
 }
