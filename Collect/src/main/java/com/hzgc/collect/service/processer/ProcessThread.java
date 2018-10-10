@@ -133,6 +133,10 @@ public class ProcessThread implements Runnable {
                     log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
+                        if (null == vehicle.getVehicle_type()) {
+                            log.info("Vehicle type is null, fileName: " + event.getbAbsolutePath());
+                            continue;
+                        }
                         if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
                             log.info("Vehicle small image are not extracted, fileName: " + event.getbAbsolutePath());
                             continue;
