@@ -36,7 +36,7 @@ public class InnerService {
             log.info("Method httpHostNameToIp, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
             return urlInfo;
         } else {
-            log.error("Method httpHostNameToIp, httpUrlList is null or size is 0");
+            log.error("Method httpHostNameToIp, httpHostName is null");
             return new UrlInfo();
         }
     }
@@ -58,7 +58,7 @@ public class InnerService {
             }
 
         } else {
-            log.error("Method hostName2Ip, httpUrlList is null or size is 0");
+            log.error("Method hostName2Ip, hostName is null");
             return new UrlInfo();
         }
     }
@@ -78,7 +78,7 @@ public class InnerService {
             log.info("Method hostName2IpBatch, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
             return responseEntity.getBody();
         } else {
-            log.error("Method hostName2IpBatch, httpUrlList is null or size is 0");
+            log.error("Method hostName2IpBatch, hostNameList is null or size is 0");
             return new HashMap<>();
         }
     }
