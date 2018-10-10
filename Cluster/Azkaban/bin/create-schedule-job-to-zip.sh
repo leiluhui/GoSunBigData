@@ -99,17 +99,17 @@ if [[ ! -f "${FUSION_IMSI_TABLE}"  ]]; then
 fi
 
 if [[ ! -f "${HOUR_COUNT_TABLE}"  ]]; then
-    echo "the 24hour_count_table_one_day.sh is not exist!!!"
+    echo "the 24hour_count_table_one_hour.sh is not exist!!!"
     else
-    touch ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
-    echo "type=command" > ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
-    echo "command=sh ${BIN_DIR}/${HOUR_COUNT_TABLE}" >> ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
+    touch ${AZKABAN_JOB_DIR}/24hour_count_table_one_hour.job
+    echo "type=command" > ${AZKABAN_JOB_DIR}/24hour_count_table_one_hour.job
+    echo "command=sh ${BIN_DIR}/${HOUR_COUNT_TABLE}" >> ${AZKABAN_JOB_DIR}/24hour_count_table_one_hour.job
 fi
 
 cd ${AZKABAN_ZIP_DIR}
 zip device_recogize_table_one_day.zip ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
 zip fusion_imsi_table_one_day.zip ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
-zip 24hour_count_table_one_day.zip ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
+zip 24hour_count_table_one_hour.zip ${AZKABAN_JOB_DIR}/24hour_count_table_one_hour.job
 zip newpeople_table_one_month.zip ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
 zip outpeople_table_one_day.zip ${AZKABAN_JOB_DIR}/outpeople_table_one_day.job
 
