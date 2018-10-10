@@ -62,7 +62,7 @@ if [[ ! -f "${DEVICE_RECOGIZE_TABLE}"  ]]; then
     else
     touch ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
     echo "type=command" > ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
- echo "command=sh ${AZKABAN_DIR}/${DEVICE_RECOGIZE_TABLE}" >> ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
+ echo "command=sh ${BIN_DIR}/${DEVICE_RECOGIZE_TABLE}" >> ${AZKABAN_JOB_DIR}/device_recogize_table_one_day.job
 fi
 
 if [[ ! -f "${NEWPEOPLE_TABLE}"  ]]; then
@@ -70,15 +70,15 @@ if [[ ! -f "${NEWPEOPLE_TABLE}"  ]]; then
     else
     touch ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
     echo "type=command" > ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
-    echo "command=sh ${AZKABAN_DIR}/${NEWPEOPLE_TABLE}" >> ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
+    echo "command=sh ${BIN_DIR}/${NEWPEOPLE_TABLE}" >> ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
 fi
 
 if [[ ! -f "${OUTPEOPLE_TABLE}"  ]]; then
     echo "the outpeople_table_one_month.sh is not exist!!!"
     else
     touch ${AZKABAN_JOB_DIR}/outpeople_table_one_month.job
-    echo "type=command" > ${AZKABAN_JOB_DIR}/outpeople_table_one_month.job
-    echo "command=sh ${AZKABAN_DIR}/${OUTPEOPLE_TABLE}" >> ${AZKABAN_JOB_DIR}/outpeople_table_one_month.job
+    echo "type=command" > ${AZKABAN_JOB_DIR}/outpeople_table_one_day.job
+    echo "command=sh ${BIN_DIR}/${OUTPEOPLE_TABLE}" >> ${AZKABAN_JOB_DIR}/outpeople_table_one_day.job
 fi
 
 if [[ ! -f "${IMSI_BLACKLIST_TABLE}"  ]]; then
@@ -86,7 +86,7 @@ if [[ ! -f "${IMSI_BLACKLIST_TABLE}"  ]]; then
     else
     touch ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
     echo "type=command" >> ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
-    echo "command=sh ${AZKABAN_DIR}/${IMSI_BLACKLIST_TABLE}" >> ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
+    echo "command=sh ${BIN_DIR}/${IMSI_BLACKLIST_TABLE}" >> ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
 fi
 
 if [[ ! -f "${FUSION_IMSI_TABLE}"  ]]; then
@@ -94,7 +94,7 @@ if [[ ! -f "${FUSION_IMSI_TABLE}"  ]]; then
     else
     touch ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
     echo "type=command" > ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
-    echo "command=sh ${AZKABAN_DIR}/${FUSION_IMSI_TABLE}" >> ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
+    echo "command=sh ${BIN_DIR}/${FUSION_IMSI_TABLE}" >> ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
     echo "dependencies=imsi_blacklist_table_one_day" >> ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job
 fi
 
@@ -103,7 +103,7 @@ if [[ ! -f "${HOUR_COUNT_TABLE}"  ]]; then
     else
     touch ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
     echo "type=command" > ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
-    echo "command=sh ${AZKABAN_DIR}/${HOUR_COUNT_TABLE}" >> ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
+    echo "command=sh ${BIN_DIR}/${HOUR_COUNT_TABLE}" >> ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
 fi
 
 cd ${AZKABAN_ZIP_DIR}
@@ -111,7 +111,7 @@ zip device_recogize_table_one_day.zip ${AZKABAN_JOB_DIR}/device_recogize_table_o
 zip fusion_imsi_table_one_day.zip ${AZKABAN_JOB_DIR}/fusion_imsi_table_one_day.job ${AZKABAN_JOB_DIR}/imsi_blacklist_table_one_day.job
 zip 24hour_count_table_one_day.zip ${AZKABAN_JOB_DIR}/24hour_count_table_one_day.job
 zip newpeople_table_one_month.zip ${AZKABAN_JOB_DIR}/newpeople_table_one_month.job
-zip outpeople_table_one_month.zip ${AZKABAN_JOB_DIR}/outpeople_table_one_month.job
+zip outpeople_table_one_day.zip ${AZKABAN_JOB_DIR}/outpeople_table_one_day.job
 
 cd ${CLUSTER_BIN_DIR}  ##进入cluster的bin目录
 mkdir -p schema-parquet-one-hour
@@ -119,17 +119,18 @@ if [ ! -f "${SCHEMA_FILE}" ]; then
    echo "The schema-merge-parquet-file.sh is not exist!!!"
 else
    touch mid_table-one-hour.job     ##创建mid_table-one-hour.job文件
-   echo "type=command" >> mid_table-one-hour.job
+   echo "type=command" > mid_table-one-hour.job
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> mid_table-one-hour.job
    echo "command=sh \${cluster_home}/schema-merge-parquet-file.sh mid_table" >> mid_table-one-hour.job
 
    touch person_table-one-hour.job  ##创建person_table-one-hour.job文件
-   echo "type=command" >> person_table-one-hour.job
+   echo "type=command" > person_table-one-hour.job
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> person_table-one-hour.job
    echo "command=sh \${cluster_home}/schema-merge-parquet-file.sh person_table now" >> person_table-one-hour.job
    echo "dependencies=mid_table-one-hour" >> person_table-one-hour.job
- touch person_table_one-day.job  ##创建person_table_one-day.job文件
-   echo "type=command" >> person_table_one-day.job
+
+   touch person_table_one-day.job  ##创建person_table_one-day.job文件
+   echo "type=command" > person_table_one-day.job
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> person_table_one-day.job
    echo "command=sh \${cluster_home}/schema-merge-parquet-file.sh person_table before" >> person_table_one-day.job
 
@@ -138,7 +139,7 @@ if [ ! -f "${OFFLINE_FILE}" ]; then
    echo "The start-face-offline-alarm-job.sh is not exist!!!"
 else
    touch start-face-offline-alarm-job.job  ##创建离线告警的job文件
-   echo "type=command" >> start-face-offline-alarm-job.job
+   echo "type=command" > start-face-offline-alarm-job.job
    echo "cluster_home=${CLUSTER_BIN_DIR}" >> start-face-offline-alarm-job.job
    echo "command=sh \${cluster_home}/start-face-offline-alarm-job.sh" >> start-face-offline-alarm-job.job
 fi
@@ -157,7 +158,7 @@ if [ ! -f "$MASTER_PROTECT_FILE" ]; then
     echo "The master-protect.sh is not exist!!!"
 else
     touch master-protect-five-second.job
-    echo "type=command" >> master-protect-five-second.job
+    echo "type=command" > master-protect-five-second.job
     echo "cluster_home=${FACECOMPARE_BIN_DIR}" >> master-protect-five-second.job
     echo "command=sh \${FACECOMPARE_BIN_DIR}/master-protect.sh" >> master-protect-five-second.job
 fi
@@ -165,7 +166,7 @@ if [ ! -f "$TASKTRACKER_PROTECT_FILE" ]; then
     echo "The tasktracker-protect.sh is not exist!!!"
 else
     touch task-tracker-five-second.job
-    echo "type=command" >>  task-tracker-five-second.job
+    echo "type=command" >  task-tracker-five-second.job
     echo "cluster_home=${FACECOMPARE_BIN_DIR}" >> task-tracker-five-second.job
     echo "command=sh \${FACECOMPARE_BIN_DIR}/tasktracker-protect.sh" >> task-tracker-five-second.job
 fi

@@ -5,9 +5,9 @@ PORT=4000
 use people;
 
 INSERT INTO peopleid, community, `month`, 1
-SELECT id,community ,time
+SELECT t1.id,t1.community ,time
 FROM(
-    SELECT community ,time, id
+    SELECT community ,time, people.id
     FROM (
         SELECT id, community, DATE_FORMAT(lasttime,"%Y%m") AS time
         FROM t_people
