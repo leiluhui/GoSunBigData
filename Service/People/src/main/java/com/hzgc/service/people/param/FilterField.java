@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class FilterField implements Serializable {
-    private Long regionid;//区域ID
+    private Long regionid;      //区域ID
     private Long communityid;   // 小区ID
     private String name;        // 姓名
     private String idcard;      // 身份证

@@ -57,7 +57,7 @@ public class PeopleDTO implements Serializable {
 
     public People peopleDTOShift_insert(PeopleDTO peopleDTO) {
         People people = new People();
-        if (StringUtils.isBlank(peopleDTO.id)){
+        if (StringUtils.isBlank(peopleDTO.id)) {
             people.setId(UuidUtil.getUuid());
         }
         people.setName(peopleDTO.name);

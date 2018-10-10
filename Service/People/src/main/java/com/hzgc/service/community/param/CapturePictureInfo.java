@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value ="迁入人员抓拍统计（含总条数）")
+@ApiModel(value = "迁入人员抓拍统计（含总条数）")
 @Data
 public class CapturePictureInfo implements Serializable {
     @ApiModelProperty(value = "抓拍设备ID")
@@ -16,5 +16,5 @@ public class CapturePictureInfo implements Serializable {
     @ApiModelProperty(value = "抓拍时间")
     private String captureTime;
     @ApiModelProperty(value = "抓拍照片")
-    private String picture;     // 暂定String
+    private String picture;
 }

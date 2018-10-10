@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value ="小区迁入迁出人口信息出参")
+@ApiModel(value = "小区迁入迁出人口信息出参")
 @Data
 public class CommunityPeopleInfoVO implements Serializable {
     @ApiModelProperty(value = "人员全局ID")

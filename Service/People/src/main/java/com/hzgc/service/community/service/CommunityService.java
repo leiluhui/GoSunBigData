@@ -138,92 +138,92 @@ public class CommunityService {
             communityIdList = param.getCommunityIdList().subList(offset, size);
         }
         param.setCommunityIdList(communityIdList);
-        log.info("Start count community new and out people, community id list:"+ JacksonUtil.toJson(param.getCommunityIdList()));
+        log.info("Start count community new and out people, community id list:" + JacksonUtil.toJson(param.getCommunityIdList()));
         List<CountCommunityPeople> totalNewCount = newPeopleMapper.countTotalNewPeople(param);
         List<CountCommunityPeople> totalOutCount = outPeopleMapper.countTotalOutPeople(param);
         List<CountCommunityPeople> confirmNewCount = newPeopleMapper.countConfirmNewPeople(param);
         List<CountCommunityPeople> confirmOutCount = outPeopleMapper.countConfirmOutPeople(param);
         List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
-        for (Long communityId : communityIdList){
+        for (Long communityId : communityIdList) {
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             vo.setCommunityId(communityId);
-            vo.setCommunityName(platformService.getMergerName(communityId));
+            vo.setCommunityName(platformService.getCommunityName(communityId));
             vo.setMonth(param.getMonth());
-            for (CountCommunityPeople suggestNew : totalNewCount){
-                if (suggestNew.getCommunity().equals(communityId)){
+            for (CountCommunityPeople suggestNew : totalNewCount) {
+                if (suggestNew.getCommunity().equals(communityId)) {
                     vo.setSuggestNewCount(suggestNew.getCount());
                     break;
                 }
             }
-            for (CountCommunityPeople suggestOut : totalOutCount){
-                if (suggestOut.getCommunity().equals(communityId)){
+            for (CountCommunityPeople suggestOut : totalOutCount) {
+                if (suggestOut.getCommunity().equals(communityId)) {
                     vo.setSuggestOutCount(suggestOut.getCount());
                     break;
                 }
             }
-            for (CountCommunityPeople confirmNew : confirmNewCount){
-                if (confirmNew.getCommunity().equals(communityId)){
+            for (CountCommunityPeople confirmNew : confirmNewCount) {
+                if (confirmNew.getCommunity().equals(communityId)) {
                     vo.setConfirmNewCount(confirmNew.getCount());
                     break;
                 }
             }
-            for (CountCommunityPeople confirmOut : confirmOutCount){
-                if (confirmOut.getCommunity().equals(communityId)){
+            for (CountCommunityPeople confirmOut : confirmOutCount) {
+                if (confirmOut.getCommunity().equals(communityId)) {
                     vo.setConfirmOutCount(confirmOut.getCount());
                     break;
                 }
             }
             voList.add(vo);
         }
-       return voList;
+        return voList;
     }
 
     public NewAndOutPeopleSearchVO searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
         List<NewAndOutPeopleSearch> newAndOutPeopleSearchList = new ArrayList<>();
         // 小区迁入人口查询（疑似与确认）
-        if (param.getType() == 0){
+        if (param.getType() == 0) {
             List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
-            if (list != null && list.size() > 0){
-                for (NewPeople people : list){
+            if (list != null && list.size() > 0) {
+                for (NewPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
                     vo.setPeopleId(people.getPeopleid());
                     vo.setCommunityId(param.getCommunityId());
                     vo.setMonth(param.getMonth());
                     vo.setType(param.getType());
                     // 未确认迁入
-                    if (people.getIsconfirm() == 1){
+                    if (people.getIsconfirm() == 1) {
                         vo.setIsconfirm(2);
-                        if (people.getFlag() == 1){
+                        if (people.getFlag() == 1) {
                             vo.setFlag(0);
                             // 未确认迁入人口:预实名
                             vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
                         }
-                        if (people.getFlag() == 2){
+                        if (people.getFlag() == 2) {
                             vo.setFlag(1);
                             // 未确认迁入人口:新增
                             vo.setSul(getSurlByPeopleId(people.getPeopleid()));
                         }
                     }
                     // 已确认迁入
-                    if (people.getIsconfirm() == 2){
+                    if (people.getIsconfirm() == 2) {
                         vo.setIsconfirm(0);
-                        if (people.getFlag() == 1){
+                        if (people.getFlag() == 1) {
                             vo.setFlag(0);
                         }
-                        if (people.getFlag() == 2){
+                        if (people.getFlag() == 2) {
                             vo.setFlag(1);
                         }
                         vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
                     }
                     // 已确认未迁入
-                    if (people.getIsconfirm() == 3){
+                    if (people.getIsconfirm() == 3) {
                         vo.setIsconfirm(1);
-                        if (people.getFlag() == 1){
+                        if (people.getFlag() == 1) {
                             vo.setFlag(0);
                             // 已确认未迁入人口:预实名
                             vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
                         }
-                        if (people.getFlag() == 2){
+                        if (people.getFlag() == 2) {
                             vo.setFlag(1);
                             // 已确认未迁入人口:新增
                             vo.setSul(getSurlByPeopleId(people.getPeopleid()));
@@ -234,23 +234,23 @@ public class CommunityService {
             }
         }
         // 小区迁出人口查询（疑似与确认）
-        if (param.getType() == 1){
+        if (param.getType() == 1) {
             List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
-            if (list != null && list.size() > 0){
-                for (OutPeople people : list){
+            if (list != null && list.size() > 0) {
+                for (OutPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
                     vo.setPeopleId(people.getPeopleid());
                     vo.setCommunityId(param.getCommunityId());
                     vo.setMonth(param.getMonth());
                     vo.setPicture(getPictureIdByPeopleId(people.getPeopleid()));
                     vo.setType(param.getType());
-                    if (people.getIsconfirm() == 1){
+                    if (people.getIsconfirm() == 1) {
                         vo.setIsconfirm(5);
                     }
-                    if (people.getIsconfirm() == 2){
+                    if (people.getIsconfirm() == 2) {
                         vo.setIsconfirm(3);
                     }
-                    if (people.getIsconfirm() == 3){
+                    if (people.getIsconfirm() == 3) {
                         vo.setIsconfirm(4);
                     }
                     newAndOutPeopleSearchList.add(vo);
@@ -275,18 +275,18 @@ public class CommunityService {
         return vo;
     }
 
-    private Long getPictureIdByPeopleId(String peopleId){
+    private Long getPictureIdByPeopleId(String peopleId) {
         return pictureMapper.getPictureIdByPeopleId(peopleId);
     }
 
-    private String getSurlByPeopleId(String peopleId){
+    private String getSurlByPeopleId(String peopleId) {
         return peopleRecognizeMapper.getSurlByPeopleId(peopleId);
     }
 
     public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {
         CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
         People people = peopleMapper.searchCommunityPeopleInfo(peopleId);
-        if (people != null){
+        if (people != null) {
             vo.setId(people.getId());
             vo.setName(people.getName());
             vo.setIdCard(people.getIdcard());
@@ -302,7 +302,7 @@ public class CommunityService {
     public CommunityPeopleInfoVO searchPeopleByIdCard(String idCard) {
         CommunityPeopleInfoVO vo = new CommunityPeopleInfoVO();
         People people = peopleMapper.searchPeopleByIdCard(idCard);
-        if (people != null){
+        if (people != null) {
             vo.setId(people.getId());
             vo.setName(people.getName());
             vo.setSex(people.getSex());
@@ -320,11 +320,11 @@ public class CommunityService {
         // 小区迁入人口抓拍详情:设备抓拍统计
         List<CaptureDeviceCount> deviceCountList = new ArrayList<>();
         List<DeviceRecognize> deviceRecognizes = deviceRecognizeMapper.countCommunityNewPeopleCapture(param);
-        if (deviceRecognizes != null && deviceRecognizes.size() > 0){
-            for (DeviceRecognize deviceRecognize : deviceRecognizes){
+        if (deviceRecognizes != null && deviceRecognizes.size() > 0) {
+            for (DeviceRecognize deviceRecognize : deviceRecognizes) {
                 CaptureDeviceCount captureDeviceCount = new CaptureDeviceCount();
                 String deviceName = platformService.getCameraDeviceName(deviceRecognize.getDeviceid());
-                if (StringUtils.isBlank(deviceName)){
+                if (StringUtils.isBlank(deviceName)) {
                     deviceName = platformService.getImsiDeviceName(deviceRecognize.getDeviceid());
                 }
                 captureDeviceCount.setDeviceName(deviceName != null ? deviceName : deviceRecognize.getDeviceid());
@@ -340,17 +340,17 @@ public class CommunityService {
         List<String> hourList = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
         long longTime = System.currentTimeMillis();
-        for(int i = 0; i < 24 ;i ++){
+        for (int i = 0; i < 24; i++) {
             longTime = longTime - 3600000;
             String time = dateFormat.format(new Date(longTime));
             hourList.add(time);
         }
-        for (String hour : hourList){
+        for (String hour : hourList) {
             CaptureHourCount count = new CaptureHourCount();
-            count.setHour(hour.substring(8,10));
-            if (count24Hours != null && count24Hours.size() > 0){
-                for (Count24Hour count24Hour : count24Hours){
-                    if (hour.equals(count24Hour.getHour())){
+            count.setHour(hour.substring(8, 10));
+            if (count24Hours != null && count24Hours.size() > 0) {
+                for (Count24Hour count24Hour : count24Hours) {
+                    if (hour.equals(count24Hour.getHour())) {
                         count.setCount(count24Hour.getCount());
                     }
                 }
@@ -366,13 +366,13 @@ public class CommunityService {
         CapturePeopleCount capturePeopleCount = new CapturePeopleCount();
         capturePeopleCount.setTotal(total);
         List<CapturePictureInfo> infoList = new ArrayList<>();
-        for (PeopleRecognize peopleRecognize : peopleRecognizes){
+        for (PeopleRecognize peopleRecognize : peopleRecognizes) {
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
             info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             Date date = peopleRecognize.getCapturetime();
-            if (date != null){
+            if (date != null) {
                 info.setCaptureTime(sdf.format(date));
             }
             infoList.add(info);
@@ -385,14 +385,14 @@ public class CommunityService {
     public OutPeopleLastCaptureVO searchCommunityOutPeopleLastCapture(String peopleId) {
         OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
         PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
-        if (peopleRecognize != null){
+        if (peopleRecognize != null) {
             vo.setDeviceId(peopleRecognize.getDeviceid());
             vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
             vo.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);
-        if (lastTime != null){
+        if (lastTime != null) {
             long now = new Date().getTime();
             int day = Math.toIntExact((now - lastTime.getTime()) / (24 * 60 * 60 * 1000));
             vo.setLastDay(day);
@@ -403,24 +403,24 @@ public class CommunityService {
     @Transactional(rollbackFor = Exception.class)
     public Integer communityAffirmOut(AffirmOperationDTO param) {
         // 已确认迁出
-        if (param.getIsconfirm() == 2){
+        if (param.getIsconfirm() == 2) {
             Integer delete = peopleMapper.deleteCommunityByPeopleId(param.getPeopleId());
-            if (delete != 1){
+            if (delete != 1) {
                 log.info("Affirm out operation failed");
                 return 0;
             }
             Integer update = outPeopleMapper.updateIsconfirm(param);
-            if (update != 1){
+            if (update != 1) {
                 log.info("Affirm out operation failed");
                 return 0;
             }
-        }else if (param.getIsconfirm() == 3) {     // 已确认未迁出
+        } else if (param.getIsconfirm() == 3) {     // 已确认未迁出
             Integer update = outPeopleMapper.updateIsconfirm(param);
-            if (update != 1){
+            if (update != 1) {
                 log.info("Affirm out operation failed");
                 return 0;
             }
-        }else {
+        } else {
             log.info("Affirm out operation failed, because param: isconfirm error");
             return 0;
         }
@@ -430,36 +430,36 @@ public class CommunityService {
     @Transactional(rollbackFor = Exception.class)
     public Integer communityAffirmNew(AffirmOperationDTO param) {
         // 已确认迁入
-        if (param.getIsconfirm() == 2){
+        if (param.getIsconfirm() == 2) {
             // 已确认迁入:预实名
-            if (param.getFlag() == 0){
+            if (param.getFlag() == 0) {
                 Integer integer = peopleMapper.insertCommunityByPeopleId(param);
-                if (integer != 1){
+                if (integer != 1) {
                     log.info("Affirm new operation failed");
                     return 0;
                 }
                 Integer update = newPeopleMapper.updateIsconfirm(param);
-                if (update != 1){
+                if (update != 1) {
                     log.info("Affirm new operation failed");
                     return 0;
                 }
-            }else if (param.getFlag() == 1){    // 已确认迁入:新增
+            } else if (param.getFlag() == 1) {    // 已确认迁入:新增
                 Integer update = newPeopleMapper.updateIsconfirm(param);
-                if (update != 1){
+                if (update != 1) {
                     log.info("Affirm new operation failed");
                     return 0;
                 }
-            }else {
+            } else {
                 log.info("Affirm new operation failed, because param: flag error");
                 return 0;
             }
-        }else if (param.getIsconfirm() == 3) {     // 已确认未迁入
+        } else if (param.getIsconfirm() == 3) {     // 已确认未迁入
             Integer update = newPeopleMapper.updateIsconfirm(param);
-            if (update != 1){
+            if (update != 1) {
                 log.info("Affirm new operation failed");
                 return 0;
             }
-        }else {
+        } else {
             log.info("Affirm new operation failed, because param: isconfirm error");
             return 0;
         }
