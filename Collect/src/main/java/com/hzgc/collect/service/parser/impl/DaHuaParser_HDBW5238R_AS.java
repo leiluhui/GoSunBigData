@@ -1,6 +1,8 @@
-package com.hzgc.collect.service.parser;
+package com.hzgc.collect.service.parser.impl;
 
 import com.hzgc.collect.config.CollectContext;
+import com.hzgc.collect.service.parser.AbstractParser;
+import com.hzgc.collect.service.parser.FtpPathMetaData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -10,9 +12,9 @@ import java.util.Date;
  * 相机配置根路径: IPC-HDBW5238R-AS
  */
 @Slf4j
-public class DaHuaParser_HDBW5238R extends AbstractParser {
+public class DaHuaParser_HDBW5238R_AS extends AbstractParser {
 
-    DaHuaParser_HDBW5238R(CollectContext collectContext) {
+    public DaHuaParser_HDBW5238R_AS(CollectContext collectContext) {
         super(collectContext);
     }
 
