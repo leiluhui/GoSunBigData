@@ -201,7 +201,7 @@ public class CommunityService {
                         if (people.getFlag() == 2) {
                             vo.setFlag(1);
                             // 未确认迁入人口:新增
-                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                            vo.setSul(innerService.httpHostNameToIp(getSurlByPeopleId(people.getPeopleid())).getHttp_ip());
                         }
                     }
                     // 已确认迁入
@@ -370,7 +370,7 @@ public class CommunityService {
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
             info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
+            info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
             Date date = peopleRecognize.getCapturetime();
             if (date != null) {
                 info.setCaptureTime(sdf.format(date));
