@@ -22,9 +22,9 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.hzgc.service.fusion.model.FusionImsi" >
-    insert into t_fusion_imsi (id, peopleid, deviceid, 
+    insert into t_fusion_imsi (id, peopleid, deviceid, community,
       receivetime, imsi)
-    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{deviceid,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{deviceid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
       #{receivetime,jdbcType=TIMESTAMP}, #{imsi,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.service.fusion.model.FusionImsi" >
@@ -38,6 +38,9 @@
       </if>
       <if test="deviceid != null" >
         deviceid,
+      </if>
+      <if test="community != null" >
+        community,
       </if>
       <if test="receivetime != null" >
         receivetime,
@@ -55,6 +58,9 @@
       </if>
       <if test="deviceid != null" >
         #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null">
+        #{community,jdbcType=BIGINT},
       </if>
       <if test="receivetime != null" >
         #{receivetime,jdbcType=TIMESTAMP},

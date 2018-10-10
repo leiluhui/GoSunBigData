@@ -54,8 +54,10 @@ public class FaceConsumer implements Runnable{
             for (ConsumerRecord<String, String> record : records) {
                 log.info("====================kafka value="+record.value());
                 if (record.value() != null && record.value().length() > 0) {
+                    log.info("===============================PeopleCompare Start===============================");
                     FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
                     peopleCompare.comparePeople(faceObject);
+                    log.info("===============================PeopleCompare End=================================");
                 }
             }
         }

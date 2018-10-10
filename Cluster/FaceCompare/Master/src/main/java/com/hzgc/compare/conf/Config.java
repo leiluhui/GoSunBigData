@@ -2,6 +2,7 @@ package com.hzgc.compare.conf;
 
 import com.hzgc.compare.util.PropertiesUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -24,7 +25,11 @@ public class Config {
         Properties prop = PropertiesUtil.getProperties();
         PORTS = prop.getProperty("worker.rpc.port.list");
         String workerIds = prop.getProperty("worker.id.list");
-        WORKER_ID_LIST = Arrays.asList(workerIds.split(","));
+        if(workerIds != null && !"".equals(workerIds)) {
+            WORKER_ID_LIST = Arrays.asList(workerIds.split(","));
+        } else {
+            WORKER_ID_LIST = new ArrayList<>();
+        }
         ZK_ADDRESS = prop.getProperty("zookeeper.address");
         MASTER_PORT = Integer.parseInt(prop.getProperty("master.rpc.port"));
         MASTER_IP = prop.getProperty("master.ip");

@@ -3,6 +3,7 @@ package com.hzgc.seemmo.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.seemmo.bean.ImageResult;
 import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
@@ -17,7 +18,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -257,7 +260,6 @@ public class ImageToData {
                             try {
                                 byte[] bytes = cutImageUtil.cut();
                                 vehicle_object.setVehicle_data(bytes);
-                                System.out.println(JSON.toJSONString(vehicle_object));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -304,13 +306,22 @@ public class ImageToData {
                             person_rect = (JSONArray) person_body.get("Rect");
                         }
                         JSONObject recognize = (JSONObject) js.get("Recognize");
-                        //ÐÐÈËÊý¾Ý½âÎö
+                        //数据解析封装
                         personDataAnalysis(recognize, person_object);
                         if (null != imagePath && imagePath.length() > 0 && null != person_rect) {
                             CutImageUtil cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                             cutImageUtil.setSrcpath(imagePath);
                             try {
                                 byte[] bytes = cutImageUtil.cut();
+                                person_object.setCar_data(bytes);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (null != bytess && bytess.length > 0) {
+                            CutImageUtil cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
+                            try {
+                                byte[] bytes = cutImageUtil.cut(bytess);
                                 person_object.setCar_data(bytes);
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -348,7 +359,7 @@ public class ImageToData {
                                     }
                                 }
                                 JSONObject recognize = (JSONObject) person.get("Recognize");
-                                //Êý¾Ý½âÎö
+                                //数据解析封装
                                 personDataAnalysis(recognize, person_object);
                                 if (null != imagePath && imagePath.length() > 0) {
                                     CutImageUtil cutImageUtil = null;
@@ -379,7 +390,6 @@ public class ImageToData {
                                                 (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
                                                 (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
                                                 (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
-                                        cutImageUtil.setSrcpath(imagePath);
                                     }
                                     if (null != person_rect) {
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
@@ -551,12 +561,27 @@ public class ImageToData {
     private static ImageResult getImageResult(String url, String imagePath, String tag) {
         String imageJsonString = JsonUtil.objectToJsonString(imagePath);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
+        if (null == s) {
+            return null;
+        }
         return ImageToData.getData(s, imagePath, tag, null);
     }
 
     public static ImageResult getImageResult(String url, byte[] bytes, String tag) {
         String imageJsonString = JsonUtil.objectToJsonString(bytes);
         String s = ImageToData.executeHttpPost(url, imageJsonString);
+        if (null == s) {
+            return null;
+        }
         return ImageToData.getData(s, null, tag, bytes);
+    }
+
+    public static void main(String[] args) {
+//        InputStream inputStream = null;
+//        byte[] data = null;
+//        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\123.jpg");
+//        data = new byte[inputStream.available()];
+//        inputStream.read(data);
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\1.jpg", "66");
     }
 }
