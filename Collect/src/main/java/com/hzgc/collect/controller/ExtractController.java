@@ -63,7 +63,7 @@ public class ExtractController {
 
     @ApiOperation(value = "人脸特征值提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
-    public ResponseResult<PictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <PictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (image == null) {
             log.error("Start extract feature by binary, image is null");
@@ -75,6 +75,9 @@ public class ExtractController {
             e.printStackTrace();
         }
         PictureData pictureData = faceExtractService.featureExtractByImage(imageBin);
+        if (null == pictureData) {
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
+        }
         return ResponseResult.init(pictureData);
     }
 
@@ -91,8 +94,8 @@ public class ExtractController {
 
     @ApiOperation(value = "人脸属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.FACE_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<Attribute>> getAttribute() {
-        List<Attribute> attributeList;
+    public ResponseResult <List <Attribute>> getAttribute() {
+        List <Attribute> attributeList;
         attributeList = faceAttributeService.getAttribute();
         if (null != attributeList) {
             log.info("AttributeList acquires is success");
@@ -105,7 +108,7 @@ public class ExtractController {
 
     @ApiOperation(value = "行人属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
-    public ResponseResult<PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (null == image) {
             log.error("Start extract person feature by binary, image is null");
@@ -117,13 +120,16 @@ public class ExtractController {
             e.printStackTrace();
         }
         PersonPictureData personPictureData = personExtractService.featureExtractByImage(imageBin);
+        if (null == personPictureData) {
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
+        }
         return ResponseResult.init(personPictureData);
     }
 
     @ApiOperation(value = "行人属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PERSON_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<PersonAttribute>> getPersonAttribute() {
-        List<PersonAttribute> attributeList = personAttributeService.getPersonAttribute();
+    public ResponseResult <List <PersonAttribute>> getPersonAttribute() {
+        List <PersonAttribute> attributeList = personAttributeService.getPersonAttribute();
         if (null != attributeList) {
             log.info("AttributeList acquire is succeed");
             return ResponseResult.init(attributeList);
@@ -135,7 +141,7 @@ public class ExtractController {
 
     @ApiOperation(value = "车辆属性提取", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
-    public ResponseResult<CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (image == null) {
             log.error("Start car extract by binary, image is null");
@@ -147,13 +153,16 @@ public class ExtractController {
             e.printStackTrace();
         }
         CarPictureData carPictureData = carExtractService.carExtractByImage(imageBin);
+        if (null == carPictureData) {
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
+        }
         return ResponseResult.init(carPictureData);
     }
 
     @ApiOperation(value = "车辆属性查询", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.CAR_ATTRIBUTE, method = RequestMethod.GET)
-    public ResponseResult<List<CarAttribute>> getCarAttribute() {
-        List<CarAttribute> attributeList = carAttributeService.getCarAttribute();
+    public ResponseResult <List <CarAttribute>> getCarAttribute() {
+        List <CarAttribute> attributeList = carAttributeService.getCarAttribute();
         if (null != attributeList) {
             log.info("AttributeList acquire is succeed");
             return ResponseResult.init(attributeList);
@@ -165,7 +174,7 @@ public class ExtractController {
 
     @ApiIgnore(value = "内部调用的人脸提特征接口,入参为图片的Base64字符串")
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BASE64, method = RequestMethod.POST)
-    public ResponseEntity<PictureData> faceFeatureExtract_base64(@RequestBody String baseStr) {
+    public ResponseEntity <PictureData> faceFeatureExtract_base64(@RequestBody String baseStr) {
         PictureData pictureData = faceExtractService.featureExtractByImage(baseStr);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
     }
