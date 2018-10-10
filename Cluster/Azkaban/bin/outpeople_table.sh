@@ -4,8 +4,8 @@ PORT=4000
  mysql -u root -h ${IP} -P ${PORT} << EOF
 use people;
 
-INSERT INTO peopleid, community, `month`, 1
-SELECT t1.id,t1.community ,time
+INSERT INTO t_people_out (peopleid, community, \`month\`, isconfirm)
+SELECT t1.id,t1.community ,time,1
 FROM(
     SELECT community ,time, people.id
     FROM (
@@ -17,5 +17,5 @@ FROM(
     WHERE people.id = t_picture.peopleid
 )AS t1 ,t_people_out
 WHERE t1.id !=t_people_out.peopleid
-AND time = t_people_out.`month`;
+AND time = t_people_out.\`month\`;
 EOF
