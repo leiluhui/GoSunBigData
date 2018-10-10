@@ -26,7 +26,6 @@ public class PropertiesUtil {
         Properties ps = new Properties();
         try {
             ps.load(loadResourceInputStream());
-//            ps.load(loadResourceInputStream("hbase-site.xml"));
         } catch (Exception e) {
             e.printStackTrace();
         }

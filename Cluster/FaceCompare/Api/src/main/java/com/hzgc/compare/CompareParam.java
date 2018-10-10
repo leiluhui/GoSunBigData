@@ -4,8 +4,7 @@ package com.hzgc.compare;
 import java.util.List;
 
 public class CompareParam {
-    private List<String> arg1List;
-    private List<String> arg2List;
+    private List<String> ipcIds;
     private String dateStart;
     private String dateEnd;
     private List<Feature> features;
@@ -15,10 +14,8 @@ public class CompareParam {
     //排序参数
     private List<Integer> sort;
 
-    public CompareParam(List<String> arg1List, List<String> arg2List, String dateStart, String dateEnd,
-                        List<Feature> features, float sim, int resultCount, boolean isTheSamePerson) {
-        this.arg1List = arg1List;
-        this.arg2List = arg2List;
+    public CompareParam(String dateStart, String dateEnd, List<Feature> features, float sim, int resultCount, boolean isTheSamePerson) {
+
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.features = features;
@@ -27,12 +24,12 @@ public class CompareParam {
         this.resultCount = resultCount;
     }
 
-    public List<String> getArg1List() {
-        return arg1List;
+    public List<String> getIpcIds() {
+        return ipcIds;
     }
 
-    public List<String> getArg2List() {
-        return arg2List;
+    public void setIpcIds(List<String> ipcIds) {
+        this.ipcIds = ipcIds;
     }
 
     public String getDateStart() {
@@ -94,8 +91,6 @@ public class CompareParam {
     @Override
     public String toString() {
         return "CompareParam{" +
-                "arg1List=" + arg1List +
-                ", arg2List=" + arg2List +
                 ", dateStart='" + dateStart + '\'' +
                 ", dateEnd='" + dateEnd + '\'' +
                 ", features=" + features +

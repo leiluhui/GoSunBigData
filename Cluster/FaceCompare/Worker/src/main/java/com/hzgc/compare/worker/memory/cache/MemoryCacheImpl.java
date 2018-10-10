@@ -1,7 +1,5 @@
 package com.hzgc.compare.worker.memory.cache;
 
-import com.hzgc.common.collect.bean.FaceObject;
-import com.hzgc.compare.worker.common.collects.BatchBufferQueue;
 import com.hzgc.compare.worker.common.collects.CustomizeArrayList;
 import com.hzgc.compare.worker.common.collects.DoubleBufferQueue;
 import com.hzgc.compare.worker.common.taskhandle.FlushTask;
@@ -21,12 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * 当buffer数据量达到一定时，将buffer持久化，并加入cacheRecords，buffer清空
  */
 public class MemoryCacheImpl{
-//    private static final Logger logger = LoggerFactory.getLogger(MemoryCacheImpl.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(MemoryCacheImpl.class);
     private static Logger log = Logger.getLogger(MemoryCacheImpl.class);
     private static MemoryCacheImpl memoryCache;
-    private int flushProgram = 0; //flush 方案 0 定期flush  1 定量flush
-    private Integer bufferSizeMax = 1000; // buffer存储上限，默认1000
-//    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
+    private int flushProgram; //flush 方案 0 定期flush  1 定量flush
+    private Integer bufferSizeMax; // buffer存储上限，默认1000
+    //    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
     private Map<String, List<Pair<String, byte[]>>> cacheRecords;
     private DoubleBufferQueue<Triplet<String, String, byte[]>> buffer;
 
@@ -51,10 +49,10 @@ public class MemoryCacheImpl{
         buffer = new DoubleBufferQueue<>();
     }
 
-    /**
-     * 返回faceObjects
-     * @return
-     */
+//    /**
+//     * 返回faceObjects
+//     * @return
+//     */
 //    public List<FaceObject> getObjects() {
 //        return faceObjects.get();
 //    }
@@ -65,19 +63,19 @@ public class MemoryCacheImpl{
 
     /**
      * 返回cacheRecords
-     * @return
+     * @return 用于对比的元数据
      */
     public Map<String, List<Pair<String, byte[]>>> getCacheRecords() {
         return cacheRecords;
     }
 
-    public void setBufferSizeMax(int size) {
-        this.bufferSizeMax = size;
-    }
+//    public void setBufferSizeMax(int size) {
+//        this.bufferSizeMax = size;
+//    }
 
-    /**
-     * 增加recordToHBase
-     */
+//    /**
+//     * 增加recordToHBase
+//     */
 //    public void addFaceObjects(List<FaceObject> objs) {
 //        if(objs.size() > 0) {
 //            faceObjects.push(objs);
@@ -86,7 +84,7 @@ public class MemoryCacheImpl{
 
     /**
      * 增加多条record
-     * @param records
+     * @param records 增加到内存的记录
      */
     public void loadCacheRecords(Map<String, List<Pair<String, byte[]>>> records) {
         for(Map.Entry<String, List<Pair<String, byte[]>>> entry : records.entrySet()){
@@ -151,7 +149,7 @@ public class MemoryCacheImpl{
     /**
      * 将数据加入cacheRecords
      */
-    public void moveToCacheRecords(List<Triplet<String, String, byte[]>> records) {
+    private void moveToCacheRecords(List<Triplet<String, String, byte[]>> records) {
         log.info("Move records from buffer to cacheRecords.");
         for(Triplet<String, String, byte[]> record : records){
             String key = record.getFirst();

@@ -1,6 +1,7 @@
 package com.hzgc.common.rpc.protocol;
 
 import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
@@ -40,7 +41,7 @@ class SerializationUtil {
         LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
         try {
             Schema<T> schema = getSchema(clz);
-            return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
+            return ProtobufIOUtil.toByteArray(obj, schema, buffer);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         } finally {
@@ -56,7 +57,7 @@ class SerializationUtil {
         try {
             T message = objenesis.newInstance(clz);
             Schema<T> schema = getSchema(clz);
-            ProtostuffIOUtil.mergeFrom(data, message, schema);
+            ProtobufIOUtil.mergeFrom(data, message, schema);
             return message;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
