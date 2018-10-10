@@ -20,7 +20,6 @@ public class HDFSFileManager implements FileManager {
     private Long fileSize = 64L * 1024 * 1024L;
     private Long timeToCheckFile = 24 * 60 * 60 * 1000L;
     private String work_id = "";
-//    private static Logger LOG = Logger.getLogger(HDFSFileManager.class);
     private HDFSStreamCache streamCache;
     private KryoSerializer kryoSerializer;
 

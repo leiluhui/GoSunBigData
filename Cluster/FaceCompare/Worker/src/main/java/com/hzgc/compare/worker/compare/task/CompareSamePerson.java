@@ -6,6 +6,7 @@ import com.hzgc.compare.Feature;
 import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
+import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompareSamePerson extends CompareTask {
-//    private static final Logger logger = LoggerFactory.getLogger(CompareSamePerson.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(CompareSamePerson.class);
     private static Logger log = Logger.getLogger(CompareSamePerson.class);
     private CompareParam param;
     private String dateStart;
@@ -58,14 +59,14 @@ public class CompareSamePerson extends CompareTask {
         if(dataFilterd.size() == 0){
             return new SearchResult();
         }
-        if(dataFilterd.size() > hbaseReadMax) {
+        if(dataFilterd.size() > Config.FIRST_COMPARE_RESULT_COUNT) {
             // 若过滤结果太大，则需要第一次对比
             log.info("The result of filter is too bigger , to compare it first.");
-            List<String> firstCompared = comparators.compareFirstTheSamePerson(feature1List, hbaseReadMax, dataFilterd);
+            List<String> firstCompared = comparators.compareFirstTheSamePerson(feature1List, Config.FIRST_COMPARE_RESULT_COUNT, dataFilterd);
             //根据对比结果从HBase读取数据
             log.info("Read records from ES with result of first compared.");
 //            List<FaceObject> objs =  client.readFromHBase(firstCompared);
-            List<FaceObject> objs = ElasticSearchClient.readFromEs(firstCompared);
+            List<FaceObject> objs = ElasticSearchClient.readFromEs(firstCompared, param.getIpcIds());
             // 第二次对比
             log.info("Compare records second.");
             result = comparators.compareSecondTheSamePerson(feature2List, sim, objs, param.getSort());
@@ -76,7 +77,7 @@ public class CompareSamePerson extends CompareTask {
             //若过滤结果比较小，则直接进行第二次对比
             log.info("Read records from ES with result of filter.");
 //            List<FaceObject> objs = client.readFromHBase2(dataFilterd);
-            List<FaceObject> objs = ElasticSearchClient.readFromEs2(dataFilterd);
+            List<FaceObject> objs = ElasticSearchClient.readFromEs2(dataFilterd, param.getIpcIds());
             log.info("Compare records second directly.");
             result = comparators.compareSecondTheSamePerson(feature2List, sim, objs, param.getSort());
             //取相似度最高的几个

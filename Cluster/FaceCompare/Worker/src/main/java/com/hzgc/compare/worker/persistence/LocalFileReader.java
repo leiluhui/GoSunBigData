@@ -13,9 +13,9 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class LocalFileReader extends FileReader {
-//    private static final Logger logger = LoggerFactory.getLogger(LocalFileReader.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(LocalFileReader.class);
     private static Logger log = Logger.getLogger(LocalFileReader.class);
-    private int readFilesPerThread = 2;
+    private int readFilesPerThread;
     private List<ReadFileForLocal> list = new ArrayList<>();
 
 
@@ -225,7 +225,7 @@ public class LocalFileReader extends FileReader {
 }
 
 class ReadFileForLocal implements Runnable{
-//    private static final Logger logger = LoggerFactory.getLogger(ReadFileForLocal.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(ReadFileForLocal.class);
     private static Logger log = Logger.getLogger(ReadFileForLocal.class);
     private MemoryCacheImpl memoryCacheImpl1 = MemoryCacheImpl.getInstance();
     private LocalStreamCache streamCache = LocalStreamCache.getInstance();

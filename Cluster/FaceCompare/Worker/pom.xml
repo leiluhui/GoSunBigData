@@ -37,8 +37,8 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
                 <!--<exclusion>-->
-                    <!--<groupId>io.netty</groupId>-->
-                    <!--<artifactId>netty-all</artifactId>-->
+                <!--<groupId>io.netty</groupId>-->
+                <!--<artifactId>netty-all</artifactId>-->
                 <!--</exclusion>-->
             </exclusions>
         </dependency>
@@ -116,9 +116,9 @@
             </exclusions>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-all</artifactId>-->
-            <!--<version>4.0.20.Final</version>-->
+        <!--<groupId>io.netty</groupId>-->
+        <!--<artifactId>netty-all</artifactId>-->
+        <!--<version>4.0.20.Final</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>io.netty</groupId>
@@ -141,10 +141,10 @@
             <version>1.7.5</version>
         </dependency>
         <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.5</version>
-    </dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-tasktracker</artifactId>

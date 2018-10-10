@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Timer;
 
 public class MemoryManager {
-//    private static final Logger logger = LoggerFactory.getLogger(MemoryManager.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(MemoryManager.class);
     private static Logger log = Logger.getLogger(MemoryManager.class);
-    private int cacheNumMax = 30000000; //内存中存储数据的上限，默认值1000万，根据实际内存设置
-    private Long checkTime = 1000L * 60 * 30; //内存检查时间间隔， 默认30分钟
-    private long recordTimeOut = 35; //一级过期时间，单位： 天 ， 默认12个月，为了一次就删除到0.8以下，需要根据实际情况设置好这个值
+    private int cacheNumMax; //内存中存储数据的上限，默认值1000万，根据实际内存设置
+    private Long checkTime; //内存检查时间间隔， 默认30分钟
+    private long recordTimeOut; //一级过期时间，单位： 天 ， 默认12个月，为了一次就删除到0.8以下，需要根据实际情况设置好这个值
     private SimpleDateFormat sdf;
     public MemoryManager(){
         init();
@@ -25,7 +25,7 @@ public class MemoryManager {
     /**
      * 根据conf中的参数，来设置MemeryManager需要的参数
      */
-    void init(){
+    private void init(){
         cacheNumMax = Config.WORKER_CACHE_SIZE_MAX;
         checkTime = Config.WORKER_MEMORY_CHECK_TIME;
         recordTimeOut = Config.WORKER_RECORD_TIME_OUT;
@@ -38,7 +38,6 @@ public class MemoryManager {
 
     /**
      * 启动定期任务，检查内存数据是否达到上限，如果是，调用remove
-     * @return
      */
     public void startToCheck(){
         log.info("Start to check memory.");
@@ -51,7 +50,7 @@ public class MemoryManager {
      * 二级过期时间设置为一级过期时间减十天，以次类推
      * 直到数据量减少到阈值的80%以下
      */
-    public void remove() {
+    void remove() {
         log.info("To remove records time out.");
         removeTimeOut(recordTimeOut);
     }
@@ -75,7 +74,7 @@ public class MemoryManager {
             }
         }
         System.out.println("The Num of Memory Cache is : " + count);
-        if(count > cacheNumMax * 0.8){
+        if(count > cacheNumMax * 0.9){
             removeTimeOut(timeOut - 1);
         }
     }

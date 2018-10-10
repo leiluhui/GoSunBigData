@@ -5,6 +5,7 @@ import com.hzgc.common.rpc.client.result.AllReturn;
 import com.hzgc.common.rpc.util.Constant;
 import com.hzgc.compare.conf.Config;
 import com.hzgc.compare.server.MasterServer;
+//import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -47,8 +48,16 @@ public class RpcClientForMaster {
             clientForMaster.getJobsNow();
             Thread.sleep(2000);
             System.exit(0);
+        } else if (args.length == 1 && args[0].equals("--help")){
+            String info = "illegal argument: --help \n"
+                    + "usage: \t admin-master.sh [--help] \n"
+                    + "\t\t admin-master.sh [--submit] [workname] \n"
+                    + "\t\t admin-master.sh [--getjobs]";
+//            logger.info(info);
+            System.out.println(info);
         } else{
-            System.out.println("无效用法");
+            System.out.println("无效用法 --help");
+//            logger.info("无效用法 --help");
         }
     }
 }

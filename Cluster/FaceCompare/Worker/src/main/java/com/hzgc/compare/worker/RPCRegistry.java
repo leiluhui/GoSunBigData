@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class RPCRegistry implements Runnable{
-//    private static final Logger logger = LoggerFactory.getLogger(RPCRegistry.class);
     private static Logger log = Logger.getLogger(RPCRegistry.class);
     private ServiceRegistry registry;
 
@@ -36,6 +35,10 @@ public class RPCRegistry implements Runnable{
         rpcServer.start();
     }
 
+    /**
+     * 检查是否注册成功
+     * @return
+     */
     public boolean checkJob(){
         List<String> children;
         try {

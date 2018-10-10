@@ -68,7 +68,7 @@ public class Client {
             List<Feature> features = new ArrayList<>();
             features.add(featurelist.get(5));
             long compare2 = System.currentTimeMillis();
-            CompareParam param3 = new CompareParam(null, null, start, end, features, 0.9f, 80, true);
+            CompareParam param3 = new CompareParam(start, end, features, 0.9f, 80, true);
             param3.setSort(sorts);
             AllReturn<SearchResult> resultAllReturn3 = service.retrievalOnePerson(param3);
             System.out.println("compare" + i + " " + (System.currentTimeMillis() - compare2));
