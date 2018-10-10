@@ -22,17 +22,20 @@ public class PersonExtractService {
     /**
      * 特征提取
      *
-     *
      * @param imageBytes 图片数组（大图）
      * @return PersonPictureData
      */
     public PersonPictureData featureExtractByImage(byte[] imageBytes) {
         ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "1");
+        if (null == imageResult) {
+            log.info("imageResult is null");
+            return null;
+        }
         PersonPictureData personPictureData = new PersonPictureData();
         personPictureData.setImageID(UuidUtil.getUuid());
         personPictureData.setImageData(imageBytes);
-        List<Person> list = imageResult.getPersonList();
-        List<PersonAttributes> personAttributes = new ArrayList<>();
+        List <Person> list = imageResult.getPersonList();
+        List <PersonAttributes> personAttributes = new ArrayList <>();
         if (list != null && list.size() > 0) {
             for (Person person : list) {
                 if (person != null) {
