@@ -595,7 +595,7 @@ public class PeopleService {
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
             peopleVO.setRegionId(people.getRegion());
-            peopleVO.setRegion(platformService.getMergerName(people.getRegion()));
+            peopleVO.setRegion(platformService.getRegionName(people.getRegion()));
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
@@ -605,7 +605,7 @@ public class PeopleService {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
-            peopleVO.setCommunity(platformService.getMergerName(people.getCommunity()));
+            peopleVO.setCommunity(platformService.getCommunityName(people.getCommunity()));
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -686,7 +686,7 @@ public class PeopleService {
                     peopleVO.setId(people.getId());
                     peopleVO.setName(people.getName());
                     peopleVO.setIdCard(people.getIdcard());
-                    peopleVO.setRegion(platformService.getMergerName(people.getRegion()));
+                    peopleVO.setRegion(platformService.getRegionName(people.getRegion()));
                     peopleVO.setHousehold(people.getHousehold());
                     peopleVO.setAddress(people.getAddress());
                     peopleVO.setSex(people.getSex());

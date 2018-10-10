@@ -147,7 +147,7 @@ public class CommunityService {
         for (Long communityId : communityIdList) {
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             vo.setCommunityId(communityId);
-            vo.setCommunityName(platformService.getMergerName(communityId));
+            vo.setCommunityName(platformService.getCommunityName(communityId));
             vo.setMonth(param.getMonth());
             for (CountCommunityPeople suggestNew : totalNewCount) {
                 if (suggestNew.getCommunity().equals(communityId)) {
