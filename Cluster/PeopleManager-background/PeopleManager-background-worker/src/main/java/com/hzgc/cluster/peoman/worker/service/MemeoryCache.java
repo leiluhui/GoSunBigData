@@ -90,11 +90,16 @@ public class MemeoryCache {
             }
             if (isOpen && comparePicture != null) {
                 Picture picture = pictureMapper.selectByPictureId(comparePicture.getId());
+                if (picture == null) {
+                    log.info("This picture is null, search id is {}", comparePicture.getId());
+                    return null;
+                }
                 String floatFeatureStr = picture.getFeature();
                 if (floatFeatureStr != null && !"".equals(floatFeatureStr)) {
                     float[] floatFeature = FaceUtil.base64Str2floatFeature(floatFeatureStr);
                     if (floatFeature.length == 512 && faceAttribute.getFeature().length == 512) {
                         float sim = FaceUtil.featureCompare(floatFeature, faceAttribute.getFeature());
+                        log.info("----------MemeoryCache ComparePicture Float Sim="+sim);
                         if (sim >= this.floatThreshold) {
                             return comparePicture;
                         } else {
@@ -107,7 +112,8 @@ public class MemeoryCache {
                     return null;
                 }
             } else {
-                if (faceFeatureInfo.getScore() >= featureThreshold) {
+                if (faceFeatureInfo.getScore() >= featureThreshold/100.0) {
+                    log.info("----------MemeoryCache ComparePicture Bit Score="+faceFeatureInfo.getScore());
                     return comparePicture;
                 } else {
                     return null;
