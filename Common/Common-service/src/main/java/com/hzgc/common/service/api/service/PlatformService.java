@@ -54,7 +54,7 @@ public class PlatformService {
      */
     public String getCommunityName(Long id) {
         if (id != null) {
-            log.info("Method:getCommunityName, id:" + id);
+            log.debug("Method:getCommunityName, id:" + id);
             List<Long> ids = new ArrayList<>();
             ids.add(id);
             List<Region> regions = getRegionByIds(ids);
@@ -71,7 +71,7 @@ public class PlatformService {
 
     public String getCameraDeviceName(String deviceId) {
         if (deviceId != null) {
-            log.info("Method:getCameraDeviceName, deviceId:" + deviceId);
+            log.debug("Method:getCameraDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, CameraQueryDTO> map = getCameraInfoByBatchIpc(ids);
@@ -88,7 +88,7 @@ public class PlatformService {
 
     public String getImsiDeviceName(String deviceId) {
         if (deviceId != null) {
-            log.info("Method:getImsiDeviceName, deviceId:" + deviceId);
+            log.debug("Method:getImsiDeviceName, deviceId:" + deviceId);
             List<String> ids = new ArrayList<>();
             ids.add(deviceId);
             Map<String, DetectorQueryDTO> map = getImsiDeviceInfoByBatchId(ids);
@@ -105,7 +105,7 @@ public class PlatformService {
 
     private Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
         if (idList != null) {
-            log.info("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));
+            log.debug("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));
             ParameterizedTypeReference<Map<String, DetectorQueryDTO>> parameterizedTypeReference =
                     new ParameterizedTypeReference<Map<String, DetectorQueryDTO>>() {
                     };
@@ -128,7 +128,7 @@ public class PlatformService {
      */
     private List<Region> getRegionByIds(List<Long> ids) {
         if (ids != null && ids.size() > 0) {
-            log.info("Method:getRegionByIds, ids:" + Arrays.toString(ids.toArray()));
+            log.debug("Method:getRegionByIds, ids:" + Arrays.toString(ids.toArray()));
             ParameterizedTypeReference<Region[]> parameterizedTypeReference =
                     new ParameterizedTypeReference<Region[]>() {
                     };
@@ -153,7 +153,7 @@ public class PlatformService {
                     if (cameraQuery != null) {
                         returnResult.put(ipcId, cameraQuery);
                     } else {
-                        log.info("Method:getCameraInfoByBatchIpc, ipc list is:" + Arrays.toString(ipcList.toArray()));
+                        log.debug("Method:getCameraInfoByBatchIpc, ipc list is:" + Arrays.toString(ipcList.toArray()));
                         ResponseEntity<Map<String, CameraQueryDTO>> responseEntity =
                                 restTemplate.exchange("http://platform:8888/api/v1/device/internal/cameras/query_camera_by_codes",
                                         HttpMethod.POST,

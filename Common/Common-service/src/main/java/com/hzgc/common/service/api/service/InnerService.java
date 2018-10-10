@@ -33,7 +33,7 @@ public class InnerService {
             UrlInfo urlInfo = restTemplate.getForObject("http://collect" + BigDataPath.HTTP_HOSTNAME_TO_IP +
                     "?hostNameUrl=" + httpHostName, UrlInfo.class);
             stopWatch.stop();
-            log.info("Method httpHostNameToIp, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
+            log.debug("Method httpHostNameToIp, request successfull, total time is:{}", stopWatch.getLastTaskTimeMillis());
             return urlInfo;
         } else {
             log.error("Method httpHostNameToIp, httpHostName is null");

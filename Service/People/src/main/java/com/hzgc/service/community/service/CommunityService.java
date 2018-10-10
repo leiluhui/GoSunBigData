@@ -226,7 +226,7 @@ public class CommunityService {
                         if (people.getFlag() == 2) {
                             vo.setFlag(1);
                             // 已确认未迁入人口:新增
-                            vo.setSul(getSurlByPeopleId(people.getPeopleid()));
+                            vo.setSul(innerService.httpHostNameToIp(getSurlByPeopleId(people.getPeopleid())).getHttp_ip());
                         }
                     }
                     newAndOutPeopleSearchList.add(vo);
