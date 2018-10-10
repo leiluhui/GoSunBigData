@@ -24,14 +24,14 @@ public class PlatformService {
     private RestTemplate restTemplate;
 
     /**
-     * 获取区域/社区名称
+     * 获取区域名称
      *
-     * @param id 区域/社区 ID
-     * @return 区域/社区 名称
+     * @param id 区域ID
+     * @return 区域名称
      */
-    public String getMergerName(Long id) {
+    public String getRegionName(Long id) {
         if (id != null) {
-            log.info("Method:getMergerName, id:" + id);
+            log.info("Method:getRegionName, id:" + id);
             List<Long> ids = new ArrayList<>();
             ids.add(id);
             List<Region> regions = getRegionByIds(ids);
@@ -41,7 +41,30 @@ public class PlatformService {
                 log.info("Get region info failed, because result is null");
             }
         } else {
-            log.error("Method:getMergerName, id is null");
+            log.error("Method:getRegionName, id is null");
+        }
+        return null;
+    }
+
+    /**
+     * 获取社区名称
+     *
+     * @param id 社区ID
+     * @return 社区名称
+     */
+    public String getCommunityName(Long id) {
+        if (id != null) {
+            log.info("Method:getCommunityName, id:" + id);
+            List<Long> ids = new ArrayList<>();
+            ids.add(id);
+            List<Region> regions = getRegionByIds(ids);
+            if (regions.size() > 0 && regions.get(0) != null) {
+                return regions.get(0).getName();
+            } else {
+                log.info("Get community info failed, because result is null");
+            }
+        } else {
+            log.error("Method:getCommunityName, id is null");
         }
         return null;
     }

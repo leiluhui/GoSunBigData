@@ -7,7 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(value ="迁入人员抓拍统计（含总条数）")
+@ApiModel(value = "迁入人员抓拍统计（含总条数）")
 @Data
 public class CapturePeopleCount implements Serializable {
     @ApiModelProperty(value = "总条数")

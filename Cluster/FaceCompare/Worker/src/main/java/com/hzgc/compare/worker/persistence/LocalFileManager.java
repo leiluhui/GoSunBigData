@@ -15,10 +15,10 @@ import java.util.*;
 public class LocalFileManager implements FileManager {
     private static Logger log = Logger.getLogger(LocalFileManager.class);
     private String path; //文件保存目录
-    private Long fileSize = 256L * 1024 * 1024L;
-    private Long timeToCheckFile = 24 * 60 * 60 * 1000L;
+    private Long fileSize;
+    private Long timeToCheckFile;
     private String work_id;
-//    private static Logger logger = Logger.getLogger(LocalFileManager.class);
+    //    private static Logger logger = Logger.getLogger(LocalFileManager.class);
     private LocalStreamCache streamCache;
 
     public LocalFileManager() {

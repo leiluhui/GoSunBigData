@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value ="小区迁入迁出人口查询（疑似与确认）入参")
+@ApiModel(value = "小区迁入迁出人口查询（实有人口展示）入参")
 @Data
 public class NewAndOutPeopleSearchDTO implements Serializable {
     @ApiModelProperty(value = "查询小区ID")

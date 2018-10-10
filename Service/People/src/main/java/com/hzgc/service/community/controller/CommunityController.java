@@ -147,27 +147,27 @@ public class CommunityController {
     @ApiOperation(value = "小区迁入迁出人口统计（实有人口首页）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_COUNT_NEW_OUT, method = RequestMethod.POST)
     public ResponseResult<List<NewAndOutPeopleCounVO>> countCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleCountDTO param) {
-        if (param == null){
+        if (param == null) {
             log.error("Start count community new and out people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数不能为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
-        if (StringUtils.isBlank(param.getMonth())){
+        if (StringUtils.isBlank(param.getMonth())) {
             log.error("Start count community new and out people, but month is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份不能为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份不能为空,请检查！");
         }
-        if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0){
+        if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0) {
             log.error("Start count community new and out people, but region is null");
             return ResponseResult.init(null);
         }
-        if (param.getMonth() == null || param.getMonth().length() != 6){
+        if (param.getMonth() == null || param.getMonth().length() != 6) {
             log.error("Start count community new and out people, but month error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份有误,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份有误,请检查！");
         }
         if (param.getLimit() == 0) {
             log.error("Start count community new and out people, but limit is 0");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
         }
-        log.info("Start count community new and out people, param is :"+ JacksonUtil.toJson(param));
+        log.info("Start count community new and out people, param is :" + JacksonUtil.toJson(param));
         int totalNum = param.getCommunityIdList().size();
         List<NewAndOutPeopleCounVO> voList = communityService.countCommunityNewAndOutPeople(param);
         log.info("Count community new and out people successfully!");
@@ -177,21 +177,21 @@ public class CommunityController {
     @ApiOperation(value = "小区迁入迁出人口查询（实有人口展示）", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_OUT, method = RequestMethod.POST)
     public ResponseResult<NewAndOutPeopleSearchVO> searchCommunityNewAndOutPeople(@RequestBody NewAndOutPeopleSearchDTO param) {
-        if (param == null){
+        if (param == null) {
             log.error("Start search community new and out people, but param is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询参数不能为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
-        if (param.getCommunityId() == null){
+        if (param.getCommunityId() == null) {
             log.error("Start search community new and out people, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"小区ID不能为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (StringUtils.isBlank(param.getMonth())){
+        if (StringUtils.isBlank(param.getMonth())) {
             log.error("Start search community new and out people, but month is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份不能为空,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份不能为空,请检查！");
         }
-        if (param.getMonth() == null || param.getMonth().length() != 6){
+        if (param.getMonth() == null || param.getMonth().length() != 6) {
             log.error("Start search community new and out people, but month error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"查询月份有误,请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份有误,请检查！");
         }
         if (param.getLimit() == 0) {
             log.error("Start search community new and out people, but limit is 0");
@@ -205,7 +205,7 @@ public class CommunityController {
             log.error("Start search community new and out people, but type status error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类别状态有误,请检查！");
         }
-        log.info("Start search community new and out people, param is :"+ JacksonUtil.toJson(param));
+        log.info("Start search community new and out people, param is :" + JacksonUtil.toJson(param));
         NewAndOutPeopleSearchVO vo = communityService.searchCommunityNewAndOutPeople(param);
         log.info("Search community new and out people successfully!");
         return ResponseResult.init(vo, vo != null ? vo.getTotalNum() : 0);
@@ -240,15 +240,15 @@ public class CommunityController {
     @ApiOperation(value = "小区迁入人口抓拍详情", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_SEARCH_NEW_CAPTURE, method = RequestMethod.POST)
     public ResponseResult<CaptureDetailsVO> searchCommunityNewPeopleCaptureDetails(@RequestBody CaptureDetailsDTO param) {
-        if (param.getPeopleId() == null){
+        if (param.getPeopleId() == null) {
             log.error("Start search community new people capture details, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID不能为空,请检查！");
         }
-        if (param.getCommunityId() == null){
+        if (param.getCommunityId() == null) {
             log.error("Start search community new people capture details, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (StringUtils.isBlank(param.getMonth())){
+        if (StringUtils.isBlank(param.getMonth())) {
             log.error("Start search community new people capture details, but mouth is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份不能为空,请检查！");
         }
@@ -323,7 +323,7 @@ public class CommunityController {
             log.error("Start affirm new operation, but isconfirm is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "确认标签有误,请检查！");
         }
-        if (param.getFlag() != 0 && param.getFlag() != 1){
+        if (param.getFlag() != 0 && param.getFlag() != 1) {
             log.error("Start affirm new operation, but flag is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "迁入状态有误,请检查！");
         }

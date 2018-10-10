@@ -1,11 +1,9 @@
 package com.hzgc.compare.worker.persistence;
 
-import com.hzgc.compare.worker.conf.Config;
 
 import java.io.*;
 
 public class LocalStreamCache {
-    private Config conf;
     private  static LocalStreamCache localStreamCache;
     private BufferedWriter bufferedWriter;
     private File file;
@@ -13,7 +11,7 @@ public class LocalStreamCache {
     private LocalStreamCache() {
     }
 
-    public BufferedWriter getWriterStream(File file) {
+    BufferedWriter getWriterStream(File file) {
         if(bufferedWriter == null || !file.equals(this.file)) {
             try {
                 bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
@@ -25,7 +23,7 @@ public class LocalStreamCache {
         return bufferedWriter;
     }
 
-    public BufferedReader getReaderStream(File file) {
+    BufferedReader getReaderStream(File file) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));

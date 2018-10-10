@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 
 @RpcService(Service.class)
 public class ServiceImpl implements Service {
-//    private static final Logger logger = LoggerFactory.getLogger(ServiceImpl.class);
     private static Logger log = Logger.getLogger(ServiceImpl.class);
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private ExecutorService pool;
@@ -77,7 +76,7 @@ public class ServiceImpl implements Service {
 
         } catch (ParseException e) {
             e.printStackTrace();
-            return new AllReturn<>(null);
+            return new AllReturn<>(new SearchResult());
         }
 
     }
@@ -188,7 +187,7 @@ public class ServiceImpl implements Service {
     }
 
     public AllReturn<String> test() throws InterruptedException{
-        Thread.sleep(1000L * 10);
+//        Thread.sleep(1000L * 10);
         log.info("TEST ");
         return new AllReturn<>("response");
     }

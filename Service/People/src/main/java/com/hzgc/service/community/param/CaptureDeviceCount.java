@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value ="各相机点位抓拍统计")
+@ApiModel(value = "各相机点位抓拍统计")
 @Data
 public class CaptureDeviceCount implements Serializable {
     @ApiModelProperty(value = "相机ID")

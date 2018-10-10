@@ -40,13 +40,14 @@ public class Config {
     public static String ES_CLUSTER_NAME;
     public static String ES_HOST;
     public static int ES_CLUSTER_PORT;
+    public static int FIRST_COMPARE_RESULT_COUNT;
 
     static {
         Properties prop = PropertiesUtil.getProperties();
         WORKER_BUFFER_SIZE_MAX = Integer.parseInt(prop.getProperty("worker.buffer.size.max", 1000 + ""));
-        WORKER_CACHE_SIZE_MAX = Integer.parseInt(prop.getProperty("worker.cach.size.max", 20000000 + ""));//内存中缓存数据的最大值
+        WORKER_CACHE_SIZE_MAX = Integer.parseInt(prop.getProperty("worker.cach.size.max", 40000000 + ""));//内存中缓存数据的最大值
         WORKER_MEMORY_CHECK_TIME = Long.parseLong(prop.getProperty("worker.memory.check.time", 1000L * 60 * 30 + ""));//内存数据的检查时间间隔
-        WORKER_RECORD_TIME_OUT = Long.parseLong(prop.getProperty("work.record.time.out", 35 + ""));//内存中记录的过期时间
+        WORKER_RECORD_TIME_OUT = Long.parseLong(prop.getProperty("work.record.time.out", 180 + ""));//内存中记录的过期时间
         WORKER_FILE_CHECK_TIME = Long.parseLong(prop.getProperty("worker.file.check.time", 24 * 60 * 60 * 1000L + "")); //文件检查时间间隔
         WORKER_FILE_PATH = prop.getProperty("worker.file.path", "test");
         WORKER_FILE_SIZE = Long.parseLong(prop.getProperty("worker.file.size", 128L * 1024 * 1024L + "")); //文件保存大小
@@ -68,5 +69,6 @@ public class Config {
         ES_CLUSTER_PORT = Integer.parseInt(prop.getProperty("es.cluster.port"));
         DAYS_PER_THREAD = Integer.parseInt(prop.getProperty("days.per.thread", 5 + ""));
         DAYS_WITHOUT_MULTITHREAD = Integer.parseInt(prop.getProperty("days.without.multithread", 10 + ""));
+        FIRST_COMPARE_RESULT_COUNT = Integer.parseInt(prop.getProperty("first.compare.result.count", 500 + ""));
     }
 }
