@@ -48,8 +48,13 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口姓名为空，请检查！");
         }
         if (StringUtils.isBlank(peopleDTO.getIdCard())) {
-            log.error("Start insert people info, but idcard is null");
+            log.error("Start insert people info, but idCard is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口身份证为空，请检查！");
+        }
+        boolean boo = peopleService.CheckIdCard(peopleDTO.getIdCard());
+        if (boo){
+            log.error("Start insert people info, but idCard is exist");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口身份证已存在，请检查！");
         }
         if (peopleDTO.getRegion() == null) {
             log.error("Start insert people info, but region is null");

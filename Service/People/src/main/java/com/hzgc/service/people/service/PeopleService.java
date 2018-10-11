@@ -66,6 +66,11 @@ public class PeopleService {
 
     private final static String CAPTURE_PIC = "capturepic";
 
+    public boolean CheckIdCard(String idCard) {
+        People people = peopleMapper.searchPeopleByIdCard(idCard);
+        return people != null;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public ReturnMessage insertPeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
