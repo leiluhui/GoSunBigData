@@ -156,7 +156,7 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份不能为空,请检查！");
         }
         if (param.getCommunityIdList() == null || param.getCommunityIdList().size() == 0) {
-            log.error("Start count community new and out people, but region is null");
+            log.error("Start count community new and out people, but community id list is null");
             return ResponseResult.init(null);
         }
         if (param.getMonth() == null || param.getMonth().length() != 6) {

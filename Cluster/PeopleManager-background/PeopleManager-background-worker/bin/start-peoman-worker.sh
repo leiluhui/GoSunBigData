@@ -83,7 +83,7 @@ function prepare_resource_file()
 #####################################################################
 function main()
 {
-    prepare_resource_file
+#    prepare_resource_file
     start_springCloud
 }
 
