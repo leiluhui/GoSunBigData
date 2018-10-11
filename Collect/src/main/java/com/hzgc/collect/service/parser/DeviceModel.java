@@ -7,4 +7,5 @@ public interface DeviceModel {
     public String DAHUA_HF81230E = "IPC-HF81230E";
     public String DAHUA_ITC302_RF2D = "ITC302-RF2D";
     public String HIKVISION_DS_2CD2T26FWD_I8S = "DS-2CD2T26FWD-I8S";
+    public String DAHUA_HF8229F = "IPC-HF8229F";
 }
