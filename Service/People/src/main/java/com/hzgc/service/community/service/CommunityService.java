@@ -310,7 +310,10 @@ public class CommunityService {
             vo.setBirthday(people.getBirthday());
             vo.setBirthplace(people.getBirthplace());
             vo.setAddress(people.getAddress());
-            vo.setPictureId(people.getPictureId());
+            if (StringUtils.isBlank(people.getId())){
+                Long pictureId = getPictureIdByPeopleId(people.getId());
+                vo.setPictureId(pictureId);
+            }
         }
         return vo;
     }

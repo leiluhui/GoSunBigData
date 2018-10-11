@@ -95,11 +95,9 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
     <select id="searchPeopleByIdCard" resultMap="CommunityPeopleInfo" parameterType="java.lang.String">
-        select a.id, a.name, a.idcard, a.sex, a.birthday, a.birthplace, a.address, b.id as pid
-        from t_people a, t_picture b
-        where a.id = b.peopleid
-        and a.idcard = #{idcard,jdbcType=VARCHAR}
-        group by b.peopleid
+        select id, name, idcard, sex, birthday, birthplace, address
+        from t_people
+        where idcard = #{idcard,jdbcType=VARCHAR}
     </select>
     <!--姓名,身份证号,imis,电话号码模糊匹配和按ID,区域ID精确查找-->
     <select id="searchPeople" resultMap="CollectionResultMap" parameterType="com.hzgc.service.people.param.FilterField">
