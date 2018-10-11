@@ -95,11 +95,9 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
     <select id="searchPeopleByIdCard" resultMap="CommunityPeopleInfo" parameterType="java.lang.String">
-        select a.id, a.name, a.idcard, a.sex, a.birthday, a.birthplace, a.address, b.id as pid
-        from t_people a, t_picture b
-        where a.id = b.peopleid
-        and a.idcard = #{idcard,jdbcType=VARCHAR}
-        group by b.peopleid
+        select id, name, idcard, sex, birthday, birthplace, address
+        from t_people
+        where idcard = #{idcard,jdbcType=VARCHAR}
     </select>
     <!--姓名,身份证号,imis,电话号码模糊匹配和按ID,区域ID精确查找-->
     <select id="searchPeople" resultMap="CollectionResultMap" parameterType="com.hzgc.service.people.param.FilterField">
@@ -144,28 +142,13 @@
     <!--小区重点人口数量统计-->
     <select id="countImportantPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
         select count(*) from
-        (select t_people.id
-        from t_people, t_flag
-        where t_people.community = #{community,jdbcType=BIGINT}
-        and t_people.id = t_flag.peopleid
-        and t_flag.flagid in (0, 1, 2, 3, 4, 5, 6)
-        group by t_flag.peopleid) t_temp
-    </select>
-    <!--小区关爱人口数量统计-->
-    <select id="countCarePeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
-        select count(*)
-        from t_people, t_flag
-        where t_people.community = #{community,jdbcType=BIGINT}
-        and t_people.id = t_flag.peopleid
-        and t_flag.flagid = 7
-    </select>
-    <!--小区实有人口查询-->
-    <select id="searchCommunityPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
-        select a.id, a.name, a.idcard, a.lasttime, b.id as pid
-        from t_people a, t_picture b
-        where a.community = #{community,jdbcType=BIGINT}
+        (select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_flag b, t_picture c
+        where b.flagid in (0, 1, 2, 3, 4, 5, 6)
         and a.id = b.peopleid
-        group by b.peopleid
+        and a.id = c.peopleid
+        and a.community = #{community,jdbcType=BIGINT}
+        group by a.id) t_temp
     </select>
     <!--小区重点人口查询-->
     <select id="searchImportantPeople"  resultMap="CommunityPeopleMap" parameterType="java.lang.Long" >
@@ -177,6 +160,17 @@
         and a.community = #{community,jdbcType=BIGINT}
         group by a.id
     </select>
+    <!--小区关爱人口数量统计-->
+    <select id="countCarePeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*) from
+        (select a.id, a.name, a.idcard, a.lasttime, c.id as pid
+        from t_people a, t_flag b, t_picture c
+        where b.flagid = 7
+        and a.id = b.peopleid
+        and a.id = c.peopleid
+        and a.community = #{community,jdbcType=BIGINT}
+        group by a.id) t_temp
+    </select>
     <!--小区关爱人口查询-->
     <select id="searchCarePeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
         select a.id, a.name, a.idcard, a.lasttime, c.id as pid
@@ -186,6 +180,14 @@
         and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
         group by a.id
+    </select>
+    <!--小区实有人口查询-->
+    <select id="searchCommunityPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">
+        select a.id, a.name, a.idcard, a.lasttime, b.id as pid
+        from t_people a, t_picture b
+        where a.community = #{community,jdbcType=BIGINT}
+        and a.id = b.peopleid
+        group by b.peopleid
     </select>
     <!--小区新增人口查询-->
     <select id="searchNewPeople" resultMap="CommunityPeopleMap" parameterType="java.lang.Long">

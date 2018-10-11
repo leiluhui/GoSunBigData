@@ -31,7 +31,7 @@ public class PlatformService {
      */
     public String getRegionName(Long id) {
         if (id != null) {
-            log.info("Method:getRegionName, id:" + id);
+            log.debug("Method:getRegionName, id:" + id);
             List<Long> ids = new ArrayList<>();
             ids.add(id);
             List<Region> regions = getRegionByIds(ids);
@@ -58,7 +58,7 @@ public class PlatformService {
             List<Long> ids = new ArrayList<>();
             ids.add(id);
             List<Region> regions = getRegionByIds(ids);
-            if (regions.size() > 0 && regions.get(0) != null) {
+            if (regions != null && regions.size() > 0 && regions.get(0) != null) {
                 return regions.get(0).getName();
             } else {
                 log.info("Get community info failed, because result is null");
@@ -134,7 +134,7 @@ public class PlatformService {
                     };
             ResponseEntity<Region[]> responseEntity = restTemplate.exchange("http://platform:8888/api/v1/region/internal/region/query_region_info_by_ids",
                     HttpMethod.POST, new HttpEntity<>(ids), parameterizedTypeReference);
-            return Arrays.asList(responseEntity.getBody());
+            return responseEntity.getBody() != null ? Arrays.asList(responseEntity.getBody()) : null;
         } else {
             log.error("Method:getRegionByIds, ids is null");
             return new ArrayList<>();
