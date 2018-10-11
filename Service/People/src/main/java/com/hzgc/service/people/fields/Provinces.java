@@ -92,7 +92,7 @@ public class Provinces implements Serializable {
         neiMengGu_city.put(1609, "乌兰察布");
         neiMengGu_city.put(1610, "兴安盟");
         neiMengGu_city.put(1611, "锡林郭勒盟");
-        neiMengGu_city.put(1611, "阿拉善盟");
+        neiMengGu_city.put(1612, "阿拉善盟");
         Map<String, Map<Integer, String>> neiMengGu_province = new LinkedHashMap<>();
         neiMengGu_province.put("内蒙古", neiMengGu_city);
         model.put(1600, neiMengGu_province);
@@ -131,7 +131,7 @@ public class Provinces implements Serializable {
         Map<String, Map<Integer, String>> jiLin_province = new LinkedHashMap<>();
         jiLin_province.put("吉林", jiLin_city);
         model.put(1800, jiLin_province);
-        province.put(1800, "辽宁");
+        province.put(1800, "吉林");
 
         Map<Integer, String> heiLongJiang_city = new LinkedHashMap<>();
         heiLongJiang_city.put(1901, "哈尔滨");
@@ -376,7 +376,7 @@ public class Provinces implements Serializable {
         Map<String, Map<Integer, String>> guangXi_province = new LinkedHashMap<>();
         guangXi_province.put("广西", guangXi_city);
         model.put(3000, guangXi_province);
-        province.put(3000, "广东");
+        province.put(3000, "广西");
 
         Map<Integer, String> haiNan_city = new LinkedHashMap<>();
         haiNan_city.put(3101, "海口");
