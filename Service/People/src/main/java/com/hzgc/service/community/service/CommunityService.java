@@ -70,7 +70,9 @@ public class CommunityService {
     public PeopleCountVO countCommunityPeople(Long communityId) {
         PeopleCountVO vo = new PeopleCountVO();
         vo.setCommunityPeoples(peopleMapper.countCommunityPeople(communityId));
+        // 重点人员统计条件：1.当前小区；2.符合重点标签；3.此人员须有照片
         vo.setImportantPeoples(peopleMapper.countImportantPeople(communityId));
+        // 关爱人员统计条件：1.当前小区；2.符合关爱标签；3.此人员须有照片
         vo.setCarePeoples(peopleMapper.countCarePeople(communityId));
         vo.setNewPeoples(newPeopleMapper.countNewPeople(communityId));
         vo.setOutPeoples(outPeopleMapper.countOutPeople(communityId));
@@ -83,12 +85,14 @@ public class CommunityService {
         return this.shift(peopleList);
     }
 
+    // 重点人员查询条件：1.当前小区；2.符合重点标签；3.此人员须有照片
     public List<PeopleVO> searchCommunityImportantPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchImportantPeople(param.getCommunityId());
         return this.shift(peopleList);
     }
 
+    // 关爱人员查询条件：1.当前小区；2.符合关爱标签；3.此人员须有照片
     public List<PeopleVO> searchCommunityCarePeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchCarePeople(param.getCommunityId());
