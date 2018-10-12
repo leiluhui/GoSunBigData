@@ -11,7 +11,7 @@ public class FtpPathMetaData implements Serializable {
         return ipcid;
     }
 
-    void setIpcid(String ipcid) {
+    public void setIpcid(String ipcid) {
         this.ipcid = ipcid;
     }
 
@@ -19,7 +19,7 @@ public class FtpPathMetaData implements Serializable {
         return timeStamp;
     }
 
-    void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 

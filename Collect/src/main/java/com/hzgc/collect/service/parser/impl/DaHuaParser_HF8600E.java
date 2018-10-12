@@ -1,13 +1,15 @@
-package com.hzgc.collect.service.parser;
+package com.hzgc.collect.service.parser.impl;
 
 import com.hzgc.collect.config.CollectContext;
+import com.hzgc.collect.service.parser.AbstractParser;
+import com.hzgc.collect.service.parser.FtpPathMetaData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
 @Slf4j
 public class DaHuaParser_HF8600E extends AbstractParser {
-    DaHuaParser_HF8600E(CollectContext collectContext) {
+    public DaHuaParser_HF8600E(CollectContext collectContext) {
         super(collectContext);
     }
 

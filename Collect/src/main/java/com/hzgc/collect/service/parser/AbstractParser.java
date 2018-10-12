@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat;
 
 public abstract class AbstractParser implements Parser {
     private CollectContext collectContext;
-     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    AbstractParser(CollectContext collectContext) {
+    protected AbstractParser(CollectContext collectContext) {
         this.collectContext = collectContext;
     }
 
