@@ -27,7 +27,7 @@
         from t_people_recognize
         where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
         and flag = 1
-        and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})
+        <!--and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})-->
         and peopleid = #{peopleid,jdbcType=BIGINT}
     </select>
     <!--查询小区迁出人口最后抓拍信息-->

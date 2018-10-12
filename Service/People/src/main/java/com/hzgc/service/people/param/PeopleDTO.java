@@ -59,6 +59,8 @@ public class PeopleDTO implements Serializable {
         People people = new People();
         if (StringUtils.isBlank(peopleDTO.id)) {
             people.setId(UuidUtil.getUuid());
+        }else {
+            people.setId(peopleDTO.id);
         }
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idCard);
