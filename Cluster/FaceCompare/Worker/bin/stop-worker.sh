@@ -38,13 +38,13 @@ fi
 #####################################################################
 function stop_worker()
 {
-    WORKER_PID=`jps | grep Worker | awk '{print $1}'`
+    WORKER_PID=`jps | grep FaceCompareWorker | awk '{print $1}'`
     if [ -n "${WORKER_PID}" ];then
         echo "worker is exist, exit with 0, kill service now"
         kill -9 ${WORKER_PID}
-        echo "stop worker successfull"
+        echo "stop FaceCompareWorker successfull"
     else
-        echo "worker is not start"
+        echo "FaceCompareWorker is not start"
     fi
 }
 
