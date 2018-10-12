@@ -333,6 +333,37 @@ public class CommunityController {
         return ResponseResult.init(integer);
     }
 
+    @ApiOperation(value = "小区迁入新增人员操作", response = PeopleCaptureVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_AFFIRM_NEW_HANDLE, method = RequestMethod.POST)
+    public ResponseResult<Integer> communityAffirmNew_newPeopleHandle(@RequestBody NewPeopleHandleDTO param) {
+        if (param == null) {
+            log.error("Start new people handle, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getNewPeopleId())) {
+            log.error("Start new people handle, but new people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "新增人员ID不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getSearchPeopleId())) {
+            log.error("Start new people handle, but search people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询人员ID不能为空,请检查！");
+        }
+        if (param.getCommunityId() == null) {
+            log.error("Start new people handle, but community id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "社区ID不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getCapturePicture())) {
+            log.error("Start new people handle, but capture picture is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "新增人员原图不能为空,请检查！");
+        }
+        log.info("Start new people handle, param is:" + JacksonUtil.toJson(param));
+        Integer integer = communityService.communityAffirmNew_newPeopleHandle(param);
+        if (integer == 1) {
+            log.info("New people handle successfully");
+        }
+        return ResponseResult.init(integer);
+    }
+
     @ApiOperation(value = "聚焦人员抓拍、电围数据查询", response = PeopleCaptureVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_1MONTH, method = RequestMethod.POST)
     public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(@RequestBody PeopleCaptureDTO param) {

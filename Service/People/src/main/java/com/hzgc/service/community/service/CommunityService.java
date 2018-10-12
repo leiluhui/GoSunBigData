@@ -6,11 +6,13 @@ import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.jniface.FaceAttribute;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.service.community.dao.*;
 import com.hzgc.service.community.model.*;
 import com.hzgc.service.community.param.*;
 import com.hzgc.service.people.dao.*;
-import com.hzgc.service.people.model.People;
+import com.hzgc.service.people.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,30 @@ public class CommunityService {
     @Autowired
     @SuppressWarnings("unused")
     private PeopleMapper peopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private FlagMapper flagMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private ImsiMapper imsiMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PhoneMapper phoneMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private HouseMapper houseMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private CarMapper carMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private PictureMapper pictureMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -52,10 +78,6 @@ public class CommunityService {
     @Autowired
     @SuppressWarnings("unused")
     private Count24HourMapper count24HourMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private PictureMapper pictureMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -314,7 +336,7 @@ public class CommunityService {
             vo.setBirthday(people.getBirthday());
             vo.setBirthplace(people.getBirthplace());
             vo.setAddress(people.getAddress());
-            if (StringUtils.isNotBlank(people.getId())){
+            if (StringUtils.isNotBlank(people.getId())) {
                 Long pictureId = getPictureIdByPeopleId(people.getId());
                 vo.setPictureId(pictureId);
             }
@@ -467,6 +489,154 @@ public class CommunityService {
             }
         } else {
             log.info("Affirm new operation failed, because param: isconfirm error");
+            return 0;
+        }
+        return 1;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Integer communityAffirmNew_newPeopleHandle(NewPeopleHandleDTO param) {
+        People people = peopleMapper.selectByPrimaryKey(param.getSearchPeopleId());
+        int status_delete = peopleMapper.deleteByPrimaryKey(param.getSearchPeopleId());
+        if (status_delete != 1) {
+            log.error("Delete people info failed, people info:" + JacksonUtil.toJson(people));
+            return 0;
+        }
+        People people_insert = new People();
+        people_insert.setId(param.getNewPeopleId());
+        people_insert.setName(people.getName());
+        people_insert.setIdcard(people.getIdcard());
+        people_insert.setRegion(people.getRegion());
+        people_insert.setHousehold(people.getHousehold());
+        people_insert.setAddress(people.getAddress());
+        people_insert.setSex(people.getSex());
+        people_insert.setAge(people.getAge());
+        people_insert.setBirthday(people.getBirthday());
+        people_insert.setPolitic(people.getPolitic());
+        people_insert.setEdulevel(people.getEdulevel());
+        people_insert.setJob(people.getJob());
+        people_insert.setBirthplace(people.getBirthplace());
+        people_insert.setCommunity(param.getCommunityId());
+        people_insert.setLasttime(people.getLasttime());
+        people_insert.setCreatetime(people.getCreatetime());
+        people_insert.setUpdatetime(new Date());
+        int status_insert = peopleMapper.insertSelective(people_insert);
+        if (status_insert != 1) {
+            log.error("Insert people info failed, people info:" + JacksonUtil.toJson(people_insert));
+            return 0;
+        }
+        if (people.getFlag() != null && people.getFlag().size() > 0) {
+            for (Flag flag : people.getFlag()) {
+                if (flag != null) {
+                    Flag update = new Flag();
+                    update.setId(flag.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = flagMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_flag failed, flag info:" + JacksonUtil.toJson(flag));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get flag info failed");
+                }
+            }
+        }
+        if (people.getImsi() != null && people.getImsi().size() > 0) {
+            for (Imsi imsi : people.getImsi()) {
+                if (imsi != null) {
+                    Imsi update = new Imsi();
+                    update.setId(imsi.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = imsiMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_imsi failed, imsi info:" + JacksonUtil.toJson(imsi));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get imsi info failed");
+                }
+            }
+        }
+        if (people.getPhone() != null && people.getPhone().size() > 0) {
+            for (Phone phone : people.getPhone()) {
+                if (phone != null) {
+                    Phone update = new Phone();
+                    update.setId(phone.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = phoneMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_phone failed, phone info:" + JacksonUtil.toJson(phone));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get phone info failed");
+                }
+            }
+        }
+        if (people.getHouse() != null && people.getHouse().size() > 0) {
+            for (House house : people.getHouse()) {
+                if (house != null) {
+                    House update = new House();
+                    update.setId(house.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = houseMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_house failed, house info:" + JacksonUtil.toJson(house));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get house info failed");
+                }
+            }
+        }
+        if (people.getCar() != null && people.getCar().size() > 0) {
+            for (Car car : people.getCar()) {
+                if (car != null) {
+                    Car update = new Car();
+                    update.setId(car.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = carMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_car failed, car info:" + JacksonUtil.toJson(car));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get car info failed");
+                }
+            }
+        }
+        if (people.getPicture() != null && people.getPicture().size() > 0) {
+            for (PictureWithBLOBs picture : people.getPicture()) {
+                if (picture != null) {
+                    PictureWithBLOBs update = new PictureWithBLOBs();
+                    update.setId(picture.getId());
+                    update.setPeopleid(param.getNewPeopleId());
+                    int update_status = pictureMapper.updateByPrimaryKeySelective(update);
+                    if (update_status != 1) {
+                        log.error("Update people info: t_picture failed, car picture:" + JacksonUtil.toJson(picture));
+                        return 0;
+                    }
+                } else {
+                    log.error("Get picture info failed");
+                }
+            }
+        }
+        PictureWithBLOBs picture = new PictureWithBLOBs();
+        picture.setPeopleid(param.getNewPeopleId());
+        byte[] bytes = FaceUtil.base64Str2BitFeature(param.getCapturePicture());
+        picture.setIdcardpic(bytes);
+        FaceAttribute faceAttribute =
+                innerService.faceFeautreExtract(param.getCapturePicture()) != null
+                        ? innerService.faceFeautreExtract(param.getCapturePicture()).getFeature() : null;
+        if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+            log.error("Face feature extract failed, insert picture to t_picture failed");
+            throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
+        }
+        picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+        picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+        int insertStatus = pictureMapper.insertSelective(picture);
+        if (insertStatus != 1) {
+            log.info("Insert people, but insert picture to t_picture failed");
             return 0;
         }
         return 1;
