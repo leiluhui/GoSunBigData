@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel(value = "小区人口确认迁入/迁出操作")
+@ApiModel(value = "小区人口确认迁入,迁出操作")
 @Data
 public class AffirmOperationDTO implements Serializable {
     @ApiModelProperty(value = "人员全局ID")

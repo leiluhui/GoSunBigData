@@ -17,27 +17,14 @@ import java.util.Map;
 
 @Service
 public class ParamPickService {
-    @Autowired
-    @SuppressWarnings("unused")
-    private Edulevel edulevelPick;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private Flag flagPick;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private Politic politicPick;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private Provinces provincesPick;
 
     public List<Param> getEdulevelPick() {
         Map<Integer, String> map = Edulevel.getEdulevel();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            list.add(new Param(entry.getKey(), entry.getValue()));
+        if (map != null && map.size() > 0){
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                list.add(new Param(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }
@@ -45,8 +32,10 @@ public class ParamPickService {
     public List<Param> getFlagPick() {
         Map<Integer, String> map = Flag.getFlag();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            list.add(new Param(entry.getKey(), entry.getValue()));
+        if (map != null && map.size() > 0){
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                list.add(new Param(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }
@@ -54,8 +43,10 @@ public class ParamPickService {
     public List<Param> getPoliticPick() {
         Map<Integer, String> map = Politic.getPolitic();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            list.add(new Param(entry.getKey(), entry.getValue()));
+        if (map != null && map.size() > 0){
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                list.add(new Param(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }
@@ -63,8 +54,10 @@ public class ParamPickService {
     public List<Param> getProvincesPick() {
         Map<Integer, String> map = Provinces.getProvince();
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            list.add(new Param(entry.getKey(), entry.getValue()));
+        if (map != null && map.size() > 0){
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                list.add(new Param(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }
@@ -72,8 +65,10 @@ public class ParamPickService {
     public List<Param> getCityPick(int index) {
         Map<Integer, String> map = Provinces.getCity(index);
         List<Param> list = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            list.add(new Param(entry.getKey(), entry.getValue()));
+        if (map != null && map.size() > 0){
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                list.add(new Param(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }

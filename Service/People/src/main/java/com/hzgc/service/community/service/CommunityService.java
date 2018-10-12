@@ -338,12 +338,11 @@ public class CommunityService {
                 captureDeviceCount.setCount(deviceRecognize.getCount());
                 deviceCountList.add(captureDeviceCount);
             }
-            vo.setDeviceCountList(deviceCountList);
         }
+        vo.setDeviceCountList(deviceCountList);
         // 小区迁入人口抓拍详情:24小时统计
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
-        System.out.println(JacksonUtil.toJson(count24Hours));
         List<String> hourList = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
         long longTime = System.currentTimeMillis();
@@ -395,7 +394,7 @@ public class CommunityService {
         if (peopleRecognize != null) {
             vo.setDeviceId(peopleRecognize.getDeviceid());
             vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            vo.setPicture(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
+            vo.setPicture(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
             vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
         }
         Timestamp lastTime = peopleMapper.getLastTime(peopleId);

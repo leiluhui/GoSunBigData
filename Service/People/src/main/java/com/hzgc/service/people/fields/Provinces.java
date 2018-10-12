@@ -17,32 +17,12 @@ public class Provinces implements Serializable {
     private static Map<Integer, String> province = new LinkedHashMap<>();
 
     static {
-        Map<Integer, String> beiJin_city = new LinkedHashMap<>();
-        beiJin_city.put(1001, "北京");
-        Map<String, Map<Integer, String>> beiJin_province = new LinkedHashMap<>();
-        beiJin_province.put("北京", beiJin_city);
-        model.put(1000, beiJin_province);
         province.put(1000, "北京");
 
-        Map<Integer, String> shangHai_city = new LinkedHashMap<>();
-        shangHai_city.put(1101, "上海");
-        Map<String, Map<Integer, String>> shangHai_province = new LinkedHashMap<>();
-        shangHai_province.put("上海", shangHai_city);
-        model.put(1100, shangHai_province);
         province.put(1100, "上海");
 
-        Map<Integer, String> tianJing_city = new LinkedHashMap<>();
-        tianJing_city.put(1201, "天津");
-        Map<String, Map<Integer, String>> tianJing_province = new LinkedHashMap<>();
-        tianJing_province.put("天津", tianJing_city);
-        model.put(1200, tianJing_province);
         province.put(1200, "天津");
 
-        Map<Integer, String> chongQing_city = new LinkedHashMap<>();
-        chongQing_city.put(1301, "重庆");
-        Map<String, Map<Integer, String>> chongQing_province = new LinkedHashMap<>();
-        chongQing_province.put("重庆", chongQing_city);
-        model.put(1300, chongQing_province);
         province.put(1300, "重庆");
 
         Map<Integer, String> heBei_city = new LinkedHashMap<>();
@@ -568,6 +548,9 @@ public class Provinces implements Serializable {
     }
 
     public static Map<Integer, String> getCity(int index) {
+        if (index < 1400){
+            return null;
+        }
         Map<String, Map<Integer, String>> map = model.get(index);
         String str = province.get(index);
         return map.get(str);
