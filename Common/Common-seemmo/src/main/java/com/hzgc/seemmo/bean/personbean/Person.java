@@ -42,4 +42,6 @@ public class Person implements Serializable {
     private String car_type;
     //骑车的图片数据
     private byte[] car_data;
+    //行人的坐标
+    private int[] person_image;
 }

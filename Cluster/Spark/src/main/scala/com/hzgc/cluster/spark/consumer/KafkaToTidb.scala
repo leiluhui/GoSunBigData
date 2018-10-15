@@ -1,6 +1,7 @@
 package com.hzgc.cluster.spark.consumer
 
 import java.sql.DriverManager
+import java.text.SimpleDateFormat
 import java.util.{Date, Properties}
 
 import com.hzgc.cluster.spark.util.PropertiesUtil
@@ -56,10 +57,12 @@ object KafkaToTidb {
           datas.foreach(data => {
             val imsi: String = data._1
             val num = data._2
-            val time = new Date().getTime
+            val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val nowTime = new Date().getTime
+            val time =  sdf.format(nowTime)
             prep.setString(1, imsi)
             prep.setInt(2, num)
-            prep.setLong(3, time)
+            prep.setString(3, time)
             prep.executeUpdate
             log.info("===========imsi="+imsi+", num="+num+", time="+time)
           })
