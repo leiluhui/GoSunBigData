@@ -163,6 +163,7 @@ public class ComparatorsImpl implements Comparators{
             result.sortBySim();
         }
         log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
+        log.info("Result size of sencond compare is : " + result.getRecords().length);
         return result;
     }
 
@@ -198,6 +199,7 @@ public class ComparatorsImpl implements Comparators{
             result.sortBySim();
         }
         log.info("The time used to sort is : " + (System.currentTimeMillis() - compared));
+        log.info("Result size of sencond compare is : " + result.getRecords().length);
         return result;
     }
 

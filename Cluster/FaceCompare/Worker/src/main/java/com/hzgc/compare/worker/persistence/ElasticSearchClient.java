@@ -49,7 +49,7 @@ public class ElasticSearchClient {
             TermsQueryBuilder queryBuilder2 = QueryBuilders.termsQuery("ipcid", ipcIds.toArray(new String[ipcIds.size()]));
             boolQueryBuilder.must(queryBuilder2);
         }
-        TermsQueryBuilder queryBuilder = QueryBuilders.termsQuery("id", ids.toArray(new String[ids.size()]));
+        TermsQueryBuilder queryBuilder = QueryBuilders.termsQuery("_id", ids.toArray(new String[ids.size()]));
         boolQueryBuilder.must(queryBuilder);
         requestBuilder.setQuery(boolQueryBuilder);
         long start = System.currentTimeMillis();
@@ -82,7 +82,7 @@ public class ElasticSearchClient {
             TermsQueryBuilder queryBuilder2 = QueryBuilders.termsQuery("ipcid", ipcIds.toArray(new String[ipcIds.size()]));
             boolQueryBuilder.must(queryBuilder2);
         }
-        TermsQueryBuilder queryBuilder = QueryBuilders.termsQuery("id", ids);
+        TermsQueryBuilder queryBuilder = QueryBuilders.termsQuery("_id", ids);
         boolQueryBuilder.must(queryBuilder);
         requestBuilder.setQuery(boolQueryBuilder);
         long start = System.currentTimeMillis();
