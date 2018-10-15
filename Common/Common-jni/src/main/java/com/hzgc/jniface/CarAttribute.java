@@ -43,6 +43,8 @@ public class CarAttribute implements Serializable {
     private String sunroof_code;
     //车辆类型
     private String vehicle_type;
+    //车辆图片坐标
+    private int[] vehicle_coordinate;
 
     public CarAttribute() {
     }
@@ -228,5 +230,13 @@ public class CarAttribute implements Serializable {
 
     public void setSparetire_code(String sparetire_code) {
         this.sparetire_code = sparetire_code;
+    }
+
+    public int[] getVehicle_coordinate() {
+        return vehicle_coordinate;
+    }
+
+    public void setVehicle_coordinate(int[] vehicle_coordinate) {
+        this.vehicle_coordinate = vehicle_coordinate;
     }
 }

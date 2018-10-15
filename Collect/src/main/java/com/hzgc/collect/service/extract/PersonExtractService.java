@@ -56,6 +56,7 @@ public class PersonExtractService {
                     personAttribute.setUppercolor(person.getUppercolor_code());
                     personAttribute.setUppertype(person.getUppertype_code());
                     personAttribute.setHair(person.getHair_code());
+                    personAttribute.setPerson_coordinate(person.getPerson_image());
                     personAttributes.add(personAttribute);
                 }
             }
