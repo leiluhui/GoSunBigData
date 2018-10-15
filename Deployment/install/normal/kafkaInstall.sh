@@ -67,29 +67,29 @@ echo "==================================================="  | tee -a $LOG_FILE
 #    echo “解压kafka 安装包失败。请检查安装包是否损坏，或者重新安装.”  | tee -a $LOG_FILE
 #fi
 
-    mkdir -p ${KAFKA_SOURCE_DIR}/tmp
-    cp -r ${KAFKA_SOURCE_DIR}/kafka ${KAFKA_SOURCE_DIR}/tmp
-    sed -i "s;KAFKA_HOME;${KAFKA_HOME};g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
+mkdir -p ${KAFKA_SOURCE_DIR}/tmp
+cp -r ${KAFKA_SOURCE_DIR}/kafka ${KAFKA_SOURCE_DIR}/tmp
+sed -i "s;KAFKA_HOME;${KAFKA_HOME};g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
 kfkpro=''
 for kfk in ${KAFKA_HOSTNAME_ARRY[@]}
 do
     kfkpro="$kfkpro$kfk:2181,"
 done
-    sed -i "s;zookeeperCON;${kfkpro%?};g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
+sed -i "s;^zookeeper.connect=.*;zookeeper.connect=${kfkpro%?}/kafka;g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
 
 #临时目录。
 i=0
 echo ""  | tee  -a  $LOG_FILE
 echo ""  | tee  -a  $LOG_FILE
 echo "==================================================="  | tee -a $LOG_FILE
-echo “创建临时分发目录：.......”  | tee -a $LOG_FILE
+echo "创建临时分发目录：......."  | tee -a $LOG_FILE
 for insName in ${KAFKA_HOSTNAME_ARRY[@]}
 do
     mkdir -p ${KAFKA_SOURCE_DIR}/$insName
     echo -n -e "正在创建${insName}的临时分发目录,请稍等......\n"
     cp -R ${KAFKA_SOURCE_DIR}/tmp/kafka ${KAFKA_SOURCE_DIR}/$insName
     i=$(($i+1))
-    sed -i "s;brokerNum;$i;g"  ${KAFKA_SOURCE_DIR}/$insName/kafka/config/server.properties
+    sed -i "s;^broker.id=.*;^broker.id=$i;g"  ${KAFKA_SOURCE_DIR}/$insName/kafka/config/server.properties
 done
 
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    sshSilentLogin.sh
+## Filename:    sshCilentLogin.sh
 ## Description: 配置ssh 免密码登录
 ##              实现自动化的脚本
 ## Version:     2.0

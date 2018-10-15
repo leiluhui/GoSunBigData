@@ -57,12 +57,6 @@ else
     ##安装hadoop
     sh hadoopInstall.sh
 
-    ##安装hbase
-    sh hbaseInstall.sh
-
-    ##安装phoenix
-#    sh phoenixInstall.sh
-
     ##安装hive
     sh hiveInstall.sh
 
@@ -74,9 +68,6 @@ else
 
     ##安装spark
     sh sparkInstall.sh
-
-    ##安装rocketmq
-    sh rocketmqInstall.sh
 
     ##安装haproxy
     sh haproxyInstall.sh
@@ -99,13 +90,6 @@ else
     #配置组件日志目录
     sh logconfig.sh
 
-    ##根据集群类型修改yarn参数
-    ISMINICLUSTER=$(grep "ISMINICLUSTER" ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)
-    if [ "x${ISMINICLUSTER}" == "xno"  ]; then
-        sh config-yarn-CPU-RAM.sh
-    else
-        sh config-mini-yarn.sh
-    fi
      echo "安装分布式集群完成"
 fi
 

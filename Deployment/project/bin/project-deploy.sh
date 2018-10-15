@@ -341,7 +341,7 @@ function distribute_service()
     CLUSTERNODE=(${CLUSTERNODELIST//;/ })
     CLUSTER_NODE_NUM=${#CLUSTERNODELIST[@]}
     localhost=`hostname -i`
-    num=0
+    num=1
     for hostname in ${CLUSTERNODE}
     do
       if [[ ${localhost} != ${hostname} ]]; then
@@ -764,9 +764,9 @@ function config_facecompare(){
 function distribute_facecompare(){
     CLUSTERNODELIST=$(grep 'Cluster_HostName' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
     CLUSTERNODE=(${CLUSTERNODELIST//;/ })
-    CLUSTER_NODE_NUM=${#CLUSTERNODELIST[@]}
-    num=0
-    for node in ${CLUSTERNODE} ;do
+    CLUSTER_NODE_NUM=${#CLUSTERNODE[@]}
+    num=1
+    for node in ${CLUSTERNODE[@]} ;do
         scp -r ${FACECOMPARE_DIR} root@${node}:/opt/
         ssh root@${node} "sed -i 's#master.ip=.*#master.ip=${node}#g' /opt/FaceCompare/conf/master.properties"
         ssh root@${node} "sed -i 's#worker.address=.*#worker.address=${node}#g' /opt/FaceCompare/conf/worker.properties"

@@ -1,41 +1,35 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    sshSilentLogin.sh
+## Filename:    sshCilentLogin_local.sh
 ## Description: 配置ssh 免密码登录
 ##              实现自动化的脚本
-## Version:     1.0
-## Author:      lidiliang
-## Editor:      mashencai（修改读取密码的路径）
+## Version:     2.0
+## Author:      yinhang
 ## Created:     2017-11-25
 ################################################################################
 
 #set -x
-##set -e
 
 #---------------------------------------------------------------------#
 #                              定义变量                               #
 #---------------------------------------------------------------------#
 cd `dirname $0`
 ## 脚本所在目录
-export BIN_DIR=`pwd`
-cd ../..
+BIN_DIR=`pwd`
+cd ../../..
 ## 安装包根目录
-export ROOT_HOME=`pwd`
+ROOT_HOME=`pwd`
 ## 配置文件目录
-export CONF_DIR=${ROOT_HOME}/conf
+CONF_DIR=${ROOT_HOME}/conf
 ## 安装日记目录
-export LOG_DIR=${ROOT_HOME}/logs
+LOG_DIR=${ROOT_HOME}/logs
 ## 安装日记目录
-export LOG_FILE=${LOG_DIR}/no_password.log
+LOG_FILE=${LOG_DIR}/no_password.log
 ## 系统root 用密码
-export PASSWORD=$(grep SSH_Password ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+PASSWORD=$(grep SSH_Password ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 ## authorized_keys 内容所在文件
-export AUTHORIZED_KEYS=${BIN_DIR}/authorized_keys.log
-
-## 集群所有节点主机名，放入数组中
-CLUSTER_HOSTNAME_LISTS=$(grep Cluster_HostName ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
-CLUSTER_HOSTNAME_ARRY=(${CLUSTER_HOSTNAME_LISTS//;/ })
+AUTHORIZED_KEYS=${BIN_DIR}/authorized_keys.log
 
 #####################################################################
 # 函数名: ssh_keygen
@@ -80,11 +74,11 @@ get_id_rsa(){
         "yes/no" {send "yes\r";exp_continue}
     }
     expect "*#"
-    send "cat /root/.ssh/id_rsa.pub;\n"  
+    send "cat /root/.ssh/id_rsa.pub;\n"
     expect eof
     exit
 EOF
-}  
+}
 
 #####################################################################
 # 函数名: ssh_conf_first_yes
@@ -102,9 +96,9 @@ ssh_conf_first_yes(){
         "yes/no" {send "yes\r";exp_continue}
     }
     expect "*#"
-    send "echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config;\n" 
-    expect eof 
-    exit 
+    send "echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config;\n"
+    expect eof
+    exit
 EOF
 }
 
@@ -119,9 +113,9 @@ EOF
 deliver_authorizedkesy_to_other_node(){
     expect <<EOF
     set timeout 1
-    spawn scp /root/.ssh/authorized_keys root@$1:/root/.ssh/
+    spawn scp /root/.ssh/authorized_keys root@$1:/root/.ssh
     expect {
-        "password" {send "${PASSWORD}\r";}
+        "*assword" {send "${PASSWORD}\r";}
         "yes/no" {send "yes\r";exp_continue}
     }
     expect eof
@@ -140,10 +134,8 @@ EOF
 # 其他: N/A
 #####################################################################
 get_authorized_keys_log(){
-    for host in ${CLUSTER_HOSTNAME_ARRY[@]};do
-        ssh_keygen ${host}
-        get_id_rsa ${host}  | tee -a ${AUTHORIZED_KEYS}
-    done
+        ssh_keygen `hostname -i`
+        get_id_rsa `hostname -i`  | tee -a ${AUTHORIZED_KEYS}
 }
 
 #####################################################################
@@ -168,9 +160,7 @@ get_authorized_keys(){
 # 其他: N/A
 #####################################################################
 deliver_authorizedkesy_to_other_nodes(){
-    for host in ${CLUSTER_HOSTNAME_ARRY[@]};do
-        deliver_authorizedkesy_to_other_node ${host}
-    done
+        deliver_authorizedkesy_to_other_node `hostname -i`
 }
 
 
@@ -183,17 +173,12 @@ deliver_authorizedkesy_to_other_nodes(){
 # 其他: N/A
 #####################################################################
 config_no_password(){
-    i=0
-    for host in ${CLUSTER_HOSTNAME_ARRY[@]};do
-        let i++
-        echo  $i
-        ssh_conf_first_yes ${host}
-    done        
+        ssh_conf_first_yes `hostname -i`
 }
 
 #####################################################################
 # 函数名: main
-# 描述:  
+# 描述:
 # 参数: N/A
 # 返回值: N/A
 # 其他: N/A
