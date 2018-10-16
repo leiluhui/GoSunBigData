@@ -1,10 +1,10 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    project_distribute.sh
-## Description: 一键配置及分发微服务模块
-## Author:      zhangbaolin
-## Created:     2018-07-26
+## Filename:    create-people-table.sh
+## Description: 创建数据库表结构
+## Author:      liangshiwei
+## Created:     2018-10-15
 ################################################################################
 #set -x  ## 用于调试用，不用的时候可以注释掉
 #set -e

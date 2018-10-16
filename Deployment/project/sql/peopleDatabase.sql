@@ -8,7 +8,7 @@ CREATE TABLE `t_24hour_count` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
   `community` bigint(20) NOT NULL COMMENT '小区ID',
-  `hour` datetime NOT NULL COMMENT '抓拍小时:yyyy-MM-dd HH:00:00',
+  `hour` varchar(10) NOT NULL COMMENT '抓拍小时:yyyyMMddHH',
   `count` int(11) NOT NULL COMMENT '抓拍次数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='24小时抓拍统计表';
@@ -29,7 +29,7 @@ CREATE TABLE `t_device_recognize` (
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
   `community` bigint(20) NOT NULL COMMENT '小区ID',
   `deviceid` varchar(50) NOT NULL COMMENT '设备ID',
-  `currenttime` date NOT NULL COMMENT '当天日期(yyyy-MM-dd)',
+  `currenttime` varchar(8) NOT NULL COMMENT '当天日期(yyyyMMdd)',
   `count` int(11) NOT NULL COMMENT '统计次数',
   `flag` int(2) NOT NULL COMMENT '设备类型(1：人脸相机，2：侦码设备)',
   PRIMARY KEY (`id`)
