@@ -38,6 +38,9 @@ KAFKA_HOME=${INSTALL_HOME}/Kafka/kafka
 KAFKA_HOSTNAME_LISTS=$(grep Kafka_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 KAFKA_HOSTNAME_ARRY=(${KAFKA_HOSTNAME_LISTS//;/ })
 
+ZOOKEEPER_HOSTNAME_LISTS=$(grep Zookeeper_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+ZOOKEEPER_HOSTNAME_ARRY=(${ZOOKEEPER_HOSTNAME_LISTS//;/ })
+
 ##kafka日志目录
 KAFKA_LOG=$(grep Cluster_LOGSDir ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 
@@ -70,12 +73,12 @@ echo "==================================================="  | tee -a $LOG_FILE
     mkdir -p ${KAFKA_SOURCE_DIR}/tmp
     cp -r ${KAFKA_SOURCE_DIR}/kafka ${KAFKA_SOURCE_DIR}/tmp
     sed -i "s;KAFKA_HOME;${KAFKA_HOME};g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
-kfkpro=''
-for kfk in ${KAFKA_HOSTNAME_ARRY[@]}
-do
-    kfkpro="$kfkpro$kfk:2181,"
-done
-    sed -i "s;^zookeeper.connect=.*;zookeeper.connect=${kfkpro%?}/kafka;g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
+    zkpro=''
+    for zk in ${ZOOKEEPER_HOSTNAME_ARRY[@]}
+    do
+        zkpro="$zkpro$zk:2181,"
+    done
+    sed -i "s;^zookeeper.connect=.*;zookeeper.connect=${zkpro%?}/kafka;g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
 
 #临时目录。
 i=0
