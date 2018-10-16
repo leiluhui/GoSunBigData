@@ -18,5 +18,6 @@ sh ${BIN_DIR}/create-elasticsearch-index.sh
 sh ${BIN_DIR}/create-kafka-topic.sh
 sh ${BIN_DIR}/create-sparksql-table.sh
 sh ${BIN_DIR}/create-spark-udf.sh
+sh ${BIN_DIR}/create-people-table.sh
 
 set +x
