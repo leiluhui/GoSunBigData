@@ -106,7 +106,7 @@ function create_kafka_topic()
 	fi
 
 	#创建kafka PeoMan-Fusion topic
-    ./kafka-topic.sh --create \
+    ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
     --replication-factor ${repl_factor} \
     --partitions ${part_num} \
@@ -120,7 +120,7 @@ function create_kafka_topic()
     fi
 
     #创建kafka PeoMan-Inner topic
-    ./kafka-topic.sh --create \
+    ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
     --replication-factor ${repl_factor} \
     --partitions ${part_num} \
@@ -134,7 +134,7 @@ function create_kafka_topic()
     fi
 
     #创建kafka face topic
-    ./kafka-topic.sh --create \
+    ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
     --replication-factor ${repl_factor} \
     --partitions ${part_num} \
@@ -148,7 +148,7 @@ function create_kafka_topic()
     fi
 
    #创建kafka imsi topic
-    ./kafka-topic.sh --create \
+    ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
     --replication-factor ${repl_factor} \
     --partitions ${part_num} \
