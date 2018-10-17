@@ -22,6 +22,8 @@ CONF_DIR=${CLIENT_DIR}/conf                                        ##conf目录�
 #------------------------------------------------------------------------------#
 ZK_ADDRESS=172.18.18.100
 MYSQL_HOST=172.18.18.119:4000
+MYSQL_USERNAME=
+MYSQL_PASSWORD=
 EVERY_POINT_NUM=5000000
 WORKER_ID=worker-1,worker-2,worker-3
 #------------------------------------------------------------------------------#
@@ -43,6 +45,8 @@ function start_springCloud()
       nohup java -jar ${CLIENT_JAR} --spring.profiles.active=pro  \
       --zk.address=${ZK_ADDRESS} \
       --mysql.host=${MYSQL_HOST} \
+      --mysql.username=${MYSQL_USERNAME} \
+      --mysql.password=${MYSQL_PASSWORD} \
       --every.point.num=${EVERY_POINT_NUM} \
       --worker.id=${WORKER_ID} \
       --spring.cloud.config.enabled=false  2>&1 &

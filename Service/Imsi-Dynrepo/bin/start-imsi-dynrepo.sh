@@ -25,6 +25,8 @@ EUREKA_PORT=9000
 ES_HOST=172.18.18.105
 ZOOKEEPER_HOST=172.18.18.105:2181
 MYSQL_HOST=172.18.18.105:3306
+MYSQL_USERNAME=
+MYSQL_PASSWORD=
 QUERY_TIME=30
 BOOTSTRAP_SERVERS=172.18.18.100:9092
 
@@ -51,6 +53,8 @@ function start_springCloud()
        --eureka.port=${EUREKA_PORT} \
        --spring.cloud.config.enabled=false \
        --mysql.host=${MYSQL_HOST} \
+       --mysql.username=${MYSQL_USERNAME} \
+       --mysql.password=${MYSQL_PASSWORD} \
        --query.time=${QUERY_TIME} \
        --bootstrap.servers=${BOOTSTRAP_SERVERS} 2>&1 &
    fi

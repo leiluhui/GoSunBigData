@@ -60,23 +60,6 @@ function main()
         sh expand_hadoop.sh
     fi
 
-    ## 扩展nodemanager
-    echo  "开始在扩展加点上安装nodemanager服务"
-    IS_NodeManager=$(grep Is_Yarn_NodeManager ${EXPAND_CONF_DIR}/expand_conf.properties | cut -d '=' -f2)
-    if [ "x$IS_NodeManager" = "xyes" ] ;then
-        sh syncConf.sh nodemanager
-		sh expand_hadoop.sh
-    fi
-
-    ## 扩展regionserver
-    echo  "开始在扩展加点上安装regionserver服务"
-    Is_RegionServer=$(grep Is_HBase_HRegionServer ${EXPAND_CONF_DIR}/expand_conf.properties | cut -d '=' -f2)
-    if [ "x$Is_RegionServer" = "xyes" ] ;then
-        sh syncConf.sh regionserver
-		sh expand_regionserver.sh
-		sh expand_phoenix.sh
-    fi
-
     ## 扩展hive
     echo  "开始在扩展加点上安装hive服务"
     IS_HIVE=$(grep Is_Meta_ThriftServer ${EXPAND_CONF_DIR}/expand_conf.properties | cut -d '=' -f2)
@@ -107,14 +90,6 @@ function main()
     if [ "x$Is_Spark" = "xyes" ] ;then
         sh syncConf.sh spark
 		sh expand_spark.sh
-    fi
-
-    ## 扩展Rocketmq
-    echo  "开始在扩展加点上安装rocketmq服务"
-    Is_Rocketmq=$(grep Is_RocketMQ_Broker ${EXPAND_CONF_DIR}/expand_conf.properties | cut -d '=' -f2)
-    if [ "x$Is_Rocketmq" = "xyes" ] ;then
-        sh syncConf.sh rocketmq
-		sh expand_rocketmq.sh
     fi
 
     ## 扩展ES
