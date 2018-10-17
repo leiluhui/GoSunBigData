@@ -29,6 +29,9 @@ sh hbase_local.sh
 ## 安装 kafka
 sh kafka_local.sh
 
+## 安装 kafka-eagle
+sh kafkaEagle_locall.sh
+
 ## 安装 es
 sh elasticSearch_local.sh
 

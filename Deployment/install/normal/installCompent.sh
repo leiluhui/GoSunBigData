@@ -66,6 +66,9 @@ else
     ##安装kafka
     sh kafkaInstall.sh
 
+    #安装kafka-eagle
+    sh kafkaEagleInstall.sh
+
     ##安装spark
     sh sparkInstall.sh
 

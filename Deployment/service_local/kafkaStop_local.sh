@@ -19,6 +19,8 @@ ROOT_HOME=`pwd`
 CONF_DIR=${ROOT_HOME}/conf
 ## 最终安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep Install_HomeDir ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+# Kafka-eagle 根目录
+KAFKA_EAGLE_HOME=${INSTALL_HOME}/Kafka-eagle/kafka-eagle
 ## kafka 的安装节点
 KAFKA_HOSTNAME_LISTS=`hostname -i`
 ## KAFKA_HOME  kafka 根目录
@@ -47,6 +49,10 @@ for PID in $(cat ${BIN_DIR}/kafka_del.tmp);do
 	rm -f ${BIN_DIR}/kafka_del.tmp
 
 
+echo "kafka-eagle"
+# 关闭kafka-eagle
+cd ${KAFKA_EAGLE_HOME}
+ bin/ke.sh stop
 
 # 验证Kafka是否停止成功
 echo -e "********************验证Kafka是否停止成功*********************"

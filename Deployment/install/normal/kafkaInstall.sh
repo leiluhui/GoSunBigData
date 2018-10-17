@@ -119,22 +119,6 @@ do
     rsync -rvl 	${KAFKA_HOME}/config/producer.properties $hostName:${KAFKA_HOME}/config > /dev/null
 done
 
-# 配置kafka的ui管理工具kafka-manager（马燊偲）
-echo ""  | tee  -a  $LOG_FILE
-echo "配置kafka-manager的zk地址......"  | tee  -a  $LOG_FILE
-
-# 替换kafka-manager/conf/application.conf中：kafka-manager.zkhosts=value
-tmp=""
-for host_name in ${KAFKA_HOSTNAME_ARRY[@]}
-do
-	ip=$(cat /etc/hosts|grep "$host_name" | awk '{print $1}')
-	tmp="$tmp"${ip}":2181,"  # 拼接字符串
-done
-tmp=${tmp%?}
-sed -i "s#^kafka-manager.zkhosts=\".*#kafka-manager.zkhosts=\"${tmp}\"#g" ${KAFKA_HOME}/kafka-manager/conf/application.conf
-echo "配置完毕......"  | tee  -a  $LOG_FILE
-
-
 
 ## 删除临时存放目录
     rm -rf ${KAFKA_SOURCE_DIR}/tmp

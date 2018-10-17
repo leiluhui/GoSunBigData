@@ -68,6 +68,8 @@ FACECOMPARE_CONF_DIR=${FACECOMPARE_DIR}/conf
 FACECOMPARE_MASTER_FILE=${FACECOMPARE_CONF_DIR}/master.properties
 FACECOMPARE_WORKER_FILE=${FACECOMPARE_CONF_DIR}/worker.properties
 
+## cluster spark模块bin目录
+SPARK_BIN_DIR=${SPARK_DIR}/bin
 ## cluster-spark模块配置文件目录
 CONF_SPARK_DIR=${SPARK_DIR}/conf
 ## service的log日志目录
@@ -348,7 +350,7 @@ function distribute_service()
           ssh root@${hostname} "if [ ! -x "${PEOPLEMANAGER_INSTALL_DIR}" ];then mkdir -p "${PEOPLEMANAGER_INSTALL_DIR}"; fi"
           rsync -rvl ${PEOPLEMANAGER_DIR} root@${hostname}:${PEOPLEMANAGER_INSTALL_DIR} >/dev/null
           ssh root@${hostname} "chmod -R 755 ${PEOPLEMANAGER_INSTALL_DIR}"
-          echo "${hostname}上分发fusion完毕........" | tee -a ${SERVICE_LOG_FILE}
+          echo "${hostname}上分发peoplemanager完毕........" | tee -a ${SERVICE_LOG_FILE}
       fi
       if [[ ${num} -lt ${CLUSTER_NODE_NUM} ]]; then
            ssh root@${hostname} "sed -i 's#lts.tasktracker.node-group=.*#lts.tasktracker.node-group=worker-${num}#g' ${PEOPLEMANAGER_INSTALL_DIR}/peoplemanager-worker/conf/application-pro.properties"
@@ -422,8 +424,6 @@ function config_sparkjob()
     # 将这些分号分割的ip用放入数组
     zk_arr=(${ZK_IP//;/ })
     zkpro=''
-    phoenixpro=''
-    phoenixpro=$phoenixpro${zk_arr[0]}":2181"
     for zk_ip in ${zk_arr[@]}
     do
         zkpro="${zkpro}${zk_ip}:2181,"
@@ -432,39 +432,16 @@ function config_sparkjob()
     # 替换sparkJob.properties中：key=value（替换key字段的值value）
     sed -i "s#^job.zkDirAndPort=.*#job.zkDirAndPort=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     sed -i "s#^job.kafkaToTidb.zookeeper=.*#job.kafkaToTidb.zookeeper=${zkpro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
-    # 替换sparkJob.properties中：key=value(替换key字段的值value)
-    sed -i "s#^phoenix.jdbc.url=jdbc:phoenix:.*#phoenix.jdbc.url=jdbc:phoenix:${phoenixpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     #根据字段es_service_node，查找配置文件中，es的安装节点所在ip端口号的值，这些值以分号分割
     ES_IP=$(grep es_service_node ${CONF_FILE} | cut -d '=' -f2)
     #将这些分号分割的ip用于放入数组中
     es_arr=(${ES_IP//;/ })
-    espro=''
-    espro=$espro${es_arr[0]}
-    echo $espro
+    espro=${es_arr[0]}
     echo "++++++++++++++++++++++++++++++++++"
     #替换sparkJob.properties中：key=value(替换key字段的值value)
     sed -i "s#^job.kafkaToParquet.esNodes=.*#job.kafkaToParquet.esNodes=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
     sed -i "s#^job.kafkaToTidb.jdbc.ip=.*#job.kafkaToTidb.jdbc.ip=${espro}#g" ${CONF_SPARK_DIR}/sparkJob.properties
-
-    #根据字段rocketmq_nameserver，查找配置文件中，rocketmq的nameserver安装节点所在IP端口号的值，这些值以分号分割
-#    ROCK_IP=$(grep rocketmq_nameserver ${CONF_FILE} | cut -d '=' -f2)
-#    rockpro=''
-#    rockpro=$rockpro$ROCK_IP":9876"
-#    #替换sparkJob.properties中：key=value(替换key字段的值value)
-#    sed -i "s#^rocketmq.nameserver=.*#rocketmq.nameserver=${rockpro}#g"  ${CONF_SPARK_DIR}/sparkJob.properties
-
-    # 根据job_peoplemanager_mysql_alarm_url字段设置常驻人口管理告警信息MYSQL数据库地址
-#    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.alarm.url  | awk '{print $1}') ]
-#    value=$(grep job_peoplemanager_mysql_alarm_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-#    value="job.peoplemanager.mysql.alarm.url=${value}"
-#    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
-#
-#     # 根据job_peoplemanager_mysql_device_url字段设置常驻人口管理告警信息MYSQL数据库地址
-#    num=$[ $(cat ${CONF_SPARK_DIR}/sparkJob.properties | cat -n | grep job.peoplemanager.mysql.device.url  | awk '{print $1}') ]
-#    value=$(grep job_peoplemanager_mysql_device_url ${CONF_FILE}  |  awk  -F  "url=" '{print $2}')
-#    value="job.peoplemanager.mysql.device.url==${value}"
-#    sed -i "${num}c ${value}"  ${CONF_SPARK_DIR}/sparkJob.properties
 
     echo "配置完毕......"  | tee  -a  ${SPARK_LOG_FILE}
 
@@ -490,7 +467,7 @@ function config_service()
     echo "" | tee -a ${SERVICE_LOG_FILE}
     echo "开始配置service底下的各个模块......" | tee -a ${SERVICE_LOG_FILE}
 
-    #单独给静态库配置pro配置文件：
+    #配置kafka.host
     #从project-deploy.properties中读取kafka配置IP
     KAFKA_IP=$(grep kafka_install_node $CONF_FILE | cut -d '=' -f2)
     #将这些分号分割的ip用于放入数组中
@@ -502,31 +479,7 @@ function config_service()
     done
     kafkapro=${kafkapro%?}
 
-    #替换person-dynrepo模块pro文件中的值：
-    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafkapro}#g" ${PERSON_DYN_PRO_FILE}
-    sed -i "s#^kafka.bootstrap.servers=.*#kafka.bootstrap.servers=${kafka_arr[0]:9092}#g" ${PERSON_DYN_START_FILE}
-    echo "person-dynrepo的application-pro文件配置完成......"
-
-    #####################KAFKA_HOST#########################
-    #替换person-dynrepo模块启动脚本中KAFKA_HOST：key=value(替换key字段的值value)
-    #kafka=`echo ${kafkapro}| cut -d "," -f1`
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PERSON_DYN_START_FILE}
-    echo "start-starepo.sh脚本配置kafka完成......"
-
-    #替换peoplemanager-worker模块启动脚本中KAFKA_HOST：key=value(替换key字段的值value)
-    #kafka=`echo ${kafkapro}| cut -d "," -f1`
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置kafka完成......"
-
-    #替换fusion模块中start-fusion.sh脚本中的kafka字段
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${FUSION_START_FILE}
-    echo "start-fusion.sh脚本配置kafka完成......"
-
-    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^BOOTSTRAP_SERVERS=.*#BOOTSTRAP_SERVERS=${kafkapro}#g" ${IMSI_START_FILE}
-    echo "start-imsi-dynrepo.sh脚本配置es完成......"
-
-    #配置es.hosts:
+	#配置es.hosts:
     #从project-deploy.properties中读取es所需配置IP
     #根据字段es，查找配置文件，这些值以分号分隔
     ES_IP=$(grep es_service_node $CONF_FILE | cut -d '=' -f2)
@@ -539,177 +492,291 @@ function config_service()
     done
     espro=${espro%?}
 
-    #####################ES_HOST#########################
-
-    #替换face-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${DYNREPO_START_FILE}
-    echo "start-face-dynrepo.sh脚本配置es完成......"
-
-    #替换person-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PERSON_DYN_START_FILE}
-    echo "start-persoon-dynrepo.sh脚本配置es完成......"
-
-    #替换vehicle-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CAR_START_FILE}
-    echo "start-vehicle-dynrepo.sh脚本配置es完成......"
-
-    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${IMSI_START_FILE}
-    echo "start-imsi-dynrepo.sh脚本配置es完成......"
-
-#    #替换模块启动脚本中：key=value(替换key字段的值value)
-#    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PEOPLE_START_FILE}
-#    echo "start-people.sh脚本配置es完成......"
-
-    #####################ZOOKEEPER_HOST#########################
-    #配置zookeeper：
+	#配置zookeeper：
     #从project-deploy.properties中读取zookeeper所需配置IP
     #根据字段zookeeper，查找配置文件，这些值以分号分隔
     ZK_HOSTS=$(grep zookeeper_installnode $CONF_FILE | cut -d '=' -f2)
     zk_arr=(${ZK_HOSTS//;/ })
-    zkpro=''
-    zkpro=$zkpro${zk_arr[0]}":2181"
+    zkpro=${zk_arr[0]}":2181"
 
-    #替换collect模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${COLLECT_START_FILE}
-    echo "start-collect.sh脚本配置zookeeper完成......"
-
-    #替换start-peoman-client.sh脚本中的zk字段
-    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
-    echo "start-peoman-client.sh脚本配置zookeeper完成......."
-
-    #替换start-peoman-worker.sh脚本中的zk字段
-    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置zookeeper完成........"
-
-    #替换face-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${DYNREPO_START_FILE}
-    echo "start-face-dynrepo.sh脚本配置zookeeper完成......"
-
-    #替换person-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zk_arr[0]}#g" ${PERSON_DYN_START_FILE}
-    echo "start-person-dynrepo.sh脚本配置zookeeper完成......"
-
-    #替换vehicle-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CAR_START_FILE}
-    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
-
-    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${IMSI_START_FILE}
-    echo "start-imsi.sh脚本配置zookeeper完成......"
-
-    #替换peoplemanager-client模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^ZK_HOST=.*#ZK_HOST=zookeeper://${zkpro}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
-    echo "start-peoman-client.sh脚本配置zookeeper完成......"
-
-    # 替换peoplemanager-worker模块启动脚本中：key=value(替换key字段的值value)
-    ##worker的zk只需要ip，不需要端口
-    zkpro=`echo ${zkpro}| cut -d ":" -f1`
-    sed -i "s#^ZK_HOST=.*#ZK_HOST=${zkpro}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置zookeeper完成......"
-
-    #####################EUREKA_IP#########################
-    #配置eureka_node:
+	#配置eureka_node:
     #从project-deploy.properties中读取eureka_node所需配置ip
     #根据字段eureka_node，查找配置文件，这些值以分号分隔
     EUREKA_NODE_HOSTS=$(grep spring_cloud_eureka_node $CONF_FILE | cut -d '=' -f2)
     eureka_node_arr=(${EUREKA_NODE_HOSTS//;/ })
-    enpro=''
-    for en_host in ${eureka_node_arr[@]}
+    eurekapro=''
+    for eureka_host in ${eureka_node_arr[@]}
     do
-      enpro=${enpro}${en_host}","
+      eurekapro=${eurekapro}${eureka_host}","
     done
-    enpro=${enpro%?}
+    eurekapro=${eurekapro%?}
 
-    #替换face-dispatch模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${DISPATCH_START_FILE}
-    echo "start-face-dispatch.sh脚本配置eureka_node完成......."
-
-    #替换face-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${DYNREPO_START_FILE}
-    echo "start-face-dynrepo.sh脚本配置eureka_node完成......."
-
-    #替换collect模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${COLLECT_START_FILE}
-    echo "start-collect.sh脚本配置eureka_node完成......."
-
-    #替换person-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PERSON_DYN_START_FILE}
-    echo "start-person-dynrepo.sh脚本配置eureka_node完成......."
-
-    #替换vehicle-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${CAR_START_FILE}
-    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
-
-    #替换people模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${PEOPLE_START_FILE}
-    echo "start-people.sh脚本配置eureka_node完成......."
-
-    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${enpro}#g" ${IMSI_START_FILE}
-    echo "start-imsi-dynrepo.sh脚本配置eureka_node完成......."
-
-    #####################EUREKA_PORT#########################
-    #配置eureka_port:
+	#配置eureka_port:
     #从project-deploy.properties中读取eureka_port所需配置port
     #根据字段eureka_port,查找配置文件
     EUREKA_PORT=$(grep spring_cloud_eureka_port $CONF_FILE | cut -d '=' -f2)
 
-    #替换face-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DYNREPO_START_FILE}
-    echo "start-face-dynrepo.sh脚本配置eureka_port完成......."
+	#配置MYSQL
+    IS_TIDB=$(grep is_TIDB ${CONF_FILE} | cut -d '=' -f2)
+    #从project-deploy.properties中读取mysql所需配置host和port
+    MYSQL_HOST=$(grep mysql_host ${CONF_FILE} | cut -d '=' -f2)
+    #从project-deploy.properties中读取mysql所需配置username
+    MYSQL_USERNAME=$(grep mysql_username ${CONF_FILE} | cut -d '=' -f2)
+    #从project-deploy.properties中读取mysql所需配置password
+    MYSQL_PASSWORD=$(grep mysql_password ${CONF_FILE} | cut -d '=' -f2)
+    if [[ "Xtrue" = "X${IS_TIDB}" ]]; then
+        MYSQL_PASSWORD=""
+    fi
 
-    #替换collect模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${COLLECT_START_FILE}
-    echo "start-collect.sh脚本配置eureka_port完成......."
+    ############################    CLOUD   #############################
 
-    #替换person-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PERSON_DYN_START_FILE}
-    echo "start-person-dynrepo.sh脚本配置eureka_port完成......."
+    ####################################################
+	####					PEOPLE					####
+	####################################################
 
-    #替换vehicle-dynrepo模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CAR_START_FILE}
-    echo "start-vehicle-repo.sh脚本配置eureka_port完成......."
+	#替换people模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置eureka_node完成......."
 
-    #替换people模块启动脚本中：key=value(替换key字段的值value)
+	#替换people模块启动脚本中EUREKA_PORT的value
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PEOPLE_START_FILE}
     echo "start-people.sh脚本配置eureka_port完成......."
 
-    #替换imsi模块启动脚本中：key=value(替换key字段的值value)
+	#替换people模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置数据库host完成......."
+
+	#替换people模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置数据库username完成"
+
+    #替换people模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLE_START_FILE}
+    echo "start-people.sh脚本配置数据库password完成"
+
+
+	####################################################
+	####					FUSION					####
+	####################################################
+
+	#替换fusion模块中start-fusion.sh脚本中的EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置eureka_node完成......."
+
+	#替换fusion模块中start-fusion.sh脚本中的EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置eureka_port完成......."
+
+	#替换fusion模块中start-fusion.sh脚本中的kafka字段
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置kafka完成......"
+
+    ##替换fusion模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置数据库host完成......."
+
+	#替换fusion模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置数据库username完成"
+
+    #替换fusion模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FUSION_START_FILE}
+    echo "start-fusion.sh脚本配置数据库password完成"
+
+
+	####################################################
+	####	    PEOPLEMANAGER_WORKER				####
+	####################################################
+
+	#替换peoplemanager-worker模块启动脚本中KAFKA_HOST的value
+    #kafka=`echo ${kafkapro}| cut -d "," -f1`
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置kafka完成......"
+
+    #替换start-peoman-worker.sh脚本中的zk的value
+    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置zookeeper完成........"
+
+    #替换peoplemanager模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置数据库host完成......."
+
+    #替换peoplemanager模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置数据库username完成"
+
+    #替换peoplemanager模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    echo "start-peoman-worker.sh脚本配置数据库password完成"
+
+
+    ####################################################
+	####	    PEOPLEMANAGER_CILENT				####
+	####################################################
+
+	#替换start-peoman-client.sh脚本中的zk字段
+    sed -i "s#^ZK_ADDRESS=.*#ZK_ADDRESS=${zk_arr[0]}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    echo "start-peoman-client.sh脚本配置zookeeper完成......."
+
+    #替换peoplemanager模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    echo "start-peoman-client.sh脚本配置数据库host完成......."
+
+    #替换peoplemanager模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    echo "start-peoman-client.sh脚本配置数据库username完成"
+
+    #替换peoplemanager模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    echo "start-peoman-client.sh脚本配置数据库password完成"
+
+
+	####################################################
+	####					IMSI					####
+	####################################################
+
+	#替换imsi模块启动脚本中BOOTSTRAP_SERVERS的value
+    sed -i "s#^BOOTSTRAP_SERVERS=.*#BOOTSTRAP_SERVERS=${kafkapro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置es完成......"
+
+	#替换imsi模块启动脚本中ES_HOST的value
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置es完成......"
+
+	#替换imsi模块启动脚本中ZOOKEEPER_HOST的value
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${IMSI_START_FILE}
+    echo "start-imsi.sh脚本配置zookeeper完成......"
+
+	#替换imsi模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置eureka_node完成......."
+
+	#替换imsi模块启动脚本中EUREKA_PORT的value
     sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${IMSI_START_FILE}
     echo "start-imsi-dynrepo.sh脚本配置eureka_port完成......."
 
-    #####################MYSQL_HOST#########################
-    #配置MYSQL_HOST:
-    #从project-deploy.properties中读取mysql所需配置host和port
+	#替换imsi模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置数据库host完成......."
 
-    MYSQL_HOST=$(grep mysql_host ${CONF_FILE} | cut -d '=' -f2)
-    #替换collect模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${COLLECT_START_FILE}
-    echo "start-collect.sh脚本配置mysql完成......."
+	#替换imsi-dynrepo模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置数据库username完成"
 
-    #替换face-dispatch模块启动脚本中：key=value(替换key字段的值value)
+    #替换imsi-dynrepo模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${IMSI_START_FILE}
+    echo "start-imsi-dynrepo.sh脚本配置数据库password完成"
+
+    ############################    BASIC   #############################
+
+    ####################################################
+	####				PERSON-DYNREPO				####
+	####################################################
+
+
+	#替换person-dynrepo模块启动脚本中ES_HOST的value
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${PERSON_DYN_START_FILE}
+    echo "start-persoon-dynrepo.sh脚本配置es完成......"
+
+	#替换person-dynrepo模块启动脚本中ZOOKEEPER_HOST的value
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置zookeeper完成......"
+
+	#替换person-dynrepo模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置eureka_node完成......."
+
+	#替换person-dynrepo模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${PERSON_DYN_START_FILE}
+    echo "start-person-dynrepo.sh脚本配置eureka_port完成......."
+
+
+	####################################################
+	####				FACE-DYNREPO				####
+	####################################################
+
+	#替换face-dynrepo模块启动脚本中ES_HOST的value
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${DYNREPO_START_FILE}
+    echo "start-face-dynrepo.sh脚本配置es完成......"
+
+	#替换face-dynrepo模块启动脚本中ZOOKEEPER_HOST的value
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${DYNREPO_START_FILE}
+    echo "start-face-dynrepo.sh脚本配置zookeeper完成......"
+
+	#替换face-dynrepo模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${DYNREPO_START_FILE}
+    echo "start-face-dynrepo.sh脚本配置eureka_node完成......."
+
+	#替换face-dynrepo模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DYNREPO_START_FILE}
+    echo "start-face-dynrepo.sh脚本配置eureka_port完成......."
+
+
+	####################################################
+	####			    FACE-DISPATCH				####
+	####################################################
+
+	 #替换face-dispatch模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${DISPATCH_START_FILE}
+    echo "start-face-dispatch.sh脚本配置eureka_node完成......."
+
+    #替换face-dispatch模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_START_FILE}
+    echo "start-face-dispatch.sh脚本配置eureka_port完成......."
+
+    #替换face-dispatch模块启动脚本中KAFKA_HOST的value
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${DISPATCH_START_FILE}
+    echo "start-face-dispatch.sh脚本配置kafka完成......"
+
+	#替换face-dispatch模块启动脚本中MYSQL_HOST的value
     sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${DISPATCH_START_FILE}
-    echo "start-face-dispatch.sh脚本配置mysql完成......."
+    echo "start-face-dispatch.sh脚本配置数据库host完成......."
 
-    #替换peoplemanager模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
-    echo "start-peoman-client.sh脚本配置mysql完成......."
+	#替换face-dispatch模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_START_FILE}
+    echo "start-face-dispatch.sh脚本配置数据库username完成"
 
-    #替换peoplemanager模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置mysql完成......."
+    #替换face-dispatch模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_START_FILE}
+    echo "start-face-dispatch.sh脚本配置数据库password完成"
 
-    #替换people模块启动脚本中：key=value(替换key字段的值value)
-    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${PEOPLE_START_FILE}
-    echo "start-people.sh脚本配置mysql完成......."
 
-    #####################MQ_NAMESERVER########################
-    #配置MQ_NAMESERVER:
-    #从project-deploy.properties中读取所需配置的rocketmq_nameserver
-    mq_nameserver=$(grep "RocketMQ_Namesrv" ${CLUSTER_CONF_FILE} | cut -d "=" -f2)
-    sed -i "s#^MQ_NAMESERVER=.*#MQ_NAMESERVER=${mq_nameserver}:9876#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo echo "start-peoman-worker.sh脚本配置rocketmq完成......."
+	####################################################
+	####					CAR						####
+	####################################################
+
+	#替换vehicle-dynrepo模块启动脚本中ES_HOST的value
+    sed -i "s#^ES_HOST=.*#ES_HOST=${espro}#g" ${CAR_START_FILE}
+    echo "start-vehicle-dynrepo.sh脚本配置es完成......"
+
+	#替换vehicle-dynrepo模块启动脚本中ZOOKEEPER_HOST的value
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${CAR_START_FILE}
+    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
+
+	#替换vehicle-dynrepo模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${CAR_START_FILE}
+    echo "start-vehicle-dynrepo.sh脚本配置eureka_node完成......."
+
+	 #替换vehicle-dynrepo模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${CAR_START_FILE}
+    echo "start-vehicle-repo.sh脚本配置eureka_port完成......."
+
+
+	####################################################
+	####					COLLECT					####
+	####################################################
+
+    #替换collect模块启动脚本中ZOOKEEPER_HOST的value
+    sed -i "s#^ZOOKEEPER_HOST=.*#ZOOKEEPER_HOST=${zkpro}#g" ${COLLECT_START_FILE}
+    echo "start-collect.sh脚本配置zookeeper完成......"
+
+   #替换collect模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${COLLECT_START_FILE}
+    echo "start-collect.sh脚本配置eureka_node完成......."
+
+	#替换collect模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${COLLECT_START_FILE}
+    echo "start-collect.sh脚本配置eureka_port完成......."
 
 }
 
