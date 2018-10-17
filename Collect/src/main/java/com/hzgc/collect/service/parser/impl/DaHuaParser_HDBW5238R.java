@@ -12,9 +12,9 @@ import java.util.Date;
  * 相机配置根路径: IPC-HDBW5238R-AS
  */
 @Slf4j
-public class DaHuaParser_HDBW5238R_AS extends AbstractParser {
+public class DaHuaParser_HDBW5238R extends AbstractParser {
 
-    public DaHuaParser_HDBW5238R_AS(CollectContext collectContext) {
+    public DaHuaParser_HDBW5238R(CollectContext collectContext) {
         super(collectContext);
     }
 
