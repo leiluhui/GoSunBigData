@@ -50,6 +50,7 @@ GOSUNINSTALL_HOME=/opt/GoSunBigData
 CLUSTER_DIR=${GOSUN_HOME}/Cluster
 CLUSTER_INSTALL_DIR=${GOSUNINSTALL_HOME}/Cluster
 PEOPLEMANAGER_INSTALL_DIR=${CLUSTER_INSTALL_DIR}/peoplemanager
+FACECOMPARE_INSTALL_DIR=${CLUSTER_INSTALL_DIR}/FaceCompare
 ## service模块目录
 SERVICE_DIR=${GOSUN_HOME}/Service
 SERVICE_INSTALL_DIR=${GOSUNINSTALL_HOME}/Service
@@ -815,7 +816,7 @@ function config_facecompare(){
     zookeeperarr=(${ZOOKEEPER_IP_LIST//;/ })
         for zookeeperhost in ${zookeeperarr[@]}
         do
-            zookeeperlist="${zookeeperhost}:9092,${zookeeperlist}"
+            zookeeperlist="${zookeeperhost}:2181,${zookeeperlist}"
         done
     sed -i "s#zookeeper.address=.*#zookeeper.address=${zookeeperlist}#g" ${FACECOMPARE_WORKER_FILE}
     echo "修改worker.properties中zookeeper完成"
@@ -834,12 +835,16 @@ function distribute_facecompare(){
     CLUSTER_NODE_NUM=${#CLUSTERNODE[@]}
     num=1
     for node in ${CLUSTERNODE[@]} ;do
-        scp -r ${FACECOMPARE_DIR} root@${node}:/opt/
-        ssh root@${node} "sed -i 's#master.ip=.*#master.ip=${node}#g' /opt/FaceCompare/conf/master.properties"
-        ssh root@${node} "sed -i 's#worker.address=.*#worker.address=${node}#g' /opt/FaceCompare/conf/worker.properties"
+        if [[ -x "${FACECOMPARE_INSTALL_DIR}" ]]; then
+            ssh root@${node} "mkdir -p ${CLUSTER_INSTALL_DIR}"
+        fi
+        scp -r ${FACECOMPARE_DIR} root@${node}:${CLUSTER_INSTALL_DIR}
+        ssh root@${node} "sed -i 's#master.ip=.*#master.ip=${node}#g' ${FACECOMPARE_INSTALL_DIR}/conf/master.properties"
+        ssh root@${node} "sed -i 's#worker.address=.*#worker.address=${node}#g' ${FACECOMPARE_INSTALL_DIR}/conf/worker.properties"
+
 
         if [[ ${num} -lt ${CLUSTER_NODE_NUM} ]]; then
-            ssh root@${node} "sed -i 's#tasktracker.group=.*#tasktracker.group=facecompare-compareTask${num}#g' /opt/FaceCompare/conf/worker.properties"
+            ssh root@${node} "sed -i 's#tasktracker.group=.*#tasktracker.group=facecompare-compareTask${num}#g' ${FACECOMPARE_INSTALL_DIR}/conf/worker.properties"
             ((num++))
         fi
     done
