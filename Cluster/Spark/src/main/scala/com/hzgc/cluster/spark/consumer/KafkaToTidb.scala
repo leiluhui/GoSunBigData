@@ -15,8 +15,8 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object KafkaToTidb {
+  val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
   def main(args: Array[String]): Unit = {
-
     val properties:Properties = PropertiesUtil.getProperties
     val jdbcIp = properties.getProperty("job.kafkaToTidb.jdbc.ip")
     val driver = properties.getProperty("job.kafkaToTidb.driver")
@@ -31,7 +31,6 @@ object KafkaToTidb {
     classOf[com.mysql.jdbc.Driver]
     Class.forName(driver)
 
-    val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
     val conf = new SparkConf().setAppName(appName)
     val ssc: StreamingContext = new StreamingContext(conf, Seconds(5))
     ssc.checkpoint(checpoint)
