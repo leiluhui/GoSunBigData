@@ -84,7 +84,7 @@ function zookeeper_connect ()
 if [[ "${SERVER_HOSTS}" =~ "${KAFKA_HOST}" ]] ; then
     echo "zookeeper.connect 配置文件中已添加本机 $KAFKA_HOST 的IP以及端口，不需要重复添加！！！" | tee -a $LOG_FILE
 else
-    sed -i "s#zookeeper.connect=.*#zookeeper.connect=${KAFKA_HOST}:2181#g" ${KAFKA_SERVER_PROPERTIES}
+    sed -i "s#zookeeper.connect=.*#zookeeper.connect=${KAFKA_HOST}:2181/kafka#g" ${KAFKA_SERVER_PROPERTIES}
 fi
 }
 
