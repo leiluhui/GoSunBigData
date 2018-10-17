@@ -43,7 +43,7 @@ public class RPCRegistry implements Runnable{
         List<String> children;
         try {
             children = registry.getConnect().getChildren().forPath(Config.JOB_PATH);
-            log.info("The Worker on Zookeeper : " + children.toString());
+            log.info("The FaceCompareWorker on Zookeeper : " + children.toString());
             return children.contains(Config.WORKER_ID);
         } catch (Exception e) {
             log.error(e.getMessage());

@@ -15,9 +15,9 @@ import java.io.IOException;
 /**
  * 整合所有组件
  */
-public class Worker {
-//    private static final Logger logger = LoggerFactory.getLogger(Worker.class);
-    private static Logger log = Logger.getLogger(Worker.class);
+public class FaceCompareWorker {
+//    private static final Logger logger = LoggerFactory.getLogger(FaceCompareWorker.class);
+    private static Logger log = Logger.getLogger(FaceCompareWorker.class);
     private Comsumer comsumer;
     private MemoryManager memoryManager;
     private FileManager fileManager;
@@ -83,7 +83,7 @@ public class Worker {
         String nodeGroup = args[1];
         String port = args[2];
         String taskId = args[3];
-        Worker worker = new Worker();
+        FaceCompareWorker worker = new FaceCompareWorker();
         worker.init(workerId, port);
         RPCRegistry rpcRegistry = new RPCRegistry(workerId, nodeGroup, port, taskId);
         Thread thread = new Thread(rpcRegistry);
