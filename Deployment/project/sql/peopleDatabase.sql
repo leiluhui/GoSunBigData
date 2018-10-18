@@ -194,3 +194,12 @@ CREATE TABLE `t_picture` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='照片信息库';
+
+DROP TABLE IF EXISTS `t_mac_all`;
+CREATE TABLE `t_mac_all` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `sn` varchar(15) NOT NULL COMMENT '设备id',
+  `mac` varchar(25) DEFAULT NULL COMMENT 'mac地址',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='mac地址表';

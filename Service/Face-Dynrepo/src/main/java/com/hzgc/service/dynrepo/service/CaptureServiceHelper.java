@@ -176,6 +176,9 @@ public class CaptureServiceHelper {
                 String hostname = resultSet.getString(FaceTable.HOSTNAME);
                 int gender = resultSet.getInt(FaceTable.GENDER);
                 int age = resultSet.getInt(FaceTable.AGE);
+                //TODO
+                //读取其它属性
+
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Repository
@@ -17,8 +18,13 @@ public class ImsiDao {
 
     public List <ImsiInfo> queryByTime(Long timeParam) {
         ImsiInfo imsiInfo = new ImsiInfo();
-        imsiInfo.setStartTime(timeParam - Long.valueOf(time) * 1000);
-        imsiInfo.setEndTime(timeParam + Long.valueOf(time) * 1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Long start = timeParam - Long.valueOf(time) * 1000;
+        Long end = timeParam + Long.valueOf(time) * 1000;
+        String startTime = sdf.format(start);
+        String endTime = sdf.format(end);
+        imsiInfo.setStartTime(Long.valueOf(startTime));
+        imsiInfo.setEndTime(Long.valueOf(endTime));
         return imsiInfoMapper.selectByTime(imsiInfo);
     }
 }
