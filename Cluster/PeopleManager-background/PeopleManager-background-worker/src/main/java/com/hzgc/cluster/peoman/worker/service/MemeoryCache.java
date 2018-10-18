@@ -101,6 +101,7 @@ public class MemeoryCache {
                         float sim = FaceUtil.featureCompare(floatFeature, faceAttribute.getFeature());
                         log.info("----------MemeoryCache ComparePicture Float Sim="+sim);
                         if (sim >= this.floatThreshold) {
+                            comparePicture.setSimilarity(sim);
                             return comparePicture;
                         } else {
                             return null;
@@ -114,6 +115,7 @@ public class MemeoryCache {
             } else {
                 if (faceFeatureInfo.getScore() >= featureThreshold/100.0) {
                     log.info("----------MemeoryCache ComparePicture Bit Score="+faceFeatureInfo.getScore());
+                    comparePicture.setSimilarity(faceFeatureInfo.getScore()*100);
                     return comparePicture;
                 } else {
                     return null;
