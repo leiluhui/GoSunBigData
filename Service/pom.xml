@@ -19,5 +19,6 @@
         <module>Person-Dynrepo</module>
         <module>Vehicle-Dynrepo</module>
         <module>Fusion</module>
+        <module>Dispatch</module>
     </modules>
 </project>

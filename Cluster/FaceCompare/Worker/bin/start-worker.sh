@@ -2,7 +2,7 @@
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
 ## Filename:    start-worker.sh
-## Description: 启动Worker
+## Description: 启动FaceCompareWorker
 ## Author:      wujiaqi
 ## Created:     2018-01-08
 ################################################################################
@@ -43,8 +43,8 @@ fi
 #####################################################################
 function start_worker()
 {
-    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.Worker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} > /dev/null 2>&1 &
-    echo "start worker ..."
+    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} &
+    echo "start FaceCompareWorker ..."
 }
 
 start_worker
