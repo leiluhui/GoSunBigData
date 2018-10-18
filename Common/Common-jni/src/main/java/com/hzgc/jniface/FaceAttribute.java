@@ -47,6 +47,11 @@ public class FaceAttribute implements Serializable {
      */
     private int sharpness;
 
+    /**
+     * 人脸图片坐标
+     */
+    private int[] image_coordinate;
+
     public int getSharpness() {
         return sharpness;
     }
@@ -111,6 +116,14 @@ public class FaceAttribute implements Serializable {
         this.age = age;
     }
 
+    public int[] getImage_coordinate() {
+        return image_coordinate;
+    }
+
+    public void setImage_coordinate(int[] image_coordinate) {
+        this.image_coordinate = image_coordinate;
+    }
+
     @Override
     public String toString() {
         return "FaceAttribute{" +
@@ -122,6 +135,7 @@ public class FaceAttribute implements Serializable {
                 ", eyeglasses=" + eyeglasses +
                 ", age=" + age +
                 ", sharpness=" + sharpness +
+                ", image_coordinate=" + Arrays.toString(image_coordinate) +
                 '}';
     }
 }
