@@ -174,7 +174,7 @@ public class PeopleController {
      * @param idCard 身份证
      * @return PeopleVO 人员信息
      */
-    @ApiOperation(value = "根据身份证查询人员信息", response = PictureVO.class)
+    /*@ApiOperation(value = "根据身份证查询人员信息", response = PictureVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PEOPLEID, method = RequestMethod.GET)
     public ResponseResult<PeopleVO> searchPeopleByIdCard(String idCard) {
         if (StringUtils.isBlank(idCard)) {
@@ -188,7 +188,7 @@ public class PeopleController {
         }
 
         return ResponseResult.init(null);
-    }
+    }*/
 
     /**
      * 根据条件查询人员
