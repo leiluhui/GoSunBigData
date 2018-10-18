@@ -87,7 +87,8 @@ deviceid VARCHAR(50) NOT NULL COMMENT '抓拍设备ID',
 capturetime TIMESTAMP NOT NULL COMMENT '抓拍时间',
 surl VARCHAR(255) NOT NULL COMMENT '小图ftp路径(带hostname的ftpurl)',
 burl VARCHAR(255) NOT NULL COMMENT '大图ftp路径(带hostname的ftpurl)',
-flag INT(2) NOT NULL COMMENT '识别标签(0:未知, 1:实名, 2:新增 ,10:原图)'
+flag INT(2) NOT NULL COMMENT '识别标签(0:未知, 1:实名, 2:新增 ,10:原图)',
+similarity FLOAT DEFAULT NULL COMMENT '匹配相似度'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '人口识别记录表';
 
 

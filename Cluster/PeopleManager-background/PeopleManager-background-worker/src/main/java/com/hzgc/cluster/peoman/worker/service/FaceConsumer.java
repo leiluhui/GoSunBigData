@@ -52,7 +52,7 @@ public class FaceConsumer implements Runnable{
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(pollTime);
             for (ConsumerRecord<String, String> record : records) {
-                log.info("====================kafka value="+record.value());
+//                log.info("====================kafka value="+record.value());
                 if (record.value() != null && record.value().length() > 0) {
                     log.info("===============================PeopleCompare Start===============================");
                     FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
