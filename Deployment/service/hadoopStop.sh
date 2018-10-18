@@ -39,12 +39,10 @@ ${INSTALL_HOME}/Hadoop/hadoop/sbin/stop-all.sh
 	else 
 	    echo -e 'hadoop stop failed \n'
 	fi
-ssh root@$MASTER2 "source /etc/profile; ${INSTALL_HOME}/Hadoop/hadoop/sbin/yarn-daemon.sh stop resourcemanager"
-
 
 # 验证Hadoop是否停止成功
 echo -e "********************验证Hadoop是否停止成功*********************"
 sleep 7s
 source $(grep Source_File ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
-xcall jps | grep -E 'NameNode|NodeManager|DataNode|ResourceManager|JournalNode|DFSZKFailoverController|jps show as bellow'
+xcall jps | grep -E 'NameNode|DataNode|JournalNode|DFSZKFailoverController|jps show as bellow'
 

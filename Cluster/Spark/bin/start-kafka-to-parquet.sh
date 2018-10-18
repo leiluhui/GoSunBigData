@@ -94,8 +94,8 @@ nohup spark-submit \
 ${SPARK_LIB_DIR}/${SPARK_API_VERSION} > ${LOG_FILE} 2>&1 &
 
 if [ $? -eq 0 ];then
-    printf "\033[32m SUCCESS: Start faceOffLineAlarmJob success!!! \033[0m\n"
+    printf "\033[32m SUCCESS: Start kafka to parquet success!!! \033[0m\n"
 else
-     printf "\033[31m ERROR: Start faceOffLineAlarmJob Failure!!! \033[0m\n"
+     printf "\033[31m ERROR: Start kafka to parquet Failure!!! \033[0m\n"
      exit 1
 fi

@@ -94,19 +94,6 @@ ${INSTALL_HOME}/Hadoop/hadoop/sbin/start-dfs.sh
 	    echo -e 'hdfs failed \n'
 	fi
 sleep 7s
-${INSTALL_HOME}/Hadoop/hadoop/sbin/start-yarn.sh
-	if [ $? -eq 0 ];then
-	    echo -e 'yarn success \n'
-	else 
-	    echo -e 'yarn failed \n'
-	fi
-sleep 7s
-ssh root@$MASTER2 "${INSTALL_HOME}/Hadoop/hadoop/sbin/yarn-daemon.sh start resourcemanager"
-	if [ $? -eq 0 ];then
-	    echo -e 'ha yarn success \n'
-	else
-	    echo -e 'ha yarn failed \n'
-	fi
 ssh root@${MASTER2} "
 ${INSTALL_HOME}/Hadoop/hadoop/bin/hdfs namenode -bootstrapStandby;
 ${INSTALL_HOME}/Hadoop/hadoop/sbin/hadoop-daemon.sh start namenode
@@ -114,12 +101,9 @@ ${INSTALL_HOME}/Hadoop/hadoop/sbin/hadoop-daemon.sh start namenode
 cd  ${INSTALL_HOME}/Hadoop/hadoop/
 echo formate  >> formated 
 
-##启动mr-historyserver(实现web查看作业的历史运行情况)
-echo "启动mr-historyserver" | tee -a $LOG_FILE
-${INSTALL_HOME}/Hadoop/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver 
 sleep 7s
 
 source $(grep Source_File ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2) > /dev/null
-xcall jps
+xcall jps | grep -E 'NameNode|DataNode|JournalNode|DFSZKFailoverController|jps show as bellow'
 
 

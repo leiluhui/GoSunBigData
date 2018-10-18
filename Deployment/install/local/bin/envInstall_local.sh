@@ -24,7 +24,7 @@ sh dos2unixInstall_local.sh
 sh expectInstall_local.sh
 
 ## 配置免密登录
-sh sshSilentLogin_local.sh
+sh sshCilentLogin_local.sh
 
 ## 删除环境变量
 sh delete_env_variable_local.sh

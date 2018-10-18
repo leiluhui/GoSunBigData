@@ -137,12 +137,12 @@ function create_kafka_topic()
     ./kafka-topics.sh --create \
     --zookeeper ${zkpro} \
     --replication-factor ${repl_factor} \
-    --partitions ${part_num} \
+    --partitions 10 \
     --topic face  >> ${LOG_FILE} 2>&1 &
 
     if [ $? = 0 ];then
         echo "创建 face topic 成功...."  | tee  -a  $LOG_FILE
-        echo "kafka face topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+        echo "kafka face topic 副本数为${repl_factor},分区数为10." | tee -a $LOG_FILE
     else
         echo "创建 face topic 失败...." | tee -a $LOG_FILE
     fi
