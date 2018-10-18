@@ -16,23 +16,25 @@ transport-netty3-client-5.5.0.jar
 lang-mustache-client-5.5.0.jar
 jackson-core-2.8.10.jar
 common-util-1.0.jar
+common-es-1.0.jar
 spark-streaming-kafka-0-8_2.11-2.2.0.jar
 zkclient-0.3.jar
 common-jni-1.0.jar
-elasticsearch-spark-20_2.11-5.5.0.jar
 kafka_2.11-0.8.2.1.jar
 elasticsearch-5.5.0.jar
 common-seemmo-1.0.jar
+elasticsearch-hadoop-6.2.4.jar
 kafka-clients-1.0.0.jar
 common-collect-1.0.jar
 metrics-core-2.2.0.jar
+common-service-1.0.jar
+mysql-connector-java-5.1.38.jar
 )
-
 JARS=(
 spark-2.3.0.jar
 )
 ## spark class
-SPARK_CLASS_PARAM=com.hzgc.cluster.spark.consumer.KafkaToParquet
+SPARK_CLASS_PARAM=com.hzgc.cluster.spark.consumer.KafkaToTidb
 
 
 
@@ -46,7 +48,7 @@ cd ..
 SPARK_CONF_DIR=${SPARK_DIR}/conf
 SPARK_LIB_DIR=${SPARK_DIR}/lib
 SPARK_LOG_DIR=${SPARK_DIR}/logs
-LOG_FILE=${SPARK_LOG_DIR}/KafkaToParquet.log
+LOG_FILE=${SPARK_LOG_DIR}/KafkaToTiDB.log
 ############ 创建log目录 ###############
 if [ ! -d ${SPARK_LOG_DIR} ];then
    mkdir ${SPARK_LOG_DIR}
@@ -99,8 +101,8 @@ nohup spark-submit \
 ${SPARK_LIB_DIR}/${SPARK_API_VERSION} > ${LOG_FILE} 2>&1 &
 
 if [ $? -eq 0 ];then
-    printf "\033[32m SUCCESS: Start kafka to parquet success!!! \033[0m\n"
+    printf "\033[32m SUCCESS: Start kafkaToTidb success!!! \033[0m\n"
 else
-     printf "\033[31m ERROR: Start kafka to parquet Failure!!! \033[0m\n"
+     printf "\033[31m ERROR: Start kafkaToTidb Failure!!! \033[0m\n"
      exit 1
 fi
