@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cluster.dispach.dao.DispachRecognizeMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispach.model.DispachRecognize" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="dispatch_id" property="dispatchId" jdbcType="VARCHAR" />
+    <result column="record_time" property="recordTime" jdbcType="TIMESTAMP" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="burl" property="burl" jdbcType="VARCHAR" />
+    <result column="surl" property="surl" jdbcType="VARCHAR" />
+    <result column="similarity" property="similarity" jdbcType="REAL" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, dispatch_id, record_time, device_id, burl, surl, similarity, type, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_dispatch_recognize
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_dispatch_recognize
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.cluster.dispach.model.DispachRecognize" >
+    insert into t_dispatch_recognize (id, dispatch_id, record_time, 
+      device_id, burl, surl, 
+      similarity, type, create_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dispatchId,jdbcType=VARCHAR}, #{recordTime,jdbcType=TIMESTAMP}, 
+      #{deviceId,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{surl,jdbcType=VARCHAR}, 
+      #{similarity,jdbcType=REAL}, #{type,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispach.model.DispachRecognize" >
+    insert into t_dispatch_recognize
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dispatchId != null" >
+        dispatch_id,
+      </if>
+      <if test="recordTime != null" >
+        record_time,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="burl != null" >
+        burl,
+      </if>
+      <if test="surl != null" >
+        surl,
+      </if>
+      <if test="similarity != null" >
+        similarity,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dispatchId != null" >
+        #{dispatchId,jdbcType=VARCHAR},
+      </if>
+      <if test="recordTime != null" >
+        #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="surl != null" >
+        #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="similarity != null" >
+        #{similarity,jdbcType=REAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispach.model.DispachRecognize" >
+    update t_dispatch_recognize
+    <set >
+      <if test="dispatchId != null" >
+        dispatch_id = #{dispatchId,jdbcType=VARCHAR},
+      </if>
+      <if test="recordTime != null" >
+        record_time = #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        burl = #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="surl != null" >
+        surl = #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="similarity != null" >
+        similarity = #{similarity,jdbcType=REAL},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispach.model.DispachRecognize" >
+    update t_dispatch_recognize
+    set dispatch_id = #{dispatchId,jdbcType=VARCHAR},
+      record_time = #{recordTime,jdbcType=TIMESTAMP},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      burl = #{burl,jdbcType=VARCHAR},
+      surl = #{surl,jdbcType=VARCHAR},
+      similarity = #{similarity,jdbcType=REAL},
+      type = #{type,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
