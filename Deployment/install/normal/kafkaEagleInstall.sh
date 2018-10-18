@@ -42,8 +42,8 @@ done
 
 ## 获取源数据存放的类型
 MYSQL_INSTALL_NODE=$(grep Mysql_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
-DATABASE_USER=$(grep Database_user ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
-DATABASE_PASSWORD=$(grep Database_password ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+DATABASE_USER=$(grep MYSQL_USER ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+DATABASE_PASSWORD=$(grep MYSQL_Password ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 
 
 EAGLE_URL="jdbc:mysql://${MYSQL_INSTALL_NODE}/ke?useUnicode=true\&characterEncoding=UTF-8\&zeroDateTimeBehavior=convertToNull"
@@ -55,22 +55,20 @@ sed -i "s;kafka.eagle.password=.*;kafka.eagle.password=${DATABASE_PASSWORD};g"  
 
 ## 配置环境变量
 kehome_exists=`grep "export KE_HOME=" /etc/profile`
-
-# 存在"export KE_HOME="这一行：则替换这一行
+path_exists=`grep '$KE_HOME/bin' /etc/profile`
+# 存在"export KE_HOME="这一行：则替换这一行；不存在则添加
     if [ "${kehome_exists}" != "" ];then
          `sed -i "s#^export KE_HOME=.*#export KE_HOME=${KAFKA_EAGLE_HOME}#g" /etc/profile`
+         else
+         `echo '#KE_HOME'>>/etc/profile ;echo export KE_HOME=\${KAFKA_EAGLE_HOME} >> /etc/profile`
+    fi
+# 存在"export PATH=$KE_HOME"这一部分：则替换这一行；不存在则添加
+    if [[ "X${path_exists}" != "X" ]]; then
+         `sed -i 's#^export PATH=\$KE_HOME.*#export PATH=\$KE_HOME/bin:\$PATH#g' /etc/profile`
+        else
+         `echo 'export PATH=$KE_HOME/bin:\$PATH'  >> /etc/profile; echo ''>> /etc/profile`
     fi
 
-# 存在"export PATH=$KE_HOME"这一行：则替换这一行
-    if [ "${kehome_exists}" != "" ];then
-        `sed -i 's#^export PATH=\$KE_HOME.*#export PATH=\$KE_HOME/bin:\$PATH#g' /etc/profile`
-    fi
-
- # 不存在这两行，则追加在文件末尾
-    if [ "${kehome_exists}" = "" ]; then
-        `echo '#KE_HOME'>>/etc/profile ;echo export KE_HOME=\${KAFKA_EAGLE_HOME} >> /etc/profile`
-        `echo 'export PATH=$KE_HOME/bin:\$PATH'  >> /etc/profile; echo ''>> /etc/profile`
-    fi
     `source /etc/profile`
-	
+
 set +x
