@@ -29,15 +29,17 @@ public class FaceExtractService {
         pictureData.setImageData(imageBytes);
 //        FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(imageBytes, PictureFormat.JPG);
         ArrayList <SmallImage> smallImages = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
-        log.info("*****************" + JacksonUtil.toJson(smallImages));
+        if (null != smallImages && smallImages.size() > 0) {
+            pictureData.setSmallImage(smallImages);
+            pictureData.setFaceTotal(smallImages.size());
+            log.info("Face extract successful, image contains feature");
+            return pictureData;
+        }
 //        if (null != faceAttribute.getFeature() && faceAttribute.getFeature().length > 0) {
 //            log.info("Face extract successful, image contains feature");
 //            pictureData.setFeature(faceAttribute);
 //            return pictureData;
 //        }
-        if (smallImages.size() > 0) {
-            return pictureData;
-        }
         log.info("Face extract failed, image not contains feature");
         return null;
     }

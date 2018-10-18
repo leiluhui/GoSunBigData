@@ -22,11 +22,10 @@ CONF_DIR=${HOME_DIR}/conf
 #---------------------------------------------------------------------#
 EUREKA_IP=172.18.18.40     ##注册中心的ip地址
 EUREKA_PORT=9000
-ES_HOST=172.18.18.105
-ZOOKEEPER_HOST=172.18.18.105:2181
-MYSQL_HOST=172.18.18.105:3306
+ZOOKEEPER_HOST=172.18.18.202:2181
+MYSQL_HOST=172.18.18.202:4000
 QUERY_TIME=30
-BOOTSTRAP_SERVERS=172.18.18.100:9092
+KAFKA_HOST=172.18.18.202:9092,172.18.18.103:9092,172.18.18.104:9092,172.18.18.108:9092
 
 
 #---------------------------------------------------------------------#
@@ -52,7 +51,7 @@ function start_springCloud()
        --spring.cloud.config.enabled=false \
        --mysql.host=${MYSQL_HOST} \
        --query.time=${QUERY_TIME} \
-       --bootstrap.servers=${BOOTSTRAP_SERVERS} 2>&1 &
+       --kafka.host=${KAFKA_HOST} 2>&1 &
    fi
 
 }
