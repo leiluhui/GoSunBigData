@@ -69,7 +69,7 @@
     <!--查询某小区某月迁出人员-->
     <select id="searchCommunityOutPeople" resultMap="BaseResultMap"
             parameterType="com.hzgc.service.community.param.NewAndOutPeopleSearchDTO" >
-        select peopleid, isconfirm
+        select distinct peopleid, isconfirm
         from t_people_out
         <where>
             <if test="month != null" >
