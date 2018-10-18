@@ -12,7 +12,7 @@ FROM (
         FROM t_people
         WHERE community is NOT NULL
           AND (lasttime <= DATE_SUB(now(),INTERVAL 3 MONTH)
-          OR lasttime IS NOT NULL)
+          OR lasttime IS NULL)
 ) AS people LEFT JOIN t_picture
 ON people.id = t_picture.peopleid) AS out;
 
