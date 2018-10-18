@@ -57,8 +57,8 @@ public class DispatchService {
             RecordMetadata metaData = resultFuture.get().getRecordMetadata();
             ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
             if (metaData != null) {
-                log.info("Send Kafka successfully! message:[topic:{}, data:{}]",
-                        metaData.topic(), JacksonUtil.toJson(data));
+                log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
+                        metaData.topic(), key ,JacksonUtil.toJson(data));
             }
         } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
