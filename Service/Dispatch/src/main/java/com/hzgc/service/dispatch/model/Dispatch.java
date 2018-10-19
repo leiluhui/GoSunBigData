@@ -15,6 +15,8 @@ public class Dispatch {
 
     private String bitFeature;
 
+    private Float threshold;
+
     private String car;
 
     private String mac;
@@ -75,6 +77,14 @@ public class Dispatch {
 
     public void setBitFeature(String bitFeature) {
         this.bitFeature = bitFeature == null ? null : bitFeature.trim();
+    }
+
+    public Float getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(Float threshold) {
+        this.threshold = threshold;
     }
 
     public String getCar() {
