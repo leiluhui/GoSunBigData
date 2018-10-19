@@ -48,7 +48,7 @@ public class FaceAttribute implements Serializable {
     private int sharpness;
 
     /**
-     * 图片坐标
+     * 人脸图片坐标[x,y,width,height]
      */
     private int[] image_coordinate;
 
