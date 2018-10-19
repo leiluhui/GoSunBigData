@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @Service
 @Slf4j
 public class PlatformService {
@@ -141,6 +142,38 @@ public class PlatformService {
         }
     }
 
+    public Map<String, DetectorQueryDTO> getInfoByBatchSn(List<String> snList){
+        List<String> snListTemp = new ArrayList<>();
+        if(snList != null && snList.size() > 0){
+            Map<String, DetectorQueryDTO> returnResult = new HashMap<>();
+            for(String sn : snList){
+                DetectorQueryDTO detectorQuery = DetectorQueryDTOSingleton.getInstance().getDetectorQueryDTO(sn);
+                if(detectorQuery != null){
+                    returnResult.put(sn, detectorQuery);
+                } else {
+                    snListTemp.add(sn);
+                }
+            }
+            if(snListTemp.size() > 0){
+                log.debug("Method:getDetectorInfoByBatchIpc, ipc list is:" + Arrays.toString(snListTemp.toArray()));
+                Map<String, DetectorQueryDTO> searchMap = getImsiDeviceInfoByBatchId(snListTemp);
+                for(String sn : searchMap.keySet()){
+                    DetectorQueryDTO searchdetector = searchMap.get(sn);
+                    if (searchdetector != null) {
+                        returnResult.put(sn, searchdetector);
+                        DetectorQueryDTOSingleton.getInstance().setDetectorQueryDTO(sn, searchdetector);
+                    }
+                }
+            }
+            return returnResult;
+        } else if(snList != null){
+            return new HashMap<>();
+        } else {
+            log.error("Method:getDetectorInfoByBatchIpc, ipc list is null");
+            return new HashMap<>();
+        }
+    }
+
     public Map<String, CameraQueryDTO> getCameraInfoByBatchIpc(List<String> ipcList) {
         ParameterizedTypeReference<Map<String, CameraQueryDTO>> parameterizedTypeReference =
                 new ParameterizedTypeReference<Map<String, CameraQueryDTO>>() {
@@ -180,6 +213,51 @@ public class PlatformService {
             log.error("Method:getCameraInfoByBatchIpc, ipc list is null");
             return new HashMap<>();
         }
+    }
+}
+
+class DetectorQueryDTOSingleton {
+    private Map<String, DetectorQueryInfo> xxxQueryInfoMap = new ConcurrentHashMap<>();
+    private static DetectorQueryDTOSingleton instance = new DetectorQueryDTOSingleton();
+    private DetectorQueryDTOSingleton(){
+
+    }
+    public static DetectorQueryDTOSingleton getInstance() {
+        return instance;
+    }
+    DetectorQueryDTO getDetectorQueryDTO(String sn){
+        if(sn != null && sn.length() > 0){
+            DetectorQueryInfo detectorQueryInfo = xxxQueryInfoMap.get(sn);
+            if (detectorQueryInfo != null) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - detectorQueryInfo.getTimeStamp() <= 15000) {
+                    return detectorQueryInfo.getDetectorQueryDTO();
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    void setDetectorQueryDTO(String sn, DetectorQueryDTO detectorQueryDTO) {
+        if (sn != null && sn.length() > 0 && detectorQueryDTO != null) {
+            DetectorQueryInfo detectorQueryInfo = new DetectorQueryInfo();
+            detectorQueryInfo.setTimeStamp(System.currentTimeMillis());
+            detectorQueryInfo.setDetectorQueryDTO(detectorQueryDTO);
+            detectorQueryInfo.setSn(sn);
+            xxxQueryInfoMap.put(sn, detectorQueryInfo);
+        }
+    }
+
+    @Data
+    static class DetectorQueryInfo {
+        private String sn;
+        private long timeStamp;
+        DetectorQueryDTO detectorQueryDTO;
     }
 }
 
