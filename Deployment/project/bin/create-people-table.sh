@@ -22,7 +22,13 @@ MYSQL_PORT=`echo ${MYSQL_HOST} | cut -d ':' -f2`
 MYSQL_USER=$(grep mysql_user ${CONF_FILE}  | cut -d '=' -f2)
 MYSQL_PASSWORD=$(grep mysql_password ${CONF_FILE} | cut -d '=' -f2)
 
-mysql -h ${MYSQL_IP} -u ${MYSQL_USER} -P ${MYSQL_PORT} <<EOF
+IS_TIDB=$(grep is_TIDB ${CONF_FILE} | cut -d '=' -f2)
+
+if [[ -z ${IS_TIDB} ]]; then
+    PASSWORD="-pHzgc@123"
+fi
+
+mysql -h ${MYSQL_IP} -u ${MYSQL_USER} -P ${MYSQL_PORT} ${PASSWORD} << EOF
 source ${SQL_DIR}/peopleDatabase.sql;
 EOF
 
@@ -34,8 +40,6 @@ EOF
 echo ""
 echo "=========================================================="
 echo "$(date "+%Y-%m-%d  %H:%M:%S")"
-
-main
 
 set +x
 
