@@ -21,6 +21,22 @@
         from t_dispatch_recognize
         where id = #{id,jdbcType=VARCHAR}
     </select>
+    <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.hzgc.service.dispatch.param.DispatchRecognizeDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dispatch_recognize
+        <where>
+            <if test="searchType != null ">
+                type = #{searchType,jdbcType=INTEGER}
+            </if>
+            <if test="time != null ">
+                and create_time = #{time,jdbcType=TIMESTAMP}
+            </if>
+            <if test="start != null AND limit != null">
+                limit #{start,jdbcType=INTEGER} , #{limit,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_dispatch_recognize
         where id = #{id,jdbcType=VARCHAR}

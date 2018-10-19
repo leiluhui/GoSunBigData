@@ -49,14 +49,14 @@ object KafkaToTidb {
     })
     //second1:窗口长度，second2:滑动间隔
     val result: DStream[(String, Int)] = windowed.reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(3600), Seconds(60))
-    result.filter(x=> x._2 >= 10).foreachRDD(it => {
+    result.filter(x=> x._2 >= 3).foreachRDD(it => {
         it.foreachPartition(datas => {
           val conn = DriverManager.getConnection(jdbc)
-          val prep = conn.prepareStatement("INSERT INTO t_imsi_reduce (imsi,number,savetime) VALUES (?, ?, ?) ")
+          val prep = conn.prepareStatement("INSERT INTO t_imsi_filter (imsi,count,currenttime) VALUES (?, ?, ?) ")
           datas.foreach(data => {
             val imsi: String = data._1
             val num = data._2
-            val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val sdf = new SimpleDateFormat("yyyyMMdd")
             val nowTime = new Date().getTime
             val time =  sdf.format(nowTime)
             prep.setString(1, imsi)

@@ -3,9 +3,7 @@ package com.hzgc.service.dispatch.controller;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.service.dispatch.param.DispatchDTO;
-import com.hzgc.service.dispatch.param.DispatchVO;
-import com.hzgc.service.dispatch.param.SearchDispatchDTO;
+import com.hzgc.service.dispatch.param.*;
 import com.hzgc.service.dispatch.service.DispatchService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -95,5 +95,18 @@ public class DispatchController {
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_DEPLOY, method = RequestMethod.POST)
     public ResponseResult<DispatchVO> searchDeploy(@RequestBody SearchDispatchDTO parm) {
         return ResponseResult.init(new DispatchVO());
+    }
+
+    /**
+     *@Param dispatchRecognizeDTO (布控告警历史查询)
+     */
+    @ApiOperation(value = "布控告警历史查询", response = DispatchRecognizeVO.class)
+    @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_HISTORY, method = RequestMethod.POST)
+    public ResponseResult<List<DispatchRecognizeVO>> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
+        if (null == dispatchRecognizeDTO) {
+            log.info("Dispatch search history param is null");
+        }
+        ResponseResult<List<DispatchRecognizeVO>> responseResult = dispatchService.searchDeployRecognize(dispatchRecognizeDTO);
+        return responseResult;
     }
 }
