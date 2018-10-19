@@ -31,7 +31,6 @@ public class FusionKafka {
     @Autowired
     private FusionImsiMapper fusionImsiMapper;
 
-    @Transactional(rollbackFor = Exception.class)
     @KafkaListener(topics = {"PeoMan-Fusion"})
     public void listen(ConsumerRecord<String,String> record){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
