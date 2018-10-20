@@ -33,6 +33,12 @@ KAFKA_EAGLE_HOME=${INSTALL_HOME}/Kafka-eagle/kafka-eagle
 ZOOKEEPER_HOSTNAME_LISTS=$(grep Zookeeper_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 ZOOKEEPER_HOSTNAME_ARRY=(${ZOOKEEPER_HOSTNAME_LISTS//;/ })
 
+if [[ ! -e "${INSTALL_HOME}/Kafka-eagle" ]]; then
+    mkdir -p ${INSTALL_HOME}/Kafka-eagle
+fi
+
+cp -r ${KAFKA_SOURCE_DIR}/kafka-eagle ${INSTALL_HOME}/Kafka-eagle
+
 kfkepro=''
 for zk in ${ZOOKEEPER_HOSTNAME_ARRY[@]}
 do
@@ -42,11 +48,12 @@ done
 
 ## 获取源数据存放的类型
 MYSQL_INSTALL_NODE=$(grep Mysql_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+MYSQL_PORT=$(grep MYSQL_Port ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 DATABASE_USER=$(grep Database_user ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 DATABASE_PASSWORD=$(grep Database_password ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 
 
-EAGLE_URL="jdbc:mysql://${MYSQL_INSTALL_NODE}/ke?useUnicode=true\&characterEncoding=UTF-8\&zeroDateTimeBehavior=convertToNull"
+EAGLE_URL="jdbc:mysql://${MYSQL_INSTALL_NODE}:${MYSQL_PORT}/ke?useUnicode=true\&characterEncoding=UTF-8\&zeroDateTimeBehavior=convertToNull"
 echo ${EAGLE_URL}
 sed -i "s;kafka.eagle.url=.*;kafka.eagle.url=${EAGLE_URL};g"  ${KAFKA_EAGLE_HOME}/conf/system-config.properties
 sed -i "s;kafka.eagle.username=.*;kafka.eagle.username=${DATABASE_USER};g"  ${KAFKA_EAGLE_HOME}/conf/system-config.properties
