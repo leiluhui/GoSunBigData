@@ -10,4 +10,5 @@ class ComparePicture {
     private byte[] bitFeature;
     private Integer flagId;
     private String name;
+    private Float similarity;
 }

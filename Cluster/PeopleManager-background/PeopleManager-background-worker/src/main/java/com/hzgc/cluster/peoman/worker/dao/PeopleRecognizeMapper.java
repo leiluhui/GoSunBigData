@@ -9,6 +9,8 @@ public interface PeopleRecognizeMapper {
 
     int insert(PeopleRecognize record);
 
+    int insertUpdate(PeopleRecognize record);
+
     int insertSelective(PeopleRecognize record);
 
     PeopleRecognize selectByPrimaryKey(String id);

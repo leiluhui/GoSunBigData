@@ -15,4 +15,5 @@ public class PeopleRecognize {
     private String surl;
     private String burl;
     private Integer flag;
+    private Float similarity;
 }

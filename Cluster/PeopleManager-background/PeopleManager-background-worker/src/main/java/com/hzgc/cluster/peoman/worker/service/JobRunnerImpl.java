@@ -1,19 +1,19 @@
 package com.hzgc.cluster.peoman.worker.service;
 
-import com.github.ltsopensource.spring.boot.annotation.JobRunner4TaskTracker;
-import com.github.ltsopensource.tasktracker.Result;
-import com.github.ltsopensource.tasktracker.runner.JobContext;
-import com.github.ltsopensource.tasktracker.runner.JobRunner;
-import com.hzgc.common.service.peoman.JobRunnerProtocol;
+import com.hzgc.cluster.peoman.worker.zookeeper.WorkerRegister;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.List;
 
-@JobRunner4TaskTracker
+@Component
 @Slf4j
-public class JobRunnerImpl implements JobRunner {
+public class JobRunnerImpl implements ApplicationRunner {
     @Autowired
     @SuppressWarnings("unused")
     private InnerConsumer innerConsumer;
@@ -26,42 +26,41 @@ public class JobRunnerImpl implements JobRunner {
     @SuppressWarnings("unused")
     private LoadDataFromTiDB loadDataFromTiDB;
 
-    @Autowired
-    private WorkerReg workerReg;
-
-    @Value("${lts.tasktracker.node-group}")
+    @Value("${zookeeper.address}")
     @SuppressWarnings("unused")
-    private String workId;
+    private String zkAddress;
 
-    private boolean isRun = false;
 
     @Override
-    public Result run(JobContext jobContext) throws Throwable {
-        Map<String, String> extParams = jobContext.getJob().getExtParams();
-        Result result = new Result();
-        log.info("ExeParams is : " + extParams);
-        if (extParams.containsKey(JobRunnerProtocol.STOP)) {
-            result.setMsg(JobRunnerProtocol.SUCCESSFULL);
-            log.info("Start stop worker, worker id is ?", workId);
-            System.exit(0);
-        }
-        if (extParams.containsKey(JobRunnerProtocol.RUN)) {
-            if (!isRun) {
-                log.info("Start run worker, worker id is ?" + workId);
-                int offset = Integer.parseInt(extParams.get(JobRunnerProtocol.OFFSET));
-                int limit = Integer.parseInt(extParams.get(JobRunnerProtocol.LIMIT));
-                loadDataFromTiDB.load(offset, limit);
-                innerConsumer.initInnerConsumer();
-                Thread thread = new Thread(innerConsumer);
-                thread.start();
-                faceConsumer.initFaceConsumer(workId);
-                new Thread(faceConsumer).start();
-                isRun = true;
+    public void run(ApplicationArguments args) throws Exception {
+        WorkerRegister workerRegister = new WorkerRegister(zkAddress);
+        List<String> nodes = workerRegister.getParenNode();
+        log.info("========================Start run worker, zkAddress={}, nodes={}", zkAddress, StringUtils.join(nodes, ","));
+        int offset = 0;
+        int limit = 3000000;
+        String workId = "0";
+        if (nodes != null && nodes.size() > 0) {
+            String lastNode = nodes.get(nodes.size() -1);
+            if (lastNode.equals(String.valueOf(nodes.size() -1))) {
+                offset = nodes.size() * limit;
+                workId = String.valueOf(nodes.size());
             } else {
-                log.info("Worker is already run ,worker id is ?", workId);
-                result.setMsg(JobRunnerProtocol.ALREADYRUN);
+                for (int i=0; i<nodes.size(); i++) {
+                    if (! nodes.contains(String.valueOf(i))) {
+                        offset = i * limit;
+                        workId = String.valueOf(i);
+                        break;
+                    }
+                }
             }
         }
-        return result;
+        workerRegister.regist(workId, "["+offset+","+(offset+limit)+"]");
+        log.info("========================Start run worker, worker id is {} ", workId);
+        loadDataFromTiDB.load(offset, limit);
+        innerConsumer.initInnerConsumer();
+        Thread thread = new Thread(innerConsumer);
+        thread.start();
+        faceConsumer.initFaceConsumer(workId);
+        new Thread(faceConsumer).start();
     }
 }
