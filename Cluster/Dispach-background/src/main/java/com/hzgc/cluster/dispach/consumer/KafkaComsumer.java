@@ -4,6 +4,7 @@ import com.hzgc.cluster.dispach.cache.CaptureCache;
 import com.hzgc.cluster.dispach.cache.TableCache;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
+import com.hzgc.common.collect.bean.MacObject;
 import com.hzgc.common.util.json.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -33,7 +34,7 @@ public class KafkaComsumer {
 
     @KafkaListener(topics = {"${kafka.topic.mac}"}, groupId = "${kafka.data.group.id}")
     public void receiveMac(String message){
-
+        captureCache.pushMac(JacksonUtil.toObject(message, MacObject.class));
     }
 
     @KafkaListener(topics = {"${kafka.topic.command}"})

@@ -17,7 +17,7 @@ import java.util.Map;
 public class TableCache {
     @Autowired
     private DispachMapper dispachMapper;
-//    private static TableCache tableCache;
+    //    private static TableCache tableCache;
     private Map<Long, List<DispachData>> faceInfos; //人脸布控信息
     private Map<Long, byte[][]> faceFeatures;
     private Map<Long, List<DispachData>> carInfos;  //车辆布控信息
@@ -194,6 +194,10 @@ public class TableCache {
 
     public List<DispachData> getCarInfo(Long region){
         return carInfos.get(region);
+    }
+
+    public List<DispachData> getMacInfo(Long region){
+        return macInfos.get(region);
     }
 
 //    public static TableCache getInstance(){

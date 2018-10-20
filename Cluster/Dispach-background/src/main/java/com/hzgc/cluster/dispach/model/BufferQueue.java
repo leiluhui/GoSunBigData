@@ -17,6 +17,15 @@ public class BufferQueue<T> {
         }
     }
 
+    public void push(T data){
+        writeLock.lock();
+        try {
+            list.add(data);
+        }finally {
+            writeLock.unlock();
+        }
+    }
+
     public T get() {
         writeLock.lock();
         if(list.size() == 0){

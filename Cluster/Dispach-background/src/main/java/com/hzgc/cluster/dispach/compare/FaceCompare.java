@@ -6,22 +6,30 @@ import com.hzgc.cluster.dispach.dao.DispachMapper;
 import com.hzgc.cluster.dispach.dao.DispachRecognizeMapper;
 import com.hzgc.cluster.dispach.model.Dispach;
 import com.hzgc.cluster.dispach.model.DispachRecognize;
+import com.hzgc.cluster.dispach.producer.AlarmMessage;
+import com.hzgc.cluster.dispach.producer.Producer;
 import com.hzgc.common.collect.bean.FaceObject;
+import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class FaceCompare implements Runnable{
     private boolean action;
@@ -35,10 +43,14 @@ public class FaceCompare implements Runnable{
     DispachMapper dispatureMapper;
     @Autowired
     private DispachRecognizeMapper dispatureRecognizeMapper;
-    @Value("${simple.max}")
-    private float simple_max;
+    @Autowired
+    InnerService innerService;
+    @Autowired
+    private Producer producer;
     @Value("${first.compare.size}")
     private int sizeFirstCompareResult;
+    @Value("${kafka.topic.dispatch-show}")
+    private String topic;
 
     public FaceCompare(){
         action = true;
@@ -47,10 +59,11 @@ public class FaceCompare implements Runnable{
     @Override
     public void run() {
         while (action){
+            long start = System.currentTimeMillis();
             List<FaceObject> faceObjects = captureCache.getFace();
             if(faceObjects.size() == 0){
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -87,20 +100,52 @@ public class FaceCompare implements Runnable{
                         disp = dispature;
                     }
                 }
-                if(sim <= simple_max){
+                if(sim == 0.0f){
                     continue;
                 }
+
                 DispachRecognize dispatureRecognize = new DispachRecognize();
                 dispatureRecognize.setDispatchId(disp.getId());
                 dispatureRecognize.setRecordTime(new Timestamp(System.currentTimeMillis()));
                 dispatureRecognize.setDeviceId(faceObject.getIpcId());
-                dispatureRecognize.setBurl(faceObject.getbFtpUrl());
-                dispatureRecognize.setSurl(faceObject.getsFtpUrl());
+                String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
+                String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
+                dispatureRecognize.setBurl(burl);
+                dispatureRecognize.setSurl(surl);
                 dispatureRecognize.setSimilarity(sim);
                 dispatureRecognize.setType(0);
-                dispatureRecognize.setCreateTime(new Timestamp(System.currentTimeMillis()));
+//                dispatureRecognize.setCreateTime(faceObject.getTimeStamp());
                 dispatureRecognizeMapper.insert(dispatureRecognize);
+                AlarmMessage alarmMessage = new AlarmMessage();
+                alarmMessage.setDeviceId(faceObject.getIpcId());
+                alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
+                alarmMessage.setType(0);
+                alarmMessage.setSim(sim);
+                alarmMessage.setName(disp.getName());
+                alarmMessage.setIdCard(disp.getIdcard());
+                String ip = innerService.hostName2Ip(faceObject.getHostname()).getIp();
+                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                alarmMessage.setId(disp.getId());
+                alarmMessage.setTime(faceObject.getTimeStamp());
+                producer.send(topic, JacksonUtil.toJson(alarmMessage));
             }
+            log.info("The size of face compared is " + faceObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }
+    }
+
+    public static void main(String args[]){
+        AlarmMessage alarmMessage = new AlarmMessage();
+        alarmMessage.setDeviceId("设备号");
+        alarmMessage.setDeviceName("设备名");
+        alarmMessage.setType(0);
+        alarmMessage.setSim(100);
+        alarmMessage.setMac("Mac");
+        alarmMessage.setPlate("车牌号");
+        alarmMessage.setName("姓名");
+        alarmMessage.setIdCard("身份证号");
+        alarmMessage.setCaptureImage("抓拍图片");
+        alarmMessage.setId("布控信息Id");
+        alarmMessage.setTime("抓拍时间");
+        System.out.println(JacksonUtil.toJson(alarmMessage));
     }
 }
