@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class SearchDispatchDTO implements Serializable {
     @ApiModelProperty(value = "查询类型（0：姓名，1：身份证，2：车牌，3：MAC）")
     @NotNull
-    private String searchType;
+    private int searchType;
     @ApiModelProperty(value = "查询内容")
     @NotNull
     private String searchVal;
