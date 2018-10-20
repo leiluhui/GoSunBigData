@@ -72,12 +72,6 @@ rpm -ivh ${MYSQL_RPM_DIR}/mysql-community-libs-5.7.19-1.el7.x86_64.rpm
 rpm -ivh ${MYSQL_RPM_DIR}/mysql-community-client-5.7.19-1.el7.x86_64.rpm
 rpm -ivh ${MYSQL_RPM_DIR}/mysql-community-server-5.7.19-1.el7.x86_64.rpm
 
-
-## 修改mysql配置
-num=`grep -n "\[mysqld\]" /etc/my.cnf | cut -d ":" -f1`
-str='sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
-sed -i "${num} a ${str}" /etc/my.cnf
-
 ## 启动mysql 服务
 service mysqld start
 

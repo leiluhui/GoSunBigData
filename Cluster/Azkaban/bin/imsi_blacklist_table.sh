@@ -4,9 +4,9 @@ PORT=4000
  mysql -u root -h ${IP} -P ${PORT} << EOF
 use people;
 
-INSERT INTO t_imsi_blacklist (imsi,currenttime)
+INSERT INTO t_imsi_blacklist (imsi, currenttime)
 SELECT DISTINCT f1.imsi, f2.currenttime
-FROM (SELECT imsi, savetime, COUNT(imsi) AS count
+FROM (SELECT imsi, savetime, FROM_UNIXTIME(savetime/1000,"%Y%m%d")
       FROM (
             SELECT imsi, savetime
             FROM t_imsi_all
