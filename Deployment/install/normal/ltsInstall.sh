@@ -27,10 +27,13 @@ LTS_ZOO_DIR=${LTS_CONF_DIR}/zoo        ##安装完成之后zoo的配置文件目
 ##获取clusterName
 CLUSTER_NAME=$(grep ClusterName ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)     ##lts集群的名字
 REGISTRY_ADDRESS=$(grep RegistryAddress ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2) ##lts集群所在的节点
+MYSQL_USERNAME=$(grep MYSQL_USER ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2 )  ##lts连接mysql的用户名
+MYSQL_PASSWORD=$(grep MYSQL_Password ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)  ##lts连接mysql的密码
+MYSQL_PORT=$(grep MYSQL_Port ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)  ##lts连接mysql的端口号
 LTS_USERNAME=$(grep Lts_UserName ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)    ##lts集群monitor的用户
 LTS_PASSWORD=$(grep Lts_PassWord ${CONF_DIR}/cluster_conf.properties | cut -d '=' -f2)    ##lts集群monitor的密码
 ZK_REGISTRY="zookeeper://${REGISTRY_ADDRESS}:2181"
-JDBC_URL="jdbc:mysql://${REGISTRY_ADDRESS}:4000/lts"
+JDBC_URL="jdbc:mysql://${REGISTRY_ADDRESS}:${MYSQL_PORT}/lts"
 MONGO_ADDRESS="${REGISTRY_ADDRESS}:27017"
 
 
@@ -61,12 +64,20 @@ function config_lts_properties(){
       flag4=$?
       sed -i "s#^configs.jdbc.url=.*#configs.jdbc.url=${JDBC_URL}#g" ${LTS_CONF_DIR}/lts-admin.cfg
       flag5=$?
+      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g" ${LTS_CONF_DIR}/lts-admin.cfg
+      flag18=$?
+      sed -i "s#^configs.jdbc.password=.*#configs.jdbc.password=${MYSQL_PASSWORD}#g" ${LTS_CONF_DIR}/lts-admin.cfg
+      flag19=$?
       sed -i "s#^registryAddress=.*#registryAddress=${ZK_REGISTRY}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
       flag6=$?
       sed -i "s#^clusterName=.*#clusterName=${CLUSTER_NAME}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
       flag7=$?
       sed -i "s#^configs.jdbc.url=.*#configs.jdbc.url=${JDBC_URL}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
       flag8=$?
+      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
+      flag20=$?
+      sed -i "s#^configs.jdbc.password=.*#configs.jdbc.password=${MYSQL_PASSWORD}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
+      flag21=$?
       sed -i "s#^configs.mongo.addresses=.*#configs.mongo.addresses=${MONGO_ADDRESS}#g" ${LTS_CONF_DIR}/lts-monitor.cfg
       flag9=$?
       sed -i "s#^registryAddress=.*#registryAddress=${ZK_REGISTRY}#g" ${LTS_ZOO_DIR}/jobtracker.cfg
@@ -75,6 +86,10 @@ function config_lts_properties(){
       flag11=$?
       sed -i "s#^configs.jdbc.url=.*#configs.jdbc.url=${JDBC_URL}#g" ${LTS_ZOO_DIR}/jobtracker.cfg
       flag12=$?
+      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g" ${LTS_ZOO_DIR}/jobtracker.cfg
+      flag22=$?
+      sed -i "s#^configs.jdbc.password=.*#configs.jdbc.password=${MYSQL_PASSWORD}#g" ${LTS_ZOO_DIR}/jobtracker.cfg
+      flag23=$?
       sed -i "s#^configs.mongo.addresses=.*#configs.mongo.addresses=${MONGO_ADDRESS}#g" ${LTS_ZOO_DIR}/jobtracker.cfg
       flag13=$?
       sed -i "s#^registryAddress=.*#registryAddress=${ZK_REGISTRY}#g"  ${LTS_ZOO_DIR}/lts-monitor.cfg
@@ -83,10 +98,14 @@ function config_lts_properties(){
       flag15=$?
       sed -i "s#^configs.jdbc.url=.*#configs.jdbc.url=${JDBC_URL}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
       flag16=$?
+      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g"${LTS_ZOO_DIR}/lts-monitor.cfg
+      flag24=$?
+      sed -i "s#^configs.jdbc.password=.*#configs.jdbc.password=${MYSQL_PASSWORD}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
+      flag25=$?
       sed -i "s#^configs.mongo.addresses=.*#configs.mongo.addresses=${MONGO_ADDRESS}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
       flag17=$?
       
-      if [[ ($flag1 == 0)  && ($flag2 == 0)  &&  ($flag3 == 0)  && ($flag4 == 0)  &&  ($flag5 == 0)  && ($flag6 == 0)  && ($flag7 == 0)  && ($flag8 == 0)  && ($flag9 == 0)  && ($flag10 == 0)  && ($flag11 == 0)  && ($flag12 == 0)  && ($flag13 == 0)  && ($flag14 == 0)  && ($flag15 == 0)  && ($flag16 == 0)  && ($flag17 == 0) ]]; then
+      if [[ ($flag1 == 0)  && ($flag2 == 0)  &&  ($flag3 == 0)  && ($flag4 == 0)  &&  ($flag5 == 0)  && ($flag6 == 0)  && ($flag7 == 0)  && ($flag8 == 0)  && ($flag9 == 0)  && ($flag10 == 0)  && ($flag11 == 0)  && ($flag12 == 0)  && ($flag13 == 0)  && ($flag14 == 0)  && ($flag15 == 0)  && ($flag16 == 0)  && ($flag17 == 0) && ($flag18 == 0) && ($flag19 == 0) && ($flag20 == 0) && ($flag21 == 0) && ($flag22 == 0) && ($flag23 == 0) && ($flag24 == 0) && ($flag25 == 0) ]]; then
           echo "lts目录下的文件配置成功！" | tee -a ${LOG_FILE}
           else
           echo "lts目录下的文件配置失败！" | tee -a ${LOG_FILE}
