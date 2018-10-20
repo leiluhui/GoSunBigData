@@ -2,7 +2,6 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -52,7 +51,7 @@ public class FaceConsumer implements Runnable{
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(pollTime);
             for (ConsumerRecord<String, String> record : records) {
-                log.info("====================kafka value="+record.value());
+//                log.info("====================kafka value="+record.value());
                 if (record.value() != null && record.value().length() > 0) {
                     log.info("===============================PeopleCompare Start===============================");
                     FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
