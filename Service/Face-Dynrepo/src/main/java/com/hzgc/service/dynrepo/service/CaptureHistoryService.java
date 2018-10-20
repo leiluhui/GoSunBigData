@@ -7,6 +7,7 @@ import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.facedynrepo.FaceTable;
+import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
 import com.hzgc.service.dynrepo.bean.CapturedPicture;
@@ -39,7 +40,7 @@ public class CaptureHistoryService {
     @Autowired
     private InnerService innerService;
 
-    public List<SingleCaptureResult> getCaptureHistory(CaptureOption option) {
+    public ResponseResult<List<SingleCaptureResult>> getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
         log.info("The current query don't needs to be grouped by ipcid");
         return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDeviceIpcs()), sortParam);
@@ -119,11 +120,10 @@ public class CaptureHistoryService {
         return results;
     }
 
-    private List<SingleCaptureResult> getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam) {
+    private ResponseResult<List<SingleCaptureResult>> getCaptureHistory(CaptureOption option, List<String> deviceIds, String sortParam) {
         List<SingleCaptureResult> results = new ArrayList<>();
         SingleCaptureResult singleResult = new SingleCaptureResult();
         List<CapturedPicture> captureList = new ArrayList<>();
-
         SearchResponse searchResponse = elasticSearchDao.getCaptureHistory(option, deviceIds, sortParam);
         SearchHits searchHits = searchResponse.getHits();
         SearchHit[] hits = searchHits.getHits();
@@ -139,7 +139,6 @@ public class CaptureHistoryService {
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
                 capturePicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), sabsolutepath));
                 capturePicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(), urlInfo.getPort(), babsolutepath));
-                capturePicture.setDeviceId(ipc);
                 capturePicture.setLocation(getLocation(ipc));
                 capturePicture.setTimeStamp(timestamp);
                 capturePicture.setDeviceId(ipc);
@@ -152,7 +151,8 @@ public class CaptureHistoryService {
         singleResult.setDeviceId(DeviceToIpcs.getIpcs(option.getDeviceIpcs()).get(0));
         singleResult.setDeviceName(option.getIpcMapping().get(option.getDeviceIpcs().get(0).getIpc()).getDeviceName());
         results.add(singleResult);
-        return results;
+
+        return ResponseResult.init(results,(int) searchHits.getTotalHits());
     }
 
     private String getLocation(String ipc) {

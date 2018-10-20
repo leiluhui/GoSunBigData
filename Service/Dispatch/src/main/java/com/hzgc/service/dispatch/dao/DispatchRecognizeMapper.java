@@ -15,7 +15,7 @@ public interface DispatchRecognizeMapper {
 
     int insertSelective(DispatchRecognize record);
 
-    List<DispatchRecognizeVO> selectSelective(DispatchRecognizeDTO record);
+    List<DispatchRecognize> selectSelective(DispatchRecognizeDTO record);
 
     DispatchRecognize selectByPrimaryKey(String id);
 

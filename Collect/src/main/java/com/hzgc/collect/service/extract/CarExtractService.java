@@ -66,6 +66,7 @@ public class CarExtractService {
             }
         }
         carPictureData.setAttributeList(attributeList);
+        carPictureData.setCarTotal(attributeList.size());
         return carPictureData;
     }
 }

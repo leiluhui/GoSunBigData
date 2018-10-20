@@ -102,11 +102,10 @@ public class DispatchController {
      */
     @ApiOperation(value = "布控告警历史查询", response = DispatchRecognizeVO.class)
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_HISTORY, method = RequestMethod.POST)
-    public ResponseResult<List<DispatchRecognizeVO>> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
+    public ResponseResult<WarnHistoryVO> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
         if (null == dispatchRecognizeDTO) {
             log.info("Dispatch search history param is null");
         }
-        ResponseResult<List<DispatchRecognizeVO>> responseResult = dispatchService.searchDeployRecognize(dispatchRecognizeDTO);
-        return responseResult;
+        return dispatchService.searchDeployRecognize(dispatchRecognizeDTO);
     }
 }

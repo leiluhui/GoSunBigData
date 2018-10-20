@@ -8,7 +8,7 @@
     <result column="savetime" property="savetime" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, sn, mac, savetime
+    id, sn, wifisn, mac, time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -35,8 +35,11 @@
       <if test="mac != null" >
         mac,
       </if>
-      <if test="savetime != null" >
-        savetime,
+      <if test="wifisn != null" >
+        wifisn,
+      </if>
+      <if test="time != null" >
+        time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -46,8 +49,11 @@
       <if test="mac != null" >
         #{mac,jdbcType=VARCHAR},
       </if>
-      <if test="savetime != null" >
-        #{savetime,jdbcType=BIGINT},
+      <if test="wifisn != null" >
+        #{wifisn,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>

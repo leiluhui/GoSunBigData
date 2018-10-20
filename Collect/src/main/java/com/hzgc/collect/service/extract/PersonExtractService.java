@@ -62,6 +62,7 @@ public class PersonExtractService {
             }
         }
         personPictureData.setPersonAttributes(personAttributes);
+        personPictureData.setPersonTotal(personAttributes.size());
         return personPictureData;
     }
 }

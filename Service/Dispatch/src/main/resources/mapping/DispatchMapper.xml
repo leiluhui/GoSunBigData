@@ -34,6 +34,49 @@
         from t_dispatch
         where id = #{id,jdbcType=VARCHAR}
     </select>
+    <select id="selectSelective" resultMap="ResultMapWithBLOBs" parameterType="com.hzgc.service.dispatch.param.DispatchDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dispatch
+        <where>
+            <if test="regionId != null ">
+                region = #{regionId,jdbcType=BIGINT}
+            </if>
+            <if test="id != null ">
+                and id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="name != null ">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="idCard != null">
+                and idcard = #{idCard,jdbcType=VARCHAR}
+            </if>
+            <if test="face != null">
+                and face = #{face,jdbcType=VARCHAR}
+            </if>
+            <if test="threshold != null ">
+                and threshold = #{threshold,jdbcType=VARCHAR}
+            </if>
+            <if test="car != null">
+                and car = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="mac != null">
+                and mac = #{mac,jdbcType=VARCHAR}
+            </if>
+            <if test="notes != null ">
+                and notes = #{notes,jdbcType=VARCHAR}
+            </if>
+            <!--<if test="status != null ">-->
+                <!--and status = #{status,jdbcType=INTEGER}-->
+            <!--</if>-->
+            <!--<if test="createTime != null">-->
+                <!--and createTime = #{createTime,jdbcType=TIMESTAMP}-->
+            <!--</if>-->
+            <!--<if test="updateTime != null">-->
+                <!--and updateTime = #{updateTime,jdbcType=TIMESTAMP}-->
+            <!--</if>-->
+        </where>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from t_dispatch
         where id = #{id,jdbcType=VARCHAR}

@@ -11,6 +11,8 @@ public class SmallImage {
     private CarAttribute carAttribute;
     //图片类型
     private String imageType;
+    //图片id
+    private String imageID;
 
     public SmallImage() {
     }
@@ -53,5 +55,13 @@ public class SmallImage {
 
     public void setImageType(String imageType) {
         this.imageType = imageType;
+    }
+
+    public String getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(String imageID) {
+        this.imageID = imageID;
     }
 }

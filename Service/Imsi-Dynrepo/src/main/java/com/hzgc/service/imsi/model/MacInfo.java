@@ -10,6 +10,8 @@ public class MacInfo {
 
     private String mac;
 
-    private Long savetime;
+    private String wifisn;
+
+    private Long time;
 
 }

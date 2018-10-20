@@ -36,8 +36,17 @@ public class CapturedPicture implements Serializable {
     //年龄
     private int age;
 
+    //胡子
+    private int huzi;
+
+    //口罩
+    private int mask;
+
+    //眼镜
+    private int eyeglasses;
+
     //图片的附加信息，扩展预留
-    private Map<String, Object> extend;
+    private Map <String, Object> extend;
 
     //位置信息
     private String location;

@@ -23,23 +23,28 @@ public class FaceExtractService {
      * @param imageBytes 图片的字节数组
      * @return float[] 特征值:长度为512的float[]数组
      */
-    public PictureData featureExtractByImage(byte[] imageBytes) {
-        PictureData pictureData = new PictureData();
-        pictureData.setImageID(UuidUtil.getUuid());
-        pictureData.setImageData(imageBytes);
-//        FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(imageBytes, PictureFormat.JPG);
+    public BigPictureData featureExtractByImage(byte[] imageBytes) {
+        String imageType = null;
+        BigPictureData bigPictureData = new BigPictureData();
+        ArrayList <PictureData> smallPictures = new ArrayList <>();
         ArrayList <SmallImage> smallImages = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
         if (null != smallImages && smallImages.size() > 0) {
-            pictureData.setSmallImage(smallImages);
-            pictureData.setFaceTotal(smallImages.size());
+            for (SmallImage smallImage: smallImages) {
+                PictureData pictureData = new PictureData();
+                pictureData.setImageData(smallImage.getPictureStream());
+                pictureData.setImageID(UuidUtil.getUuid());
+                pictureData.setFeature(smallImage.getFaceAttribute());
+                imageType = smallImage.getImageType();
+                smallPictures.add(pictureData);
+            }
+            bigPictureData.setImageType(imageType);
+            bigPictureData.setSmallImage(smallPictures);
+            bigPictureData.setFaceTotal(smallPictures.size());
+            bigPictureData.setImageID(UuidUtil.getUuid());
+            bigPictureData.setImageData(imageBytes);
             log.info("Face extract successful, image contains feature");
-            return pictureData;
+            return bigPictureData;
         }
-//        if (null != faceAttribute.getFeature() && faceAttribute.getFeature().length > 0) {
-//            log.info("Face extract successful, image contains feature");
-//            pictureData.setFeature(faceAttribute);
-//            return pictureData;
-//        }
         log.info("Face extract failed, image not contains feature");
         return null;
     }
