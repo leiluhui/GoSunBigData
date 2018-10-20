@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class DispatchRecognizeDTO implements Serializable {
     @ApiModelProperty(value = "查询类型（0：抓拍，1：识别）")
     @NotNull
-    private String searchType;
+    private int searchType;
     @ApiModelProperty(value = "查询区域")
     @NotNull
     private Long regionId;

@@ -26,11 +26,40 @@
     <sql id="Blob_Column_List">
         face
     </sql>
+    <!-- 查询布控信息 -->
+    <select id="searchDispatch" resultMap="BaseResultMap" parameterType="com.hzgc.service.dispatch.param.SearchDispatchDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from t_dispatch
+        <where>
+            <if test="searchType == 0 ">
+                name like "%" #{searchVal,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="searchType == 1 ">
+                idcard like "%" #{searchVal,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="searchType == 2 ">
+                car like "%" #{searchVal,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="searchType == 3 ">
+                mac like "%" #{searchVal,jdbcType=VARCHAR} "%"
+            </if>
+            <if test="regionId != null" >
+                and region = #{regionId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
         ,
         <include refid="Blob_Column_List"/>
+        from t_dispatch
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <!-- 根据人员ID查询布控人脸照片 -->
+    <select id="selectFaceById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select face
         from t_dispatch
         where id = #{id,jdbcType=VARCHAR}
     </select>
@@ -185,6 +214,10 @@
             </if>
         </set>
         where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <!-- 根据人员ID修改状态 -->
+    <update id="updateStatusById" parameterType="com.hzgc.service.dispatch.model.Dispatch">
+        update t_dispatch set status = #{status,jdbcType=INTEGER} where id = #{id,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.service.dispatch.model.Dispatch">
         update t_dispatch

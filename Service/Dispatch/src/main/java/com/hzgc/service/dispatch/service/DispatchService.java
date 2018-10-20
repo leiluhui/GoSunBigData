@@ -1,9 +1,14 @@
 package com.hzgc.service.dispatch.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
+import com.hzgc.service.dispatch.model.Dispatch;
+import com.hzgc.service.dispatch.param.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -15,6 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -50,7 +58,9 @@ public class DispatchService {
 
     private static final String IMPORT = "IMPORT";
 
-    private void sendKafka(String key, Object data){
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private void sendKafka(String key, Object data) {
         try {
             ListenableFuture<SendResult<String, String>> resultFuture =
                     kafkaTemplate.send(kafkaTopic, key, JacksonUtil.toJson(data));
@@ -58,10 +68,88 @@ public class DispatchService {
             ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
             if (metaData != null) {
                 log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
-                        metaData.topic(), key ,JacksonUtil.toJson(data));
+                        metaData.topic(), key, JacksonUtil.toJson(data));
             }
         } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
         }
+    }
+
+    /**
+     * 查询布控信息（模糊查询）
+     *
+     * @param searchDispatchDTO 查询字段封装
+     * @return DispatchVO 查询返回参数封装
+     */
+    public SearchDispatchVO searchDispatch(SearchDispatchDTO searchDispatchDTO) {
+        SearchDispatchVO vo = new SearchDispatchVO();
+        Page page = PageHelper.offsetPage(searchDispatchDTO.getStart(), searchDispatchDTO.getLimit(), true);
+        List<Dispatch> dispatchList = dispatchMapper.searchDispatch(searchDispatchDTO);
+        PageInfo info = new PageInfo(page.getResult());
+        int total = (int) info.getTotal();
+        vo.setTotal(total);
+        List<DispatchVO> list = new ArrayList<>();
+        for (Dispatch dispatch : dispatchList) {
+            DispatchVO dispatchVO = new DispatchVO();
+            dispatchVO.setId(dispatch.getId());
+            dispatchVO.setRegionId(dispatch.getRegion());
+            dispatchVO.setName(dispatch.getName());
+            dispatchVO.setIdCard(dispatch.getIdcard());
+            dispatchVO.setThreshold(dispatch.getThreshold());
+            dispatchVO.setCar(dispatch.getCar());
+            dispatchVO.setMac(dispatch.getMac());
+            dispatchVO.setNotes(dispatch.getNotes());
+            dispatchVO.setStatus(dispatch.getStatus());
+            dispatchVO.setCreateTime(sdf.format(dispatch.getCreateTime()));
+            dispatchVO.setUpdateTime(sdf.format(dispatch.getCreateTime()));
+            list.add(dispatchVO);
+        }
+        vo.setPeopleVOList(list);
+        return vo;
+    }
+
+    /**
+     * 根据人员ID查询布控人脸照片
+     *
+     * @param id 人员ID
+     * @return byte[] 照片
+     */
+    public byte[] getFace(String id) {
+        Dispatch dispatch = dispatchMapper.selectFaceById(id);
+        if (dispatch != null){
+            return dispatch.getFace();
+        }
+        return null;
+    }
+
+    /**
+     * 修改布控人员状态
+     *
+     * @param id     人员ID
+     * @param status 状态
+     * @return 0：失败，1：成功
+     */
+    public Integer dispatchStatus(String id, int status) {
+        Dispatch dispatch = new Dispatch();
+        dispatch.setId(id);
+        dispatch.setStatus(status);
+        int i = dispatchMapper.updateStatusById(dispatch);
+        if (i == 1) {
+            if (status == 0) {
+                Dispatch dispatchData = dispatchMapper.selectByPrimaryKey(id);
+                KafkaMessage kafkaMessage = new KafkaMessage();
+                kafkaMessage.setId(id);
+                kafkaMessage.setRegionId(dispatchData.getRegion());
+                kafkaMessage.setBitFeature(dispatchData.getBitFeature());
+                kafkaMessage.setCar(dispatchData.getCar());
+                kafkaMessage.setMac(dispatchData.getMac());
+                this.sendKafka(ADD, kafkaMessage);
+            }
+            if (status == 1) {
+                this.sendKafka(DELETE, id);
+            }
+            return 1;
+        }
+        return 0;
     }
 }
