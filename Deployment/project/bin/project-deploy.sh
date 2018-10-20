@@ -451,6 +451,15 @@ function config_sparkjob()
     do
         scp -r ${CONF_SPARK_DIR}/sparkJob.properties root@${spark_hname}:${SPARK_HOME}/conf
     done
+
+
+    ##配置spark standalone模式
+    sparknamenode=$(grep 'Spark_NameNode' ${CLUSTER_CONF_FILE} | cut -d '=' -f2)
+    #start-kafka-to-parquet.sh
+    sed -i "s#spark://.*#spark://${sparknamenode}:7077 \ #g" ${SPARK_BIN_DIR}/start-kafka-to-parquet.sh
+    #start-kafka-to-tidb.sh
+    sed -i "s#spark://.*#spark://${sparknamenode}:7077 \ #g" ${SPARK_BIN_DIR}/start-kafka-to-tidb.sh
+
 }
 
 

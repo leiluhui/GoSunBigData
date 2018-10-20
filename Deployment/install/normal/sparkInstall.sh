@@ -37,6 +37,7 @@ SPARK_HOME=${INSTALL_HOME}/Spark/spark
 
 ## spark的安装节点，需要拼接，放入数组中
 SPARK_NAMENODE=$(grep Spark_NameNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+SPARK_STANDBYNODE=$(grep Spark_StandbyNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 SPARK_SERVICENODE=$(grep Spark_ServiceNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 SPARK_HOSTNAME_LISTS=${SPARK_NAMENODE}";"${SPARK_SERVICENODE}
 SPARK_HOSTNAME_ARRY=(${SPARK_HOSTNAME_LISTS//;/ })
@@ -77,7 +78,7 @@ done
 ## 修改spark-env.sh
     sed -i "s;INSTALL_HOME;${INSTALL_HOME};g"  ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
     sed -i "s;SPARK_DATA;${SPARK_HOME};g"      ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
-    sed -i "s;export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_NAMENODE};g" ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
+    #sed -i "s;export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_NAMENODE};g" ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
 
     CORES=`cat /proc/cpuinfo| grep 'processor'| wc -l`
     MEM=`echo $(free -h | grep 'Mem' | awk '{print $2}')`
@@ -107,6 +108,8 @@ do
     echo "更改成功。"  | tee -a $LOG_FILE
 done
 
+    sed -i "s;#export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_NAMENODE};g" ${SPARK_HOME}/conf/spark-env.sh
+    ssh root@$SPARK_STANDBYNODE "sed -i 's;#export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_STANDBYNODE};g' ${SPARK_HOME}/conf/spark-env.sh"
     cp ${INSTALL_HOME}/Hive/hive/conf/hive-site.xml ${SPARK_HOME}/conf
     sed -i "s;10000;23040;g"  ${SPARK_HOME}/conf/hive-site.xml
 	sed -i "s;hiveserver2;thriftserver;g"  ${SPARK_HOME}/conf/hive-site.xml
