@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cluster.dispach.dao.DispachMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispach.model.Dispach" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="region" property="region" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="idcard" property="idcard" jdbcType="VARCHAR" />
+    <result column="feature" property="feature" jdbcType="VARCHAR" />
+    <result column="bit_feature" property="bitFeature" jdbcType="VARCHAR" />
+    <result column="threshold" property="threshold" jdbcType="REAL" />
+    <result column="car" property="car" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispach.model.Dispach" extends="BaseResultMap" >
+    <result column="face" property="face" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, region, name, idcard, feature, bit_feature, threshold, car, mac, notes, status, 
+    create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    face
+  </sql>
+
+  <select id="selectAll" resultType="java.util.List">
+    select
+    <include refid="Base_Column_List" />
+    from t_dispatch
+  </select>
+
+  <select id="selectByIds" resultType="java.util.List" parameterType="java.util.List">
+    select id, threshold, feature from t_dispatch where id in
+    <foreach collection="list" index="index" item="item" open="(" separator=", " close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_dispatch
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_dispatch
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.cluster.dispach.model.Dispach" >
+    insert into t_dispatch (id, region, name, 
+      idcard, feature, bit_feature, 
+      threshold, car, mac, notes, 
+      status, create_time, update_time, 
+      face)
+    values (#{id,jdbcType=VARCHAR}, #{region,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{idcard,jdbcType=VARCHAR}, #{feature,jdbcType=VARCHAR}, #{bitFeature,jdbcType=VARCHAR}, 
+      #{threshold,jdbcType=REAL}, #{car,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{face,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispach.model.Dispach" >
+    insert into t_dispatch
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="region != null" >
+        region,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="idcard != null" >
+        idcard,
+      </if>
+      <if test="feature != null" >
+        feature,
+      </if>
+      <if test="bitFeature != null" >
+        bit_feature,
+      </if>
+      <if test="threshold != null" >
+        threshold,
+      </if>
+      <if test="car != null" >
+        car,
+      </if>
+      <if test="mac != null" >
+        mac,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="face != null" >
+        face,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="feature != null" >
+        #{feature,jdbcType=VARCHAR},
+      </if>
+      <if test="bitFeature != null" >
+        #{bitFeature,jdbcType=VARCHAR},
+      </if>
+      <if test="threshold != null" >
+        #{threshold,jdbcType=REAL},
+      </if>
+      <if test="car != null" >
+        #{car,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        #{mac,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="face != null" >
+        #{face,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispach.model.Dispach" >
+    update t_dispatch
+    <set >
+      <if test="region != null" >
+        region = #{region,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null" >
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="feature != null" >
+        feature = #{feature,jdbcType=VARCHAR},
+      </if>
+      <if test="bitFeature != null" >
+        bit_feature = #{bitFeature,jdbcType=VARCHAR},
+      </if>
+      <if test="threshold != null" >
+        threshold = #{threshold,jdbcType=REAL},
+      </if>
+      <if test="car != null" >
+        car = #{car,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        mac = #{mac,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="face != null" >
+        face = #{face,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.cluster.dispach.model.Dispach" >
+    update t_dispatch
+    set region = #{region,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      feature = #{feature,jdbcType=VARCHAR},
+      bit_feature = #{bitFeature,jdbcType=VARCHAR},
+      threshold = #{threshold,jdbcType=REAL},
+      car = #{car,jdbcType=VARCHAR},
+      mac = #{mac,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      face = #{face,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispach.model.Dispach" >
+    update t_dispatch
+    set region = #{region,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      feature = #{feature,jdbcType=VARCHAR},
+      bit_feature = #{bitFeature,jdbcType=VARCHAR},
+      threshold = #{threshold,jdbcType=REAL},
+      car = #{car,jdbcType=VARCHAR},
+      mac = #{mac,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
