@@ -98,7 +98,7 @@ function config_lts_properties(){
       flag15=$?
       sed -i "s#^configs.jdbc.url=.*#configs.jdbc.url=${JDBC_URL}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
       flag16=$?
-      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g"${LTS_ZOO_DIR}/lts-monitor.cfg
+      sed -i "s#^configs.jdbc.username=.*#configs.jdbc.username=${MYSQL_USERNAME}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
       flag24=$?
       sed -i "s#^configs.jdbc.password=.*#configs.jdbc.password=${MYSQL_PASSWORD}#g" ${LTS_ZOO_DIR}/lts-monitor.cfg
       flag25=$?
