@@ -35,6 +35,10 @@ if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
 fi
 
+if [ ! -d ${LOG_DIR}/${WORK_ID} ]; then
+    mkdir ${LOG_DIR}/${WORK_ID}
+fi
+
 #####################################################################
 # 函数名: start_worker
 # 描述: 启动worker

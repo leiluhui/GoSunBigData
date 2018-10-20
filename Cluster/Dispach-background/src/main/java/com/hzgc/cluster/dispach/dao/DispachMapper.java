@@ -1,11 +1,9 @@
 package com.hzgc.cluster.dispach.dao;
 
 import com.hzgc.cluster.dispach.model.Dispach;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
 public interface DispachMapper {
     int deleteByPrimaryKey(String id);
 

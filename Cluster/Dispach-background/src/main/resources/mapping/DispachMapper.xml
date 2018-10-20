@@ -20,21 +20,21 @@
     <result column="face" property="face" jdbcType="LONGVARBINARY" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, region, name, idcard, feature, bit_feature, threshold, car, mac, notes, status, 
+    id, region, name, idcard, feature, bit_feature, threshold, car, mac, notes, status,
     create_time, update_time
   </sql>
   <sql id="Blob_Column_List" >
     face
   </sql>
 
-  <select id="selectAll" resultType="java.util.List">
+  <select id="selectAll" resultType="com.hzgc.cluster.dispach.model.Dispach">
     select
     <include refid="Base_Column_List" />
     from t_dispatch
   </select>
 
-  <select id="selectByIds" resultType="java.util.List" parameterType="java.util.List">
-    select id, threshold, feature from t_dispatch where id in
+  <select id="selectByIds" resultType="java.util.List" parameterType="com.hzgc.cluster.dispach.model.Dispach">
+    select id, name, idcard, threshold, feature from t_dispatch where id in
     <foreach collection="list" index="index" item="item" open="(" separator=", " close=")">
       #{item}
     </foreach>

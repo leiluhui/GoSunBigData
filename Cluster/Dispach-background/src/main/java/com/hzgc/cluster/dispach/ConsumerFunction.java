@@ -4,6 +4,7 @@ import com.hzgc.cluster.dispach.cache.CaptureCache;
 import com.hzgc.cluster.dispach.cache.TableCache;
 import com.hzgc.cluster.dispach.compare.CarCompare;
 import com.hzgc.cluster.dispach.compare.FaceCompare;
+import com.hzgc.cluster.dispach.compare.MacCompare;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +24,8 @@ public class ConsumerFunction implements CommandLineRunner {
     FaceCompare faceCompare;
     @Autowired
     CarCompare carCompare;
+    @Autowired
+    MacCompare macCompare;
 
     @Override
     public void run(String... strings) throws Exception {
@@ -30,5 +33,6 @@ public class ConsumerFunction implements CommandLineRunner {
         ExecutorService pool = Executors.newFixedThreadPool(6);
         pool.submit(carCompare);
         pool.submit(faceCompare);
+        pool.submit(macCompare);
     }
 }
