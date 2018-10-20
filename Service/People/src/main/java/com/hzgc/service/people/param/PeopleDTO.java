@@ -22,6 +22,8 @@ public class PeopleDTO implements Serializable {
     private String idCard;
     @ApiModelProperty(value = "区域ID")
     private Long region;
+    @ApiModelProperty(value = "小区ID")
+    private Long community;
     @ApiModelProperty(value = "户籍")
     private String household;
     @ApiModelProperty(value = "现住地")
@@ -65,6 +67,7 @@ public class PeopleDTO implements Serializable {
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idCard);
         people.setRegion(peopleDTO.region);
+        people.setCommunity(peopleDTO.community);
         people.setHousehold(peopleDTO.household);
         people.setAddress(peopleDTO.address);
         people.setSex(peopleDTO.sex);
