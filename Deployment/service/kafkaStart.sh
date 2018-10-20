@@ -47,10 +47,11 @@ do
 	ssh root@$name "source /etc/profile;nohup ${INSTALL_HOME}/Kafka/kafka/bin/kafka-server-start.sh ${INSTALL_HOME}/Kafka/kafka/config/server.properties >>${CLUSTER_LOGSDIR}/kafka/kafka-logs/kafka-server.log 2>&1 &"
 done
 
+source /etc/profile
 # 启动Kafka的ui工具kafka-eagle
 echo "kafka-eagle"
 cd ${KAFKA_EAGLE_HOME}
- bin/ke.sh start
+sh bin/ke.sh start
 echo "kafka-eagle已启动,请到浏览器访问..(端口号8048)"
 
 
