@@ -28,7 +28,7 @@ stop() {
     echo ""  | tee -a $LOG_FILE
     echo "****************************************************"  | tee -a $LOG_FILE
     echo "haproxy procceding......................." | tee  -a $LOG_FILE
-    haproxy_pid=$(ps -C haproxy --no-header | awk '{print $1}')
+    haproxy_pid=$(lsof -i:2122 | awk '{print $2}' | sed -n '2p')
     echo "haproxy's pid is: ${haproxy_pid}"  | tee -a $LOG_FILE
     if [ -n "${haproxy_pid}" ];then
 	echo "haproxy process is exit,exit with 0,kill haproxy now " | tee -a $LOG_FILE  
@@ -49,10 +49,10 @@ stop() {
 }
 
 start() {
-    ${HAPROXY_SBIN}/haproxy -f  ${HAPROXY_DIR}/haproxy.cfg
+    systemctl start haproxy
     echo "starting, please wait........" | tee -a $LOG_FILE
     sleep 3s
-    haproxy_pid=$(ps -C haproxy --no-header | awk '{print $1}')
+    haproxy_pid=$(lsof -i:2122 | awk '{print $2}' | sed -n '2p')
     echo -e "${haproxy_pid}"
     if [ -z "${haproxy_pid}" ];then
         start_haproxy=1
