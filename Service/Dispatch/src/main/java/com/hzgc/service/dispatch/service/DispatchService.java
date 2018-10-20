@@ -3,8 +3,12 @@ package com.hzgc.service.dispatch.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.jniface.FaceAttribute;
+import com.hzgc.jniface.FaceUtil;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.model.Dispatch;
@@ -31,6 +35,10 @@ public class DispatchService {
     @Autowired
     @SuppressWarnings("unused")
     private DispatchMapper dispatchMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private InnerService innerService;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -151,5 +159,90 @@ public class DispatchService {
             return 1;
         }
         return 0;
+    }
+
+    public Integer insertDeploy(DispatchDTO dto) {
+        Dispatch dispatch = new Dispatch();
+        dispatch.setId(UuidUtil.getUuid());
+        dispatch.setRegion(dto.getRegionId());
+        dispatch.setName(dto.getName());
+        dispatch.setIdcard(dto.getIdCard());
+        dispatch.setCar(dto.getCar());
+        dispatch.setMac(dto.getMac());
+        dispatch.setNotes(dto.getNotes());
+        if (dto.getFace() != null) {
+            byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
+            FaceAttribute faceAttribute =
+                    innerService.faceFeautreExtract(dto.getFace()) != null ? innerService.faceFeautreExtract(dto.getFace()).getFeature() : null;
+            if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                log.error("Face feature extract failed, insert t_dispatch failed");
+                throw new RuntimeException("Face feature extract failed, insert  t_dispatch failed");
+            }
+            dispatch.setFace(bytes);
+            dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            dispatch.setBitFeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+        }
+        Integer status = dispatchMapper.insertSelective(dispatch);
+        if (status != 1) {
+            log.error("Insert info failed");
+            return 0;
+        }
+        KafkaMessage message = new KafkaMessage();
+        message.setId(dispatch.getId());
+        message.setRegionId(dispatch.getRegion());
+        message.setBitFeature(dispatch.getBitFeature());
+        message.setCar(dispatch.getCar());
+        message.setMac(dispatch.getMac());
+        this.sendKafka(ADD, message);
+        log.info("Insert info successfully");
+        return status;
+    }
+
+    public Integer deleteDeploy(String id) {
+        Integer status = dispatchMapper.deleteByPrimaryKey(id);
+        if (status != 1) {
+            log.info("Delete info failed ");
+            return 0;
+        }
+        this.sendKafka(DELETE, id);
+        log.info("Delete info successfully ");
+        return status;
+    }
+
+
+    public Integer updateDeploy(DispatchDTO dto) {
+        Dispatch dispatch = new Dispatch();
+        dispatch.setId(dto.getId());
+        dispatch.setRegion(dto.getRegionId());
+        dispatch.setName(dto.getName());
+        dispatch.setIdcard(dto.getIdCard());
+        dispatch.setCar(dto.getCar());
+        dispatch.setMac(dto.getMac());
+        dispatch.setNotes(dto.getNotes());
+        if (dto.getFace() != null) {
+            byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
+            FaceAttribute faceAttribute  =  innerService.faceFeautreExtract(dto.getFace()).getFeature();
+            if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                log.error("Face feature extract failed, update t_dispatch failed");
+                throw new RuntimeException("Face feature extract failed, update t_dispatch failed");
+            }
+            dispatch.setFace(bytes);
+            dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+            dispatch.setBitFeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+        }
+        Integer status = dispatchMapper.updateByPrimaryKeySelective(dispatch);
+        if (status != 1) {
+            log.error("update info failed");
+            return 0;
+        }
+        KafkaMessage message = new KafkaMessage();
+        message.setId(dispatch.getId());
+        message.setRegionId(dispatch.getRegion());
+        message.setBitFeature(dispatch.getBitFeature());
+        message.setCar(dispatch.getCar());
+        message.setMac(dispatch.getMac());
+        this.sendKafka(UPDATE, message);
+        log.info("update info successfully");
+        return status;
     }
 }
