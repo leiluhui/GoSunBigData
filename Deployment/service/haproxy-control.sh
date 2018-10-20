@@ -32,9 +32,9 @@ stop() {
     echo "haproxy's pid is: ${haproxy_pid}"  | tee -a $LOG_FILE
     if [ -n "${haproxy_pid}" ];then
 	echo "haproxy process is exit,exit with 0,kill haproxy now " | tee -a $LOG_FILE  
-        kill -9 ${haproxy_pid}
+        systemctl stop haproxy
         sleep 5s
-        haproxy_pid=$(ps -C haproxy --no-header | awk '{print $1}')
+        haproxy_pid=$(lsof -i:2122 | awk '{print $2}' | sed -n '2p')
         if [ -n "${haproxy_pid}" ];then
             stop_haproxy=1
             echo "stop haproxy failure, retry it again."  | tee -a  $LOG_FILE
