@@ -178,4 +178,11 @@ public class ExtractController {
         PictureData pictureData = faceExtractService.featureExtractByImage(baseStr);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
     }
+
+    @ApiIgnore(value = "内部调用的人脸检测接口,入参为图片的Base64字符串")
+    @RequestMapping(value = BigDataPath.FEATURE_CHECK_BASE64, method = RequestMethod.POST)
+    public ResponseEntity <PictureData> faceFeatureCheck_base64(@RequestBody String baseStr) {
+        PictureData pictureData = faceExtractService.featureCheckByImage(baseStr);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
+    }
 }

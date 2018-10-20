@@ -344,8 +344,7 @@ public class PeopleService {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
                 picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
-                FaceAttribute faceAttribute =
-                        innerService.faceFeautreExtract(photo) != null ? innerService.faceFeautreExtract(photo).getFeature() : null;
+                FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                     log.error("Update people, but face feature extract failed, insert idCard picture to t_picture failed");
                     throw new RuntimeException("Face feature extract failed, insert idCard picture to t_picture failed");
@@ -367,8 +366,7 @@ public class PeopleService {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
                 picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
-                FaceAttribute faceAttribute =
-                        innerService.faceFeautreExtract(photo) != null ? innerService.faceFeautreExtract(photo).getFeature() : null;
+                FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                     log.error("Update people, but face feature extract failed, insert capture picture to t_picture failed");
                     throw new RuntimeException("Face feature extract failed, insert capture picture to t_picture failed");
@@ -449,8 +447,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute =
-                    innerService.faceFeautreExtract(photo) != null ? innerService.faceFeautreExtract(photo).getFeature() : null;
+            FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.error("Face feature extract failed, insert picture to t_picture failed");
                 throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
@@ -485,7 +482,7 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = innerService.faceFeautreExtract(photo).getFeature();
+            FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.error("Face feature extract failed, insert picture to t_picture failed");
                 throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");

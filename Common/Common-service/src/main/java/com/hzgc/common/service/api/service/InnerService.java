@@ -101,6 +101,25 @@ public class InnerService {
             return null;
         }
     }
+
+    public PictureData faceFeautreCheck(String base64Str) {
+        if (base64Str != null && !"".equals(base64Str)) {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            ParameterizedTypeReference<PictureData> parameterizedTypeReference =
+                    new ParameterizedTypeReference<PictureData>() {
+                    };
+            ResponseEntity<PictureData> data = restTemplate.exchange("http://collect-ftp" +
+                            BigDataPath.FEATURE_CHECK_BASE64, HttpMethod.POST,
+                    new HttpEntity<>(base64Str), parameterizedTypeReference);
+            stopWatch.stop();
+            log.info("Method faceFeautreCheck, request seccessull, total time is:{}", stopWatch.getTotalTimeMillis());
+            return data.getBody();
+        } else {
+            log.error("Method faceFeautreCheck, base64Str is null or size is 0");
+            return null;
+        }
+    }
 }
 
 class HostNameSingleton {

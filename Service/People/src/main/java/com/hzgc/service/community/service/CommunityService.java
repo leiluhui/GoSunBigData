@@ -199,7 +199,7 @@ public class CommunityService {
                     break;
                 }
             }
-            if (!(vo.getSuggestNewCount() == 0 && vo.getSuggestOutCount() == 0)){
+            if (!(vo.getSuggestNewCount() == 0 && vo.getSuggestOutCount() == 0)) {
                 voList.add(vo);
             }
         }
@@ -627,9 +627,7 @@ public class CommunityService {
         picture.setPeopleid(param.getNewPeopleId());
         byte[] bytes = FaceUtil.base64Str2BitFeature(param.getCapturePicture());
         picture.setIdcardpic(bytes);
-        FaceAttribute faceAttribute =
-                innerService.faceFeautreExtract(param.getCapturePicture()) != null
-                        ? innerService.faceFeautreExtract(param.getCapturePicture()).getFeature() : null;
+        FaceAttribute faceAttribute = innerService.faceFeautreCheck(param.getCapturePicture()).getFeature();
         if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
             log.error("Face feature extract failed, insert picture to t_picture failed");
             throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
