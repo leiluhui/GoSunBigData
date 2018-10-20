@@ -199,7 +199,9 @@ public class CommunityService {
                     break;
                 }
             }
-            voList.add(vo);
+            if (!(vo.getSuggestNewCount() == 0 && vo.getSuggestOutCount() == 0)){
+                voList.add(vo);
+            }
         }
         return voList;
     }
