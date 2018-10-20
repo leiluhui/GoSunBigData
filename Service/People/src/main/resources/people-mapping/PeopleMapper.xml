@@ -86,7 +86,7 @@
     </sql>
     <sql id="Collection_Column_list">
         id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
-        job, birthplace
+        job, birthplace, community
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
