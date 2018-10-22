@@ -3,7 +3,6 @@ package com.hzgc.service.dispatch.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hzgc.common.service.api.service.PlatformService;
-import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
@@ -16,18 +15,9 @@ import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
 import com.hzgc.service.dispatch.param.*;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -326,52 +316,4 @@ public class DispatchService {
         return null;
     }
 
-    //判断文件格式
-    private Workbook getWorkbook(InputStream inputStream, String fileName) throws Exception {
-        Workbook workbook = null;
-        String fileType = fileName.substring(fileName.lastIndexOf("."));
-        if (".xls".equals(fileType)) {
-            workbook = new HSSFWorkbook(inputStream);
-        } else if (".xlsx".equals(fileType)) {
-            workbook = new XSSFWorkbook(inputStream);
-        } else {
-            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "Excel文件格式不正确");
-        }
-        return workbook;
-    }
-
-    private static Object parseValue(String s, Class c) {
-        Object obj = null;
-        String className = c.getName();
-        //excel中的数字解析之后可能末尾会有.0，需要去除
-        if (s.endsWith(".0")) s = s.substring(0, s.length() - 2);
-
-        if (className.equals("java.lang.Integer")) { //Integer
-            obj = new Integer(s);
-        } else if (className.equals("int")) { //int
-            obj = (int) Integer.parseInt(s);
-        } else if (className.equals("java.lang.String")) { //String
-            obj = s;
-        } else if (className.equals("java.lang.Double")) { //Double
-            obj = new Double(s);
-        } else if (className.equals("double")) { //double
-            obj = (double) new Double(s);
-        } else if (className.equals("java.lang.Float")) { //Float
-            obj = new Float(s);
-        } else if (className.equals("float")) { //float
-            obj = (float) new Float(s);
-        } else if (className.equals("java.util.Date")) { //Date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                obj = sdf.parse(s);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else if (className.equals("long")) { //long
-            obj = Long.parseLong(s);
-        } else if (className.equals("java.util.Long")) { //Long
-            obj = new Long(s);
-        }
-        return obj;
-    }
 }

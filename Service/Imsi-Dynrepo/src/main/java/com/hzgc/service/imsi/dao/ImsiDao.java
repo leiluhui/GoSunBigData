@@ -18,13 +18,8 @@ public class ImsiDao {
 
     public List <ImsiInfo> queryByTime(Long timeParam) {
         ImsiInfo imsiInfo = new ImsiInfo();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        Long start = timeParam - Long.valueOf(time) * 1000;
-        Long end = timeParam + Long.valueOf(time) * 1000;
-        String startTime = sdf.format(start);
-        String endTime = sdf.format(end);
-        imsiInfo.setStartTime(Long.valueOf(startTime));
-        imsiInfo.setEndTime(Long.valueOf(endTime));
+        imsiInfo.setStartTime(timeParam - Long.valueOf(time) * 1000);
+        imsiInfo.setEndTime(timeParam + Long.valueOf(time) * 1000);
         return imsiInfoMapper.selectByTime(imsiInfo);
     }
 }
