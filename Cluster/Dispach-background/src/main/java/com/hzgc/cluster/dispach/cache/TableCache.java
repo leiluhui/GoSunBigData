@@ -228,6 +228,11 @@ public class TableCache {
      */
     public String getIdByIndex(Long region, Integer index){
         List<DispachData> list = faceInfos.get(region);
+        for(DispachData dispachData : list){
+            if(index.intValue() == dispachData.getIndex().intValue()){
+                return dispachData.getId();
+            }
+        }
         return list.get(index).getId();
     }
 
