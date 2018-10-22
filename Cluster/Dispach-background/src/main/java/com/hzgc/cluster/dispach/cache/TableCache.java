@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -32,11 +29,11 @@ public class TableCache {
         for(Dispach dispature : searchResult){
             Long region = dispature.getRegion();
             //启动的人脸布控
-            if(dispature.getStatus() == 0 && dispature.getFace() != null){
+            if(dispature.getStatus() == 0 && dispature.getBit_feature() != null){
                 List<DispachData> deployList = faceInfos.computeIfAbsent(region, k -> new ArrayList<>());
                 DispachData data = new DispachData();
                 data.setId(dispature.getId());
-                data.setBitfeature(dispature.getBitFeature());
+                data.setBitfeature(dispature.getBit_feature());
                 deployList.add(data);
             }
             //车辆布控
@@ -69,6 +66,48 @@ public class TableCache {
             faceFeatures.put(entry.getKey(), features);
         }
     }
+
+    public void showFaceInfo(){
+        for(Map.Entry<Long, List<DispachData>> entry : faceInfos.entrySet()){
+            Long region = entry.getKey();
+            List<DispachData> list = entry.getValue();
+            for(DispachData dispachData : list){
+                System.out.println("Region : " + region);
+                System.out.println("FaceInfo : " + dispachData.toString());
+            }
+        }
+    }
+
+    public void showFeatures(){
+        for(Map.Entry<Long, byte[][]> entry : faceFeatures.entrySet()){
+            Long region = entry.getKey();
+            System.out.println("Region : " + region);
+            System.out.println("Feature : " + Arrays.toString(entry.getValue()));
+        }
+    }
+
+    public void showCarInfo(){
+        for(Map.Entry<Long, List<DispachData>> entry : carInfos.entrySet()){
+            Long region = entry.getKey();
+            List<DispachData> list = entry.getValue();
+            for(DispachData dispachData : list){
+                System.out.println("Region : " + region);
+                System.out.println("FaceInfo : " + dispachData.toString());
+            }
+        }
+    }
+
+    public void showMacInfo(){
+        for(Map.Entry<Long, List<DispachData>> entry : macInfos.entrySet()){
+            Long region = entry.getKey();
+            List<DispachData> list = entry.getValue();
+            for(DispachData dispachData : list){
+                System.out.println("Region : " + region);
+                System.out.println("FaceInfo : " + dispachData.toString());
+            }
+        }
+    }
+
 
     /**
      * 增加车辆布控

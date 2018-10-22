@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +92,7 @@ public class CarCompare implements Runnable{
 //                dispatureRecognize.setCreateTime(carObject.getTimeStamp());
 
                 Dispach dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
-                dispatureRecognizeMapper.insert(dispatureRecognize);
+                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
                 AlarmMessage alarmMessage = new AlarmMessage();
                 alarmMessage.setDeviceId(carObject.getIpcId());
                 alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
