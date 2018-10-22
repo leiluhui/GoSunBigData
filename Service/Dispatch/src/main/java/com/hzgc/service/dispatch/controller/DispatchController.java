@@ -40,20 +40,20 @@ public class DispatchController {
      */
     @ApiOperation(value = "添加布控信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_INSERT_DEPLOY, method = RequestMethod.POST)
-    public ResponseResult<Integer> insertDeploy(@RequestBody @ApiParam(name = "入参", value = "布控信息") DispatchDTO dto) {
-        if (dto == null){
+    public ResponseResult <Integer> insertDeploy(@RequestBody @ApiParam(name = "入参", value = "布控信息") DispatchDTO dto) {
+        if (dto == null) {
             log.error("Start insert people info, but dto is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"添加布控信息为空,请检查 !");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加布控信息为空,请检查 !");
         }
         if (dto.getRegionId() == null) {
             log.error("Start insert people info, but region is null ");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"布控区域为空,请检查 ! ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控区域为空,请检查 ! ");
         }
-        if (!(dto.getFace() != null || dto.getCar() != null || dto.getMac() != null)){
+        if (!(dto.getFace() != null || dto.getCar() != null || dto.getMac() != null)) {
             log.error("Start insert people info, but region is null ");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"三者必填一个,请检查 ! ");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "三者必填一个,请检查 ! ");
         }
-        log.info("Start insert people info, dto is :"+ JacksonUtil.toJson(dto));
+        log.info("Start insert people info, dto is :" + JacksonUtil.toJson(dto));
         Integer status = dispatchService.insertDeploy(dto);
         log.info("Insert info successfully");
         return ResponseResult.init(status);
@@ -67,17 +67,17 @@ public class DispatchController {
      */
     @ApiOperation(value = "删除布控信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DELETE_DEPLOY, method = RequestMethod.DELETE)
-    public ResponseResult<Integer> deleteDeploy(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
-        if (id == null ||"".equals(id)){
+    public ResponseResult <Integer> deleteDeploy(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
+        if (id == null || "".equals(id)) {
             log.error("Start delete people info,but id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"删除id为空,请检查");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除id为空,请检查");
         }
-        log.info("Start delete people info,,id is "+ JSONUtils.toJSONString(id));
-        Integer status= dispatchService.deleteDeploy(id);
-        if (status == 1){
+        log.info("Start delete people info,,id is " + JSONUtils.toJSONString(id));
+        Integer status = dispatchService.deleteDeploy(id);
+        if (status == 1) {
             log.info("Delete people info  successfully");
             return ResponseResult.init(1);
-        }else{
+        } else {
             log.info("Delete people info failed");
             return ResponseResult.init(0);
         }
@@ -91,21 +91,21 @@ public class DispatchController {
      */
     @ApiOperation(value = "修改布控信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_UPDATE_DEPLOY, method = RequestMethod.POST)
-    public ResponseResult<Integer> updateDeploy(@RequestBody @ApiParam(name = "入参", value = "人员信息") DispatchDTO dto) {
-        if (dto == null ){
+    public ResponseResult <Integer> updateDeploy(@RequestBody @ApiParam(name = "入参", value = "人员信息") DispatchDTO dto) {
+        if (dto == null) {
             log.error("Start update people info,but dto is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"修改对象为空,请检查!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改对象为空,请检查!");
         }
-        if (StringUtils.isBlank(dto.getId())){
+        if (StringUtils.isBlank(dto.getId())) {
             log.error("Start update people info,but id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"修改对象ID为空,请检查!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改对象ID为空,请检查!");
         }
-        log.info("Start update people info ,dto : "+ JacksonUtil.toJson(dto));
+        log.info("Start update people info ,dto : " + JacksonUtil.toJson(dto));
         Integer status = dispatchService.updateDeploy(dto);
-        if (status == 1 ){
+        if (status == 1) {
             log.info("Update people info sucessfully");
             return ResponseResult.init(1);
-        }else{
+        } else {
             log.info("Update people info failed");
             return ResponseResult.init(0);
         }
@@ -117,19 +117,19 @@ public class DispatchController {
      */
     @ApiOperation(value = "开启/停止人员布控", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DISPATCH_STATUS, method = RequestMethod.GET)
-    public ResponseResult<Integer> dispatchStatus(@ApiParam(name = "人员ID", required = true) @RequestParam String id,
-                                                @ApiParam(name = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
-        if (id == null){
+    public ResponseResult <Integer> dispatchStatus(@ApiParam(name = "人员ID", required = true) @RequestParam String id,
+                                                   @ApiParam(name = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
+        if (id == null) {
             log.error("Start update dispatch status, but id is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID为空，请检查");
         }
-        if (status != 0 && status !=1){
+        if (status != 0 && status != 1) {
             log.error("Start update dispatch status, but status is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员状态错误，请检查");
         }
         log.info("Start update dispatch status, id: " + id + ", status: " + status);
         Integer i = dispatchService.dispatchStatus(id, status);
-        if (i == 1){
+        if (i == 1) {
             log.info("Update dispatch status successfully");
             return ResponseResult.init(1);
         }
@@ -141,8 +141,8 @@ public class DispatchController {
      */
     @ApiOperation(value = "根据人员ID获取布控人照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.DISPATCH_GET_FACE, method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getFace(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
-        if (id == null){
+    public ResponseEntity <byte[]> getFace(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
+        if (id == null) {
             log.error("Start get face, but id is null");
             ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body("查询ID为空，请检查");
         }
@@ -158,18 +158,18 @@ public class DispatchController {
     /**
      * @param searchDispatchDTO (布控信息封装)
      */
-        @ApiOperation(value = "查询人员布控信息（模糊查询）", response = DispatchVO.class)
+    @ApiOperation(value = "查询人员布控信息（模糊查询）", response = DispatchVO.class)
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_DISPATCH, method = RequestMethod.POST)
-    public ResponseResult<SearchDispatchVO> searchDispatch(@RequestBody SearchDispatchDTO searchDispatchDTO) {
-        if (searchDispatchDTO == null){
+    public ResponseResult <SearchDispatchVO> searchDispatch(@RequestBody SearchDispatchDTO searchDispatchDTO) {
+        if (searchDispatchDTO == null) {
             log.error("Start search dispatch, but searchDispatchDto is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空，请检查");
         }
-        if (searchDispatchDTO.getSearchType() != 0 && searchDispatchDTO.getSearchType() != 1 && searchDispatchDTO.getSearchType() !=2 && searchDispatchDTO.getSearchType() !=3){
+        if (searchDispatchDTO.getSearchType() != 0 && searchDispatchDTO.getSearchType() != 1 && searchDispatchDTO.getSearchType() != 2 && searchDispatchDTO.getSearchType() != 3) {
             log.error("Start search dispatch, but searchType is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型错误，请检查");
         }
-        if (searchDispatchDTO.getRegionId() == null){
+        if (searchDispatchDTO.getRegionId() == null) {
             log.error("Start search dispatch, but regionId is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询区域ID为空，请检查");
         }
@@ -180,11 +180,11 @@ public class DispatchController {
     }
 
     /**
-     *@Param dispatchRecognizeDTO (布控告警历史查询)
+     * @Param dispatchRecognizeDTO (布控告警历史查询)
      */
     @ApiOperation(value = "布控告警历史查询", response = DispatchRecognizeVO.class)
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_HISTORY, method = RequestMethod.POST)
-    public ResponseResult<WarnHistoryVO> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
+    public ResponseResult <WarnHistoryVO> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
         if (null == dispatchRecognizeDTO) {
             log.info("Dispatch search history param is null");
         }
