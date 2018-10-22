@@ -260,16 +260,18 @@ public class ImageToData {
                             try {
                                 byte[] bytes = cutImageUtil.cut();
                                 vehicle_object.setVehicle_data(bytes);
+                                vehicle_object.setVehicle_image(JsonArrayToJavaArray(rect));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-                        if (null != bytess) {
+                        if (null != bytess && bytess.length > 0) {
                             //截图车的图片
                             CutImageUtil cutImageUtil = new CutImageUtil((int) rect.get(0), (int) rect.get(1), (int) rect.get(2), (int) rect.get(3));
                             try {
                                 byte[] bytes = cutImageUtil.cut(bytess);
                                 vehicle_object.setVehicle_data(bytes);
+                                vehicle_object.setVehicle_image(JsonArrayToJavaArray(rect));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -314,6 +316,7 @@ public class ImageToData {
                             try {
                                 byte[] bytes = cutImageUtil.cut();
                                 person_object.setCar_data(bytes);
+                                person_object.setPerson_image(JsonArrayToJavaArray(person_rect));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -323,6 +326,7 @@ public class ImageToData {
                             try {
                                 byte[] bytes = cutImageUtil.cut(bytess);
                                 person_object.setCar_data(bytes);
+                                person_object.setPerson_image(JsonArrayToJavaArray(person_rect));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -362,12 +366,17 @@ public class ImageToData {
                                 //数据解析封装
                                 personDataAnalysis(recognize, person_object);
                                 if (null != imagePath && imagePath.length() > 0) {
+                                    int i1 = 0;
+                                    int i2 = 0;
+                                    int i3 = 0;
+                                    int i4 = 0;
                                     CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
-                                        cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
-                                                (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
-                                                (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
-                                                (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
+                                        i1 = (int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0);
+                                        i2 = (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1);
+                                        i3 = (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2);
+                                        i4 = (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3);
+                                        cutImageUtil = new CutImageUtil(i1,i2,i3,i4);
                                         cutImageUtil.setSrcpath(imagePath);
                                     }
                                     if (null != person_rect) {
@@ -378,18 +387,25 @@ public class ImageToData {
                                         if (null != cutImageUtil) {
                                             byte[] bytes = cutImageUtil.cut();
                                             person_object.setCar_data(bytes);
+                                            int[] attr = {i1,i2,i3,i4};
+                                            person_object.setPerson_image(attr);
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 }
                                 if (null != bytess) {
+                                    int i1 = 0;
+                                    int i2 = 0;
+                                    int i3 = 0;
+                                    int i4 = 0;
                                     CutImageUtil cutImageUtil = null;
                                     if (car_rect != null && person_rect != null) {
-                                        cutImageUtil = new CutImageUtil((int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0),
-                                                (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1),
-                                                (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2),
-                                                (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3));
+                                        i1 = (int) car_rect.get(0) < (int) person_rect.get(0) ? (int) car_rect.get(0) : (int) person_rect.get(0);
+                                        i2 = (int) car_rect.get(1) < (int) person_rect.get(1) ? (int) car_rect.get(1) : (int) person_rect.get(1);
+                                        i3 = (int) car_rect.get(2) > (int) person_rect.get(2) ? (int) car_rect.get(2) : (int) person_rect.get(2);
+                                        i4 = (int) car_rect.get(3) > (int) person_rect.get(3) ? (int) car_rect.get(3) : (int) person_rect.get(3);
+                                        cutImageUtil = new CutImageUtil(i1,i2,i3,i4);
                                     }
                                     if (null != person_rect) {
                                         cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
@@ -398,6 +414,8 @@ public class ImageToData {
                                         if (null != cutImageUtil) {
                                             byte[] bytes = cutImageUtil.cut(bytess);
                                             person_object.setCar_data(bytes);
+                                            int[] attr = {i1,i2,i3,i4};
+                                            person_object.setPerson_image(attr);
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -413,6 +431,7 @@ public class ImageToData {
         return personList;
     }
 
+    //行人数据解析
     @SuppressWarnings("unchecked")
     private static void personDataAnalysis(JSONObject recognize, Person person_object) {
         JSONObject shoulderBag = (JSONObject) recognize.get("ShoulderBag");
@@ -552,6 +571,15 @@ public class ImageToData {
         }
     }
 
+    //JsonArrayToJava[]
+    private static int[] JsonArrayToJavaArray(JSONArray jsonArray){
+        int[] image = new int[jsonArray.size()];
+        for (int i = 0;i < jsonArray.size();i++) {
+            image[i] = (int)jsonArray.get(i);
+        }
+        return image;
+    }
+
     /*
      * @param url:算法提取路径
      * @param imagePath:图片路径
@@ -576,12 +604,13 @@ public class ImageToData {
         return ImageToData.getData(s, null, tag, bytes);
     }
 
-    public static void main(String[] args) {
-//        InputStream inputStream = null;
-//        byte[] data = null;
-//        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\123.jpg");
-//        data = new byte[inputStream.available()];
-//        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\1.jpg", "66");
+    public static void main(String[] args) throws Exception{
+        InputStream inputStream = null;
+        byte[] data = null;
+        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\20180831183711.jpg");
+        data = new byte[inputStream.available()];
+        inputStream.read(data);
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", data, "66");
+        System.out.println(JacksonUtil.toJson(imageResult));
     }
 }

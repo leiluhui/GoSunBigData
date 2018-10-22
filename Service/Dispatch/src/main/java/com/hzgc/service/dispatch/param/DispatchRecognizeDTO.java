@@ -16,8 +16,10 @@ public class DispatchRecognizeDTO implements Serializable {
     @ApiModelProperty(value = "查询区域")
     @NotNull
     private Long regionId;
-    @ApiModelProperty(value = "查询时间")
-    private String time;
+    @ApiModelProperty(value = "开始查询时间")
+    private String startTime;
+    @ApiModelProperty(value = "结束查询时间")
+    private String endTime;
     @ApiModelProperty(value = "起始行数")
     @NotNull
     private int start;

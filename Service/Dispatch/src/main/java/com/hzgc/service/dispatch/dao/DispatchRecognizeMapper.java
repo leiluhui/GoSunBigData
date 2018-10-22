@@ -1,7 +1,11 @@
 package com.hzgc.service.dispatch.dao;
 
 import com.hzgc.service.dispatch.model.DispatchRecognize;
+import com.hzgc.service.dispatch.param.DispatchRecognizeDTO;
+import com.hzgc.service.dispatch.param.DispatchRecognizeVO;
 import org.apache.ibatis.annotations.CacheNamespace;
+
+import java.util.List;
 
 @CacheNamespace
 public interface DispatchRecognizeMapper {
@@ -10,6 +14,8 @@ public interface DispatchRecognizeMapper {
     int insert(DispatchRecognize record);
 
     int insertSelective(DispatchRecognize record);
+
+    List<DispatchRecognize> selectSelective(DispatchRecognizeDTO record);
 
     DispatchRecognize selectByPrimaryKey(String id);
 

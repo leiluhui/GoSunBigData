@@ -49,4 +49,6 @@ public class Vehicle implements Serializable {
     private String vehicle_type;
     //车辆图片数据
     private byte[] vehicle_data;
+    //车辆图片坐标
+    private int[] vehicle_image;
 }

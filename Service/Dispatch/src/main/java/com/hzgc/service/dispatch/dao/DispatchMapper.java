@@ -17,6 +17,8 @@ public interface DispatchMapper {
 
     Dispatch selectByPrimaryKey(String id);
 
+    Dispatch selectSelective(DispatchDTO record);
+
     Dispatch selectFaceById(String id);
 
     int updateByPrimaryKeySelective(Dispatch record);

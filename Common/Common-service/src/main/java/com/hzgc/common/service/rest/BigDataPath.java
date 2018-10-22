@@ -129,6 +129,7 @@ public class BigDataPath {
     public static final String DISPATCH_INSERT_DEPLOY = "/insert";
     public static final String DISPATCH_DELETE_DEPLOY = "/delete";
     public static final String DISPATCH_UPDATE_DEPLOY = "/update";
+    public static final String DISPATCH_SEARCH_HISTORY = "/search_recognize";
 
 
     public static final String OBJECTINFO_ADD = "/object_add";

@@ -1,5 +1,7 @@
 package com.hzgc.jniface;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -116,15 +118,22 @@ public class FaceFunction implements Serializable {
      */
     public static native ArrayList<CompareResult> faceCompareFloat(float[][] diku, float[][] queryList, int topN);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         FaceFunction.init();
 //        FaceFunction.bigPictureCheck(new byte[0], "JPG");
-        FaceFunction.faceCheck(new byte[0], "JPG");
-        System.out.println("1");
-        FaceFunction.faceCheck(new byte[0], "JPG");
-        System.out.println("2");
-        FaceFunction.faceCheck(new byte[0], "JPG");
-        System.out.println("3");
-        System.out.println(FaceFunction.bigPictureCheck(new byte[0], "JPG"));
+        String str = "C:\\Users\\g10255\\Desktop\\1.jpg";
+        InputStream inputStream = null;
+        byte[] data = null;
+        inputStream = new FileInputStream(str);
+        data = new byte[inputStream.available()];
+        inputStream.read(data);
+        ArrayList <SmallImage> smallImages = FaceFunction.faceCheck(data, "JPG");
+        System.out.println(smallImages.size());
+//        System.out.println("1");
+//        FaceFunction.faceCheck(new byte[0], "JPG");
+//        System.out.println("2");
+//        FaceFunction.faceCheck(new byte[0], "JPG");
+//        System.out.println("3");
+//        System.out.println(FaceFunction.bigPictureCheck(new byte[0], "JPG"));
     }
 }

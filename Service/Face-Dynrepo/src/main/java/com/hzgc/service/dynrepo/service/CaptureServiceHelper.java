@@ -176,6 +176,9 @@ public class CaptureServiceHelper {
                 String hostname = resultSet.getString(FaceTable.HOSTNAME);
                 int gender = resultSet.getInt(FaceTable.GENDER);
                 int age = resultSet.getInt(FaceTable.AGE);
+                int huzi = resultSet.getInt(FaceTable.HUZI);
+                int mask = resultSet.getInt(FaceTable.MASK);
+                int eyeglasses = resultSet.getInt(FaceTable.EYEGLASSES);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
@@ -194,6 +197,9 @@ public class CaptureServiceHelper {
                 capturedPicture.setSimilarity(similaritys);
                 capturedPicture.setAge(age);
                 capturedPicture.setGender(gender);
+                capturedPicture.setHuzi(huzi);
+                capturedPicture.setMask(mask);
+                capturedPicture.setEyeglasses(eyeglasses);
                 capturedPictureList.add(capturedPicture);
             }
 
@@ -233,6 +239,9 @@ public class CaptureServiceHelper {
                 String picid = resultSet.getString(FaceTable.GROUP_FIELD);
                 int gender = resultSet.getInt(FaceTable.GENDER);
                 int age = resultSet.getInt(FaceTable.AGE);
+                int huzi = resultSet.getInt(FaceTable.HUZI);
+                int mask = resultSet.getInt(FaceTable.MASK);
+                int eyeglasses = resultSet.getInt(FaceTable.EYEGLASSES);
                 //图片对象
                 CapturedPicture capturedPicture = new CapturedPicture();
                 UrlInfo urlInfo = innerService.hostName2Ip(hostname);
@@ -252,6 +261,9 @@ public class CaptureServiceHelper {
                 capturedPicture.setSimilarity(similaritys);
                 capturedPicture.setGender(gender);
                 capturedPicture.setAge(age);
+                capturedPicture.setHuzi(huzi);
+                capturedPicture.setMask(mask);
+                capturedPicture.setEyeglasses(eyeglasses);
                 if (mapSet.containsKey(picid)) {
                     mapSet.get(picid).add(capturedPicture);
                 } else {

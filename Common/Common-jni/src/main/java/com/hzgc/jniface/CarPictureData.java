@@ -5,8 +5,9 @@ import java.util.List;
 
 public class CarPictureData implements Serializable {
     private String imageID;                          // 车辆大图ID
-    private byte[] imageData;                        // 车辆大图
+    private byte[] imageData;                       // 车辆大图
     private List<CarAttribute> attributeList;       // 属性
+    private int carTotal;                           //小图个数
 
     public CarPictureData(){
     }
@@ -33,5 +34,13 @@ public class CarPictureData implements Serializable {
 
     public void setAttributeList(List<CarAttribute> attributeList) {
         this.attributeList = attributeList;
+    }
+
+    public int getCarTotal() {
+        return carTotal;
+    }
+
+    public void setCarTotal(int carTotal) {
+        this.carTotal = carTotal;
     }
 }

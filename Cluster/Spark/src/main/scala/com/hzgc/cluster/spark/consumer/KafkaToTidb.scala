@@ -16,7 +16,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object KafkaToTidb {
   val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
-
   def main(args: Array[String]): Unit = {
     val properties: Properties = PropertiesUtil.getProperties
     val jdbcIp = properties.getProperty("job.kafkaToTidb.jdbc.ip")
@@ -50,6 +49,7 @@ object KafkaToTidb {
     })
     //second1:窗口长度，second2:滑动间隔
     val result: DStream[(String, Int)] = windowed.reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(3600), Seconds(60))
+
     result.filter(x => x._2 >= 3).foreachRDD(it => {
       it.foreachPartition(datas => {
         val conn = DriverManager.getConnection(jdbc)

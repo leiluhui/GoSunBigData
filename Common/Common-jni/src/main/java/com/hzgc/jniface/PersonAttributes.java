@@ -34,6 +34,8 @@ public class PersonAttributes {
 
     private String cartype;
 
+    private int[] person_coordinate;
+
     public String getAge() {
         return age;
     }
@@ -163,5 +165,13 @@ public class PersonAttributes {
 
     public void setKnapsack(String knapsack) {
         this.knapsack = knapsack;
+    }
+
+    public int[] getPerson_coordinate() {
+        return person_coordinate;
+    }
+
+    public void setPerson_coordinate(int[] person_coordinate) {
+        this.person_coordinate = person_coordinate;
     }
 }
