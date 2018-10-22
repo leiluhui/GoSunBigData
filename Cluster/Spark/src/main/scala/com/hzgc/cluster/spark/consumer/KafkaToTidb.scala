@@ -17,7 +17,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 object KafkaToTidb {
   val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
   def main(args: Array[String]): Unit = {
-    val properties:Properties = PropertiesUtil.getProperties
+    val properties: Properties = PropertiesUtil.getProperties
     val jdbcIp = properties.getProperty("job.kafkaToTidb.jdbc.ip")
     val driver = properties.getProperty("job.kafkaToTidb.driver")
     val appName = properties.getProperty("job.kafkaToTidb.appName")
@@ -45,11 +45,12 @@ object KafkaToTidb {
     val windowed: DStream[(String, Int)] = directKafka.map(tuple2 => {
       val imsiObject = JacksonUtil.toObject(tuple2._2, classOf[ImsiInfo])
       val imsi = imsiObject.getImsi
-      (imsi,1)
+      (imsi, 1)
     })
     //second1:窗口长度，second2:滑动间隔
     val result: DStream[(String, Int)] = windowed.reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(3600), Seconds(60))
-    result.filter(x=> x._2 >= 3).foreachRDD(it => {
+
+    result.filter(x => x._2 >= 3).foreachRDD(it => {
       it.foreachPartition(datas => {
         val conn = DriverManager.getConnection(jdbc)
         val prep = conn.prepareStatement("INSERT INTO t_imsi_filter (imsi,count,currenttime) VALUES (?, ?, ?) ")
@@ -63,7 +64,7 @@ object KafkaToTidb {
           preps.setString(1, imsi)
           preps.setString(2, time)
           val result: ResultSet = preps.executeQuery()
-          if ( !result.next()) {
+          if (!result.next()) {
             prep.setString(1, imsi)
             prep.setInt(2, num)
             prep.setString(3, time)

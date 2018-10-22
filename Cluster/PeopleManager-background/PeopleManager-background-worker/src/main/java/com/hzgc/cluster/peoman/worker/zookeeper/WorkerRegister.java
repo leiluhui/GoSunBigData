@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.CreateMode;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Slf4j
 public class WorkerRegister implements Serializable {
@@ -41,7 +42,22 @@ public class WorkerRegister implements Serializable {
         zkClient.createNode(registPath, null, CreateMode.EPHEMERAL);
     }
 
+    public void regist(String registInfo, String Data) throws InterruptedException {
+        String registPath = Constant.tempPath + "/" + registInfo;
+        zkClient.createNode(registPath, Data.getBytes(), CreateMode.EPHEMERAL);
+    }
+
     public void update(String path,String Data) throws Exception{
         zkClient.setNodeDate(path,Data.getBytes());
+    }
+
+    public List<String> getParenNode() throws Exception{
+        return zkClient.getParenNodePath(Constant.tempPath);
+    }
+
+    public String getNodeData (String registInfo) throws Exception{
+        String registPath = Constant.tempPath + "/" + registInfo;
+        byte[] nodeData = zkClient.getNodeData(registPath);
+        return new String(nodeData);
     }
 }

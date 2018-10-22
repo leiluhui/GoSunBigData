@@ -59,9 +59,10 @@ done
 
 
 echo "kafka-eagle"
+source /etc/profile
 # 关闭kafka-eagle
 cd ${KAFKA_EAGLE_HOME}
- bin/ke.sh stop
+sh bin/ke.sh stop
 
 # 验证Kafka是否停止成功
 echo -e "********************验证Kafka是否停止成功*********************"

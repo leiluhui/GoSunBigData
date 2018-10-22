@@ -45,6 +45,9 @@ public class CapturedPicture implements Serializable {
     //眼镜
     private int eyeglasses;
 
+    //清晰度
+    private int sharpness;
+
     //图片的附加信息，扩展预留
     private Map <String, Object> extend;
 

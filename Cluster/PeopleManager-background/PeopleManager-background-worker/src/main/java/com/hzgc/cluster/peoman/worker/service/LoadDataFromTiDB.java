@@ -24,14 +24,14 @@ class LoadDataFromTiDB {
         Stopwatch stopwatch = Stopwatch.createStarted();
         List<Picture> pictureList = pictureMapper.selectByPrimaryKey(offset, limit);
         if (pictureList != null && pictureList.size() > 0) {
-            log.info("Load data from databases successfull, offset ?, limit ?, time ?",
+            log.info("Load data from databases successfull, offset {}, limit {}, time {}",
                     offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
             for(Picture picture : pictureList) {
                 log.info("--------------"+picture.getPeopleId());
             }
             cacheToMemeory(pictureList);
         } else {
-            log.error("Load data failed, offset ?, limit ?", offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
+            log.error("Load data failed, offset {}, limit {}, time {}", offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
     }
 

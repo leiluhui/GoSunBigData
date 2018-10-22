@@ -39,7 +39,7 @@ nohup ${INSTALL_HOME}/Kafka/kafka/bin/kafka-server-start.sh ${INSTALL_HOME}/Kafk
 # 启动Kafka的ui工具kafka-eagle
 echo "kafka-eagle"
 cd ${KAFKA_EAGLE_HOME}
- bin/ke.sh stop
+sh bin/ke.sh stop
 echo "kafka-eagle已启动,请到浏览器访问..(端口号8048)"
 
 # 等待三秒后再验证Kafka是否启动成功

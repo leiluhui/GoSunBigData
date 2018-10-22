@@ -100,7 +100,6 @@ public class PeopleCompare {
     }
 
     public void comparePeople(FaceObject faceObject) {
-        log.info("start");
         String currentYearMonth = new SimpleDateFormat("yyyyMM").format(System.currentTimeMillis());
         if (!currentYearMonth.equals(yearMonth)) {
             log.info("PeopleComare init, currentYearMonth=" + currentYearMonth + ", yearMonth=" + yearMonth);
@@ -164,7 +163,6 @@ public class PeopleCompare {
         } else {
             addNewPeopleRecognize(faceObject, communityId);
         }
-        log.info("end");
     }
 
     public void addPeopleRecognize(FaceObject faceObject, ComparePicture comparePicture, Long communityId) {
@@ -189,17 +187,18 @@ public class PeopleCompare {
         peopleRecognize.setSurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath()));
         peopleRecognize.setBurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath()));
         peopleRecognize.setFlag(1);
+        peopleRecognize.setSimilarity(comparePicture.getSimilarity());
         log.info("insert people recognize value=" + JacksonUtil.toJson(peopleRecognize));
         try {
-            peopleRecognizeMapper.insertSelective(peopleRecognize);
+            peopleRecognizeMapper.insertUpdate(peopleRecognize);
         } catch (Exception e) {
-            log.info("PeopelCompare insert people recognize failed !!!");
+            log.info("PeopelCompare insertUpdate people recognize failed !!!");
             log.error(e.getMessage());
         }
     }
 
     public void addNewPeopleRecognize(FaceObject faceObject, Long communityId) {
-        HashMap resultMap = compareNewPeople(faceObject);
+        CompareRes compareRes = compareNewPeople(faceObject);
         PeopleRecognize peopleRecognize = new PeopleRecognize();
         Date date = null;
         try {
@@ -207,22 +206,35 @@ public class PeopleCompare {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (resultMap != null) {
+        if (compareRes != null) {
             peopleRecognize.setId(faceObject.getId());
-            peopleRecognize.setPeopleid(indexUUID.get(resultMap.get("index")));
+            peopleRecognize.setPeopleid(indexUUID.get(compareRes.getIndex()));
             peopleRecognize.setDeviceid(faceObject.getIpcId());
             peopleRecognize.setPictureid(-1L);
             peopleRecognize.setCapturetime(date);
             peopleRecognize.setSurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath()));
             peopleRecognize.setBurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath()));
             peopleRecognize.setCommunity(communityId);
-            peopleRecognize.setFlag((Integer) resultMap.get("flag"));
+            peopleRecognize.setFlag(compareRes.getFlag());
+            peopleRecognize.setSimilarity(compareRes.getSimilarity());
             log.info("insert new add people recognize value=" + JacksonUtil.toJson(peopleRecognize));
-            try {
-                peopleRecognizeMapper.insertSelective(peopleRecognize);
-            } catch (Exception e) {
-                log.info("PeopelCompare insert new add people recognize failed !!!");
-                log.error(e.getMessage());
+            if(compareRes.getFlag() == 10) {
+                try {
+                    peopleRecognizeMapper.insertSelective(peopleRecognize);
+                } catch (Exception e) {
+                    bitFeatureList.removeLast();
+                    floatFeatureList.removeLast();
+                    indexUUID.remove(indexUUID.size() -1);
+                    log.info("PeopelCompare flag=10 insert new add people recognize failed !!!");
+                    log.error(e.getMessage());
+                }
+            } else {
+                try {
+                    peopleRecognizeMapper.insertSelective(peopleRecognize);
+                } catch (Exception e) {
+                    log.info("PeopelCompare flag=2 insert new add people recognize failed !!!");
+                    log.error(e.getMessage());
+                }
             }
         }
     }
@@ -234,8 +246,8 @@ public class PeopleCompare {
      * @return index : 集合下标
      * flag : 识别标签(2 : 新增, 10 ： 完全新增(原图))
      */
-    public HashMap compareNewPeople(FaceObject faceObject) {
-        HashMap<String, Integer> resultMap = new HashMap<>();
+    public CompareRes compareNewPeople(FaceObject faceObject) {
+        CompareRes compareRes = new CompareRes();
         byte[] bitFeature = faceObject.getAttribute().getBitFeature();
         if (bitFeature != null && bitFeature.length > 0) {
             byte[][] queryList = new byte[1][];
@@ -246,10 +258,11 @@ public class PeopleCompare {
                 bitFeatureList.addLast(faceObject.getAttribute().getBitFeature());
                 floatFeatureList.addLast(faceObject.getAttribute().getFeature());
                 indexUUID.put(indexUUID.size(), faceObject.getId());
-                resultMap.put("flag", 10);
-                resultMap.put("index", indexUUID.size() - 1);
+                compareRes.setFlag(10);
+                compareRes.setIndex(indexUUID.size() -1);
+                compareRes.setSimilarity(Float.valueOf("0.0"));
                 log.info("----------CompareNewPeople flag=10 compareResList is null");
-                return resultMap;
+                return compareRes;
             }
             CompareResult compareResult = compareResList.get(0);
             ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
@@ -259,18 +272,20 @@ public class PeopleCompare {
                 if (floatFeature != null && floatFeature.length == 512 && faceObject.getAttribute().getFeature().length == 512) {
                     float sim = FaceUtil.featureCompare(floatFeature, faceObject.getAttribute().getFeature());
                     if (sim >= this.floatThreshold) {
-                        resultMap.put("flag", 2);
-                        resultMap.put("index", faceFeatureInfo.getIndex());
+                        compareRes.setFlag(2);
+                        compareRes.setIndex(faceFeatureInfo.getIndex());
+                        compareRes.setSimilarity(sim);
                         log.info("----------CompareNewPeople flag=2 Float Sim="+sim);
-                        return resultMap;
+                        return compareRes;
                     } else {
                         bitFeatureList.addLast(faceObject.getAttribute().getBitFeature());
                         indexUUID.put(indexUUID.size(), faceObject.getId());
                         floatFeatureList.addLast(faceObject.getAttribute().getFeature());
-                        resultMap.put("flag", 10);
-                        resultMap.put("index", indexUUID.size() - 1);
+                        compareRes.setFlag(10);
+                        compareRes.setIndex(indexUUID.size() -1);
+                        compareRes.setSimilarity(sim);
                         log.info("----------CompareNewPeople flag=10 Float Sim="+sim);
-                        return resultMap;
+                        return compareRes;
                     }
                 } else {
                     return null;
@@ -278,18 +293,20 @@ public class PeopleCompare {
 
             } else {
                 if (faceFeatureInfo.getScore() >= featureThreshold / 100) {
-                    resultMap.put("flag", 2);
-                    resultMap.put("index", Integer.valueOf(compareResult.getIndex()));
+                    compareRes.setFlag(2);
+                    compareRes.setIndex(Integer.valueOf(compareResult.getIndex()));
+                    compareRes.setSimilarity(faceFeatureInfo.getScore()*100);
                     log.info("----------CompareNewPeople flag=2 Bit Score="+faceFeatureInfo.getScore());
-                    return resultMap;
+                    return compareRes;
                 } else {
                     floatFeatureList.addLast(faceObject.getAttribute().getFeature());
                     bitFeatureList.addLast(faceObject.getAttribute().getBitFeature());
                     indexUUID.put(indexUUID.size(), faceObject.getId());
-                    resultMap.put("flag", 10);
-                    resultMap.put("index", indexUUID.size() - 1);
+                    compareRes.setFlag(10);
+                    compareRes.setIndex(indexUUID.size() -1);
+                    compareRes.setSimilarity(faceFeatureInfo.getScore()*100);
                     log.info("----------CompareNewPeople flag=10 Bit Score="+faceFeatureInfo.getScore());
-                    return resultMap;
+                    return compareRes;
                 }
             }
         } else {

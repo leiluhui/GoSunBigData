@@ -49,10 +49,11 @@ for PID in $(cat ${BIN_DIR}/kafka_del.tmp);do
 	rm -f ${BIN_DIR}/kafka_del.tmp
 
 
+source /etc/profile
 echo "kafka-eagle"
 # 关闭kafka-eagle
 cd ${KAFKA_EAGLE_HOME}
- bin/ke.sh stop
+sh bin/ke.sh stop
 
 # 验证Kafka是否停止成功
 echo -e "********************验证Kafka是否停止成功*********************"

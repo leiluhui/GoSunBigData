@@ -123,9 +123,9 @@ public class BigDataPath {
     public static final String DISPATCH_DELETE = "/delete_rules";
     public static final String DISPATCH_SEARCH_BYID = "/rule_info";
     public static final String DISPATCH_CUTPAGE_RULE = "/get_rule";
-    public static final String DISPATCH_DEPLOY_STATUS = "/deploy_status";
+    public static final String DISPATCH_DISPATCH_STATUS = "/dispatch_status";
     public static final String DISPATCH_GET_FACE = "/get_face";
-    public static final String DISPATCH_SEARCH_DEPLOY = "/search_deploy";
+    public static final String DISPATCH_SEARCH_DISPATCH = "/search_dispatch";
     public static final String DISPATCH_INSERT_DEPLOY = "/insert";
     public static final String DISPATCH_DELETE_DEPLOY = "/delete";
     public static final String DISPATCH_UPDATE_DEPLOY = "/update";
