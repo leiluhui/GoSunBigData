@@ -1,7 +1,11 @@
 package com.hzgc.service.dispatch.dao;
 
 import com.hzgc.service.dispatch.model.Dispatch;
+import com.hzgc.service.dispatch.param.DispatchDTO;
+import com.hzgc.service.dispatch.param.SearchDispatchDTO;
 import org.apache.ibatis.annotations.CacheNamespace;
+
+import java.util.List;
 
 @CacheNamespace
 public interface DispatchMapper {
@@ -13,9 +17,17 @@ public interface DispatchMapper {
 
     Dispatch selectByPrimaryKey(String id);
 
+    Dispatch selectSelective(DispatchDTO record);
+
+    Dispatch selectFaceById(String id);
+
     int updateByPrimaryKeySelective(Dispatch record);
+
+    int updateStatusById(Dispatch record);
 
     int updateByPrimaryKeyWithBLOBs(Dispatch record);
 
     int updateByPrimaryKey(Dispatch record);
+
+    List<Dispatch> searchDispatch(SearchDispatchDTO searchDispatchDTO);
 }

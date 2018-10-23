@@ -28,6 +28,8 @@ INSTALL_HOME=$(grep Install_HomeDir ${CONF_DIR}/cluster_conf.properties|cut -d '
 CORES=$(cat /proc/cpuinfo| grep "processor"| wc -l)
 ## Node Manager 的个数
 Yarn_NumOfNodeManger=$(grep Yarn_NumOfNodeManger ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+##获取spark namenode的ip
+Spark_NameNode=$(grep Spark_NameNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 ## 总的Executor 个数 
 Tatal_CORES=$(echo "${Yarn_NumOfNodeManger}*${CORES}" | bc)
 ## SPARK_INSTALL_HOME spark 安装目录
@@ -55,7 +57,7 @@ EXECUTOR_CORES=${4:-"1"}
 DEFAULT_EXECUTORS=$(echo "(${Tatal_CORES}-${DRIVER_CORES})/${EXECUTOR_CORES}" | bc)
 NUM_EXCUTORS=${5:-$DEFAULT_EXECUTORS}
 
-$SPARK_HOME/sbin/start-thriftserver.sh --master yarn --driver-memory ${DRIVER_MEN}  --executor-memory ${EXECUTOR_MEN}   --driver-cores ${DRIVER_CORES}  --executor-cores ${EXECUTOR_CORES}  --num-executors ${NUM_EXCUTORS}
+$SPARK_HOME/sbin/start-thriftserver.sh --master spark://${Spark_NameNode}:7077 --driver-memory ${DRIVER_MEN}  --executor-memory ${EXECUTOR_MEN}   --driver-cores ${DRIVER_CORES}  --executor-cores ${EXECUTOR_CORES}  --total-executor-cores ${NUM_EXCUTORS}
 
 
 ## 启动spark-historyserver

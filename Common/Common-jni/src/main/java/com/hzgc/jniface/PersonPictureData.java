@@ -11,6 +11,8 @@ public class PersonPictureData implements Serializable {
 
     private List<PersonAttributes> personAttributes;
 
+    private int personTotal;
+
     public byte[] getImageData() {
         return imageData;
     }
@@ -33,5 +35,13 @@ public class PersonPictureData implements Serializable {
 
     public void setPersonAttributes(List<PersonAttributes> personAttributes) {
         this.personAttributes = personAttributes;
+    }
+
+    public int getPersonTotal() {
+        return personTotal;
+    }
+
+    public void setPersonTotal(int personTotal) {
+        this.personTotal = personTotal;
     }
 }

@@ -25,6 +25,8 @@ LOG_DIR=${ROOT_HOME}/logs
 LOG_FILE=${LOG_DIR}/kafkaStart.log
 ## 最终安装的根目录，所有bigdata 相关的根目录
 INSTALL_HOME=$(grep Install_HomeDir ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+# Kafka-eagle 根目录
+KAFKA_EAGLE_HOME=${INSTALL_HOME}/Kafka-eagle/kafka-eagle
 ## kafka的安装节点，放入数组中
 KAFKA_HOSTNAME_LISTS=$(grep Kafka_InstallNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 KAFKA_HOSTNAME_ARRY=(${KAFKA_HOSTNAME_LISTS//;/ })
@@ -45,13 +47,13 @@ do
 	ssh root@$name "source /etc/profile;nohup ${INSTALL_HOME}/Kafka/kafka/bin/kafka-server-start.sh ${INSTALL_HOME}/Kafka/kafka/config/server.properties >>${CLUSTER_LOGSDIR}/kafka/kafka-logs/kafka-server.log 2>&1 &"
 done
 
-# 启动Kafka的ui工具kafka-manager
-echo "kafka-manager"
-cd ${KAFKA_HOME}
-chmod -R 755 kafka-manager/
-cd kafka-manager/
-nohup bin/kafka-manager -Dconfig.file=${KAFKA_HOME}/kafka-manager/conf/application.conf -Dhttp.port=8099 &
-echo "kafka-manager已启动,请到浏览器访问..(端口号8099)"
+source /etc/profile
+# 启动Kafka的ui工具kafka-eagle
+echo "kafka-eagle"
+cd ${KAFKA_EAGLE_HOME}
+sh bin/ke.sh start
+echo "kafka-eagle已启动,请到浏览器访问..(端口号8048)"
+
 
 # 等待7秒后再验证Kafka是否启动成功
 echo -e "********************验证Kafka是否启动成功*********************"

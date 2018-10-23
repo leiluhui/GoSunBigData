@@ -49,12 +49,18 @@ public class Comsumer extends Thread{
     private void receiveAndSave(){
         comsumer.subscribe(Collections.singletonList(Config.KAFKA_TOPIC));
         log.info("Comsumer is started to accept kafka info.");
+        log.info("Consumer param : " + Config.KAFKA_BOOTSTRAP_SERVERS);
+        log.info("Consumer param : " + Config.KAFKA_GROUP_ID);
+        log.info(Config.KAFKA_DESERIALIZER);
+        log.info("Consumer param : " + Config.KAFKA_TOPIC);
+        log.info("Consumer param : " + Config.KAFKA_MAXIMUM_TIME);
         action = true;
         while(action){
             ConsumerRecords<String, String> records =
                     comsumer.poll(Config.KAFKA_MAXIMUM_TIME);
 //            List<FaceObject> objList = new ArrayList<>();
             List<Triplet<String, String, byte[]>> list = new ArrayList<>();
+//            log.info("Consumer size : " + records.count());
             for(ConsumerRecord<String, String> record : records){
                 FaceObject obj = JacksonUtil.toObject(record.value(), FaceObject.class);
                 list.add(new Triplet<>(obj.getTimeStamp().split(" ")[0], obj.getId(), obj.getAttribute().getBitFeature()));

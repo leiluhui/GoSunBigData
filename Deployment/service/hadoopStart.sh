@@ -37,25 +37,9 @@ ${INSTALL_HOME}/Hadoop/hadoop/sbin/start-dfs.sh
 	else 
 	    echo -e 'hdfs failed \n'
 	fi
-${INSTALL_HOME}/Hadoop/hadoop/sbin/start-yarn.sh
-	if [ $? -eq 0 ];then
-	    echo -e 'yarn success \n'
-	else 
-	    echo -e 'yarn failed \n'
-	fi
-##启动jobhistory
-${INSTALL_HOME}/Hadoop/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
-
-
-ssh root@$MASTER2 "${INSTALL_HOME}/Hadoop/hadoop/sbin/yarn-daemon.sh start resourcemanager"
-	if [ $? -eq 0 ];then
-	    echo -e 'ha yarn success \n'
-	else
-	    echo -e 'ha yarn failed \n'
-	fi
 
 # 等待7秒后再验证Hadoop是否启动成功
 echo -e "********************验证Hadoop是否启动成功*********************"
 sleep 7s
 source $(grep Source_File ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
-xcall jps | grep -E 'NameNode|NodeManager|DataNode|ResourceManager|JournalNode|DFSZKFailoverController|jps show as bellow'
+xcall jps | grep -E 'NameNode|DataNode|JournalNode|DFSZKFailoverController|jps show as bellow'

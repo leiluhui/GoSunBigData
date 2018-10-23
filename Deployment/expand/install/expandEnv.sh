@@ -28,7 +28,7 @@ sh dos2unixExpand.sh
 sh expectExpand.sh
 
 ## 配置免密登录
-sh sshSilentLogin.sh
+sh sshCilentLogin.sh
 
 ## 分发host
 sh distributionHosts.sh

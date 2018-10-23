@@ -118,13 +118,21 @@ public class BigDataPath {
     public static final String GET_IMPORTANT_PEOPLE = "/get_important_people";
 
     /**
-     * FaceDispatch模块请求路径
+     * Dispatch模块请求路径
      */
     public static final String DISPATCH_ADD = "/add_rule";
     public static final String DISPATCH_MODIFY = "/modify_rule";
     public static final String DISPATCH_DELETE = "/delete_rules";
     public static final String DISPATCH_SEARCH_BYID = "/rule_info";
     public static final String DISPATCH_CUTPAGE_RULE = "/get_rule";
+    public static final String DISPATCH_DISPATCH_STATUS = "/dispatch_status";
+    public static final String DISPATCH_GET_FACE = "/get_face";
+    public static final String DISPATCH_SEARCH_DISPATCH = "/search_dispatch";
+    public static final String DISPATCH_INSERT_DEPLOY = "/insert";
+    public static final String DISPATCH_DELETE_DEPLOY = "/delete";
+    public static final String DISPATCH_UPDATE_DEPLOY = "/update";
+    public static final String DISPATCH_SEARCH_HISTORY = "/search_recognize";
+
 
     public static final String OBJECTINFO_ADD = "/object_add";
     public static final String OBJECTINFO_DELETE = "/object_delete";

@@ -38,7 +38,7 @@ if  [[ "${ISLOCAL}" == "yes"  ]]; then
     sh expectInstall.sh
 
     ## 配置免密登录
-    sh sshSilentLogin.sh
+    sh sshCilentLogin.sh
 
     ## 分发host
     sh ${ROOT_HOME}/tool/xsync /etc/hosts

@@ -2,13 +2,14 @@ package com.hzgc.jniface;
 
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PictureData implements Serializable {
     //图片ID
-    private String imageID;
+    protected String imageID;
 
     //图片二进制数据
-    private byte[] imageData;
+    protected byte[] imageData;
 
     //人脸特征对象,包括特征值和人脸属性
     private FaceAttribute feature;
@@ -36,4 +37,5 @@ public class PictureData implements Serializable {
     public void setFeature(FaceAttribute feature) {
         this.feature = feature;
     }
+
 }

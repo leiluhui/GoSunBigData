@@ -29,9 +29,14 @@ NODE_PORT=${3}
 TASK_ID=${4}
 
 LOG_FILE=${LOG_DIR}/worker-${WORK_ID}.log
+LOG_FILE_STDERR=${LOG_DIR}/${WORK_ID}/stderr.log
 
 if [ ! -d ${LOG_DIR} ]; then
     mkdir ${LOG_DIR}
+fi
+
+if [ ! -d ${LOG_DIR}/${WORK_ID} ]; then
+    mkdir ${LOG_DIR}/${WORK_ID}
 fi
 
 #####################################################################
@@ -43,7 +48,7 @@ fi
 #####################################################################
 function start_worker()
 {
-    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} &
+    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} 2>&1 > $LOG_FILE_STDERR &
     echo "start FaceCompareWorker ..."
 }
 

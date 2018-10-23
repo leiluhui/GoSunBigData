@@ -69,17 +69,8 @@ datanode_arr=(${Hadoop_Data//;/ })
 # 其他: N/A
 #####################################################################
 function compression_the_tar()
-{   
-#    echo ""  | tee -a $LOG_FILE
-#    echo "**********************************************" | tee -a $LOG_FILE
-#    echo "please waitinng, hadoop jar 包解压中........"  | tee -a $LOG_FILE
+{
     cd $HADOOP_SOURCE_DIR
-#    tar -xf hadoop.tar.gz
-#    if [ $? == 0 ];then
-#        echo "解压hadoop jar 包成功." | tee -a $LOG_FILE
-#    else
-#       echo "解压hadoop jar 包失败，请检查包是否完整。" | tee -a $LOG_FILE  
-#    fi
     rm -rf ${HADOOP_HOME}
     cp -r hadoop  ${HADOOP_INSTALL_HOME}
     cd -  
@@ -160,27 +151,6 @@ function config_hdfs_site()
 }
 
 #####################################################################
-# 函数名: config_yarn_site 的
-# 描述: 配置yarn-site.xml 
-# 参数: N/A
-# 返回值: N/A
-# 其他: N/A
-#####################################################################
-function config_yarn_site()
-{
-    echo ""  | tee -a $LOG_FILE
-    echo "**********************************************" | tee -a $LOG_FILE
-    cd  ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop
-    sed -i "s#master1#${MASTER1}#g"  yarn-site.xml
-    sed -i "s#master2#${MASTER2}#g"  yarn-site.xml
-    sed -i "s#ha_zookeeper_quorum#${ZK_LISTS}#g"  yarn-site.xml
-    echo "配置yarn-site.xml 的配置done"  | tee -a $LOG_FILE
-    cd -
-}
-
-
-
-#####################################################################
 # 函数名: xync_hadoop_config
 # 描述: hadoop 配置文件分发
 # 参数: N/A
@@ -242,7 +212,6 @@ function main()
     config_jdk_and_slaves
     config_core_site
     config_hdfs_site
-    config_yarn_site 
     writeUI_file	
     xync_hadoop_config 
 }

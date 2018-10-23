@@ -24,14 +24,13 @@ PEOMAN_WORKER_JAR=${LIB_DIR}/${PEOMAN_WORKER_JAR_NAME}                        ##
 #                              SpringCloud的配置                              #
 #-----------------------------------------------------------------------------#
 KAFKA_HOST=172.18.18.100:9092
-WORKER_ID=1
 BIT_THRESHOLD=90
 FLOAT_THRESHOLD=90
 FLAT_COMPARE_OPEN=true
-MQ_NAMESERVER=172.18.18.102:9876
 ZK_ADDRESS=172.18.18.100
 MYSQL_HOST=172.18.18.119:4000
-
+MYSQL_USERNAME=
+MYSQL_PASSWORD=
 
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
@@ -51,13 +50,14 @@ function start_springCloud()
    else
       nohup java -jar ${PEOMAN_WORKER_JAR} --spring.profiles.active=pro \
       --kafka.host=${KAFKA_HOST} \
-      --worker.id=${WORKER_ID} \
       --zookeeper.address=${ZK_ADDRESS} \
       --bit.threshold=${BIT_THRESHOLD} \
       --float.threshold=${FLOAT_THRESHOLD} \
       --flat.compare.open=${FLAT_COMPARE_OPEN} \
-      --mq.nameserver=${MQ_NAMESERVER} \
       --mysql.host=${MYSQL_HOST} \
+      --mysql.username=${MYSQL_USERNAME} \
+      --mysql.password=${MYSQL_PASSWORD} \
+      --kafka.host=${KAFKA_HOST} \
       --spring.cloud.config.enabled=false  2>&1 &
    fi
 }

@@ -9,9 +9,9 @@ public class TaskTrackerStart {
         JobManager.getInstance();
         LoggerFactory.setLoggerAdapter("slf4j");
         TaskTracker taskTracker = new TaskTracker();
-        taskTracker.addConfig("zk.client", "zkclient");
-        taskTracker.addConfig("lts.remoting", "netty");
-        taskTracker.addConfig("lts.json", "jackson");
+//        taskTracker.addConfig("zk.client", "zkclient");
+//        taskTracker.addConfig("lts.remoting", "netty");
+//        taskTracker.addConfig("lts.json", "jackson");
         taskTracker.addConfig("job.fail.store", "mapdb");
         taskTracker.setJobRunnerClass(MyJobRunner.class);
         taskTracker.setRegistryAddress("zookeeper://" + Config.ZOOKEEPER_ADDRESS);
