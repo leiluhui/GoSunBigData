@@ -28,14 +28,14 @@
     select count(peopleid)
     from t_people_new
     where isconfirm = 2
-    and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = month
+    and DATE_FORMAT(now(), '%Y%m') = month
     and community = #{community,jdbcType=BIGINT}
   </select>
   <!--统计某小区某月总迁入数量-->
   <select id="countTotalNewPeople" resultMap="CountResultMap"
           parameterType="com.hzgc.service.community.param.NewAndOutPeopleCountDTO" >
     select community, count(peopleid) as count
-    from t_people_new
+    from (select distinct peopleid, community from t_people_new
     <where>
       <if test="month != null" >
         month = #{month,jdbcType=VARCHAR}
@@ -47,6 +47,7 @@
         </foreach>
       </if>
     </where>
+    ) as temp_table
     group by community
   </select>
   <!--统计某小区某月确认迁入数量-->

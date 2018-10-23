@@ -152,25 +152,12 @@ public class CommunityService {
     }
 
     public List<NewAndOutPeopleCounVO> countCommunityNewAndOutPeople(NewAndOutPeopleCountDTO param) {
-        List<Long> communityIdList;
-        int offset = param.getStart();
-        int count = param.getLimit();
-        int size = param.getCommunityIdList().size();
-        if (offset > -1 && size > (offset + count - 1)) {
-            //结束行小于总数，取起始行开始后续count条数据
-            communityIdList = param.getCommunityIdList().subList(offset, offset + count);
-        } else {
-            //结束行大于总数，则返回起始行开始的后续所有数据
-            communityIdList = param.getCommunityIdList().subList(offset, size);
-        }
-        param.setCommunityIdList(communityIdList);
-        log.info("Start count community new and out people, community id list:" + JacksonUtil.toJson(param.getCommunityIdList()));
         List<CountCommunityPeople> totalNewCount = newPeopleMapper.countTotalNewPeople(param);
         List<CountCommunityPeople> totalOutCount = outPeopleMapper.countTotalOutPeople(param);
         List<CountCommunityPeople> confirmNewCount = newPeopleMapper.countConfirmNewPeople(param);
         List<CountCommunityPeople> confirmOutCount = outPeopleMapper.countConfirmOutPeople(param);
         List<NewAndOutPeopleCounVO> voList = new ArrayList<>();
-        for (Long communityId : communityIdList) {
+        for (Long communityId : param.getCommunityIdList()) {
             NewAndOutPeopleCounVO vo = new NewAndOutPeopleCounVO();
             vo.setCommunityId(communityId);
             vo.setCommunityName(platformService.getCommunityName(communityId));
@@ -203,7 +190,20 @@ public class CommunityService {
                 voList.add(vo);
             }
         }
-        return voList;
+        log.info("Community new and out people total result: " + JacksonUtil.toJson(voList));
+        List<NewAndOutPeopleCounVO> vos;
+        int offset = param.getStart();
+        int count = param.getLimit();
+        int size = voList.size();
+        if (offset > -1 && size > (offset + count - 1)) {
+            //结束行小于总数，取起始行开始后续count条数据
+            vos = voList.subList(offset, offset + count);
+        } else {
+            //结束行大于总数，则返回起始行开始的后续所有数据
+            vos = voList.subList(offset, size);
+        }
+        log.info("Count community new and out people result: " + JacksonUtil.toJson(vos));
+        return vos;
     }
 
     public NewAndOutPeopleSearchVO searchCommunityNewAndOutPeople(NewAndOutPeopleSearchDTO param) {
@@ -390,7 +390,7 @@ public class CommunityService {
         vo.setHourCountList(hourCountList);
         // 小区迁入人口抓拍详情:人员抓拍列表
         Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
-        List<PeopleRecognize> peopleRecognizes = peopleRecognizeMapper.searchCommunityNewPeopleCaptureData(param.getPeopleId());
+        List<PeopleRecognize> peopleRecognizes = peopleRecognizeMapper.searchCommunityNewPeopleCaptureData(param);
         PageInfo pageInfo = new PageInfo(page.getResult());
         int total = (int) pageInfo.getTotal();
         CapturePeopleCount capturePeopleCount = new CapturePeopleCount();
@@ -707,9 +707,23 @@ public class CommunityService {
     private void listSort(List<PeopleCaptureVO> voList) {
         voList.sort((o1, o2) -> {
             try {
-                Date d1 = sdf.parse(o1.getCaptureTime());
-                Date d2 = sdf.parse(o2.getCaptureTime());
-                return Long.compare(d1.getTime(), d2.getTime());
+                if (o1.getCaptureTime() != null && o1.getCaptureTime().length() > 0) {
+                    Date d1 = sdf.parse(o1.getCaptureTime());
+                    if (o2.getCaptureTime() != null && o2.getCaptureTime().length() > 0) {
+                        Date d2 = sdf.parse(o2.getCaptureTime());
+                        return Long.compare(d1.getTime(), d2.getTime());
+                    } else {
+                        return Long.compare(d1.getTime(), 0);
+                    }
+                } else {
+                    if (o2.getCaptureTime() != null && o2.getCaptureTime().length() > 0) {
+                        Date d2 = sdf.parse(o2.getCaptureTime());
+                        return Long.compare(0, d2.getTime());
+                    } else {
+                        return 0;
+                    }
+                }
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

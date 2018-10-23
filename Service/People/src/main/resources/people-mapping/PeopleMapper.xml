@@ -194,7 +194,7 @@
         select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_people_new b, t_picture c
         where b.isconfirm = 2
-        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and DATE_FORMAT(now(), '%Y%m') = b.month
         and a.id = b.peopleid
         and a.id = c.peopleid
         and b.community = #{community,jdbcType=BIGINT}
@@ -205,7 +205,7 @@
         select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_people_out b, t_picture c
         where b.isconfirm = 2
-        and DATE_FORMAT(DATE_SUB(now(),INTERVAL 1 MONTH), '%Y%m') = b.month
+        and DATE_FORMAT(now(), '%Y%m') = b.month
         and a.id = b.peopleid
         and a.id = c.peopleid
         and b.community = #{community,jdbcType=BIGINT}
