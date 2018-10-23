@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public enum Gender implements Serializable {
 
-    Male(1), Female(0);
+    Female(0), Male(1);
 
     private int value;
 
