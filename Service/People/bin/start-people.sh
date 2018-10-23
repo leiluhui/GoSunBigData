@@ -25,8 +25,8 @@ PEOPLE_JAR=${LIB_DIR}/${PEOPLE_JAR_NAME}                        ##获取jar包�
 EUREKA_IP=172.18.18.201     ##注册中心的ip地址
 EUREKA_PORT=9000            ##服务注册中心端口
 MYSQL_HOST=172.18.18.105:3306
-MYSQL_USERNAME=
-MYSQL_PASSWORD=
+#MYSQL_USERNAME=
+#MYSQL_PASSWORD=
 
 
 #------------------------------------------------------------------------------#
@@ -49,8 +49,6 @@ function start_springCloud()
       --spring.cloud.config.enabled=false \
       --eureka.ip=${EUREKA_IP} \
       --mysql.host=${MYSQL_HOST} \
-      --mysql.username=${MYSQL_USERNAME} \
-      --mysql.password=${MYSQL_PASSWORD} \
       --eureka.port=${EUREKA_PORT}  2>&1 &
 
    fi
