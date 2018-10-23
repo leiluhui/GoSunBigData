@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +114,7 @@ public class FaceCompare implements Runnable{
                 dispatureRecognize.setSimilarity(sim);
                 dispatureRecognize.setType(0);
 //                dispatureRecognize.setCreateTime(faceObject.getTimeStamp());
-                dispatureRecognizeMapper.insert(dispatureRecognize);
+                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
                 AlarmMessage alarmMessage = new AlarmMessage();
                 alarmMessage.setDeviceId(faceObject.getIpcId());
                 alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
@@ -131,21 +130,5 @@ public class FaceCompare implements Runnable{
             }
             log.info("The size of face compared is " + faceObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }
-    }
-
-    public static void main(String args[]){
-        AlarmMessage alarmMessage = new AlarmMessage();
-        alarmMessage.setDeviceId("设备号");
-        alarmMessage.setDeviceName("设备名");
-        alarmMessage.setType(0);
-        alarmMessage.setSim(100);
-        alarmMessage.setMac("Mac");
-        alarmMessage.setPlate("车牌号");
-        alarmMessage.setName("姓名");
-        alarmMessage.setIdCard("身份证号");
-        alarmMessage.setCaptureImage("抓拍图片");
-        alarmMessage.setId("布控信息Id");
-        alarmMessage.setTime("抓拍时间");
-        System.out.println(JacksonUtil.toJson(alarmMessage));
     }
 }

@@ -9,8 +9,10 @@ import com.hzgc.cluster.dispach.model.Dispach;
 import com.hzgc.cluster.dispach.model.DispachRecognize;
 import com.hzgc.cluster.dispach.producer.AlarmMessage;
 import com.hzgc.cluster.dispach.producer.Producer;
-import com.hzgc.common.collect.bean.MacObject;
-import com.hzgc.common.service.api.bean.DetectorQueryDTO;
+import com.hzgc.common.collect.bean.CarObject;
+import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Component
-public class MacCompare implements Runnable{
+public class CarCompare implements Runnable{
     private boolean action;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Autowired
     private CaptureCache captureCache;
     @Autowired
@@ -41,12 +40,13 @@ public class MacCompare implements Runnable{
     @Autowired
     private DispachRecognizeMapper dispatureRecognizeMapper;
     @Autowired
+    InnerService innerService;
+    @Autowired
     private Producer producer;
     @Value("${kafka.topic.dispatch-show}")
     private String topic;
 
-
-    public MacCompare(){
+    public CarCompare(){
         action = true;
     }
 
@@ -54,8 +54,8 @@ public class MacCompare implements Runnable{
     public void run() {
         while (action){
             long start = System.currentTimeMillis();
-            List<MacObject> macObjects = captureCache.getMac();
-            if(macObjects.size() == 0){
+            List<CarObject> carObjects = captureCache.getCar();
+            if(carObjects.size() == 0){
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -63,17 +63,17 @@ public class MacCompare implements Runnable{
                 }
                 continue;
             }
-            List<String> sns = new ArrayList<>();
-            for(MacObject macObject : macObjects){
-                sns.add(macObject.getSn());
+            List<String> ipcIds = new ArrayList<>();
+            for(CarObject carObject : carObjects){
+                ipcIds.add(carObject.getIpcId());
             }
-            Map<String, DetectorQueryDTO> map = platformService.getInfoByBatchSn(sns);
-            for(MacObject macObject : macObjects){
-                Long region = Long.parseLong(map.get(macObject.getSn()).getRegion());
-                List<DispachData> dispatureDataList = tableCache.getMacInfo(region);
+            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            for(CarObject carObject : carObjects){
+                Long region = Long.parseLong(map.get(carObject.getIpcId()).getRegion());
+                List<DispachData> dispatureDataList = tableCache.getCarInfo(region);
                 DispachData disp = null;
                 for(DispachData dispatureData : dispatureDataList){
-                    if(dispatureData.getMac() != null && dispatureData.getMac().equals(macObject.getMac())){
+                    if(dispatureData.getCar() != null && dispatureData.getCar().equals(carObject.getAttribute().getPlate_licence())){
                         disp = dispatureData;
                     }
                 }
@@ -83,23 +83,31 @@ public class MacCompare implements Runnable{
                 DispachRecognize dispatureRecognize = new DispachRecognize();
                 dispatureRecognize.setDispatchId(disp.getId());
                 dispatureRecognize.setRecordTime(new Timestamp(System.currentTimeMillis()));
-                dispatureRecognize.setDeviceId(macObject.getSn());
-                dispatureRecognize.setType(2);
-                dispatureRecognize.setCreateTime(new Timestamp(macObject.getTimestamp()));
-                dispatureRecognizeMapper.insert(dispatureRecognize);
+                dispatureRecognize.setDeviceId(carObject.getIpcId());
+                String surl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath());
+                String burl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath());
+                dispatureRecognize.setBurl(burl);
+                dispatureRecognize.setSurl(surl);
+                dispatureRecognize.setType(1);
+//                dispatureRecognize.setCreateTime(carObject.getTimeStamp());
+
                 Dispach dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
+                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
                 AlarmMessage alarmMessage = new AlarmMessage();
-                alarmMessage.setDeviceId(macObject.getSn());
-                alarmMessage.setDeviceName(map.get(macObject.getSn()).getDetectorName());
-                alarmMessage.setMac(disp.getMac());
-                alarmMessage.setType(2);
+                alarmMessage.setDeviceId(carObject.getIpcId());
+                alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
+                alarmMessage.setPlate(disp.getCar());
+                alarmMessage.setType(1);
                 alarmMessage.setSim(100f);
                 alarmMessage.setName(dispach.getName());
                 alarmMessage.setIdCard(dispach.getIdcard());
-                alarmMessage.setTime(sdf.format(new Date(macObject.getTimestamp())));
+                String ip = innerService.hostName2Ip(carObject.getHostname()).getIp();
+                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
+                alarmMessage.setId(disp.getId());
+                alarmMessage.setTime(carObject.getTimeStamp());
                 producer.send(topic, JacksonUtil.toJson(alarmMessage));
             }
-            log.info("The size of mac compared is " + macObjects.size() + " , the time is " + (System.currentTimeMillis() -start));
+            log.info("The size of car compared is " + carObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }
     }
 }

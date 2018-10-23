@@ -31,7 +31,7 @@ public class BatchBufferQueue<T> {
             writeLock.unlock();
         }
     }
-    
+
     public void push(T record) {
         writeLock.lock();
         try {

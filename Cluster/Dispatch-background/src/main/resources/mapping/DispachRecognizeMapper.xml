@@ -16,7 +16,7 @@
     id, dispatch_id, record_time, device_id, burl, surl, similarity, type, create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_dispatch_recognize
     where id = #{id,jdbcType=VARCHAR}
