@@ -100,8 +100,6 @@ function config_conf_slaves()
     do
         NUM=$[`grep -n ha.zookeeper.quorum ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop/core-site.xml | cut -d ':' -f1`+1]
         sed -i "${NUM}c ${VALUE}${ZK_LISTS}${VALUE_END}" ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop/core-site.xml
-        NUM=$[`grep -n yarn.resourcemanager.zk-address ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop/yarn-site.xml | cut -d ':' -f1`+1]
-        sed -i "${NUM}c ${VALUE}${ZK_LISTS}${VALUE_END}" ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop/yarn-site.xml
         echo ${data_host} >> ${HADOOP_INSTALL_HOME}/hadoop/etc/hadoop/slaves
     done
 }

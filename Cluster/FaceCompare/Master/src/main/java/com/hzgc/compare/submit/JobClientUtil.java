@@ -21,9 +21,9 @@ public class JobClientUtil {
     private  static JobClient createClient(){
         logger.info("Create a Job Client.");
         JobClient client = new JobClient();
-        client.addConfig("zk.client", "zkclient");
-        client.addConfig("lts.remoting", "netty");
-        client.addConfig("lts.json", "jackson");
+//        client.addConfig("zk.client", "zkclient");
+//        client.addConfig("lts.remoting", "netty");
+//        client.addConfig("lts.json", "jackson");
         client.addConfig("job.fail.store", "mapdb");
         client.setNodeGroup("compare_master");
         client.setClusterName(Config.CLUSTER_NAME);

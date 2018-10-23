@@ -60,11 +60,13 @@ public class CarExtractService {
                     carAttribute.setMistake_code(vehicle.getMistake_code());
                     carAttribute.setSunroof_code(vehicle.getSunroof_code());
                     carAttribute.setVehicle_type(vehicle.getVehicle_type());
+                    carAttribute.setVehicle_coordinate(vehicle.getVehicle_image());
                     attributeList.add(carAttribute);
                 }
             }
         }
         carPictureData.setAttributeList(attributeList);
+        carPictureData.setCarTotal(attributeList.size());
         return carPictureData;
     }
 }

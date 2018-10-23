@@ -2,7 +2,6 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;

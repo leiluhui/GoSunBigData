@@ -37,6 +37,7 @@ SPARK_HOME=${INSTALL_HOME}/Spark/spark
 
 ## spark的安装节点，需要拼接，放入数组中
 SPARK_NAMENODE=$(grep Spark_NameNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
+SPARK_STANDBYNODE=$(grep Spark_StandbyNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 SPARK_SERVICENODE=$(grep Spark_ServiceNode ${CONF_DIR}/cluster_conf.properties|cut -d '=' -f2)
 SPARK_HOSTNAME_LISTS=${SPARK_NAMENODE}";"${SPARK_SERVICENODE}
 SPARK_HOSTNAME_ARRY=(${SPARK_HOSTNAME_LISTS//;/ })
@@ -52,17 +53,6 @@ fi
     echo "==================================================="  | tee -a $LOG_FILE
     echo "$(date "+%Y-%m-%d  %H:%M:%S")"                       | tee  -a  $LOG_FILE
 
-## 解压spark安装包
-#    echo ""  | tee  -a  $LOG_FILE
-#    echo ""  | tee  -a  $LOG_FILE
-#    echo "==================================================="  | tee -a $LOG_FILE
-#    echo “解压spark tar 包中，请稍候.......”  | tee -a $LOG_FILE
-#    tar -xf ${SPARK_SOURCE_DIR}/spark.tgz -C ${SPARK_SOURCE_DIR}
-#if [ $? == 0 ];then
-#    echo "解压spark 安装包成功......"  | tee -a $LOG_FILE
-#else
-#    echo “解压spark 安装包失败。请检查安装包是否损坏，或者重新安装.”  | tee -a $LOG_FILE
-#fi
 
 ## 创建临时目录
     echo ""  | tee  -a  $LOG_FILE
@@ -88,7 +78,13 @@ done
 ## 修改spark-env.sh
     sed -i "s;INSTALL_HOME;${INSTALL_HOME};g"  ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
     sed -i "s;SPARK_DATA;${SPARK_HOME};g"      ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
-	
+    #sed -i "s;export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_NAMENODE};g" ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
+
+    CORES=`cat /proc/cpuinfo| grep 'processor'| wc -l`
+    MEM=`echo $(free -h | grep 'Mem' | awk '{print $2}')`
+    sed -i "s;export SPARK_WORKER_MEMORY=.*;export SPARK_WORKER_MEMORY=${MEM};g" ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
+    sed -i "s;export SPARK_WORKER_CORES=.*;export SPARK_WORKER_CORES=${CORES};g" ${SPARK_SOURCE_DIR}/tmp/spark/conf/spark-env.sh
+
 ## 修改spark-beeline
 tmp=""
 for hostname in ${SPARK_HOSTNAME_ARRY[@]}
@@ -112,6 +108,8 @@ do
     echo "更改成功。"  | tee -a $LOG_FILE
 done
 
+    sed -i "s;#export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_NAMENODE};g" ${SPARK_HOME}/conf/spark-env.sh
+    ssh root@$SPARK_STANDBYNODE "sed -i 's;#export SPARK_MASTER_IP=.*;export SPARK_MASTER_IP=${SPARK_STANDBYNODE};g' ${SPARK_HOME}/conf/spark-env.sh"
     cp ${INSTALL_HOME}/Hive/hive/conf/hive-site.xml ${SPARK_HOME}/conf
     sed -i "s;10000;23040;g"  ${SPARK_HOME}/conf/hive-site.xml
 	sed -i "s;hiveserver2;thriftserver;g"  ${SPARK_HOME}/conf/hive-site.xml

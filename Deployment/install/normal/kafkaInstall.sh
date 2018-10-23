@@ -70,6 +70,7 @@ echo "==================================================="  | tee -a $LOG_FILE
 #    echo “解压kafka 安装包失败。请检查安装包是否损坏，或者重新安装.”  | tee -a $LOG_FILE
 #fi
 
+
     mkdir -p ${KAFKA_SOURCE_DIR}/tmp
     cp -r ${KAFKA_SOURCE_DIR}/kafka ${KAFKA_SOURCE_DIR}/tmp
     sed -i "s;KAFKA_HOME;${KAFKA_HOME};g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
@@ -79,6 +80,7 @@ echo "==================================================="  | tee -a $LOG_FILE
         zkpro="$zkpro$zk:2181,"
     done
     sed -i "s;^zookeeper.connect=.*;zookeeper.connect=${zkpro%?}/kafka;g"  ${KAFKA_SOURCE_DIR}/tmp/kafka/config/server.properties
+
 
 #临时目录。
 i=0
@@ -121,22 +123,6 @@ do
     echo "准备分发conf文件到${hostName}"
     rsync -rvl 	${KAFKA_HOME}/config/producer.properties $hostName:${KAFKA_HOME}/config > /dev/null
 done
-
-# 配置kafka的ui管理工具kafka-manager（马燊偲）
-echo ""  | tee  -a  $LOG_FILE
-echo "配置kafka-manager的zk地址......"  | tee  -a  $LOG_FILE
-
-# 替换kafka-manager/conf/application.conf中：kafka-manager.zkhosts=value
-tmp=""
-for host_name in ${KAFKA_HOSTNAME_ARRY[@]}
-do
-	ip=$(cat /etc/hosts|grep "$host_name" | awk '{print $1}')
-	tmp="$tmp"${ip}":2181,"  # 拼接字符串
-done
-tmp=${tmp%?}
-sed -i "s#^kafka-manager.zkhosts=\".*#kafka-manager.zkhosts=\"${tmp}\"#g" ${KAFKA_HOME}/kafka-manager/conf/application.conf
-echo "配置完毕......"  | tee  -a  $LOG_FILE
-
 
 
 ## 删除临时存放目录

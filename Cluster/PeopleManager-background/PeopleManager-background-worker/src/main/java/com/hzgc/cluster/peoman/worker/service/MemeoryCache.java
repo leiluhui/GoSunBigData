@@ -2,7 +2,6 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.PictureMapper;
 import com.hzgc.cluster.peoman.worker.model.Picture;
-import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

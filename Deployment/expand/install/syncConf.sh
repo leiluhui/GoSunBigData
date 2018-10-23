@@ -45,24 +45,6 @@ function main()
             fi
         done
     fi
-    if [[ "$component" = "nodemanager" ]] ; then
-        echo "扩展节点安装nodemanager服务，在主配置文件中添加"
-        for node in ${EXPAND_NODE_ARRY[@]}; do
-            NODEMANAGER=$(grep Yarn_NodeManager ${ROOT_HOME}/conf/cluster_conf.properties |cut -d '=' -f2)
-            if [[ "$NODEMANAGER" =~ "$node" ]] ; then
-                echo "配置文件中已存在此节点:$node"
-		    else
-                sed -i "s#Yarn_NodeManager=$NODEMANAGER#Yarn_NodeManager=$NODEMANAGER;$node#g" ${ROOT_HOME}/conf/cluster_conf.properties
-                echo "在主配置文件NodeManager中加入节点:$node"
-            fi
-        done
-        echo "统计nodemanager个数"
-        NODEMANAGER=$(grep Yarn_NodeManager ${ROOT_HOME}/conf/cluster_conf.properties |cut -d '=' -f2)
-        NODEMANAGER=(${NODEMANAGER//;/ })
-        EXPAND_NUM=${#NODEMANAGER[@]}
-        sed -i "s#Yarn_NumOfNodeManger=.*#Yarn_NumOfNodeManger=$EXPAND_NUM#g" ${ROOT_HOME}/conf/cluster_conf.properties
-        echo "扩展后nodemanager为 $EXPAND_NUM 个"
-    fi
 
     if [[ "$component" = "hive" ]] ; then
         echo "扩展节点安装hive服务，在主配置文件中添加"
@@ -75,18 +57,6 @@ function main()
                 echo "在主配置文件ThriftServer中加入节点:$node"
             fi
         done
-    fi
-    if [[ "$component" = "regionserver" ]] ; then
-        echo "扩展节点安装regionserver服务，在主配置文件中添加"
-        for node in ${EXPAND_NODE_ARRY[@]}; do
-             REGIONSERVER=$(grep HBase_HRegionServer ${ROOT_HOME}/conf/cluster_conf.properties |cut -d '=' -f2)
-             if [[ "$REGIONSERVER" =~ "$node" ]] ; then
-                 echo "配置文件中已存在此节点:$node"
-		     else
-                 sed -i "s#HBase_HRegionServer=$REGIONSERVER#HBase_HRegionServer=$REGIONSERVER;$node#g" ${ROOT_HOME}/conf/cluster_conf.properties
-                 echo "在主配置文件RegionServer中加入节点:$node"
-             fi
-         done
     fi
     if [[ "$component" = "es" ]] ; then
         echo "扩展节点安装ES服务，在主配置文件中添加"
@@ -112,19 +82,6 @@ function main()
              fi
         done
     fi
-    if [[ "$component" = "rocketmq" ]] ; then
-        echo "扩展节点安装rocketmq服务，在主配置文件中添加"
-        for node in ${EXPAND_NODE_ARRY[@]}; do
-             ROCKETMQ=$(grep RocketMQ_Broker ${ROOT_HOME}/conf/cluster_conf.properties |cut -d '=' -f2)
-             if [[ "$ROCKETMQ" =~ "$node" ]] ; then
-                 echo "配置文件中已存在此节点:$node"
-		     else
-                 sed -i "s#RocketMQ_Broker=$ROCKETMQ#RocketMQ_Broker=$ROCKETMQ;$node#g" ${ROOT_HOME}/conf/cluster_conf.properties
-                 echo "在主配置文件RocketMQ中加入节点:$node"
-             fi
-        done
-    fi
-
     if [[ "$component" = "zookeeper" ]] ; then
         echo "扩展节点安装zookeeper服务，在主配置文件中添加"
         for node in ${EXPAND_NODE_ARRY[@]}; do

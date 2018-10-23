@@ -6,7 +6,6 @@ import com.hzgc.collect.service.receiver.Event;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.bean.PersonObject;
-import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.common.util.basic.FileUtil;
 import com.hzgc.common.util.basic.ImageUtil;
 import com.hzgc.common.util.basic.UuidUtil;
@@ -22,13 +21,11 @@ import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 
@@ -61,40 +58,37 @@ public class ProcessThread implements Runnable {
                 //log.error("Camera error, This is a small picture, fileName: " + event.getbAbsolutePath());
                 //continue;
                 //}
-                if (collectContext.getFtpTypeList().contains("face")) {
-                    ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG);
-                    if (smallImageList != null && smallImageList.size() > 0) {
-                        int index = 1;
-                        for (SmallImage smallImage : smallImageList) {
-                            if (smallImage.getPictureStream() == null || smallImage.getPictureStream().length == 0) {
-                                log.info("Face small image are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
-                                continue;
-                            }
-                            if (smallImage.getFaceAttribute() == null) {
-                                log.info("Face attribute are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
-                                continue;
-                            }
-                            if (smallImage.getFaceAttribute().getFeature() == null
-                                    || smallImage.getFaceAttribute().getFeature().length == 0) {
-                                log.info("Face feature are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
-                                continue;
-                            }
-                            //保存图片
-                            String smallImagePath = parser.path_b2s(event.getbAbsolutePath(), FACE, index);
-                            boolean boo = ImageUtil.save(smallImagePath, smallImage.getPictureStream());
-                            if (boo) {
-                                String smallFtpUrlPath = parser.ftpUrl_b2s(event.getbFtpUrl(), FACE, index);
-                                event.setsAbsolutePath(smallImagePath)
-                                        .setsFtpUrl(smallFtpUrlPath)
-                                        .setsRelativePath(parser.ftpUrl_b2s(event.getbRelativePath(), FACE, index));
-                                this.sendKafka(event, smallImage.getFaceAttribute());
-                                this.sendRocketMQ(event, collectContext.getRocketmqFaceTopic());
-                            }
-                            index++;
+                ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG);
+                if (smallImageList != null && smallImageList.size() > 0) {
+                    int index = 1;
+                    for (SmallImage smallImage : smallImageList) {
+                        if (smallImage.getPictureStream() == null || smallImage.getPictureStream().length == 0) {
+                            log.info("Face small image are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            continue;
                         }
-                    } else {
-                        log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
+                        if (smallImage.getFaceAttribute() == null) {
+                            log.info("Face attribute are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            continue;
+                        }
+                        if (smallImage.getFaceAttribute().getFeature() == null
+                                || smallImage.getFaceAttribute().getFeature().length == 0) {
+                            log.info("Face feature are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            continue;
+                        }
+                        //保存图片
+                        String smallImagePath = parser.path_b2s(event.getbAbsolutePath(), FACE, index);
+                        boolean boo = ImageUtil.save(smallImagePath, smallImage.getPictureStream());
+                        if (boo) {
+                            String smallFtpUrlPath = parser.ftpUrl_b2s(event.getbFtpUrl(), FACE, index);
+                            event.setsAbsolutePath(smallImagePath)
+                                    .setsFtpUrl(smallFtpUrlPath)
+                                    .setsRelativePath(parser.ftpUrl_b2s(event.getbRelativePath(), FACE, index));
+                            this.sendKafka(event, smallImage.getFaceAttribute());
+                        }
+                        index++;
                     }
+                } else {
+                    log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                 }
 
                 List<Person> personList = null;
@@ -106,7 +100,7 @@ public class ProcessThread implements Runnable {
                 } else {
                     log.error("Person or Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
-                if (collectContext.getFtpTypeList().contains("person") && personList != null && personList.size() > 0) {
+                if (personList != null && personList.size() > 0) {
                     log.info("Person check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Person person : personList) {
@@ -122,7 +116,6 @@ public class ProcessThread implements Runnable {
                                     .setsFtpUrl(smallFtpUrlPath)
                                     .setsRelativePath(parser.path_b2s(event.getbRelativePath(), PERSON, index));
                             this.sendKafka(event, person);
-                            this.sendRocketMQ(event, collectContext.getRocketmqPersonTopic());
                         }
                         index++;
                     }
@@ -130,7 +123,7 @@ public class ProcessThread implements Runnable {
                     log.warn("Person check failed, file name is:{}", event.getbAbsolutePath());
                 }
 
-                if (collectContext.getFtpTypeList().contains("car") && vehicleList != null && vehicleList.size() > 0) {
+                if (vehicleList != null && vehicleList.size() > 0) {
                     log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
@@ -150,7 +143,6 @@ public class ProcessThread implements Runnable {
                                     .setsFtpUrl(smallFtpUrlPath)
                                     .setsRelativePath(parser.path_b2s(event.getbRelativePath(), CAR, index));
                             this.sendKafka(event, vehicle);
-                            this.sendRocketMQ(event, collectContext.getRocketmqCarTopic());
                         }
                         index++;
                     }
@@ -177,7 +169,8 @@ public class ProcessThread implements Runnable {
                 .setId(faceId)
                 .setsRelativePath(event.getsRelativePath())
                 .setbRelativePath(event.getbRelativePath())
-                .setId(faceId);
+                .setId(faceId)
+                .setIp(collectContext.getFtpIp());
         ListenableFuture<SendResult<String, String>> resultFuture =
                 collectContext.getKafkaTemplate().send(collectContext.getKafkaFaceObjectTopic(),
                         faceId,
@@ -207,7 +200,8 @@ public class ProcessThread implements Runnable {
                 .setsFtpUrl(event.getsFtpUrl())
                 .setsRelativePath(event.getsRelativePath())
                 .setbRelativePath(event.getbRelativePath())
-                .setId(pesonId);
+                .setId(pesonId)
+                .setIp(collectContext.getFtpIp());
 
         try {
             ListenableFuture<SendResult<String, String>> resultFuture =
@@ -241,7 +235,8 @@ public class ProcessThread implements Runnable {
                 .setsFtpUrl(event.getsFtpUrl())
                 .setsRelativePath(event.getsRelativePath())
                 .setbRelativePath(event.getbRelativePath())
-                .setId(carId);
+                .setId(carId)
+                .setIp(collectContext.getFtpIp());
         try {
             ListenableFuture<SendResult<String, String>> resultFuture =
                     collectContext.getKafkaTemplate().send(collectContext.getKafkaCarObjectTopic(),
@@ -255,27 +250,6 @@ public class ProcessThread implements Runnable {
             }
         } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage());
-        }
-
-    }
-
-    private void sendRocketMQ(Event event, String topic) {
-        if (collectContext.getFtpSubscribeSwitch()) {
-            // ftpSubscribeMap: key is ipcId, value is sessionIds
-            Map<String, List<String>> ftpSubscribeMap = FtpSubscribeClient.getSessionMap();
-            if (!ftpSubscribeMap.isEmpty()) {
-                if (ftpSubscribeMap.containsKey(event.getIpcId())) {
-                    List<String> sessionIds = ftpSubscribeMap.get(event.getIpcId());
-                    SendMqMessage mqMessage = new SendMqMessage();
-                    mqMessage.setSessionIds(sessionIds);
-                    mqMessage.setFtpUrl(event.getsIpcFtpUrl());
-                    collectContext.getRocketMQProducer().send(
-                            topic,
-                            event.getIpcId(),
-                            event.getTimeStamp(),
-                            JacksonUtil.toJson(mqMessage).getBytes());
-                }
-            }
         }
     }
 }

@@ -12,6 +12,7 @@ import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
+import com.hzgc.jniface.BigPictureData;
 import com.hzgc.jniface.CarPictureData;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.jniface.PictureData;
@@ -61,9 +62,9 @@ public class ExtractController {
     @SuppressWarnings("unused")
     private CarAttributeService carAttributeService;
 
-    @ApiOperation(value = "人脸特征值提取", response = ResponseResult.class)
+    @ApiOperation(value = "人脸特征值提取", response = BigPictureData.class)
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
-    public ResponseResult <PictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <BigPictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (image == null) {
             log.error("Start extract feature by binary, image is null");
@@ -74,11 +75,11 @@ public class ExtractController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PictureData pictureData = faceExtractService.featureExtractByImage(imageBin);
-        if (null == pictureData) {
+        BigPictureData bigPictureData = faceExtractService.featureExtractByImage(imageBin);
+        if (null == bigPictureData) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
         }
-        return ResponseResult.init(pictureData);
+        return ResponseResult.init(bigPictureData);
     }
 
     //根据图片提取人脸特征值
@@ -106,7 +107,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "行人属性提取", response = ResponseResult.class)
+    @ApiOperation(value = "行人属性提取", response = PersonPictureData.class)
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
     public ResponseResult <PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
@@ -139,7 +140,7 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "车辆属性提取", response = ResponseResult.class)
+    @ApiOperation(value = "车辆属性提取", response = CarPictureData.class)
     @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
     public ResponseResult <CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
