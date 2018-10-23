@@ -122,7 +122,7 @@ public class FaceCompare implements Runnable{
                 alarmMessage.setSim(sim);
                 alarmMessage.setName(disp.getName());
                 alarmMessage.setIdCard(disp.getIdcard());
-                String ip = innerService.hostName2Ip(faceObject.getHostname()).getIp();
+                String ip = faceObject.getIp();
                 alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
                 alarmMessage.setId(disp.getId());
                 alarmMessage.setTime(faceObject.getTimeStamp());

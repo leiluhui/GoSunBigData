@@ -10,7 +10,7 @@ import com.hzgc.compare.server.MasterServer;
 import java.util.List;
 
 public class RpcClientForMaster {
-//    private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(RpcClientForMaster.class);
 //    private static Logger logger = Logger.getLogger(RpcClientForMaster.class);
     private MasterServer server;
     private void createService(String serverAddress){
@@ -28,6 +28,10 @@ public class RpcClientForMaster {
         server.submitJob(workerId);
     }
 
+    private void submitJob(String workerId, String groupId){
+        server.submitJob(workerId, groupId);
+    }
+
     private void getJobsNow(){
         AllReturn<List<String>> allReturn = server.getJobsNow();
         List<String> res = allReturn.getResult().get(0);
@@ -38,9 +42,14 @@ public class RpcClientForMaster {
 
     public static void main(String args[]) throws InterruptedException {
         RpcClientForMaster clientForMaster = new RpcClientForMaster();
-        if(args.length == 2 && args[0].equals("--submit") && args[1].length() > 0){
+        if(args.length == 2 && args[0].equals("--submit") && args[1].length() > 0) {
             clientForMaster.createService(Config.ZK_ADDRESS);
             clientForMaster.submitJob(args[1]);
+            Thread.sleep(2000);
+            System.exit(0);
+        } else if (args.length == 3 && args[0].equals("--submit") && args[1].length() > 0 &&  args[2].length() > 0){
+            clientForMaster.createService(Config.ZK_ADDRESS);
+            clientForMaster.submitJob(args[1], args[2]);
             Thread.sleep(2000);
             System.exit(0);
         } else if (args.length == 1 && args[0].equals("--getjobs")){
@@ -51,8 +60,9 @@ public class RpcClientForMaster {
         } else if (args.length == 1 && args[0].equals("--help")){
             String info = "illegal argument: --help \n"
                     + "usage: \t admin-master.sh [--help] \n"
-                    + "\t\t admin-master.sh [--submit] [workname] \n"
-                    + "\t\t admin-master.sh [--getjobs]";
+                    + "\t admin-master.sh [--submit] [workername] [tasktracker group] \n"
+                    + "\t admin-master.sh [--submit] [workname] \n"
+                    + "\t admin-master.sh [--getjobs]";
 //            logger.info(info);
             System.out.println(info);
         } else{
