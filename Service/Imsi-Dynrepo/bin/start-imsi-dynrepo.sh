@@ -50,8 +50,6 @@ function start_springCloud()
        --eureka.port=${EUREKA_PORT} \
        --spring.cloud.config.enabled=false \
        --mysql.host=${MYSQL_HOST} \
-       --mysql.username=${MYSQL_USERNAME} \
-       --mysql.password=${MYSQL_PASSWORD} \
        --query.time=${QUERY_TIME} \
        --kafka.host=${KAFKA_HOST} 2>&1 &
    fi
