@@ -23,7 +23,7 @@ SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'
 	ORDER BY num DESC
 )AS aaa,t_people_recognize
 WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND t_people_recognize.flag=2
-GROUP BY aaa.peopleid, t_people_recognize.deviceid, aaa.community
+GROUP BY aaa.peopleid, aaa.community
 ORDER BY peopleid DESC
 
 #实名
@@ -37,6 +37,6 @@ SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'
 	ORDER BY COUNT(community) DESC
 )AS aaa,t_people_recognize
 WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
-GROUP BY aaa.peopleid, t_people_recognize.deviceid, aaa.community
+GROUP BY aaa.peopleid, aaa.community
 ORDER BY peopleid DESC
 EOF
