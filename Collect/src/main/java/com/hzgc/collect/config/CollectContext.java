@@ -3,7 +3,6 @@ package com.hzgc.collect.config;
 import com.hzgc.collect.service.ftp.ftplet.FtpHomeDir;
 import com.hzgc.collect.service.ftp.util.BaseProperties;
 import com.hzgc.collect.service.parser.FtpPathBootStrap;
-import com.hzgc.collect.service.processer.RocketMQProducer;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
@@ -20,8 +19,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 @Data
@@ -42,10 +39,6 @@ public class CollectContext implements Serializable {
     @NotNull
     private Integer faceDetectorNumber;
 
-    @Value("${ftp.type}")
-    @NotNull
-    private String ftpType;
-
     @Value("${ftp.ip}")
     @NotNull
     private String ftpIp;
@@ -58,10 +51,6 @@ public class CollectContext implements Serializable {
     @NotNull
     private String zookeeperAddress;
 
-    @Value("${ftp.subscribe.switch}")
-    @NotNull
-    private Boolean ftpSubscribeSwitch;
-
     @Value("${kafka.faceobject.topic}")
     @NotNull
     private String kafkaFaceObjectTopic;
@@ -73,26 +62,6 @@ public class CollectContext implements Serializable {
     @Value("${kafka.carobject.topic}")
     @NotNull
     private String kafkaCarObjectTopic;
-
-    @Value("${rocketmq.address}")
-    @NotNull
-    private String rocketmqAddress;
-
-    @Value("${rocketmq.face.topic}")
-    @NotNull
-    private String rocketmqFaceTopic;
-
-    @Value("${rocketmq.person.topic}")
-    @NotNull
-    private String rocketmqPersonTopic;
-
-    @Value("${rocketmq.car.topic}")
-    @NotNull
-    private String rocketmqCarTopic;
-
-    @Value("${rocketmq.capture.group}")
-    @NotNull
-    private String rokcetmqCaptureGroup;
 
     @NotNull
     private String hostname = InetAddress.getLocalHost().getHostName();
@@ -140,10 +109,6 @@ public class CollectContext implements Serializable {
     //Spring-kafka-templage
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private List<String> ftpTypeList;
-
-    private RocketMQProducer rocketMQProducer;
-
     private FtpRegisterClient ftpRegisterClient;
 
     private FtpSubscribeClient ftpSubscribeClient;
@@ -163,7 +128,6 @@ public class CollectContext implements Serializable {
         }
         initFtpPathBoostrap();
         initFtpHomeDirCheck();
-        initRocketMqProducer();
         initFtpRegisterClient();
         initFtpSubscribeClient();
     }
@@ -187,19 +151,14 @@ public class CollectContext implements Serializable {
         ftpHomeDir.periodicallyCheckCurrentRootDir();
     }
 
-    private void initRocketMqProducer() {
-        rocketMQProducer = new RocketMQProducer(rokcetmqCaptureGroup, rocketmqAddress);
-    }
-
     private void initFtpSubscribeClient() {
         ftpSubscribeClient = new FtpSubscribeClient(zookeeperAddress);
     }
 
     private void initFtpRegisterClient() {
         ftpRegisterClient = new FtpRegisterClient(zookeeperAddress);
-        ftpTypeList = Arrays.asList(ftpType.split(","));
         ftpRegisterClient.createNode(new FtpRegisterInfo(null, null, ftpPathRule,
-                ftpAccount, ftpPassword, ftpIp, hostname, ftpPort + "", ftpType));
+                ftpAccount, ftpPassword, ftpIp, hostname, ftpPort + "", "face,car,person"));
     }
 
     public BaseProperties getUserMangerProperties() {
