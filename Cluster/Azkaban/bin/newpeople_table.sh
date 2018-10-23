@@ -6,8 +6,8 @@ COUNT=20
 use people;
 
 #新增
-INSERT INTO people.t_people_new (peopleid,community,month,deviceid,isconfirm,flag)
-SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') , t_people_recognize.deviceid,1 ,t_people_recognize.flag FROM
+INSERT INTO people.t_people_new (peopleid,community,month,isconfirm,flag)
+SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') , 1 ,t_people_recognize.flag FROM
 (
 	SELECT aa.peopleid,t_people_recognize.community ,COUNT(t_people_recognize.community) AS num  FROM
 	(
@@ -27,8 +27,8 @@ GROUP BY aaa.peopleid, t_people_recognize.deviceid, aaa.community
 ORDER BY peopleid DESC
 
 #实名
-INSERT INTO people.t_people_new (peopleid,month,deviceid,isconfirm,flag)
-SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') , t_people_recognize.deviceid,1 ,t_people_recognize.flag FROM
+INSERT INTO people.t_people_new (peopleid,month,isconfirm,flag)
+SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') ,1 ,t_people_recognize.flag FROM
 (
 	SELECT *,COUNT(community) FROM t_people_recognize
 	WHERE flag=1 AND DATE_FORMAT(capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
