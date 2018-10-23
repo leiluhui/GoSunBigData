@@ -63,6 +63,12 @@ PEOPLEMANAGER_CLIENT_BIN_DIR=${PEOPLEMANAGER_CLIENT_DIR}/bin
 PEOPLEMANAGER_WORKER_BIN_DIR=${PEOPLEMANAGER_WORKER_DIR}/bin
 PEOPLEMANAGER_CLIENT_START_FILE=${PEOPLEMANAGER_CLIENT_BIN_DIR}/start-peoman-client.sh
 PEOPLEMANAGER_WORKER_START_FILE=${PEOPLEMANAGER_WORKER_BIN_DIR}/start-peoman-worker.sh
+##cluster-dispatch模块
+DISPATCH_BACKGROUND_DIR=${GOSUN_HOME}/Cluster/Dispatch-background
+DISPATCH_BACKGROUND_BIN_DIR=${DISPATCH_BACKGROUND_DIR}/bin
+DISPATCH_BACKGROUND_START_FILE=${DISPATCH_BACKGROUND_BIN_DIR}/start-dispatch-background.sh
+DISPATCH_BACKGROUND_CONF_DIR=${DISPATCH_BACKGROUND_DIR}/conf
+DISPATCH_BACKGROUND_CONF_FILE=${DISPATCH_BACKGROUND_CONF_DIR}/application-pro.properties
 ## facecompare模块
 FACECOMPARE_DIR=${GOSUN_HOME}/Cluster/FaceCompare
 FACECOMPARE_CONF_DIR=${FACECOMPARE_DIR}/conf
@@ -88,12 +94,12 @@ mkdir -p ${SERVICE_LOG_DIR}
 ## Basic服务
 ## collect face-dispatch face-dyn vehicle-dyn person-dyn
 ## face-dispatch模块部署目录
-DISPATCH_DIR=${SERVICE_DIR}/Basic/face-dispatch
-DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dispatch
-DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin                           ##face-dispatch模块脚本存放目录
-DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-face-dispatch.sh       ##face-dispatch模块启动脚本
-DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf                         ##face-dispatch模块conf目录
-DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties   ##face-dispatch模块配置文件
+FACE_DISPATCH_DIR=${SERVICE_DIR}/Basic/face-dispatch
+FACE_DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dispatch
+FACE_DISPATCH_BIN_DIR=${FACE_DISPATCH_DIR}/bin                           ##face-dispatch模块脚本存放目录
+FACE_DISPATCH_START_FILE=${FACE_DISPATCH_BIN_DIR}/start-face-dispatch.sh       ##face-dispatch模块启动脚本
+FACE_DISPATCH_CONF_DIR=${FACE_DISPATCH_DIR}/conf                         ##face-dispatch模块conf目录
+FACE_DISPATCH_PRO_FILE=${FACE_DISPATCH_CONF_DIR}/application-pro.properties   ##face-dispatch模块配置文件
 ## face-dynrepo模块部署目录
 DYNREPO_DIR=${SERVICE_DIR}/Basic/face-dynrepo
 DYNREPO_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Basic/face-dynRepo
@@ -131,7 +137,7 @@ IMSI_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/imsi-dynrepo
 IMSI_BIN_DIR=${IMSI_DIR}/bin                                ##imsi模块脚本存放目录
 IMSI_START_FILE=${IMSI_BIN_DIR}/start-imsi-dynrepo.sh         ##imsi模块启动脚本
 IMSI_CONF_FILE=${IMSI_DIR}/conf                              ##imsi模块conf目录
-IMSI_PRO_FILE=${IMSI_START_FILE}/application-pro.properties   ##imsi模块配置文件
+IMSI_PRO_FILE=${IMSI_CONF_FILE}/application-pro.properties   ##imsi模块配置文件
 ## people模块部署目录(未完成)
 PEOPLE_DIR=${SERVICE_DIR}/Cloud/people
 PEOPLE_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/people
@@ -139,6 +145,13 @@ PEOPLE_BIN_DIR=${PEOPLE_DIR}/bin                           ##people模块脚本�
 PEOPLE_START_FILE=${PEOPLE_BIN_DIR}/start-people.sh       ##people模块启动脚本
 PEOPLE_CONF_DIR=${PEOPLE_DIR}/conf                       ##people模块conf目录
 PEOPLE_PRO_FILE=${PEOPLE_CONF_DIR}/application-pro.properties   ##people模块配置文件
+##dispatch模块部署目录
+DISPATCH_DIR=${SERVICE_DIR}/Cloud/dispatch
+DISPATCH_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/dispatch
+DISPATCH_BIN_DIR=${DISPATCH_DIR}/bin
+DISPATCH_START_FILE=${DISPATCH_BIN_DIR}/start-dispatch.sh
+DISPATCH_CONF_DIR=${DISPATCH_DIR}/conf
+DISPATCH_PRO_FILE=${DISPATCH_CONF_DIR}/application-pro.properties
 ## fusion模块部署目录
 FUSION_DIR=${SERVICE_DIR}/Cloud/fusion
 FUSION_INSTALL_DIR=${SERVICE_INSTALL_DIR}/Cloud/fusion
@@ -248,16 +261,25 @@ function distribute_service()
 
     ##basic:face-dispatch,face-dynrepo,vehicle-dynrepo,person-dynrepo,collect
     ##开始分发face-dispatch
-    DISPATCH_HOST_LISTS=$(grep face_dispatch_distribution ${CONF_FILE} | cut -d '=' -f2)
+    FACE_DISPATCH_HOST_LISTS=$(grep face_dispatch_distribution ${CONF_FILE} | cut -d '=' -f2)
+    FACE_DISPATCH_HOST_ARRAY=(${FACE_DISPATCH_HOST_LISTS//;/ })
+    for hostname in ${FACE_DISPATCH_HOST_ARRAY[@]}
+    do
+      ssh root@${hostname} "if [ ! -x "${FACE_DISPATCH_INSTALL_DIR}" ];then mkdir -p "${FACE_DISPATCH_INSTALL_DIR}";fi"
+      rsync -rvl ${FACE_DISPATCH_DIR} root@${hostname}:${FACE_DISPATCH_INSTALL_DIR} >/dev/null
+      ssh root@${hostname} "chmod -R 755 ${FACE_DISPATCH_INSTALL_DIR}"
+      echo "${hostname}上分发face-dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
+    done
+    ##开始分发dispatch
+    DISPATCH_HOST_LISTS=$(grep dispatch_distribution ${CONF_FILE} | cut -d '=' -f2)
     DISPATCH_HOST_ARRAY=(${DISPATCH_HOST_LISTS//;/ })
     for hostname in ${DISPATCH_HOST_ARRAY[@]}
     do
-      ssh root@${hostname} "if [ ! -x "${DISPATCH_INSTALL_DIR}" ];then mkdir -p "${DISPATCH_INSTALL_DIR}";fi"
+      ssh root@${hostname} "if [ ! -x "${DISPATCH_INSTALL_DIR}" ]; then mkdir -p "${DISPATCH_INSTALL_DIR}"; fi"
       rsync -rvl ${DISPATCH_DIR} root@${hostname}:${DISPATCH_INSTALL_DIR} >/dev/null
       ssh root@${hostname} "chmod -R 755 ${DISPATCH_INSTALL_DIR}"
-      echo "${hostname}上分发face-dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
+      echo "${hostname}上分发Dispatch完毕........." | tee -a ${SERVICE_LOG_FILE}
     done
-
     ##开始分发face-dynrepo
     DYNREPO_HOST_LISTS=$(grep face_dynrepo_distribution ${CONF_FILE} | cut -d '=' -f2)
     DYNREPO_HOST_ARRAY=(${DYNREPO_HOST_LISTS//;/ })
@@ -565,6 +587,64 @@ function config_service()
     echo "start-people.sh脚本配置数据库password完成"
 
 
+    ####################################################
+	####					DISPATCH	     		####
+	####################################################
+
+	#替换dispatch模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置eureka_node完成......."
+
+	#替换dispatch模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置eureka_port完成......."
+
+    #替换dispatch模块启动脚本中KAFKA_HOST的value
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置kafka完成......"
+
+	#替换dispatch模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置数据库host完成......."
+
+	#替换dispatch模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置数据库username完成"
+
+    #替换dispatch模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_START_FILE}
+    echo "start-dispatch.sh脚本配置数据库password完成"
+
+
+     ####################################################
+	####			DISPATCH-BACKGROUND	     		####
+	####################################################
+
+	#替换dispatch-background模块启动脚本中EUREKA_IP的value
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置eureka_node完成......."
+
+	#替换dispatch-background模块启动脚本中EUREKA_PORT的value
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置eureka_port完成......."
+
+    #替换dispatch-background模块启动脚本中KAFKA_HOST的value
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置kafka完成......"
+
+	#替换dispatch-background模块启动脚本中MYSQL_HOST的value
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置数据库host完成......."
+
+	#替换dispatch-background模块启动脚本中MYSQL_USERNAME的value
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置数据库username完成"
+
+    #替换dispatch-background模块启动脚本中MYSQL_PASSWORD的value
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    echo "start-dispatch-background.sh脚本配置数据库password完成"
+
+
 	####################################################
 	####					FUSION					####
 	####################################################
@@ -727,27 +807,27 @@ function config_service()
 	####################################################
 
 	 #替换face-dispatch模块启动脚本中EUREKA_IP的value
-    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^EUREKA_IP=.*#EUREKA_IP=${eurekapro}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置eureka_node完成......."
 
     #替换face-dispatch模块启动脚本中EUREKA_PORT的value
-    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^EUREKA_PORT=.*#EUREKA_PORT=${EUREKA_PORT}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置eureka_port完成......."
 
     #替换face-dispatch模块启动脚本中KAFKA_HOST的value
-    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^KAFKA_HOST=.*#KAFKA_HOST=${kafkapro}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置kafka完成......"
 
 	#替换face-dispatch模块启动脚本中MYSQL_HOST的value
-    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^MYSQL_HOST=.*#MYSQL_HOST=${MYSQL_HOST}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置数据库host完成......."
 
 	#替换face-dispatch模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置数据库username完成"
 
     #替换face-dispatch模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_START_FILE}
+    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FACE_DISPATCH_START_FILE}
     echo "start-face-dispatch.sh脚本配置数据库password完成"
 
 
@@ -807,7 +887,7 @@ function copy_xml_to_service()
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${COLLECT_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DYNREPO_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${PERSON_DYN_CONF_DIR}
-    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${DISPATCH_CONF_DIR}
+    cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${FACE_DISPATCH_CONF_DIR}
     cp -r ${CORE_FILE} ${HDFS_FILE} ${HBASE_FILE} ${CAR_CONF_DIR}
 }
 
