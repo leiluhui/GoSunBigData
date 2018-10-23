@@ -239,4 +239,5 @@ public class CarAttribute implements Serializable {
     public void setVehicle_coordinate(int[] vehicle_coordinate) {
         this.vehicle_coordinate = vehicle_coordinate;
     }
+
 }

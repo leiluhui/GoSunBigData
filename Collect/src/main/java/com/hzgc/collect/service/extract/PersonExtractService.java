@@ -1,6 +1,7 @@
 package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.jniface.BigPersonPictureData;
 import com.hzgc.jniface.PersonAttributes;
 import com.hzgc.jniface.PersonPictureData;
 import com.hzgc.seemmo.bean.ImageResult;
@@ -25,20 +26,21 @@ public class PersonExtractService {
      * @param imageBytes 图片数组（大图）
      * @return PersonPictureData
      */
-    public PersonPictureData featureExtractByImage(byte[] imageBytes) {
+    public BigPersonPictureData featureExtractByImage(byte[] imageBytes) {
         ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "1");
         if (null == imageResult) {
             log.info("imageResult is null");
             return null;
         }
-        PersonPictureData personPictureData = new PersonPictureData();
-        personPictureData.setImageID(UuidUtil.getUuid());
-        personPictureData.setImageData(imageBytes);
+        BigPersonPictureData bigPersonPictureData = new BigPersonPictureData();
         List <Person> list = imageResult.getPersonList();
-        List <PersonAttributes> personAttributes = new ArrayList <>();
+        ArrayList <PersonPictureData> smallImages = new ArrayList <>();
         if (list != null && list.size() > 0) {
             for (Person person : list) {
                 if (person != null) {
+                    PersonPictureData personPictureData = new PersonPictureData();
+                    personPictureData.setImageID(UuidUtil.getUuid());
+                    personPictureData.setImageData(person.getCar_data());
                     PersonAttributes personAttribute = new PersonAttributes();
                     personAttribute.setAge(person.getAge_code());
                     personAttribute.setBaby(person.getBaby_code());
@@ -57,12 +59,16 @@ public class PersonExtractService {
                     personAttribute.setUppertype(person.getUppertype_code());
                     personAttribute.setHair(person.getHair_code());
                     personAttribute.setPerson_coordinate(person.getPerson_image());
-                    personAttributes.add(personAttribute);
+                    personPictureData.setPersonAttributes(personAttribute);
+                    smallImages.add(personPictureData);
                 }
             }
         }
-        personPictureData.setPersonAttributes(personAttributes);
-        personPictureData.setPersonTotal(personAttributes.size());
-        return personPictureData;
+        bigPersonPictureData.setImageType("person");
+        bigPersonPictureData.setImageID(UuidUtil.getUuid());
+        bigPersonPictureData.setSmallImage(smallImages);
+        bigPersonPictureData.setImageData(imageBytes);
+        bigPersonPictureData.setPersonTotal(smallImages.size());
+        return bigPersonPictureData;
     }
 }

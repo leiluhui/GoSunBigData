@@ -24,21 +24,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -115,7 +105,6 @@ public class DispatchService {
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
         warnHistoryVO.setTotal(dispatchRecognizeVOS.size());
         warnHistoryVO.setDispatchRecognizeVOS(getDispatchRecognizeVOByCutPage(dispatchRecognizeDTO, dispatchRecognizeVOS));
-        log.info(JacksonUtil.toJson(warnHistoryVO));
         return ResponseResult.init(warnHistoryVO);
     }
 
@@ -291,6 +280,9 @@ public class DispatchService {
         dispatchRecognizeVO.setBurl(dispatchRecognize.getBurl());
         dispatchRecognizeVO.setSurl(dispatchRecognize.getSurl());
         dispatchRecognizeVO.setSimilarity(dispatchRecognize.getSimilarity());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
+        dispatchRecognizeVO.setType(dispatchRecognize.getType());
         dispatchRecognizeVO.setName(dispatch.getName());
         dispatchRecognizeVO.setIdCard(dispatch.getIdcard());
         dispatchRecognizeVO.setCar(dispatch.getCar());

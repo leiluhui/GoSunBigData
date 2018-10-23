@@ -212,7 +212,7 @@ public class CaptureServiceHelper {
             singleList.add(singleSearchResult);
             searchResult.setSingleResults(singleList);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return searchResult;
     }

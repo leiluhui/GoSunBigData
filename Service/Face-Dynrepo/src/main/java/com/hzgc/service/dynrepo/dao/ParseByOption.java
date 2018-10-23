@@ -33,7 +33,13 @@ class ParseByOption {
                 ", " +
                 FaceTable.GENDER +
                 ", " +
-                FaceTable.AGE;
+                FaceTable.AGE +
+                ", " +
+                FaceTable.HUZI +
+                ", " +
+                FaceTable.EYEGLASSES +
+                ", " +
+                FaceTable.MASK;
     }
 
     static String getFinalSQLwithOption(SearchOption option, boolean printSql) throws SQLException {
