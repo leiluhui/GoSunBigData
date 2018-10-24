@@ -114,8 +114,8 @@ public class DispatchController {
      */
     @ApiOperation(value = "开启/停止人员布控", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DISPATCH_STATUS, method = RequestMethod.GET)
-    public ResponseResult <Integer> dispatchStatus(@ApiParam(name = "人员ID", required = true) @RequestParam String id,
-                                                   @ApiParam(name = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
+    public ResponseResult <Integer> dispatchStatus(@ApiParam(name = "id", value = "人员ID", required = true) @RequestParam String id,
+                                                   @ApiParam(name = "status", value = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
         if (id == null) {
             log.error("Start update dispatch status, but id is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID为空，请检查");
@@ -138,7 +138,7 @@ public class DispatchController {
      */
     @ApiOperation(value = "根据人员ID获取布控人照片", response = byte[].class)
     @RequestMapping(value = BigDataPath.DISPATCH_GET_FACE, method = RequestMethod.GET)
-    public ResponseEntity <byte[]> getFace(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
+    public ResponseEntity <byte[]> getFace(@ApiParam(name = "id",value = "人员ID", required = true) @RequestParam String id) {
         if (id == null) {
             log.error("Start get face, but id is null");
             ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body("查询ID为空，请检查");
