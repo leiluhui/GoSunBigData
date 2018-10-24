@@ -61,6 +61,12 @@ public class KafkaComsumer {
             case "STOP" :
                 stopDispach(messageObj);
                 break;
+            case "SHOW" :
+                tableCache.showCarInfo(messageObj.getRegionId());
+                tableCache.showFaceInfo(messageObj.getRegionId());
+                tableCache.showFeatures(messageObj.getRegionId());
+                tableCache.showMacInfo(messageObj.getRegionId());
+                break;
             default :
                 break;
         }

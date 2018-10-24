@@ -49,4 +49,15 @@ public class DispachData {
     public void setMac(String mac) {
         this.mac = mac;
     }
+
+    @Override
+    public String toString() {
+        return "DispachData{" +
+                "id='" + id + '\'' +
+                ", bitfeature='" + bitfeature + '\'' +
+                ", index=" + index +
+                ", car='" + car + '\'' +
+                ", mac='" + mac + '\'' +
+                '}';
+    }
 }

@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -24,19 +21,21 @@ public class TableCache {
     private Map<Long, List<DispachData>> macInfos;  //Mac布控信息
 
     public void loadData(){
+        log.info("Load table to cache.");
         List<Dispach> searchResult = dispachMapper.selectAll();
         faceInfos = new HashMap<>();
         faceFeatures = new HashMap<>();
         carInfos = new HashMap<>();
         macInfos = new HashMap<>();
+        log.info("Load table to cache. The size is " + searchResult.size());
         for(Dispach dispature : searchResult){
             Long region = dispature.getRegion();
             //启动的人脸布控
-            if(dispature.getStatus() == 0 && dispature.getFace() != null){
+            if(dispature.getStatus() == 0 && dispature.getBit_feature() != null){
                 List<DispachData> deployList = faceInfos.computeIfAbsent(region, k -> new ArrayList<>());
                 DispachData data = new DispachData();
                 data.setId(dispature.getId());
-                data.setBitfeature(dispature.getBitFeature());
+                data.setBitfeature(dispature.getBit_feature());
                 deployList.add(data);
             }
             //车辆布控
@@ -70,6 +69,69 @@ public class TableCache {
         }
     }
 
+    public void showFaceInfo(Long region){
+        log.info("Show face cache info.");
+        List<DispachData> list = faceInfos.get(region);
+        for(DispachData dispachData : list){
+            log.info("Region : " + region);
+            log.info("FaceInfo : " + dispachData.toString());
+        }
+//        for(Map.Entry<Long, List<DispachData>> entry : faceInfos.entrySet()){
+//            Long region = entry.getKey();
+//            List<DispachData> list = entry.getValue();
+//            for(DispachData dispachData : list){
+//                log.info("Region : " + region);
+//                log.info("FaceInfo : " + dispachData.toString());
+//            }
+//        }
+    }
+
+    public void showFeatures(Long region){
+        log.info("Show feature cache info.");
+        log.info("Feature : " + Arrays.toString(faceFeatures.get(region)));
+
+//        for(Map.Entry<Long, byte[][]> entry : faceFeatures.entrySet()){
+//            Long region = entry.getKey();
+//            log.info("Region : " + region);
+//            log.info("Feature : " + Arrays.toString(entry.getValue()));
+//        }
+    }
+
+    public void showCarInfo(Long region){
+        log.info("Show car cache info.");
+        List<DispachData> list = carInfos.get(region);
+        for(DispachData dispachData : list){
+            log.info("FaceInfo : " + dispachData.toString());
+        }
+
+//        for(Map.Entry<Long, List<DispachData>> entry : carInfos.entrySet()){
+//            Long region = entry.getKey();
+//            List<DispachData> list = entry.getValue();
+//            for(DispachData dispachData : list){
+//                log.info("Region : " + region);
+//                log.info("FaceInfo : " + dispachData.toString());
+//            }
+//        }
+    }
+
+    public void showMacInfo(Long region){
+        log.info("Show mac cache info.");
+
+        List<DispachData> list = macInfos.get(region);
+        for(DispachData dispachData : list){
+            log.info("FaceInfo : " + dispachData.toString());
+        }
+//        for(Map.Entry<Long, List<DispachData>> entry : macInfos.entrySet()){
+//            Long region = entry.getKey();
+//            List<DispachData> list = entry.getValue();
+//            for(DispachData dispachData : list){
+//                log.info("Region : " + region);
+//                log.info("FaceInfo : " + dispachData.toString());
+//            }
+//        }
+    }
+
+
     /**
      * 增加车辆布控
      * @param id 布控Id
@@ -77,6 +139,7 @@ public class TableCache {
      * @param car 布控车辆
      */
     public void addCar(String id, Long region, String car){
+        log.info("Add car dispatch : id " + id + " , region " + region + " , car " + car);
         List<DispachData> list = carInfos.get(region);
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
@@ -91,6 +154,7 @@ public class TableCache {
      * @param mac 布控Mac
      */
     public void addMac(String id, Long region, String mac){
+        log.info("Add mac dispatch : id " + id + " , region " + region + " , mac " + mac);
         List<DispachData> list = macInfos.get(region);
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
@@ -105,6 +169,7 @@ public class TableCache {
      * @param bitFeature 布控人脸特征
      */
     public void addFace(String id, Long region, String bitFeature){
+        log.info("Add face dispatch : id " + id + " , region " + region + " , bitFeature " + bitFeature);
         List<DispachData> carinfo = carInfos.get(region);
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
@@ -124,6 +189,7 @@ public class TableCache {
      * @param id 布控Id
      */
     public void deleteDispature(String id){
+        log.info("Delete mac or car dispatch. id " + id);
         DispachData carToReove = null;
         Long region = 0L;
         for(Map.Entry<Long, List<DispachData>> entry : carInfos.entrySet()){
@@ -155,6 +221,7 @@ public class TableCache {
     }
 
     public void deleteFaceDispature(String id){
+        log.info("Delete face dispatch. id " + id);
         DispachData faceToReove = null;
         Long region = 0L;
         for(Map.Entry<Long, List<DispachData>> entry : faceInfos.entrySet()){
@@ -189,6 +256,11 @@ public class TableCache {
      */
     public String getIdByIndex(Long region, Integer index){
         List<DispachData> list = faceInfos.get(region);
+        for(DispachData dispachData : list){
+            if(index.intValue() == dispachData.getIndex().intValue()){
+                return dispachData.getId();
+            }
+        }
         return list.get(index).getId();
     }
 

@@ -38,8 +38,10 @@ public class PeopleVO implements Serializable {
     private String job;
     @ApiModelProperty(value = "籍贯")
     private String birthplace;
-    @ApiModelProperty(value = "小区")
-    private String community;
+    @ApiModelProperty(value = "小区名称")
+    private String communityName;
+    @ApiModelProperty(value = "小区ID")
+    private Long community;
     @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
     @ApiModelProperty(value = "创建时间")

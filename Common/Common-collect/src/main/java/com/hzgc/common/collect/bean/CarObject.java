@@ -16,6 +16,7 @@ public class CarObject implements Serializable {
     private String sRelativePath;       //小图存储绝对路径(不带ftp根目录)
     private String bRelativePath;       //大图存储绝对路径(不带ftp根目录)
     private String hostname;            // 图片保存主机:hostname
+    private String ip;                  // ftp地址
     private String feature;             //float特征值
     private String bitfeature;          //bit特征值
 
@@ -135,6 +136,15 @@ public class CarObject implements Serializable {
 
     public CarObject setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public CarObject setIp(String ip) {
+        this.ip = ip;
         return this;
     }
 }

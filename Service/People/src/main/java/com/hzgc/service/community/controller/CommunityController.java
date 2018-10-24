@@ -168,10 +168,9 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
         }
         log.info("Start count community new and out people, param is :" + JacksonUtil.toJson(param));
-        int totalNum = param.getCommunityIdList().size();
         List<NewAndOutPeopleCounVO> voList = communityService.countCommunityNewAndOutPeople(param);
         log.info("Count community new and out people successfully!");
-        return ResponseResult.init(voList, totalNum);
+        return ResponseResult.init(voList);
     }
 
     @ApiOperation(value = "小区迁入迁出人口查询（实有人口展示）", response = ResponseResult.class)

@@ -26,7 +26,7 @@
         select capturetime, deviceid, burl, surl
         from t_people_recognize
         where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
-        and flag = 1
+        and flag in (1, 2)
         <!--and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})-->
         and peopleid = #{peopleid,jdbcType=BIGINT}
     </select>
@@ -38,10 +38,11 @@
         order by capturetime desc limit 1
     </select>
     <!--小区迁入人口抓拍详情:人员抓拍列表-->
-    <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap"
+            parameterType="com.hzgc.service.community.param.CaptureDetailsDTO">
         select capturetime, deviceid, surl
         from t_people_recognize
-        where peopleid = #{peopleid,jdbcType=VARCHAR}
+        where peopleid = #{peopleId,jdbcType=VARCHAR} and community = #{communityId,jdbcType=BIGINT}
         order by capturetime desc
     </select>
     <!--小区迁入人口抓拍详情:人员抓拍列表-->

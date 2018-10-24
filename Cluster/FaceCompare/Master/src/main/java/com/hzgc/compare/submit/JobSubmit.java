@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 public class JobSubmit {
-//    private static final Logger logger = LoggerFactory.getLogger(JobSubmit.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(JobSubmit.class);
     private static Logger logger = Logger.getLogger(JobSubmit.class);
 
     /**
@@ -17,6 +17,15 @@ public class JobSubmit {
      * @param workerId 要增加的workerId
      */
     public static void submitJob(String workerId) {
+        List<TaskTracker> trackers = TaskTrackerManager.getInstance().getTrackers();
+        for(TaskTracker tracker : trackers) {
+            for (Job job : tracker.getJobs()) {
+                if(workerId == null || workerId.equals(job.getParam("workerId"))){
+                    logger.info("This workerId " + workerId + " has been used");
+                    return;
+                }
+            }
+        }
         JobClient jobClient = JobClientUtil.getClient();
         TaskTracker taskTracker = TaskTrackerManager.getInstance().choseTaskTracker();
         if(taskTracker == null){
@@ -24,6 +33,53 @@ public class JobSubmit {
         }
         List<String> ports = taskTracker.getPorts();
         if(ports.size() <= 0){
+            return;
+        }
+        logger.info("Submit job : " + workerId + " To tracker group : " + taskTracker.getNodeGroup());
+        String port = taskTracker.getPorts().remove(0);
+        Job job = new Job();
+        job.setTaskId(workerId);
+        job.setParam("port", port);
+        job.setParam("workerId", workerId);
+        job.setPriority(100);
+        job.setTaskTrackerNodeGroup(taskTracker.getNodeGroup());
+        job.setMaxRetryTimes(0);
+        jobClient.submitJob(job);
+//        TaskTrackerManager.getInstance().addTimes(job);
+
+        //更新内存中的Job
+        taskTracker.getPorts().remove(port);
+        taskTracker.getJobs().add(job);
+        TaskTrackerManager.getInstance().saveTracker();
+    }
+
+    /**
+     *  接收到增加Worker的命令时
+     * @param workerId 要增加的workerId
+     */
+    public static void submitJob2(String workerId, String taskGroup) {
+        List<TaskTracker> trackers = TaskTrackerManager.getInstance().getTrackers();
+        for(TaskTracker tracker : trackers) {
+            for (Job job : tracker.getJobs()) {
+                if(workerId == null || workerId.equals(job.getParam("workerId"))){
+                    logger.info("This workerId " + workerId + " has been used");
+                    return;
+                }
+            }
+        }
+        JobClient jobClient = JobClientUtil.getClient();
+        TaskTracker taskTracker = TaskTrackerManager.getInstance().getTaskTracker(taskGroup);
+        if(taskTracker == null){
+            logger.info("The group id is not exist.");
+            return;
+        }
+        if(taskTracker.getJobCanBeAdd() <= 0){
+            logger.info("This tracker group is not free.");
+            return;
+        }
+        List<String> ports = taskTracker.getPorts();
+        if(ports.size() <= 0){
+            logger.info("This tracker group is not free.");
             return;
         }
         logger.info("Submit job : " + workerId + " To tracker group : " + taskTracker.getNodeGroup());

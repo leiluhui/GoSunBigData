@@ -49,8 +49,27 @@ public class FaceExtractService {
         return null;
     }
 
+    public PictureData featureCheckByImage(byte[] imageBytes) {
+        PictureData pictureData = new PictureData();
+        pictureData.setImageID(UuidUtil.getUuid());
+        pictureData.setImageData(imageBytes);
+        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
+        if (checkResult != null && checkResult.size() > 0) {
+            log.info("Face check successful, image contains feature");
+            pictureData.setFeature(checkResult.get(0).getFaceAttribute());
+            return pictureData;
+        }
+        log.info("Face check failed, image not contains feature");
+        return null;
+    }
+
     public PictureData featureExtractByImage(String base64Str) {
         byte[] imageBin = BASE64Util.base64Str2BinArry(base64Str);
         return featureExtractByImage(imageBin);
+    }
+
+    public PictureData featureCheckByImage(String base64Str) {
+        byte[] imageBin = BASE64Util.base64Str2BinArry(base64Str);
+        return featureCheckByImage(imageBin);
     }
 }

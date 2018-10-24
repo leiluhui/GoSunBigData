@@ -24,8 +24,8 @@ EUREKA_IP=172.18.18.191     ##注册中心的ip地址
 EUREKA_PORT=9000
 KAFKA_HOST=172.18.18.100:9092
 MYSQL_HOST=172.18.18.105:3306
-MYSQL_USERNAME=
-MYSQL_PASSWORD=
+#MYSQL_USERNAME=
+#MYSQL_PASSWORD=
 
 
 #---------------------------------------------------------------------#
@@ -49,8 +49,6 @@ function start_springCloud()
        --eureka.ip=${EUREKA_IP} \
        --eureka.port=${EUREKA_PORT} \
        --kafka.host=${KAFKA_HOST} \
-       --mysql.username=${MYSQL_USERNAME} \
-       --mysql.password=${MYSQL_PASSWORD} \
        --spring.cloud.config.enabled=false  2>&1 &
    fi
 
@@ -59,15 +57,6 @@ function start_springCloud()
 #---------------------------------------------------------------------#
 #                              定义函数                               #
 #---------------------------------------------------------------------#
-
-#####################################################################
-# 函数名: start_spring_cloud
-# 描述: 启动 springCloud face服务
-# 参数: N/A
-# 返回值: N/A
-# 其他: N/A
-#####################################################################
-
 #####################################################################
 # 函数名: main
 # 描述: 脚本主要业务入口

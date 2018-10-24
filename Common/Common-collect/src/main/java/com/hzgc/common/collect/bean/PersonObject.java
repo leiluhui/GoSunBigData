@@ -18,6 +18,8 @@ public class PersonObject implements Serializable {
     private String hostname;            // 图片保存主机:hostname
     private String feature;             //float特征值
     private String bitfeature;          //bit特征值
+    private String ip;                  // ftp地址
+
 
     public static PersonObject builder() {
         return new PersonObject();
@@ -135,6 +137,15 @@ public class PersonObject implements Serializable {
 
     public PersonObject setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public PersonObject setIp(String ip) {
+        this.ip = ip;
         return this;
     }
 }

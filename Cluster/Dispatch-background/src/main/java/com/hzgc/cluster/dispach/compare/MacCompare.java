@@ -86,7 +86,7 @@ public class MacCompare implements Runnable{
                 dispatureRecognize.setDeviceId(macObject.getSn());
                 dispatureRecognize.setType(2);
                 dispatureRecognize.setCreateTime(new Timestamp(macObject.getTimestamp()));
-                dispatureRecognizeMapper.insert(dispatureRecognize);
+                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
                 Dispach dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
                 AlarmMessage alarmMessage = new AlarmMessage();
                 alarmMessage.setDeviceId(macObject.getSn());

@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
 ##opyright:   HZGOSUN Tech. Co, BigData
-## Filename:    springCloud stop dispatch
-## Description:  停止dispatch服务
+## Filename:    springCloud stop dispatch-background
+## Description:  停止dispatch-background服务
 ## Author:      chenke
 ## Created:     2018-10-22
 ################################################################################
@@ -11,11 +11,11 @@
 cd `dirname $0`
 BIN_DIR=`pwd`    ##bin目录地址
 cd ..
-DISPATCH_DIR=`pwd`    ##host目录地址
+DISPATCH_BACKGROUND_DIR=`pwd`    ##host目录地址
 cd lib
 LIB_DIR=`pwd`
-DISPATCH_JAR_NAME=`ls | grep ^dispatch-[0-9].[0-9].[0-9].jar$`
-DISPATCH_PID=`jps | grep ${DISPATCH_JAR_NAME} | awk '{print $1}'`
+DISPATCH_BACKGROUND_JAR_NAME=`ls | grep ^dispatch-background-[0-9].[0-9].[0-9].jar$`
+DISPATCH_BACKGROUND_PID=`jps | grep ${DISPATCH_BACKGROUND_JAR_NAME} | awk '{print $1}'`
 cd ..
 
 #---------------------------------------------------------------------#
@@ -30,12 +30,12 @@ cd ..
 #####################################################################
 function stop_springCloud()
 {
-    if [ -n "${DISPATCH_PID}" ];then
-        echo "Dispatch service is exist, exit with 0, kill service now"
-        kill -9 ${DISPATCH_PID}
+    if [ -n "${DISPATCH_BACKGROUND_PID}" ];then
+        echo "Dispatch-background service is exist, exit with 0, kill service now"
+        kill -9 ${DISPATCH_BACKGROUND_PID}
         echo "stop service successfull"
     else
-        echo "Dispatch service is not start"
+        echo "Dispatch-background service is not start"
     fi
 }
 

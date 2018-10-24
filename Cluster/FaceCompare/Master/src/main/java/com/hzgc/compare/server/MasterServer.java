@@ -7,5 +7,7 @@ import java.util.List;
 public interface MasterServer {
     void submitJob(String workerId);
 
+    void submitJob(String workerId, String taskTrackerGroup);
+
     AllReturn<List<String>> getJobsNow();
 }
