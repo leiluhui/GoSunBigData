@@ -89,8 +89,10 @@ public class DispatchService {
     public ResponseResult <WarnHistoryVO> searchDeployRecognize(DispatchRecognizeDTO dispatchRecognizeDTO) {
         List <DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
         ArrayList <DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList <>();
+        ArrayList <String> deviceList = new ArrayList <>();
         if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
+                deviceList.add(dispatchRecognize.getDeviceId());
                 DispatchDTO dispatchDTO = new DispatchDTO();
                 String dispatchId = dispatchRecognize.getDispatchId();
                 dispatchDTO.setId(dispatchId);
@@ -282,6 +284,7 @@ public class DispatchService {
         dispatchRecognizeVO.setSimilarity(dispatchRecognize.getSimilarity());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
+        dispatchRecognizeVO.setDeviceName(getDeviceName(dispatchRecognize.getDeviceId()));
         dispatchRecognizeVO.setType(dispatchRecognize.getType());
         dispatchRecognizeVO.setName(dispatch.getName());
         dispatchRecognizeVO.setIdCard(dispatch.getIdcard());
@@ -306,6 +309,12 @@ public class DispatchService {
             return null;
         }
         return null;
+    }
+
+    //查询外部接口(获取相机名称)
+    private String getDeviceName(String deviceId){
+        String cameraDeviceName = platformService.getCameraDeviceName(deviceId);
+        return cameraDeviceName;
     }
 
 }

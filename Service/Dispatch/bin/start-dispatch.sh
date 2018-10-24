@@ -22,9 +22,9 @@ DISPATCH_JAR=${LIB_DIR}/${DISPATCH_JAR_NAME}                        ##获取jar�
 #-----------------------------------------------------------------------------#
 #                               springcloud配置参数                            #
 #-----------------------------------------------------------------------------#
-EUREKA_IP=172.18.18.201     ##注册中心的ip地址
+EUREKA_IP=172.18.18.40      ##注册中心的ip地址
 EUREKA_PORT=9000            ##服务注册中心端口
-ZOOKEEPER_HOST=172.18.18.105:2181
+MYSQL_HOST=172.18.18.202:4000
 
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
@@ -45,7 +45,7 @@ function start_springCloud()
       nohup java -jar ${DISPATCH_JAR} --spring.profiles.active=pro \
       --spring.cloud.config.enabled=false \
       --eureka.ip=${EUREKA_IP} \
-      --zookeeper.host=${ZOOKEEPER_HOST} \
+      --mysql.host=${MYSQL_HOST} \
       --eureka.port=${EUREKA_PORT} 2>&1 &
    fi
 }
