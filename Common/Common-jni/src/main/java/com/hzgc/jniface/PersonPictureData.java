@@ -1,7 +1,6 @@
 package com.hzgc.jniface;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class PersonPictureData implements Serializable {
 
@@ -9,9 +8,7 @@ public class PersonPictureData implements Serializable {
 
     private String imageID;
 
-    private List<PersonAttributes> personAttributes;
-
-    private int personTotal;
+    private PersonAttributes personAttributes;
 
     public byte[] getImageData() {
         return imageData;
@@ -29,19 +26,11 @@ public class PersonPictureData implements Serializable {
         this.imageID = imageID;
     }
 
-    public List<PersonAttributes> getPersonAttributes() {
+    public PersonAttributes getPersonAttributes() {
         return personAttributes;
     }
 
-    public void setPersonAttributes(List<PersonAttributes> personAttributes) {
+    public void setPersonAttributes(PersonAttributes personAttributes) {
         this.personAttributes = personAttributes;
-    }
-
-    public int getPersonTotal() {
-        return personTotal;
-    }
-
-    public void setPersonTotal(int personTotal) {
-        this.personTotal = personTotal;
     }
 }
