@@ -59,16 +59,17 @@ public class PersonExtractService {
                     personAttribute.setUppertype(person.getUppertype_code());
                     personAttribute.setHair(person.getHair_code());
                     personAttribute.setPerson_coordinate(person.getPerson_image());
-                    personPictureData.setPersonAttributes(personAttribute);
+                    personPictureData.setFeature(personAttribute);
+                    personPictureData.setImage_coordinate(person.getPerson_image());
                     smallImages.add(personPictureData);
                 }
             }
         }
         bigPersonPictureData.setImageType("person");
         bigPersonPictureData.setImageID(UuidUtil.getUuid());
-        bigPersonPictureData.setSmallImage(smallImages);
+        bigPersonPictureData.setSmallImages(smallImages);
         bigPersonPictureData.setImageData(imageBytes);
-        bigPersonPictureData.setPersonTotal(smallImages.size());
+        bigPersonPictureData.setTotal(smallImages.size());
         return bigPersonPictureData;
     }
 }

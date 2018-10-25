@@ -5,28 +5,28 @@ import java.util.List;
 public class BigPictureData extends PictureData {
 
     //大图检测，人脸特征对象
-    private List<PictureData> smallImage;
+    private List<PictureData> smallImages;
 
     //人脸的个数
-    private Integer faceTotal;
+    private Integer total;
 
     //图片类型
     private String imageType;
 
-    public List<PictureData> getSmallImage() {
-        return smallImage;
+    public List <PictureData> getSmallImages() {
+        return smallImages;
     }
 
-    public void setSmallImage(List <PictureData> smallImage) {
-        this.smallImage = smallImage;
+    public void setSmallImages(List <PictureData> smallImages) {
+        this.smallImages = smallImages;
     }
 
-    public Integer getFaceTotal() {
-        return faceTotal;
+    public Integer getTotal() {
+        return total;
     }
 
-    public void setFaceTotal(Integer faceTotal) {
-        this.faceTotal = faceTotal;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
     public String getImageType() {

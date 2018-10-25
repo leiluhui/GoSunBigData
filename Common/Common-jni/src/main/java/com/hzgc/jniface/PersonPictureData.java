@@ -8,7 +8,9 @@ public class PersonPictureData implements Serializable {
 
     private String imageID;
 
-    private PersonAttributes personAttributes;
+    private PersonAttributes feature;
+
+    private int[] image_coordinate;
 
     public byte[] getImageData() {
         return imageData;
@@ -26,11 +28,19 @@ public class PersonPictureData implements Serializable {
         this.imageID = imageID;
     }
 
-    public PersonAttributes getPersonAttributes() {
-        return personAttributes;
+    public PersonAttributes getFeature() {
+        return feature;
     }
 
-    public void setPersonAttributes(PersonAttributes personAttributes) {
-        this.personAttributes = personAttributes;
+    public void setFeature(PersonAttributes feature) {
+        this.feature = feature;
+    }
+
+    public int[] getImage_coordinate() {
+        return image_coordinate;
+    }
+
+    public void setImage_coordinate(int[] image_coordinate) {
+        this.image_coordinate = image_coordinate;
     }
 }

@@ -63,13 +63,14 @@ public class CarExtractService {
                     carAttribute.setVehicle_coordinate(vehicle.getVehicle_image());
                     carPictureData.setImageID(UuidUtil.getUuid());
                     carPictureData.setImageData(vehicle.getVehicle_data());
-                    carPictureData.setCarAttribute(carAttribute);
+                    carPictureData.setFeature(carAttribute);
+                    carPictureData.setImage_coordinate(vehicle.getVehicle_image());
                     smallImages.add(carPictureData);
                 }
             }
         }
-        bigCarPictureData.setSmallImage(smallImages);
-        bigCarPictureData.setCarTotal(smallImages.size());
+        bigCarPictureData.setSmallImages(smallImages);
+        bigCarPictureData.setTotal(smallImages.size());
         bigCarPictureData.setImageType("car");
         bigCarPictureData.setImageData(imageBytes);
         bigCarPictureData.setImageID(UuidUtil.getUuid());
