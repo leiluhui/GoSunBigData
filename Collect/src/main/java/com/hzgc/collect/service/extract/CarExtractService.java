@@ -64,6 +64,9 @@ public class CarExtractService {
                     carPictureData.setImageID(UuidUtil.getUuid());
                     carPictureData.setImageData(vehicle.getVehicle_data());
                     carPictureData.setFeature(carAttribute);
+                    int[] vehicle_image = vehicle.getVehicle_image();
+                    vehicle_image[2] = vehicle_image[0] + vehicle_image[2];
+                    vehicle_image[3] = vehicle_image[1] + vehicle_image[3];
                     carPictureData.setImage_coordinate(vehicle.getVehicle_image());
                     smallImages.add(carPictureData);
                 }

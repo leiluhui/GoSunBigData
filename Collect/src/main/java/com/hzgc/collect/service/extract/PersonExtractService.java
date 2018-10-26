@@ -60,6 +60,9 @@ public class PersonExtractService {
                     personAttribute.setHair(person.getHair_code());
                     personAttribute.setPerson_coordinate(person.getPerson_image());
                     personPictureData.setFeature(personAttribute);
+                    int[] person_image = person.getPerson_image();
+                    person_image[2] = person_image[0] + person_image[2];
+                    person_image[3] = person_image[1] + person_image[3];
                     personPictureData.setImage_coordinate(person.getPerson_image());
                     smallImages.add(personPictureData);
                 }
