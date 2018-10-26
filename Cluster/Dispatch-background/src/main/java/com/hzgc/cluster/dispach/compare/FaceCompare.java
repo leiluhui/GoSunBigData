@@ -123,12 +123,32 @@ public class FaceCompare implements Runnable{
                 alarmMessage.setName(disp.getName());
                 alarmMessage.setIdCard(disp.getIdcard());
                 String ip = faceObject.getIp();
-                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
+                alarmMessage.setNotes(disp.getNotes());
                 alarmMessage.setId(disp.getId());
                 alarmMessage.setTime(faceObject.getTimeStamp());
                 producer.send(topic, JacksonUtil.toJson(alarmMessage));
             }
             log.info("The size of face compared is " + faceObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }
+    }
+
+    public static void main(String args[]){
+        AlarmMessage alarmMessage = new AlarmMessage();
+        alarmMessage.setDeviceId("设备号");
+        alarmMessage.setDeviceName("设备名");
+        alarmMessage.setType(0);
+        alarmMessage.setSim(100);
+        alarmMessage.setMac("Mac");
+        alarmMessage.setPlate("车牌号");
+        alarmMessage.setName("姓名");
+        alarmMessage.setIdCard("身份证号");
+        alarmMessage.setCaptureImage("抓拍小图");
+        alarmMessage.setId("布控信息Id");
+        alarmMessage.setTime("抓拍时间");
+        alarmMessage.setBCaptureImage("抓拍大图");
+        alarmMessage.setNotes("备注");
+        System.out.println(JacksonUtil.toJson(alarmMessage));
     }
 }
