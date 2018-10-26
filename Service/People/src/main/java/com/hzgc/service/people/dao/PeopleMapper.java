@@ -19,6 +19,8 @@ public interface PeopleMapper {
 
     People selectByPrimaryKey(String id);
 
+    People selectByIdCard(String idCard);
+
     int updateByPrimaryKeySelective(People record);
 
     int updateByPrimaryKey(People record);
@@ -52,4 +54,6 @@ public interface PeopleMapper {
     Integer deleteCommunityByPeopleId(String id);
 
     Integer insertCommunityByPeopleId(AffirmOperationDTO param);
+
+    List<String> getImportantPeopleId(List<Long> communityIds);
 }

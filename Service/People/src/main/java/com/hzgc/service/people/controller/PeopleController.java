@@ -15,10 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -128,6 +125,23 @@ public class PeopleController {
     }
 
     /**
+     * 根据身份证查询人员信息
+     *
+     * @param idCard 身份证
+     * @return PeopleVO 人员信息
+     */
+    @ApiOperation(value = "根据身份证查询人员信息", response = PeopleVO.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_IDCARD, method = RequestMethod.GET)
+    public PeopleVO searchPeopleByIdCard(@RequestParam @ApiParam(name = "身份证", required = true) String idCard) {
+        if (StringUtils.isBlank(idCard)) {
+            log.error("Start select people info, but idCard is null");
+            return null;
+        }
+        log.info("Start select people info, idCard is:" + idCard);
+        return peopleService.searchPeopleByIdCard(idCard);
+    }
+
+    /**
      * 根据照片ID查询照片
      *
      * @param pictureId 照片ID
@@ -169,28 +183,6 @@ public class PeopleController {
     }
 
     /**
-     * 根据身份证查询人员信息
-     *
-     * @param idCard 身份证
-     * @return PeopleVO 人员信息
-     */
-    /*@ApiOperation(value = "根据身份证查询人员信息", response = PictureVO.class)
-    @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_PICTURE_BY_PEOPLEID, method = RequestMethod.GET)
-    public ResponseResult<PeopleVO> searchPeopleByIdCard(String idCard) {
-        if (StringUtils.isBlank(idCard)) {
-            log.error("Start select people info, but idCard is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
-        }
-        boolean boo = peopleService.CheckIdCard(idCard);
-        if (boo){
-            log.error("Start select people info, but idCard is exist");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口身份证已存在，请检查！");
-        }
-
-        return ResponseResult.init(null);
-    }*/
-
-    /**
      * 根据条件查询人员
      *
      * @param param 查询条件参数封装
@@ -210,6 +202,14 @@ public class PeopleController {
         if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 && param.getSearchType() != 3) {
             log.error("Start search people, but SearchType is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
+        }
+        if (param.getStart() < 0) {
+            log.error("Start search people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search people, search param DTO:" + JacksonUtil.toJson(param));
         FilterField field = FilterField.SearchParamShift(param);
