@@ -674,6 +674,8 @@ public class CommunityService {
             }
         }
         this.listSort(voList);
+        // 倒序排列
+        Collections.reverse(voList);
         return voList;
     }
 
