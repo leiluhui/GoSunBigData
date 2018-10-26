@@ -1,5 +1,6 @@
 package com.hzgc.collect.controller;
 
+import com.hzgc.collect.bean.ImageDTO;
 import com.hzgc.collect.service.extract.CarExtractService;
 import com.hzgc.collect.service.extract.FaceExtractService;
 import com.hzgc.collect.service.extract.PersonExtractService;
@@ -58,6 +59,34 @@ public class ExtractController {
     @Autowired
     @SuppressWarnings("unused")
     private CarAttributeService carAttributeService;
+
+    @ApiOperation(value = "特征值提取", response = BigPictureData.class)
+    @RequestMapping(value = BigDataPath.FEATURE_EXTRACT, method = RequestMethod.POST)
+    public ResponseResult featureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image,
+                                         @ApiParam(name = "type", value = "检测类型")ImageDTO imageDTO) {
+        byte[] imageBin = null;
+        try {
+            imageBin = image.getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if ("0".equals(imageDTO.getType())) { //人脸提取特征
+            BigPictureData bigPictureData = faceExtractService.featureExtractByImage(imageBin);
+            bigPictureData.setImageType("0");
+            return ResponseResult.init(bigPictureData);
+        }
+        if ("1".equals(imageDTO.getType())) { //行人提取特征
+            BigPersonPictureData bigPersonPictureData = personExtractService.featureExtractByImage(imageBin);
+            bigPersonPictureData.setImageType("1");
+            return ResponseResult.init(bigPersonPictureData);
+        }
+        if ("2".equals(imageDTO.getType())) { //车辆提取特征
+            BigCarPictureData bigCarPictureData = carExtractService.carExtractByImage(imageBin);
+            bigCarPictureData.setImageType("2");
+            return ResponseResult.init(bigCarPictureData);
+        }
+        return null;
+    }
 
     @ApiOperation(value = "人脸特征值提取", response = BigPictureData.class)
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BIN, method = RequestMethod.POST)

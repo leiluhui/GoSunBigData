@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class CarPictureData implements Serializable {
     private String imageID;                          // 车辆大图ID
     private byte[] imageData;                       // 车辆大图
-    private CarAttribute carAttribute;       // 属性
+    private CarAttribute feature;       // 属性
+    private int[] image_coordinate;
 
     public CarPictureData(){
     }
@@ -26,12 +27,19 @@ public class CarPictureData implements Serializable {
         this.imageData = imageData;
     }
 
-    public CarAttribute getCarAttribute() {
-        return carAttribute;
+    public CarAttribute getFeature() {
+        return feature;
     }
 
-    public void setCarAttribute(CarAttribute carAttribute) {
-        this.carAttribute = carAttribute;
+    public void setFeature(CarAttribute feature) {
+        this.feature = feature;
     }
 
+    public int[] getImage_coordinate() {
+        return image_coordinate;
+    }
+
+    public void setImage_coordinate(int[] image_coordinate) {
+        this.image_coordinate = image_coordinate;
+    }
 }

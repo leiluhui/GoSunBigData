@@ -14,6 +14,8 @@ public class PictureData implements Serializable {
     //人脸特征对象,包括特征值和人脸属性
     private FaceAttribute feature;
 
+    private int[] image_coordinate;
+
     public String getImageID() {
         return imageID;
     }
@@ -38,4 +40,11 @@ public class PictureData implements Serializable {
         this.feature = feature;
     }
 
+    public int[] getImage_coordinate() {
+        return image_coordinate;
+    }
+
+    public void setImage_coordinate(int[] image_coordinate) {
+        this.image_coordinate = image_coordinate;
+    }
 }
