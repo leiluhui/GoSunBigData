@@ -12,6 +12,23 @@
         <result column="burl" property="burl" jdbcType="VARCHAR"/>
         <result column="flag" property="flag" jdbcType="INTEGER"/>
     </resultMap>
+    <resultMap id="ImportantPeopleRecognizeMap" type="com.hzgc.service.community.param.ImportantPeopleRecognize">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="idcard" property="idCard" jdbcType="VARCHAR"/>
+        <result column="lasttime" property="lastTime" jdbcType="TIMESTAMP"/>
+        <result column="peoplepic" property="peoplePictureId" jdbcType="BIGINT"/>
+        <result column="pictureid" property="pictureId" jdbcType="BIGINT"/>
+        <result column="burl" property="burl" jdbcType="VARCHAR"/>
+        <result column="surl" property="surl" jdbcType="VARCHAR"/>
+        <result column="similarity" property="similarity" jdbcType="VARCHAR"/>
+        <result column="capturetime" property="captureTime" jdbcType="TIMESTAMP"/>
+        <result column="deviceid" property="deviceId" jdbcType="VARCHAR"/>
+        <collection property="flag" ofType="com.hzgc.service.people.model.Flag" column="id"
+                    select="com.hzgc.service.people.dao.FlagMapper.selectByPeopleId"/>
+        <collection property="car" ofType="com.hzgc.service.people.model.Car" column="id"
+                    select="com.hzgc.service.people.dao.CarMapper.selectByPeopleId"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag
     </sql>
@@ -50,6 +67,33 @@
         select surl from t_people_recognize
         where peopleid = #{peopleid,jdbcType=VARCHAR}
         and flag = 10
+    </select>
+    <!--重点人员识别记录查询-->
+    <select id="importantPeopleRecognize" resultMap="ImportantPeopleRecognizeMap"
+            parameterType="com.hzgc.service.community.param.ImportantRecognizeSearchParam">
+        select
+        a.id, a.name, a.idcard, a.lasttime,
+        b.id as peoplepic,
+        c.pictureid, c.burl, c.surl, c.similarity, c.capturetime, c.deviceid
+        from
+        t_people a, t_picture b, t_people_recognize c
+        <where>
+            <if test="importantIds != null and importantIds.size() > 0">
+                a.id in
+                <foreach collection="importantIds" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
+            </if>
+            <if test="startTime != null">
+                and c.capturetime >= #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and c.capturetime &lt;= #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            and c.flag = 1
+            and a.id = b.peopleid
+            and a.id = c.peopleid
+        </where>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_people_recognize

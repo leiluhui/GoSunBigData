@@ -2,6 +2,8 @@ package com.hzgc.service.community.dao;
 
 import com.hzgc.service.community.model.PeopleRecognize;
 import com.hzgc.service.community.param.CaptureDetailsDTO;
+import com.hzgc.service.community.param.ImportantPeopleRecognize;
+import com.hzgc.service.community.param.ImportantRecognizeSearchParam;
 import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
@@ -27,4 +29,6 @@ public interface PeopleRecognizeMapper {
     List<PeopleRecognize> searchCommunityNewPeopleCaptureData(CaptureDetailsDTO dto);
 
     String getSurlByPeopleId(String peopleid);
+
+    List<ImportantPeopleRecognize> importantPeopleRecognize(ImportantRecognizeSearchParam search);
 }

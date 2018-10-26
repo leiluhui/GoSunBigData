@@ -11,8 +11,10 @@ import java.io.Serializable;
 public class PeopleCaptureVO implements Serializable {
     @ApiModelProperty(value = "抓拍时间")
     private String captureTime;
-    @ApiModelProperty(value = "抓拍设备")
+    @ApiModelProperty(value = "抓拍设备ID")
     private String deviceId;
+    @ApiModelProperty(value = "抓拍设备")
+    private String deviceName;
     @ApiModelProperty(value = "抓拍照片")
     private String ftpUrl;
     @ApiModelProperty(value = "接收imsi")

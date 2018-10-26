@@ -1,8 +1,7 @@
 package com.hzgc.common.service.api.service;
 
-import com.hzgc.common.service.api.bean.CameraQueryDTO;
-import com.hzgc.common.service.api.bean.DetectorQueryDTO;
-import com.hzgc.common.service.api.bean.Region;
+import com.hzgc.common.service.api.bean.*;
+import com.hzgc.common.util.json.JacksonUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -36,7 +35,7 @@ public class PlatformService {
             List<Long> ids = new ArrayList<>();
             ids.add(id);
             List<Region> regions = getRegionByIds(ids);
-            if (regions.size() > 0 && regions.get(0) != null) {
+            if (regions != null && regions.size() > 0 && regions.get(0) != null) {
                 return regions.get(0).getMergerName();
             } else {
                 log.info("Get region info failed, because result is null");
@@ -66,6 +65,39 @@ public class PlatformService {
             }
         } else {
             log.error("Method:getCommunityName, id is null");
+        }
+        return null;
+    }
+
+    /**
+     * 获取社区ID列表
+     *
+     * @param regionId 区域ID
+     * @return 社区ID列表
+     */
+    public List<Long> getCommunityIdsByRegionId(Long regionId) {
+        if (regionId != null) {
+            log.debug("Method:getCommunityIdsByRegionId, regionId:" + regionId);
+            AreaCriteria criteria = new AreaCriteria();
+            criteria.setId(regionId);
+            criteria.setLevel("region");
+            AreaSDTO areaSDTO = restTemplate.postForObject(
+                    "http://platform:8888/api/v1/region/internal/region/all/query_region_info",
+                    criteria,AreaSDTO.class);
+            if (areaSDTO != null && areaSDTO.getAreaDTOs() != null) {
+                List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
+                List<Long> communityIds = new ArrayList<>();
+                for (AreaDTO areaDTO : areaDTOs){
+                    if (areaDTO != null){
+                        communityIds.add(areaDTO.getId());
+                    }
+                }
+                return communityIds;
+            } else {
+                log.info("Get community ids by region id failed, because result is null");
+            }
+        } else {
+            log.error("Method:getCommunityIdsByRegionId, regionId is null");
         }
         return null;
     }
