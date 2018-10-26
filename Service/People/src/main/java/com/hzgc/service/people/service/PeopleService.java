@@ -833,4 +833,31 @@ public class PeopleService {
     public List<Long> searchCommunityIdsByRegionId(Long regionId) {
         return peopleMapper.searchCommunityIdsByRegionId(regionId);
     }
+
+    public PeopleVO searchPeopleByIdCard(String idCard) {
+        People people = peopleMapper.selectByIdCard(idCard);
+        PeopleVO peopleVO = new PeopleVO();
+        if (people != null) {
+            peopleVO.setId(people.getId());
+            peopleVO.setName(people.getName());
+            peopleVO.setIdCard(people.getIdcard());
+            peopleVO.setRegionId(people.getRegion());
+            peopleVO.setAddress(people.getAddress());
+            peopleVO.setSex(people.getSex());
+            peopleVO.setAge(people.getAge());
+            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setPolitic(people.getPolitic());
+            peopleVO.setEduLevel(people.getEdulevel());
+            peopleVO.setJob(people.getJob());
+            peopleVO.setBirthplace(people.getBirthplace());
+            peopleVO.setCommunity(people.getCommunity());
+            List<Phone> phones = people.getPhone();
+            List<String> phoneList = new ArrayList<>();
+            for (Phone phone : phones) {
+                phoneList.add(phone.getPhone());
+            }
+            peopleVO.setPhone(phoneList);
+        }
+        return peopleVO;
+    }
 }

@@ -42,6 +42,7 @@ public class BigDataPath {
     public static final String PEOPLE_INSERT="/people_insert";
     public static final String PEOPLE_UPDATE="/people_update";
     public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
+    public static final String PEOPLE_SEARCH_PICTURE_BY_IDCARD="/select_idcard";
     public static final String PEOPLE_SEARCH_PICTURE_BY_PICID="/search_picture_picid";
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";
@@ -66,6 +67,7 @@ public class BigDataPath {
     public static final String COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH = "/device_track";
     public static final String COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH = "/device_capture";
     public static final String COMMUNITY_PEOPLE_CAPTURE_3MONTH = "/count_capture";
+    public static final String COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE = "/important_recognize";
 
     /**
      * Clustering模块请求路径
