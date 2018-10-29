@@ -53,6 +53,9 @@ public class ElasticSearchDao {
                 .setSize(option.getLimit())
                 .addSort(VehicleTable.TIMESTAMP,
                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+        if (null != option.getPlate_licence() && option.getPlate_licence().length() > 0) {
+            requestBuilder.setQuery(QueryBuilders.matchQuery(VehicleTable.PLATE_LICENCE , option.getPlate_licence()));
+        }
         return requestBuilder.get();
     }
 
@@ -80,7 +83,8 @@ public class ElasticSearchDao {
         // 最终封装成的boolQueryBuilder 对象。
         BoolQueryBuilder totalBQ = QueryBuilders.boolQuery();
         //筛选车辆属性
-        if (option.getAttributes() != null && option.getAttributes().size() > 0) {
+        if (option.getAttributes() != null && option.getAttributes().size() > 0
+                ||null != option.getBrand_name() && option.getBrand_name().length() > 0) {
             setAttribute(totalBQ, option);
         }
 
@@ -117,13 +121,6 @@ public class ElasticSearchDao {
     //车辆属性过滤
     private void setAttribute(BoolQueryBuilder totalBQ, CaptureOption option) {
         String brand = option.getBrand_name();
-        String pLicence = option.getPlate_licence();
-        //车牌模糊搜
-        if (null != pLicence && pLicence.length() > 0) {
-            BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-            boolQueryBuilder.should(QueryBuilders.queryStringQuery(VehicleTable.PLATE_LICENCE + ":*" + pLicence + "*"));
-            totalBQ.must(boolQueryBuilder);
-        }
         //车标分词搜索
         if (null != brand && brand.length() > 0) {
             BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
