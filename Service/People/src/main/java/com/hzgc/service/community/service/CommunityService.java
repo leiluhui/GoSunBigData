@@ -210,7 +210,9 @@ public class CommunityService {
         List<NewAndOutPeopleSearch> newAndOutPeopleSearchList = new ArrayList<>();
         // 小区迁入人口查询（疑似与确认）
         if (param.getType() == 0) {
+            Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
             List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
+            PageInfo info = new PageInfo(page.getResult());
             if (list != null && list.size() > 0) {
                 for (NewPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
@@ -259,11 +261,17 @@ public class CommunityService {
                     }
                     newAndOutPeopleSearchList.add(vo);
                 }
+                NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                vo.setTotalNum((int) info.getTotal());
+                vo.setVoList(newAndOutPeopleSearchList);
+                return vo;
             }
         }
         // 小区迁出人口查询（疑似与确认）
         if (param.getType() == 1) {
+            Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
             List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
+            PageInfo info = new PageInfo(page.getResult());
             if (list != null && list.size() > 0) {
                 for (OutPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
@@ -284,23 +292,12 @@ public class CommunityService {
                     newAndOutPeopleSearchList.add(vo);
                 }
             }
+            NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+            vo.setTotalNum((int) info.getTotal());
+            vo.setVoList(newAndOutPeopleSearchList);
+            return vo;
         }
-        NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
-        int totalNum = newAndOutPeopleSearchList.size();
-        vo.setTotalNum(totalNum);
-        // 分页配置
-        int offset = param.getStart();
-        int count = param.getLimit();
-        int size = newAndOutPeopleSearchList.size();
-        if (offset > -1 && size > (offset + count - 1)) {
-            //结束行小于总数，取起始行开始后续count条数据
-            newAndOutPeopleSearchList = newAndOutPeopleSearchList.subList(offset, offset + count);
-        } else {
-            //结束行大于总数，则返回起始行开始的后续所有数据
-            newAndOutPeopleSearchList = newAndOutPeopleSearchList.subList(offset, size);
-        }
-        vo.setVoList(newAndOutPeopleSearchList);
-        return vo;
+        return new NewAndOutPeopleSearchVO();
     }
 
     private Long getPictureIdByPeopleId(String peopleId) {
