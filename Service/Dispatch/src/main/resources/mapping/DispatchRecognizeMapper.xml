@@ -26,8 +26,11 @@
         <include refid="Base_Column_List"/>
         from t_dispatch_recognize
         <where>
-            <if test="searchType != null ">
+            <if test="searchType != null and searchType == 0">
                 type = #{searchType,jdbcType=INTEGER}
+            </if>
+            <if test="searchType != null and searchType == 1">
+                and type = 1 or type = 2
             </if>
             <if test="startTime != null and endTime != null">
                 and create_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}

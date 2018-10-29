@@ -22,6 +22,8 @@ public class DispatchRecognizeVO implements Serializable {
     @ApiModelProperty(value = "设备ID")
     @NotNull
     private String deviceId;
+    @ApiModelProperty(value = "识别类型")
+    private Integer type;
     @ApiModelProperty(value = "设备姓名")
     private String deviceName;
     @ApiModelProperty(value = "识别大图（人脸大图,车辆大图）")

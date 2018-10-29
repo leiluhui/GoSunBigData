@@ -94,6 +94,12 @@
         from t_people
         where id = #{id,jdbcType=VARCHAR}
     </select>
+    <select id="selectByIdCard" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_people
+        where id = (select id from t_people where idcard = #{idcard,jdbcType=VARCHAR})
+    </select>
     <select id="searchPeopleByIdCard" resultMap="CommunityPeopleInfo" parameterType="java.lang.String">
         select id, name, idcard, sex, birthday, birthplace, address
         from t_people
@@ -222,6 +228,17 @@
     <!--获取人员最后一次出现时间-->
     <select id="getLastTime" resultType="java.sql.Timestamp" parameterType="java.lang.String">
         select lasttime from t_people where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <!--重点人员识别记录查询-->
+    <select id="getImportantPeopleId" resultType="java.lang.String" parameterType="java.lang.Long">
+        select distinct a.id
+        from t_people a, t_flag b
+        where a.id = b.peopleid
+        and a.community in
+        <foreach collection="list" item="model" open="(" close=")" separator=",">
+            #{model}
+        </foreach>
+        and b.flagid in(0, 1, 2, 3, 4, 5, 6)
     </select>
     <!--根据人员ID删除小区ID-->
     <update id="deleteCommunityByPeopleId" parameterType="java.lang.String">

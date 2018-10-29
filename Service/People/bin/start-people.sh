@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 ## Copyright:   HZGOSUN Tech. Co, BigData
-## Filename:    springCloud start facedispatch
+## Filename:    springCloud start people
 ## Description: 启动 people服务
 ## Author:      chenke
 ## Created:     2018-05-19
@@ -11,10 +11,10 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                         ##bin目录地址
 cd ..
-PEOPLE_DIR=`pwd`                     ##face-dispatch目录地址
+PEOPLE_DIR=`pwd`                     ##people目录地址
 LIB_DIR=${PEOPLE_DIR}/lib            ##lib目录地址
 CONF_DIR=${PEOPLE_DIR}/conf          ##conf目录地址
-PEOPLE_JAR_NAME=`ls ${LIB_DIR} | grep ^face-dispatch-[0-9].[0-9].[0-9].jar$`          ##获取face-dispatch的jar包名称
+PEOPLE_JAR_NAME=`ls ${LIB_DIR} | grep ^people-[0-9].[0-9].[0-9].jar$`          ##获取people的jar包名称
 PEOPLE_JAR=${LIB_DIR}/${PEOPLE_JAR_NAME}                        ##获取jar包的全路径
 
 
@@ -25,8 +25,7 @@ PEOPLE_JAR=${LIB_DIR}/${PEOPLE_JAR_NAME}                        ##获取jar包�
 EUREKA_IP=172.18.18.201     ##注册中心的ip地址
 EUREKA_PORT=9000            ##服务注册中心端口
 MYSQL_HOST=172.18.18.105:3306
-MYSQL_USERNAME=
-MYSQL_PASSWORD=
+MYSQL_USERNAME=root
 
 
 #------------------------------------------------------------------------------#
@@ -50,14 +49,12 @@ function start_springCloud()
       --eureka.ip=${EUREKA_IP} \
       --mysql.host=${MYSQL_HOST} \
       --mysql.username=${MYSQL_USERNAME} \
-      --mysql.password=${MYSQL_PASSWORD} \
       --eureka.port=${EUREKA_PORT}  2>&1 &
-
    fi
 }
 #####################################################################
 # 函数名: start_spring_cloud
-# 描述: 启动 springCloud face-dispatch服务
+# 描述: 启动 springCloud people服务
 # 参数: N/A
 # 返回值: N/A
 # 其他: N/A

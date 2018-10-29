@@ -49,9 +49,13 @@ public class CommunityController {
             log.error("Start search community people, but communityId is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空，请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0，请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search community people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0，请检查！");
         }
         log.info("Start search community people, param is:" + JacksonUtil.toJson(param));
         List<PeopleVO> peopleVO = communityService.searchCommunityPeople(param);
@@ -70,9 +74,13 @@ public class CommunityController {
             log.error("Start search community important people, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community important people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search community important people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community important people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search community important people, param is:" + JacksonUtil.toJson(param));
         List<PeopleVO> voList = communityService.searchCommunityImportantPeople(param);
@@ -91,9 +99,13 @@ public class CommunityController {
             log.error("Start search community care people, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community care people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search community care people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community care people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search community care people, param is:" + JacksonUtil.toJson(param));
         List<PeopleVO> voList = communityService.searchCommunityCarePeople(param);
@@ -113,9 +125,13 @@ public class CommunityController {
             log.error("Start search community new people, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community new people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search community new people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community new people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search community new people, param is:" + JacksonUtil.toJson(param));
         List<PeopleVO> voList = communityService.searchCommunityNewPeople(param);
@@ -134,9 +150,13 @@ public class CommunityController {
             log.error("Start search community out people, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community out people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search community out people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community out people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search community out people, param is:" + JacksonUtil.toJson(param));
         List<PeopleVO> voList = communityService.searchCommunityOutPeople(param);
@@ -163,9 +183,13 @@ public class CommunityController {
             log.error("Start count community new and out people, but month error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份有误,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start count community new and out people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start count community new and out people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start count community new and out people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start count community new and out people, param is :" + JacksonUtil.toJson(param));
         List<NewAndOutPeopleCounVO> voList = communityService.countCommunityNewAndOutPeople(param);
@@ -192,10 +216,6 @@ public class CommunityController {
             log.error("Start search community new and out people, but month error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询月份有误,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search community new and out people, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
-        }
         if (param.getType() != 0 && param.getType() != 1) {
             log.error("Start search community new and out people, but type error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型有误,请检查！");
@@ -203,6 +223,14 @@ public class CommunityController {
         if (param.getTypeStatus() != 0 && param.getTypeStatus() != 1 && param.getTypeStatus() != 2) {
             log.error("Start search community new and out people, but type status error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类别状态有误,请检查！");
+        }
+        if (param.getStart() < 0) {
+            log.error("Start search community new and out people, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search community new and out people, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search community new and out people, param is :" + JacksonUtil.toJson(param));
         NewAndOutPeopleSearchVO vo = communityService.searchCommunityNewAndOutPeople(param);
@@ -374,9 +402,13 @@ public class CommunityController {
             log.error("Start search people capture info, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "聚焦人员ID不能为空,请检查！");
         }
-        if (param.getLimit() == 0) {
-            log.error("Start search people capture info, but limit is 0");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能为0,请检查！");
+        if (param.getStart() < 0) {
+            log.error("Start search people capture info, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search people capture info, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search people capture info, param is:" + JacksonUtil.toJson(param));
         List<PeopleCaptureVO> voList = communityService.searchCapture1Month(param);
@@ -421,5 +453,39 @@ public class CommunityController {
         List<PeopleCaptureCountVO> voList = communityService.countCaptureNum3Month(peopleId);
         log.info("Count people everyday capture number successfully");
         return ResponseResult.init(voList);
+    }
+
+    @ApiOperation(value = "重点人员识别记录查询", response = PeopleCaptureCountVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE, method = RequestMethod.POST)
+    public ResponseResult<ImportantRecognizeVO> importantPeopleRecognize(
+            @RequestBody ImportantRecognizeDTO param) {
+        if (param == null) {
+            log.error("Start search important people recognize, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
+        }
+        if (param.getRegionId() == null) {
+            log.error("Start search important people recognize, but region id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询区域不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getStartTime())) {
+            log.error("Start search important people recognize, but start time is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始时间不能为空,请检查！");
+        }
+        if (StringUtils.isBlank(param.getEndTime())) {
+            log.error("Start search important people recognize, but end time is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "结束时间不能为空,请检查！");
+        }
+        if (param.getStart() < 0) {
+            log.error("Start search important people recognize, but start < 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "起始行数不能小于0,请检查！");
+        }
+        if (param.getLimit() <= 0) {
+            log.error("Start search important people recognize, but limit <= 0");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
+        }
+        log.info("Start search important people recognize, param is:" + JacksonUtil.toJson(param));
+        ImportantRecognizeVO vo = communityService.importantPeopleRecognize(param);
+        log.info("Search important people recognize successfully");
+        return ResponseResult.init(vo);
     }
 }

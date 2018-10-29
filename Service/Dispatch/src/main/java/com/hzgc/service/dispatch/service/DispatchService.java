@@ -24,21 +24,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -99,8 +89,10 @@ public class DispatchService {
     public ResponseResult <WarnHistoryVO> searchDeployRecognize(DispatchRecognizeDTO dispatchRecognizeDTO) {
         List <DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
         ArrayList <DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList <>();
+        ArrayList <String> deviceList = new ArrayList <>();
         if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
+                deviceList.add(dispatchRecognize.getDeviceId());
                 DispatchDTO dispatchDTO = new DispatchDTO();
                 String dispatchId = dispatchRecognize.getDispatchId();
                 dispatchDTO.setId(dispatchId);
@@ -115,7 +107,6 @@ public class DispatchService {
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
         warnHistoryVO.setTotal(dispatchRecognizeVOS.size());
         warnHistoryVO.setDispatchRecognizeVOS(getDispatchRecognizeVOByCutPage(dispatchRecognizeDTO, dispatchRecognizeVOS));
-        log.info(JacksonUtil.toJson(warnHistoryVO));
         return ResponseResult.init(warnHistoryVO);
     }
 
@@ -291,6 +282,10 @@ public class DispatchService {
         dispatchRecognizeVO.setBurl(dispatchRecognize.getBurl());
         dispatchRecognizeVO.setSurl(dispatchRecognize.getSurl());
         dispatchRecognizeVO.setSimilarity(dispatchRecognize.getSimilarity());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
+        dispatchRecognizeVO.setDeviceName(getDeviceName(dispatchRecognize.getDeviceId()));
+        dispatchRecognizeVO.setType(dispatchRecognize.getType());
         dispatchRecognizeVO.setName(dispatch.getName());
         dispatchRecognizeVO.setIdCard(dispatch.getIdcard());
         dispatchRecognizeVO.setCar(dispatch.getCar());
@@ -314,6 +309,12 @@ public class DispatchService {
             return null;
         }
         return null;
+    }
+
+    //查询外部接口(获取相机名称)
+    private String getDeviceName(String deviceId){
+        String cameraDeviceName = platformService.getCameraDeviceName(deviceId);
+        return cameraDeviceName;
     }
 
 }

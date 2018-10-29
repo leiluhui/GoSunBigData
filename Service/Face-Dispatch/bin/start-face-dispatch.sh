@@ -26,8 +26,8 @@ EUREKA_IP=172.18.18.201     ##注册中心的ip地址
 EUREKA_PORT=9000            ##服务注册中心端口
 KAFKA_HOST=172.18.18.105:9092
 MYSQL_HOST=172.18.18.105:3306
-MYSQL_USERNAME=
-MYSQL_PASSWORD=
+#MYSQL_USERNAME=
+#MYSQL_PASSWORD=
 
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
@@ -50,8 +50,6 @@ function start_springCloud()
       --eureka.ip=${EUREKA_IP} \
       --bootstrap.servers=${KAFKA_HOST} \
       --mysql.host=${MYSQL_HOST} \
-      --mysql.username=${MYSQL_USERNAME} \
-      --mysql.password=${MYSQL_PASSWORD} \
       --eureka.port=${EUREKA_PORT}  2>&1 &
 
    fi

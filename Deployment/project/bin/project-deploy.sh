@@ -579,12 +579,12 @@ function config_service()
     echo "start-people.sh脚本配置数据库host完成......."
 
 	#替换people模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLE_START_FILE}
-    echo "start-people.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLE_START_FILE}
+    #echo "start-people.sh脚本配置数据库username完成"
 
     #替换people模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLE_START_FILE}
-    echo "start-people.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLE_START_FILE}
+    #echo "start-people.sh脚本配置数据库password完成"
 
 
     ####################################################
@@ -608,12 +608,12 @@ function config_service()
     echo "start-dispatch.sh脚本配置数据库host完成......."
 
 	#替换dispatch模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_START_FILE}
-    echo "start-dispatch.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_START_FILE}
+    #echo "start-dispatch.sh脚本配置数据库username完成"
 
     #替换dispatch模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_START_FILE}
-    echo "start-dispatch.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_START_FILE}
+    #echo "start-dispatch.sh脚本配置数据库password完成"
 
 
      ####################################################
@@ -637,12 +637,12 @@ function config_service()
     echo "start-dispatch-background.sh脚本配置数据库host完成......."
 
 	#替换dispatch-background模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_BACKGROUND_START_FILE}
-    echo "start-dispatch-background.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    #echo "start-dispatch-background.sh脚本配置数据库username完成"
 
     #替换dispatch-background模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_BACKGROUND_START_FILE}
-    echo "start-dispatch-background.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${DISPATCH_BACKGROUND_START_FILE}
+    #echo "start-dispatch-background.sh脚本配置数据库password完成"
 
 
 	####################################################
@@ -666,12 +666,12 @@ function config_service()
     echo "start-fusion.sh脚本配置数据库host完成......."
 
 	#替换fusion模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FUSION_START_FILE}
-    echo "start-fusion.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FUSION_START_FILE}
+    #echo "start-fusion.sh脚本配置数据库username完成"
 
     #替换fusion模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FUSION_START_FILE}
-    echo "start-fusion.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FUSION_START_FILE}
+    #echo "start-fusion.sh脚本配置数据库password完成"
 
 
 	####################################################
@@ -692,12 +692,12 @@ function config_service()
     echo "start-peoman-worker.sh脚本配置数据库host完成......."
 
     #替换peoplemanager模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    #echo "start-peoman-worker.sh脚本配置数据库username完成"
 
     #替换peoplemanager模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
-    echo "start-peoman-worker.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_WORKER_START_FILE}
+    #echo "start-peoman-worker.sh脚本配置数据库password完成"
 
 
     ####################################################
@@ -713,12 +713,12 @@ function config_service()
     echo "start-peoman-client.sh脚本配置数据库host完成......."
 
     #替换peoplemanager模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
-    echo "start-peoman-client.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    #echo "start-peoman-client.sh脚本配置数据库username完成"
 
     #替换peoplemanager模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
-    echo "start-peoman-client.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${PEOPLEMANAGER_CLIENT_START_FILE}
+    #echo "start-peoman-client.sh脚本配置数据库password完成"
 
 
 	####################################################
@@ -750,12 +750,12 @@ function config_service()
     echo "start-imsi-dynrepo.sh脚本配置数据库host完成......."
 
 	#替换imsi-dynrepo模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${IMSI_START_FILE}
-    echo "start-imsi-dynrepo.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${IMSI_START_FILE}
+    #echo "start-imsi-dynrepo.sh脚本配置数据库username完成"
 
     #替换imsi-dynrepo模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${IMSI_START_FILE}
-    echo "start-imsi-dynrepo.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${IMSI_START_FILE}
+    #echo "start-imsi-dynrepo.sh脚本配置数据库password完成"
 
     ############################    BASIC   #############################
 
@@ -823,12 +823,12 @@ function config_service()
     echo "start-face-dispatch.sh脚本配置数据库host完成......."
 
 	#替换face-dispatch模块启动脚本中MYSQL_USERNAME的value
-    sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FACE_DISPATCH_START_FILE}
-    echo "start-face-dispatch.sh脚本配置数据库username完成"
+    #sed -i "s#^MYSQL_USERNAME=.*#MYSQL_USERNAME=${MYSQL_USERNAME}#g" ${FACE_DISPATCH_START_FILE}
+    #echo "start-face-dispatch.sh脚本配置数据库username完成"
 
     #替换face-dispatch模块启动脚本中MYSQL_PASSWORD的value
-    sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FACE_DISPATCH_START_FILE}
-    echo "start-face-dispatch.sh脚本配置数据库password完成"
+    #sed -i "s#^MYSQL_PASSWORD=.*#MYSQL_PASSWORD=${MYSQL_PASSWORD}#g" ${FACE_DISPATCH_START_FILE}
+    #echo "start-face-dispatch.sh脚本配置数据库password完成"
 
 
 	####################################################

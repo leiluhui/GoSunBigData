@@ -1,13 +1,12 @@
 package com.hzgc.jniface;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class CarPictureData implements Serializable {
     private String imageID;                          // 车辆大图ID
     private byte[] imageData;                       // 车辆大图
-    private List<CarAttribute> attributeList;       // 属性
-    private int carTotal;                           //小图个数
+    private CarAttribute feature;       // 属性
+    private int[] image_coordinate;
 
     public CarPictureData(){
     }
@@ -28,19 +27,19 @@ public class CarPictureData implements Serializable {
         this.imageData = imageData;
     }
 
-    public List<CarAttribute> getAttributeList() {
-        return attributeList;
+    public CarAttribute getFeature() {
+        return feature;
     }
 
-    public void setAttributeList(List<CarAttribute> attributeList) {
-        this.attributeList = attributeList;
+    public void setFeature(CarAttribute feature) {
+        this.feature = feature;
     }
 
-    public int getCarTotal() {
-        return carTotal;
+    public int[] getImage_coordinate() {
+        return image_coordinate;
     }
 
-    public void setCarTotal(int carTotal) {
-        this.carTotal = carTotal;
+    public void setImage_coordinate(int[] image_coordinate) {
+        this.image_coordinate = image_coordinate;
     }
 }
