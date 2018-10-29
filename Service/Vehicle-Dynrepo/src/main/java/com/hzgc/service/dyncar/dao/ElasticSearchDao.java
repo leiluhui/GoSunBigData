@@ -130,7 +130,7 @@ public class ElasticSearchDao {
 
     //车辆属性过滤
     private void setAttribute(BoolQueryBuilder totalBQ, CaptureOption option) {
-//
+
         List <VehicleAttribute> attributes = option.getAttributes();
         if (null != attributes && attributes.size() > 0) {
             for (VehicleAttribute attribute : attributes) {
