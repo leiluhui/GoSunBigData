@@ -126,9 +126,7 @@ public class CaptureSearchController {
             captureOption.setIpcMapping(ipcMapping);
         }
         log.info("Start query capture history, search option is:" + JacksonUtil.toJson(captureOption));
-        List<SingleCaptureResult> searchResultList =
-                captureHistoryService.getCaptureHistory(captureOption);
-        return ResponseResult.init(searchResultList);
+        return captureHistoryService.getCaptureHistory(captureOption);
     }
 
     /**

@@ -1,12 +1,10 @@
 package com.hzgc.service.dynrepo.dao;
 
-import com.hzgc.common.service.personattribute.bean.PersonAttributeValue;
 import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.common.service.faceattribute.bean.Attribute;
 import com.hzgc.common.service.faceattribute.bean.AttributeValue;
 import com.hzgc.common.service.facedynrepo.FaceTable;
 import com.hzgc.service.dynrepo.bean.CaptureOption;
-import com.hzgc.service.dynrepo.bean.TimeInterval;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
