@@ -54,7 +54,7 @@ public class JobRunnerImpl implements ApplicationRunner {
                 }
             }
         }
-        workerRegister.regist(workId, "["+offset+","+(offset+limit)+"]");
+        workerRegister.regist(workId, "["+offset+","+(offset+limit)+")");
         log.info("========================Start run worker, worker id is {} ", workId);
         loadDataFromTiDB.load(offset, limit);
         innerConsumer.initInnerConsumer();
