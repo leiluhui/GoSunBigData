@@ -29,6 +29,8 @@ public class FtpPathBootStrap {
     public Parser getParser(String fileName) {
         if (fileName.contains(DeviceModel.DAHUA_HFW5238M)) {
             return daHuaParser_hfw5238M.canParse(fileName) ? daHuaParser_hfw5238M : null;
+        } else if (fileName.contains(DeviceModel.DAHUA_HFW5438M)) {
+            return daHuaParser_hfw5238M.canParse(fileName) ? daHuaParser_hfw5238M : null;
         } else if (fileName.contains(DeviceModel.DAHUA_HDBW5238R)) {
             return daHuaParser_hdbw5238R.canParse(fileName) ? daHuaParser_hdbw5238R : null;
         } else if (fileName.contains(DeviceModel.DAHUA_HF8600E)) {
