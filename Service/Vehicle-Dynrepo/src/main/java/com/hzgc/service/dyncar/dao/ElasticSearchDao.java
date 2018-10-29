@@ -67,7 +67,7 @@ public class ElasticSearchDao {
         if (null != option.getBrand_name() && option.getBrand_name().length() > 0) {
             requestBuilder.setQuery(QueryBuilders.queryStringQuery(VehicleTable.BRAND_NAME + ":*" + option.getBrand_name() + "*"));
         }
-//
+
         return requestBuilder.get();
     }
 
@@ -132,13 +132,7 @@ public class ElasticSearchDao {
 
     //车辆属性过滤
     private void setAttribute(BoolQueryBuilder totalBQ, CaptureOption option) {
-//        String brand = option.getBrand_name();
-        //车标分词搜索
-//        if (null != brand && brand.length() > 0) {
-//            BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-//            boolQueryBuilder.should(QueryBuilders.matchQuery(VehicleTable.BRAND_NAME, brand).analyzer(VehicleTable.IK_SMART));
-//            totalBQ.must(boolQueryBuilder);
-//        }
+//
         List <VehicleAttribute> attributes = option.getAttributes();
         if (null != attributes && attributes.size() > 0) {
             for (VehicleAttribute attribute : attributes) {
