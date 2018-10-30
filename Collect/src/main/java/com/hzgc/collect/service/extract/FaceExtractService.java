@@ -40,7 +40,7 @@ public class FaceExtractService {
         PictureData pictureData = new PictureData();
         pictureData.setImageID(UuidUtil.getUuid());
         pictureData.setImageData(imageBytes);
-        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
+        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
         if (checkResult != null && checkResult.size() > 0) {
             log.info("Face check successful, image contains feature");
             pictureData.setFeature(checkResult.get(0).getFaceAttribute());
