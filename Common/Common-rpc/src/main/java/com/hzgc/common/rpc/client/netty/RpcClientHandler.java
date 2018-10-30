@@ -75,6 +75,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
                 String requestId = rpcResponse.getRequestId();
                 RPCFuture rpcFuture = pendingRPC.get(requestId);
                 rpcFuture.done(rpcResponse);
+                pendingRPC.remove(requestId);
                 break;
             case PONG:
                 pingCount.set(0);

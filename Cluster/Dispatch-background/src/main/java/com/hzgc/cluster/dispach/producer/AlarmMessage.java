@@ -15,4 +15,6 @@ public class AlarmMessage {
     private String captureImage; //抓拍图
     private String id; //布控图片
     private String time; // 抓拍时间
+    private String bCaptureImage; //抓拍大图
+    private String notes; //备注
 }

@@ -201,7 +201,9 @@ public class CommunityService {
         List<NewAndOutPeopleSearch> newAndOutPeopleSearchList = new ArrayList<>();
         // 小区迁入人口查询（疑似与确认）
         if (param.getType() == 0) {
+            Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
             List<NewPeople> list = newPeopleMapper.searchCommunityNewPeople(param);
+            PageInfo info = new PageInfo(page.getResult());
             if (list != null && list.size() > 0) {
                 for (NewPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
@@ -250,11 +252,17 @@ public class CommunityService {
                     }
                     newAndOutPeopleSearchList.add(vo);
                 }
+                NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+                vo.setTotalNum((int) info.getTotal());
+                vo.setVoList(newAndOutPeopleSearchList);
+                return vo;
             }
         }
         // 小区迁出人口查询（疑似与确认）
         if (param.getType() == 1) {
+            Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
             List<OutPeople> list = outPeopleMapper.searchCommunityOutPeople(param);
+            PageInfo info = new PageInfo(page.getResult());
             if (list != null && list.size() > 0) {
                 for (OutPeople people : list) {
                     NewAndOutPeopleSearch vo = new NewAndOutPeopleSearch();
@@ -275,11 +283,12 @@ public class CommunityService {
                     newAndOutPeopleSearchList.add(vo);
                 }
             }
+            NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
+            vo.setTotalNum((int) info.getTotal());
+            vo.setVoList(newAndOutPeopleSearchList);
+            return vo;
         }
-        NewAndOutPeopleSearchVO vo = new NewAndOutPeopleSearchVO();
-        vo.setTotalNum(newAndOutPeopleSearchList.size());
-        vo.setVoList(ListUtil.pageSplit(newAndOutPeopleSearchList, param.getStart(), param.getLimit()));
-        return vo;
+        return new NewAndOutPeopleSearchVO();
     }
 
     private Long getPictureIdByPeopleId(String peopleId) {
@@ -674,6 +683,8 @@ public class CommunityService {
             }
         }
         this.listSort(voList);
+        // 倒序排列
+        Collections.reverse(voList);
         return voList;
     }
 
@@ -781,15 +792,15 @@ public class CommunityService {
 
     public ImportantRecognizeVO importantPeopleRecognize(ImportantRecognizeDTO param) {
         ImportantRecognizeVO vo = new ImportantRecognizeVO();
-        if (param.getSearchType() == 0){
+        if (param.getSearchType() == 0) {
             List<Long> communityIds = platformService.getCommunityIdsByRegionId(param.getRegionId());
-            if (communityIds == null || communityIds.size() == 0){
+            if (communityIds == null || communityIds.size() == 0) {
                 log.info("Search community ids by region id is null, so return null");
                 return null;
             }
             log.info("Search community ids by region id is:" + JacksonUtil.toJson(communityIds));
             List<String> importantIds = peopleMapper.getImportantPeopleId(communityIds);
-            if (importantIds == null || importantIds.size() == 0){
+            if (importantIds == null || importantIds.size() == 0) {
                 log.info("Search community important people ids is null, so return null");
                 return null;
             }
@@ -807,13 +818,13 @@ public class CommunityService {
             }
             log.info("Search community important people recognize param:" + JacksonUtil.toJson(search));
             List<ImportantPeopleRecognize> recognizes = peopleRecognizeMapper.importantPeopleRecognize(search);
-            if (recognizes == null || recognizes.size() ==0){
+            if (recognizes == null || recognizes.size() == 0) {
                 log.info("Search community important people recognize is null, so return null");
                 return null;
             }
             List<ImportantPeopleRecognizeVO> voList = new ArrayList<>();
             for (ImportantPeopleRecognize recognize : recognizes) {
-                if (recognize != null){
+                if (recognize != null) {
                     ImportantPeopleRecognizeVO importantPeopleRecognize = new ImportantPeopleRecognizeVO();
                     importantPeopleRecognize.setId(recognize.getId());
                     importantPeopleRecognize.setName(recognize.getName());
@@ -835,7 +846,7 @@ public class CommunityService {
                     importantPeopleRecognize.setCar(carList);
                     List<Flag> flags = recognize.getFlag();
                     List<Integer> flagList = new ArrayList<>();
-                    for (Flag flag : flags){
+                    for (Flag flag : flags) {
                         flagList.add(flag.getFlagid());
                     }
                     importantPeopleRecognize.setFlag(flagList);
@@ -844,9 +855,9 @@ public class CommunityService {
             }
             vo.setTotalNum(voList.size());
             vo.setImportantPeopleRecognizeList(ListUtil.pageSplit(voList, param.getStart(), param.getLimit()));
-        }else if (param.getSearchType() == 1){
+        } else if (param.getSearchType() == 1) {
             // TODO 设别记录查询
-        }else {
+        } else {
             log.error("param search type error");
         }
         return vo;

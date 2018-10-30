@@ -55,7 +55,11 @@ public class FaceConsumer implements Runnable{
                 if (record.value() != null && record.value().length() > 0) {
                     log.info("===============================PeopleCompare Start===============================");
                     FaceObject faceObject = JacksonUtil.toObject(record.value(), FaceObject.class);
-                    peopleCompare.comparePeople(faceObject);
+                    if (faceObject.getAttribute().getSharpness() == 1) {
+                        peopleCompare.comparePeople(faceObject);
+                    } else {
+                        log.info("FaceObject data is invalid　exit!, sharpness is {}, sFtpUrl={}", faceObject.getAttribute().getSharpness(), faceObject.getsFtpUrl());
+                    }
                     log.info("===============================PeopleCompare End=================================");
                 }
             }

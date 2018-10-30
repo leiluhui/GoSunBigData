@@ -34,7 +34,7 @@
   </select>
 
   <select id="selectByIds" resultType="com.hzgc.cluster.dispach.model.Dispach" parameterType="java.util.List">
-    select id, name, idcard, threshold, feature from t_dispatch where id in
+    select id, name, idcard, threshold, feature, notes from t_dispatch where id in
     <foreach collection="list" index="index" item="item" open="(" separator=", " close=")">
       #{item}
     </foreach>
