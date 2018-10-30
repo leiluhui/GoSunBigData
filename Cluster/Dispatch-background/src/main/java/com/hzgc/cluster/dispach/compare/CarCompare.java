@@ -101,8 +101,10 @@ public class CarCompare implements Runnable{
                 alarmMessage.setSim(100f);
                 alarmMessage.setName(dispach.getName());
                 alarmMessage.setIdCard(dispach.getIdcard());
-                String ip = innerService.hostName2Ip(carObject.getHostname()).getIp();
-                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
+                String ip = carObject.getIp();
+                alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
+                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
+                alarmMessage.setNotes(dispach.getNotes());
                 alarmMessage.setId(disp.getId());
                 alarmMessage.setTime(carObject.getTimeStamp());
                 producer.send(topic, JacksonUtil.toJson(alarmMessage));

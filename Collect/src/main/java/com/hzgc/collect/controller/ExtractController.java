@@ -1,5 +1,6 @@
 package com.hzgc.collect.controller;
 
+import com.hzgc.collect.bean.ImageDTO;
 import com.hzgc.collect.service.extract.CarExtractService;
 import com.hzgc.collect.service.extract.FaceExtractService;
 import com.hzgc.collect.service.extract.PersonExtractService;
@@ -12,10 +13,7 @@ import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.jniface.BigPictureData;
-import com.hzgc.jniface.CarPictureData;
-import com.hzgc.jniface.PersonPictureData;
-import com.hzgc.jniface.PictureData;
+import com.hzgc.jniface.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -62,6 +60,34 @@ public class ExtractController {
     @SuppressWarnings("unused")
     private CarAttributeService carAttributeService;
 
+    @ApiOperation(value = "特征值提取", response = BigPictureData.class)
+    @RequestMapping(value = BigDataPath.FEATURE_EXTRACT, method = RequestMethod.POST)
+    public ResponseResult featureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image,
+                                         @ApiParam(name = "type", value = "检测类型")ImageDTO imageDTO) {
+        byte[] imageBin = null;
+        try {
+            imageBin = image.getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if ("0".equals(imageDTO.getType())) { //人脸提取特征
+            BigPictureData bigPictureData = faceExtractService.featureExtractByImage(imageBin);
+            bigPictureData.setImageType("0");
+            return ResponseResult.init(bigPictureData);
+        }
+        if ("1".equals(imageDTO.getType())) { //行人提取特征
+            BigPersonPictureData bigPersonPictureData = personExtractService.featureExtractByImage(imageBin);
+            bigPersonPictureData.setImageType("1");
+            return ResponseResult.init(bigPersonPictureData);
+        }
+        if ("2".equals(imageDTO.getType())) { //车辆提取特征
+            BigCarPictureData bigCarPictureData = carExtractService.carExtractByImage(imageBin);
+            bigCarPictureData.setImageType("2");
+            return ResponseResult.init(bigCarPictureData);
+        }
+        return null;
+    }
+
     @ApiOperation(value = "人脸特征值提取", response = BigPictureData.class)
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
     public ResponseResult <BigPictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
@@ -107,9 +133,9 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "行人属性提取", response = PersonPictureData.class)
+    @ApiOperation(value = "行人属性提取", response = BigPersonPictureData.class)
     @RequestMapping(value = BigDataPath.PERSON_FEATURE_EXTRACT_BIN, method = RequestMethod.POST)
-    public ResponseResult <PersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <BigPersonPictureData> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (null == image) {
             log.error("Start extract person feature by binary, image is null");
@@ -120,11 +146,11 @@ public class ExtractController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PersonPictureData personPictureData = personExtractService.featureExtractByImage(imageBin);
-        if (null == personPictureData) {
+        BigPersonPictureData bigPersonPictureData = personExtractService.featureExtractByImage(imageBin);
+        if (null == bigPersonPictureData) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
         }
-        return ResponseResult.init(personPictureData);
+        return ResponseResult.init(bigPersonPictureData);
     }
 
     @ApiOperation(value = "行人属性查询", response = ResponseResult.class)
@@ -140,9 +166,9 @@ public class ExtractController {
         }
     }
 
-    @ApiOperation(value = "车辆属性提取", response = CarPictureData.class)
+    @ApiOperation(value = "车辆属性提取", response = BigCarPictureData.class)
     @RequestMapping(value = BigDataPath.CAR_EXTRACT, method = RequestMethod.POST)
-    public ResponseResult <CarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResponseResult <BigCarPictureData> carExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
         byte[] imageBin = null;
         if (image == null) {
             log.error("Start car extract by binary, image is null");
@@ -153,11 +179,11 @@ public class ExtractController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        CarPictureData carPictureData = carExtractService.carExtractByImage(imageBin);
-        if (null == carPictureData) {
+        BigCarPictureData bigCarPictureData = carExtractService.carExtractByImage(imageBin);
+        if (null == bigCarPictureData) {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "提取不到特征值");
         }
-        return ResponseResult.init(carPictureData);
+        return ResponseResult.init(bigCarPictureData);
     }
 
     @ApiOperation(value = "车辆属性查询", response = ResponseResult.class)

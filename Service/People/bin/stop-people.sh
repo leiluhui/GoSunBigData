@@ -11,10 +11,10 @@
 cd `dirname $0`
 BIN_DIR=`pwd`                           ##bin目录地址
 cd ..
-PEOPLE_DIR=`pwd`                     ##face-dispatch目录地址
+PEOPLE_DIR=`pwd`                     ##people目录地址
 LIB_DIR=${PEOPLE_DIR}/lib            ##lib目录地址
 CONF_DIR=${PEOPLE_DIR}/conf          ##conf目录地址
-PEOPLE_JAR_NAME=`ls ${LIB_DIR} | grep ^face-dispatch-[0-9].[0-9].[0-9].jar$`          ##获取face-dispatch的jar包名称
+PEOPLE_JAR_NAME=`ls ${LIB_DIR} | grep ^people-[0-9].[0-9].[0-9].jar$`          ##获取people的jar包名称
 PEOPLE_JAR=${LIB_DIR}/${PEOPLE_JAR_NAME}                        ##获取jar包的全路径
 PEOPLE_JAR_PID=`jps | grep ${PEOPLE_JAR_NAME} | awk '{print $1}'`
 

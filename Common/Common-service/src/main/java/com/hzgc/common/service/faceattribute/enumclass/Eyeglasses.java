@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public enum Eyeglasses implements Serializable {
 
-    Eyeglasses_y(1), Eyeglasses_n(0);
+    Eyeglasses_n(0), Eyeglasses_y(1);
 
     private int value;
 

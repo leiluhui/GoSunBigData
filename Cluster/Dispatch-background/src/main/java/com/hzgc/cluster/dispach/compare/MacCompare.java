@@ -96,6 +96,7 @@ public class MacCompare implements Runnable{
                 alarmMessage.setSim(100f);
                 alarmMessage.setName(dispach.getName());
                 alarmMessage.setIdCard(dispach.getIdcard());
+                alarmMessage.setNotes(dispach.getNotes());
                 alarmMessage.setTime(sdf.format(new Date(macObject.getTimestamp())));
                 producer.send(topic, JacksonUtil.toJson(alarmMessage));
             }

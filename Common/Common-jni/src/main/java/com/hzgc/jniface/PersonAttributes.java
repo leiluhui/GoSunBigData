@@ -68,8 +68,6 @@ public class PersonAttributes {
         this.bottomcolor = bottomcolor;
     }
 
-
-
     public String getHat() {
         return hat;
     }
@@ -85,7 +83,6 @@ public class PersonAttributes {
     public void setHair(String hair) {
         this.hair = hair;
     }
-
 
     public String getMessengerbag() {
         return messengerbag;

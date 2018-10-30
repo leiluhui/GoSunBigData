@@ -321,7 +321,7 @@ public class ImageToData {
                                 e.printStackTrace();
                             }
                         }
-                        if (null != bytess && bytess.length > 0) {
+                        if (null != bytess && bytess.length > 0 && null != person_rect) {
                             CutImageUtil cutImageUtil = new CutImageUtil((int) person_rect.get(0), (int) person_rect.get(1), (int) person_rect.get(2), (int) person_rect.get(3));
                             try {
                                 byte[] bytes = cutImageUtil.cut(bytess);
@@ -605,12 +605,12 @@ public class ImageToData {
     }
 
     public static void main(String[] args) throws Exception{
-        InputStream inputStream = null;
-        byte[] data = null;
-        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\20180831183711.jpg");
-        data = new byte[inputStream.available()];
-        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", data, "66");
+//        InputStream inputStream = null;
+//        byte[] data = null;
+//        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\20180831183711.jpg");
+//        data = new byte[inputStream.available()];
+//        inputStream.read(data);
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\111111111.jpg", "66");
         System.out.println(JacksonUtil.toJson(imageResult));
     }
 }

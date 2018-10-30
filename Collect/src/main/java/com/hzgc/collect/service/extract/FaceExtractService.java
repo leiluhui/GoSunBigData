@@ -1,7 +1,6 @@
 package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
-import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.*;
 import com.hzgc.seemmo.util.BASE64Util;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +33,13 @@ public class FaceExtractService {
                 pictureData.setImageData(smallImage.getPictureStream());
                 pictureData.setImageID(UuidUtil.getUuid());
                 pictureData.setFeature(smallImage.getFaceAttribute());
+                pictureData.setImage_coordinate(smallImage.getFaceAttribute().getImage_coordinate());
                 imageType = smallImage.getImageType();
                 smallPictures.add(pictureData);
             }
             bigPictureData.setImageType(imageType);
-            bigPictureData.setSmallImage(smallPictures);
-            bigPictureData.setFaceTotal(smallPictures.size());
+            bigPictureData.setSmallImages(smallPictures);
+            bigPictureData.setTotal(smallPictures.size());
             bigPictureData.setImageID(UuidUtil.getUuid());
             bigPictureData.setImageData(imageBytes);
             log.info("Face extract successful, image contains feature");
@@ -49,7 +49,7 @@ public class FaceExtractService {
         return null;
     }
 
-    public PictureData featureCheckByImage(byte[] imageBytes) {
+    private PictureData featureCheckByImage(byte[] imageBytes) {
         PictureData pictureData = new PictureData();
         pictureData.setImageID(UuidUtil.getUuid());
         pictureData.setImageData(imageBytes);

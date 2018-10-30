@@ -37,6 +37,9 @@ public class ServiceImpl implements Service {
         log.info("The param is : " + FaceObjectUtil.objectToJson(param));
         String dateStart = param.getDateStart();
         String dateEnd = param.getDateEnd();
+        if(param.getResultCount() == 0){
+            param.setResultCount(20);
+        }
         long time1 = System.currentTimeMillis();
         try {
             if(sdf.parse(param.getDateEnd()).getTime() - sdf.parse(param.getDateStart()).getTime() >
@@ -66,12 +69,12 @@ public class ServiceImpl implements Service {
                     result.merge(compare.getSearchResult());
                 }
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
-                return new AllReturn<>(result);
+                return new AllReturn<>(result.take(param.getResultCount()));
             } else {
                 CompareOnePerson compareOnePerson2 = new CompareOnePerson(param, dateStart, dateEnd);
                 SearchResult result = compareOnePerson2.compare();
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
-                return new AllReturn<>(result);
+                return new AllReturn<>(result.take(param.getResultCount()));
             }
 
         } catch (ParseException e) {
@@ -86,6 +89,9 @@ public class ServiceImpl implements Service {
         log.info("The param is : " + FaceObjectUtil.objectToJson(param));
         String dateStart = param.getDateStart();
         String dateEnd = param.getDateEnd();
+        if(param.getResultCount() == 0){
+            param.setResultCount(20);
+        }
         try {
             long time1 = System.currentTimeMillis();
             if(sdf.parse(param.getDateEnd()).getTime() - sdf.parse(param.getDateStart()).getTime() >
@@ -115,12 +121,12 @@ public class ServiceImpl implements Service {
                     result.merge(compare.getSearchResult());
                 }
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
-                return new AllReturn<>(result);
+                return new AllReturn<>(result.take(param.getResultCount()));
             } else {
                 CompareSamePerson compareOnePerson2 = new CompareSamePerson(param, dateStart, dateEnd);
                 SearchResult result = compareOnePerson2.compare();
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
-                return new AllReturn<>(result);
+                return new AllReturn<>(result.take(param.getResultCount()));
             }
 
         } catch (ParseException e) {
@@ -135,6 +141,9 @@ public class ServiceImpl implements Service {
         log.info("The param is : " + FaceObjectUtil.objectToJson(param));
         String dateStart = param.getDateStart();
         String dateEnd = param.getDateEnd();
+        if(param.getResultCount() == 0){
+            param.setResultCount(20);
+        }
         try {
             long time1 = System.currentTimeMillis();
             if(sdf.parse(param.getDateEnd()).getTime() - sdf.parse(param.getDateStart()).getTime() >
@@ -160,23 +169,31 @@ public class ServiceImpl implements Service {
                         break;
                     }
                 }
+                Map<String, SearchResult> temp = new Hashtable<>();
                 Map<String, SearchResult> result = new Hashtable<>();
                 int index = 0;
                 for(CompareNotSamePerson compare : list){
                     if(index == 0){
-                        result = compare.getSearchResult();
+                        temp = compare.getSearchResult();
                     } else{
-                        for(String key : result.keySet()){
-                            result.get(key).merge(compare.getSearchResult().get(key));
+                        for(String key : temp.keySet()){
+                            temp.get(key).merge(compare.getSearchResult().get(key));
                         }
                     }
                     index ++;
+                }
+                for(Map.Entry<String, SearchResult> entry : temp.entrySet()){
+                    result.put(entry.getKey(), entry.getValue().take(param.getResultCount()));
                 }
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
                 return new AllReturn<>(result);
             } else {
                 CompareNotSamePerson compareOnePerson2 = new CompareNotSamePerson(param, dateStart, dateEnd);
-                Map<String, SearchResult> result = compareOnePerson2.compare();
+                Map<String, SearchResult> result = new Hashtable<>();
+                Map<String, SearchResult> temp = compareOnePerson2.compare();
+                for(Map.Entry<String, SearchResult> entry : temp.entrySet()){
+                    result.put(entry.getKey(), entry.getValue().take(param.getResultCount()));
+                }
                 log.info("The time used of this Compare is : " + (System.currentTimeMillis() - time1));
                 return new AllReturn<>(result);
             }

@@ -142,7 +142,6 @@ CREATE TABLE `t_people_new` (
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
   `community` bigint(20) NOT NULL COMMENT '小区ID',
   `month` varchar(6) NOT NULL COMMENT '疑似迁入月份:yyyyMM',
-  `deviceid` varchar(50) NOT NULL COMMENT '设备ID',
   `isconfirm` int(2) NOT NULL COMMENT '是否确认迁入(1:未确认，2：已确认迁入，3：确认未迁入)',
   `flag` int(2) NOT NULL COMMENT '标签(1:预实名, 2:新增)',
   PRIMARY KEY (`id`)
@@ -172,6 +171,7 @@ CREATE TABLE `t_people_recognize` (
   `similarity` FLOAT DEFAULT NULL COMMENT '匹配相似度',
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='人口识别记录表';
+ALTER TABLE t_people_recognize ADD index origin_picture(peopleid, flag);
 
 DROP TABLE IF EXISTS `t_phone`;
 CREATE TABLE `t_phone` (

@@ -19,6 +19,11 @@ public class MasterServerImpl implements MasterServer {
     }
 
     @Override
+    public void submitJob(String workerId, String taskTrackerGroup){
+        JobSubmit.submitJob2(workerId, taskTrackerGroup);
+    }
+
+    @Override
     public AllReturn<List<String>> getJobsNow() {
         List<String> res = new ArrayList<>();
         List<TaskTracker> trackers = TaskTrackerManager.getInstance().getTrackers();

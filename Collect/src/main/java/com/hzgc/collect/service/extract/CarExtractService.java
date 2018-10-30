@@ -1,6 +1,7 @@
 package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.jniface.BigCarPictureData;
 import com.hzgc.jniface.CarAttribute;
 import com.hzgc.jniface.CarPictureData;
 import com.hzgc.seemmo.bean.ImageResult;
@@ -25,20 +26,19 @@ public class CarExtractService {
      * @param imageBytes 图片数组（大图）
      * @return CarPictureData
      */
-    public CarPictureData carExtractByImage(byte[] imageBytes) {
+    public BigCarPictureData carExtractByImage(byte[] imageBytes) {
         ImageResult imageResult = ImageToData.getImageResult(seemmoUrl, imageBytes, "0");
         if (imageResult == null) {
             log.info("imageResult is null");
             return null;
         }
-        CarPictureData carPictureData = new CarPictureData();
-        carPictureData.setImageID(UuidUtil.getUuid());
-        carPictureData.setImageData(imageBytes);
-        List <CarAttribute> attributeList = new ArrayList <>();
+        BigCarPictureData bigCarPictureData = new BigCarPictureData();
         List <Vehicle> vehicleList = imageResult.getVehicleList();
+        ArrayList <CarPictureData> smallImages = new ArrayList <>();
         if (vehicleList != null && vehicleList.size() > 0) {
             for (Vehicle vehicle : vehicleList) {
                 if (vehicle != null) {
+                    CarPictureData carPictureData = new CarPictureData();
                     CarAttribute carAttribute = new CarAttribute();
                     carAttribute.setVehicle_object_type(vehicle.getVehicle_object_type());
                     carAttribute.setBelt_maindriver(vehicle.getBelt_maindriver());
@@ -61,12 +61,22 @@ public class CarExtractService {
                     carAttribute.setSunroof_code(vehicle.getSunroof_code());
                     carAttribute.setVehicle_type(vehicle.getVehicle_type());
                     carAttribute.setVehicle_coordinate(vehicle.getVehicle_image());
-                    attributeList.add(carAttribute);
+                    carPictureData.setImageID(UuidUtil.getUuid());
+                    carPictureData.setImageData(vehicle.getVehicle_data());
+                    carPictureData.setFeature(carAttribute);
+                    int[] vehicle_image = vehicle.getVehicle_image();
+                    vehicle_image[2] = vehicle_image[0] + vehicle_image[2];
+                    vehicle_image[3] = vehicle_image[1] + vehicle_image[3];
+                    carPictureData.setImage_coordinate(vehicle.getVehicle_image());
+                    smallImages.add(carPictureData);
                 }
             }
         }
-        carPictureData.setAttributeList(attributeList);
-        carPictureData.setCarTotal(attributeList.size());
-        return carPictureData;
+        bigCarPictureData.setSmallImages(smallImages);
+        bigCarPictureData.setTotal(smallImages.size());
+        bigCarPictureData.setImageType("car");
+        bigCarPictureData.setImageData(imageBytes);
+        bigCarPictureData.setImageID(UuidUtil.getUuid());
+        return bigCarPictureData;
     }
 }

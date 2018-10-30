@@ -27,6 +27,10 @@ public class MemeoryCache {
     @SuppressWarnings("unused")
     private boolean isOpen;
 
+    @Value("${face.compare.number}")
+    @SuppressWarnings("unused")
+    private int compareNumber;
+
     @Value("${face.bit.threshold}")
     @SuppressWarnings("unused")
     private float featureThreshold;
@@ -52,8 +56,8 @@ public class MemeoryCache {
                 if (pictureMap.containsKey(picture.getPeopleId())) {
                     List<ComparePicture> comparePictures = pictureMap.get(picture.getPeopleId());
                     comparePictures.add(picture);
+                    pictureMap.put(picture.getPeopleId(), comparePictures);
                 } else {
-
                     List<ComparePicture> comparePictures = new ArrayList<>();
                     comparePictures.add(picture);
                     pictureMap.put(picture.getPeopleId(), comparePictures);
@@ -71,60 +75,83 @@ public class MemeoryCache {
             byte[][] queryList = new byte[1][];
             queryList[0] = bitFeature;
             ArrayList<CompareResult> compareResList =
-                    FaceFunction.faceCompareBit(bitFeatureList.toArray(new byte[0][]), queryList, 1);
-            if(compareResList == null) {
-                return null;
-            }
-            CompareResult compareResult = compareResList.get(0);
-            ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
-            FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
-            int index = faceFeatureInfo.getIndex();
-            String pictureKey = indexToPictureKey.get(index);
-            List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
-            ComparePicture comparePicture = null;
-            for (ComparePicture pic : comparePictures) {
-                if (pic.getIndex() == index) {
-                    comparePicture = pic;
-                }
-            }
-            if (isOpen && comparePicture != null) {
-                Picture picture = pictureMapper.selectByPictureId(comparePicture.getId());
-                if (picture == null) {
-                    log.info("This picture is null, search id is {}", comparePicture.getId());
-                    return null;
-                }
-                String floatFeatureStr = picture.getFeature();
-                if (floatFeatureStr != null && !"".equals(floatFeatureStr)) {
-                    float[] floatFeature = FaceUtil.base64Str2floatFeature(floatFeatureStr);
-                    if (floatFeature.length == 512 && faceAttribute.getFeature().length == 512) {
-                        float sim = FaceUtil.featureCompare(floatFeature, faceAttribute.getFeature());
-                        log.info("----------MemeoryCache ComparePicture Float Sim="+sim);
-                        if (sim >= this.floatThreshold) {
-                            comparePicture.setSimilarity(sim);
-                            return comparePicture;
+                    FaceFunction.faceCompareBit(bitFeatureList.toArray(new byte[0][]), queryList, compareNumber);
+            if (compareResList != null) {
+                CompareResult compareResult = compareResList.get(0);
+                ArrayList<FaceFeatureInfo> featureInfos = compareResult.getPictureInfoArrayList();
+                if (featureInfos != null) {
+                    if (isOpen) {
+                        float tempSim = 0;
+                        ComparePicture comparePicture = null;
+                        for (int i=0; i<featureInfos.size(); i++) {
+                            FaceFeatureInfo faceFeatureInfo = featureInfos.get(i);
+                            int index = faceFeatureInfo.getIndex();
+                            String pictureKey = indexToPictureKey.get(index);
+                            List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
+                            ComparePicture tempPicture = null;
+                            for (ComparePicture pic : comparePictures) {
+                                if (pic.getIndex() == index) {
+                                    tempPicture = pic;
+                                }
+                            }
+                            Picture picture = pictureMapper.selectByPictureId(tempPicture.getId());
+                            if (picture == null) {
+                                continue;
+                            }
+                            String floatFeatureStr = picture.getFeature();
+                            if (floatFeatureStr == null) {
+                                continue;
+                            }
+                            float[] floatFeature = FaceUtil.base64Str2floatFeature(floatFeatureStr);
+                            if (floatFeature.length != 512 || faceAttribute.getFeature().length != 512) {
+                                continue;
+                            }
+                            float sim = FaceUtil.featureCompare(floatFeature, faceAttribute.getFeature());
+                            if (sim > tempSim) {
+                                tempSim = sim;
+                                comparePicture = tempPicture;
+                            }
+                        }
+                        if (comparePicture != null) {
+                            if (tempSim >= this.floatThreshold) {
+                                log.info("MemeoryCache ComparePicture Float peopleid={}, sim={}", comparePicture.getPeopleId(), tempSim);
+                                comparePicture.setSimilarity(tempSim);
+                                return comparePicture;
+                            } else {
+                                return null;
+                            }
                         } else {
                             return null;
                         }
                     } else {
-                        return null;
+                        FaceFeatureInfo faceFeatureInfo = featureInfos.get(0);
+                        int index = faceFeatureInfo.getIndex();
+                        String pictureKey = indexToPictureKey.get(index);
+                        List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
+                        ComparePicture comparePicture = null;
+                        for (ComparePicture pic : comparePictures) {
+                            if (pic.getIndex() == index) {
+                                comparePicture = pic;
+                            }
+                        }
+                        if (faceFeatureInfo.getScore() >= floatThreshold / 100) {
+                            log.info("MemeoryCache ComparePicture Bit peopleid={}, score={}",comparePicture.getPeopleId(), faceFeatureInfo.getScore()*100);
+                            comparePicture.setSimilarity(faceFeatureInfo.getScore()*100);
+                            return comparePicture;
+                        } else {
+                            return null;
+                        }
                     }
                 } else {
                     return null;
                 }
             } else {
-                if (faceFeatureInfo.getScore() >= featureThreshold/100.0) {
-                    log.info("----------MemeoryCache ComparePicture Bit Score="+faceFeatureInfo.getScore());
-                    comparePicture.setSimilarity(faceFeatureInfo.getScore()*100);
-                    return comparePicture;
-                } else {
-                    return null;
-                }
+                return null;
             }
         } else {
             return null;
         }
     }
-
 
     List<ComparePicture> getPeople(String peopleid) {
         return pictureMap.get(peopleid);

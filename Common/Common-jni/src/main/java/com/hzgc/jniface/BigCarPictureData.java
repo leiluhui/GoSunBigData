@@ -2,22 +2,22 @@ package com.hzgc.jniface;
 
 import java.util.List;
 
-public class BigPictureData extends PictureData {
+public class BigCarPictureData extends CarPictureData {
 
-    //大图检测，人脸特征对象
-    private List<PictureData> smallImages;
+    //大图检测，车辆特征对象
+    private List<CarPictureData> smallImages;
 
-    //人脸的个数
+    //车辆的个数
     private Integer total;
 
     //图片类型
     private String imageType;
 
-    public List <PictureData> getSmallImages() {
+    public List <CarPictureData> getSmallImages() {
         return smallImages;
     }
 
-    public void setSmallImages(List <PictureData> smallImages) {
+    public void setSmallImages(List <CarPictureData> smallImages) {
         this.smallImages = smallImages;
     }
 

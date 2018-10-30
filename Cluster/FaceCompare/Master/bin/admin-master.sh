@@ -22,6 +22,7 @@ LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`
 
 ARG_1=${1}
 ARG_2=${2}
+ARG_3=${3}
 
 BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
 
@@ -34,7 +35,7 @@ BIGDATA_CLUSTER_PATH=/opt/hzgc/bigdata
 #####################################################################
 function admin_master()
 {
-    java -server -Xms1g -Xmx3g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.command.RpcClientForMaster ${ARG_1} ${ARG_2}
+    java -server -Xms1g -Xmx3g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.command.RpcClientForMaster ${ARG_1} ${ARG_2} ${ARG_3}
 }
 
 admin_master

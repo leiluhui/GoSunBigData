@@ -56,7 +56,7 @@ public class TaskTracker implements Serializable{
         return nodeGroup;
     }
 
-    int getJobCanBeAdd(){
+    public int getJobCanBeAdd(){
         return maxJobsPerTaskTracker - jobs.size();
     }
 

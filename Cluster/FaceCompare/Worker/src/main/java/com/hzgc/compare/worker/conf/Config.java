@@ -1,8 +1,6 @@
 package com.hzgc.compare.worker.conf;
 
 import com.hzgc.compare.worker.util.PropertiesUtil;
-import io.swagger.models.auth.In;
-
 import java.util.Properties;
 
 public class Config {
