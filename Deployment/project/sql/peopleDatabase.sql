@@ -171,6 +171,7 @@ CREATE TABLE `t_people_recognize` (
   `similarity` FLOAT DEFAULT NULL COMMENT '匹配相似度',
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='人口识别记录表';
+ALTER TABLE t_people_recognize ADD index origin_picture(peopleid, flag);
 
 DROP TABLE IF EXISTS `t_phone`;
 CREATE TABLE `t_phone` (

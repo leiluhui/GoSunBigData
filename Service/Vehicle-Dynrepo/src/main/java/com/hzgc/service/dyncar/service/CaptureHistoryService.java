@@ -39,8 +39,7 @@ public class CaptureHistoryService {
     public SearchResult getCaptureHistory(CaptureOption option) {
         String sortParam = EsSearchParam.DESC;
         log.info("The current query don't needs to be grouped by ipcid");
-        SearchResult searchResult = getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam);
-        return searchResult;
+        return getCaptureHistory(option, DeviceToIpcs.getIpcs(option.getDevices()), sortParam);
     }
 
     //根据ipcid进行分类
