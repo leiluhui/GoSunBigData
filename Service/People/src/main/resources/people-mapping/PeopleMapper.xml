@@ -150,7 +150,7 @@
         select count(*) from
         (select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_flag b, t_picture c
-        where b.flagid in (0, 1, 2, 3, 4, 5, 6)
+        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8)
         and a.id = b.peopleid
         and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
@@ -160,7 +160,7 @@
     <select id="searchImportantPeople"  resultMap="CommunityPeopleMap" parameterType="java.lang.Long" >
         select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_flag b, t_picture c
-        where b.flagid in (0, 1, 2, 3, 4, 5, 6)
+        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8)
         and a.id = b.peopleid
         and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
@@ -238,7 +238,7 @@
         <foreach collection="list" item="model" open="(" close=")" separator=",">
             #{model}
         </foreach>
-        and b.flagid in(0, 1, 2, 3, 4, 5, 6)
+        and b.flagid in(0, 1, 2, 3, 4, 5, 6, 8)
     </select>
     <!--根据人员ID删除小区ID-->
     <update id="deleteCommunityByPeopleId" parameterType="java.lang.String">
