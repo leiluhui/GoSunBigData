@@ -177,5 +177,6 @@ public class BigDataPath {
      * ImsiDynrepo模块请求路径
      */
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
+    public static final String MAC_SEARCH_BY_SNS = "query_by_sns";
 
 }
