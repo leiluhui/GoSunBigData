@@ -610,7 +610,7 @@ public class ImageToData {
 //        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\20180831183711.jpg");
 //        data = new byte[inputStream.available()];
 //        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\111111111.jpg", "66");
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\car.jpg", "0");
         System.out.println(JacksonUtil.toJson(imageResult));
     }
 }

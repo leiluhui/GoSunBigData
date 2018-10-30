@@ -29,8 +29,8 @@
         <include refid="Base_Column_List"/>
         from t_mac_all
         <where>
-            <if test="startDateTime != null and endDateTime != null">
-                time between #{startDateTime,jdbcType=TIMESTAMP} and #{endDateTime,jdbcType=TIMESTAMP}
+            <if test="startTime != null and endTime != null">
+                time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
             </if>
             <if test="list != null and list.size() > 0">
                 and sn in
