@@ -823,8 +823,8 @@ public class CommunityService {
                     importantPeopleRecognize.setLastTime(recognize.getLastTime());
                     importantPeopleRecognize.setPeoplePictureId(recognize.getPeoplePictureId());
                     importantPeopleRecognize.setPictureId(recognize.getPictureId());
-                    importantPeopleRecognize.setBurl(recognize.getBurl());
-                    importantPeopleRecognize.setSurl(recognize.getSurl());
+                    importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
+                    importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
                     importantPeopleRecognize.setSimilarity(recognize.getSimilarity());
                     importantPeopleRecognize.setCaptureTime(recognize.getCaptureTime());
                     importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
