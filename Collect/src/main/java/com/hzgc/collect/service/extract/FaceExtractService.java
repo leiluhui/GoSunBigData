@@ -22,38 +22,25 @@ public class FaceExtractService {
      * @param imageBytes 图片的字节数组
      * @return float[] 特征值:长度为512的float[]数组
      */
-    public BigPictureData featureExtractByImage(byte[] imageBytes) {
-        String imageType = null;
-        BigPictureData bigPictureData = new BigPictureData();
-        ArrayList <PictureData> smallPictures = new ArrayList <>();
-        ArrayList <SmallImage> smallImages = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
-        if (null != smallImages && smallImages.size() > 0) {
-            for (SmallImage smallImage: smallImages) {
-                PictureData pictureData = new PictureData();
-                pictureData.setImageData(smallImage.getPictureStream());
-                pictureData.setImageID(UuidUtil.getUuid());
-                pictureData.setFeature(smallImage.getFaceAttribute());
-                pictureData.setImage_coordinate(smallImage.getFaceAttribute().getImage_coordinate());
-                imageType = smallImage.getImageType();
-                smallPictures.add(pictureData);
-            }
-            bigPictureData.setImageType(imageType);
-            bigPictureData.setSmallImages(smallPictures);
-            bigPictureData.setTotal(smallPictures.size());
-            bigPictureData.setImageID(UuidUtil.getUuid());
-            bigPictureData.setImageData(imageBytes);
+    public PictureData featureExtractByImage(byte[] imageBytes) {
+        PictureData pictureData = new PictureData();
+        pictureData.setImageID(UuidUtil.getUuid());
+        pictureData.setImageData(imageBytes);
+        FaceAttribute faceAttribute = FaceFunction.faceFeatureExtract(imageBytes, PictureFormat.JPG);
+        if (null != faceAttribute.getFeature() && faceAttribute.getFeature().length > 0) {
             log.info("Face extract successful, image contains feature");
-            return bigPictureData;
+            pictureData.setFeature(faceAttribute);
+            return pictureData;
         }
         log.info("Face extract failed, image not contains feature");
         return null;
     }
 
-    private PictureData featureCheckByImage(byte[] imageBytes) {
+    public PictureData featureCheckByImage(byte[] imageBytes) {
         PictureData pictureData = new PictureData();
         pictureData.setImageID(UuidUtil.getUuid());
         pictureData.setImageData(imageBytes);
-        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
+        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
         if (checkResult != null && checkResult.size() > 0) {
             log.info("Face check successful, image contains feature");
             pictureData.setFeature(checkResult.get(0).getFaceAttribute());
