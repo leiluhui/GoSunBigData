@@ -829,13 +829,13 @@ public class CommunityService {
                     importantPeopleRecognize.setId(recognize.getId());
                     importantPeopleRecognize.setName(recognize.getName());
                     importantPeopleRecognize.setIdCard(recognize.getIdCard());
-                    importantPeopleRecognize.setLastTime(recognize.getLastTime());
+                    importantPeopleRecognize.setLastTime(sdf.format(recognize.getLastTime()));
                     importantPeopleRecognize.setPeoplePictureId(recognize.getPeoplePictureId());
                     importantPeopleRecognize.setPictureId(recognize.getPictureId());
                     importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
                     importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
                     importantPeopleRecognize.setSimilarity(recognize.getSimilarity());
-                    importantPeopleRecognize.setCaptureTime(recognize.getCaptureTime());
+                    importantPeopleRecognize.setCaptureTime(sdf.format(recognize.getCaptureTime()));
                     importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
                     importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
                     List<Car> cars = recognize.getCar();

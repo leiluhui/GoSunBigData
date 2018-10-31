@@ -6,6 +6,7 @@ import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
+import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
@@ -89,10 +90,8 @@ public class DispatchService {
     public ResponseResult <WarnHistoryVO> searchDeployRecognize(DispatchRecognizeDTO dispatchRecognizeDTO) {
         List <DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
         ArrayList <DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList <>();
-        ArrayList <String> deviceList = new ArrayList <>();
         if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
-                deviceList.add(dispatchRecognize.getDeviceId());
                 DispatchDTO dispatchDTO = new DispatchDTO();
                 String dispatchId = dispatchRecognize.getDispatchId();
                 dispatchDTO.setId(dispatchId);
@@ -106,7 +105,8 @@ public class DispatchService {
         }
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
         warnHistoryVO.setTotal(dispatchRecognizeVOS.size());
-        warnHistoryVO.setDispatchRecognizeVOS(getDispatchRecognizeVOByCutPage(dispatchRecognizeDTO, dispatchRecognizeVOS));
+        warnHistoryVO.setDispatchRecognizeVOS(ListUtil.pageSplit(dispatchRecognizeVOS,
+                dispatchRecognizeDTO.getStart(), dispatchRecognizeDTO.getLimit()));
         return ResponseResult.init(warnHistoryVO);
     }
 
