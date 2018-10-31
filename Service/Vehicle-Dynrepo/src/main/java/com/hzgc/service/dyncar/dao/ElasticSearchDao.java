@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -49,26 +47,28 @@ public class ElasticSearchDao {
     public SearchResponse getCaptureHistory(CaptureOption option, List <String> ipcList, String sortParam) {
         BoolQueryBuilder queryBuilder = createBoolQueryBuilder(option);
         setDeviceIdList(queryBuilder, ipcList);
+        setPlate(queryBuilder,option);
         SearchRequestBuilder requestBuilder = createSearchRequestBuilder()
                 .setQuery(queryBuilder)
                 .setFrom(option.getStart())
                 .setSize(option.getLimit())
                 .addSort(VehicleTable.TIMESTAMP,
                         Objects.equals(sortParam, EsSearchParam.DESC) ? SortOrder.DESC : SortOrder.ASC);
+        return requestBuilder.get();
+    }
+
+    private void setPlate(BoolQueryBuilder queryBuilder, CaptureOption option) {
         if (null != option.getPlate_licence() && option.getPlate_licence().length() > 0 &&
                 null != option.getBrand_name() && option.getBrand_name().length() > 0) {
-            requestBuilder.setQuery(QueryBuilders.queryStringQuery(VehicleTable.PLATE_LICENCE + ":*" + option.getPlate_licence() + "*" +
+            queryBuilder.must(QueryBuilders.queryStringQuery(VehicleTable.PLATE_LICENCE + ":*" + option.getPlate_licence() + "*" +
                     " AND " + VehicleTable.BRAND_NAME + ":*" + option.getBrand_name() + "*"));
-            return requestBuilder.get();
         }
         if (null != option.getPlate_licence() && option.getPlate_licence().length() > 0) {
-            requestBuilder.setQuery(QueryBuilders.queryStringQuery(VehicleTable.PLATE_LICENCE + ":*" + option.getPlate_licence() + "*"));
+            queryBuilder.must(QueryBuilders.queryStringQuery(VehicleTable.PLATE_LICENCE + ":*" + option.getPlate_licence() + "*"));
         }
         if (null != option.getBrand_name() && option.getBrand_name().length() > 0) {
-            requestBuilder.setQuery(QueryBuilders.queryStringQuery(VehicleTable.BRAND_NAME + ":*" + option.getBrand_name() + "*"));
+            queryBuilder.must(QueryBuilders.queryStringQuery(VehicleTable.BRAND_NAME + ":*" + option.getBrand_name() + "*"));
         }
-
-        return requestBuilder.get();
     }
 
     //根据单个ipcid进行查询
@@ -132,7 +132,7 @@ public class ElasticSearchDao {
 
     //车辆属性过滤
     private void setAttribute(BoolQueryBuilder totalBQ, CaptureOption option) {
-//
+
         List <VehicleAttribute> attributes = option.getAttributes();
         if (null != attributes && attributes.size() > 0) {
             for (VehicleAttribute attribute : attributes) {
