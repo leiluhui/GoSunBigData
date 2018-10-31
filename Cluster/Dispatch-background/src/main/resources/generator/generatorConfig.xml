@@ -19,7 +19,7 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!-- 指定生成模型的包名和位置-->
-        <javaModelGenerator targetPackage="com.hzgc.cluster.dispach.model" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.hzgc.cluster.dispatch.model" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
@@ -28,15 +28,28 @@
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- 生成DAO的包名和位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hzgc.cluster.dispach.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hzgc.cluster.dispatch.dao"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainbjectame是实体类名-->
-        <table tableName="t_dispatch" domainObjectName="Dispach" enableCountByExample="false"
+        <table tableName="t_dispatch" domainObjectName="Dispatch" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
-        <table tableName="t_dispatch_recognize" domainObjectName="DispachRecognize" enableCountByExample="false"
+        <table tableName="t_dispatch_recognize" domainObjectName="DispatchRecognize" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_dispatch_alive" domainObjectName="DispatchAlive" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table tableName="t_dispatch_definition" domainObjectName="DispatchDefinition" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_dispatch_ipc" domainObjectName="DispatchIpc" enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+        <table tableName="t_dispatch_name" domainObjectName="DispatchName" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>

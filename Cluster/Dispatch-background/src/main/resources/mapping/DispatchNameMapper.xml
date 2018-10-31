@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cluster.dispatch.dao.DispatchNameMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispatch.model.DispatchName" >
+    <result column="defid" property="defid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="feature" property="feature" jdbcType="VARCHAR" />
+    <result column="bit_feature" property="bitFeature" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispatch.model.DispatchName" extends="BaseResultMap" >
+    <result column="picture" property="picture" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Blob_Column_List" >
+    picture
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select name, feature from t_dispatch_name where defid = #{defid,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
+    insert into t_dispatch_name (defid, name, feature, 
+      bit_feature, picture)
+    values (#{defid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{feature,jdbcType=VARCHAR}, 
+      #{bitFeature,jdbcType=VARCHAR}, #{picture,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
+    insert into t_dispatch_name
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="defid != null" >
+        defid,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="feature != null" >
+        feature,
+      </if>
+      <if test="bitFeature != null" >
+        bit_feature,
+      </if>
+      <if test="picture != null" >
+        picture,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="defid != null" >
+        #{defid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="feature != null" >
+        #{feature,jdbcType=VARCHAR},
+      </if>
+      <if test="bitFeature != null" >
+        #{bitFeature,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null" >
+        #{picture,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+</mapper>
