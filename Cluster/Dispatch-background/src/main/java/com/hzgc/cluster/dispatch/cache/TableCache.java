@@ -19,8 +19,6 @@ public class TableCache {
     @Autowired
     private DispatchDefinitionMapper dispatchDefinitionMapper;
     @Autowired
-    private DispatchIpcMapper dispatchIpcMapper;
-    @Autowired
     private DispatchNameMapper dispatchNameMapper;
     //    private static TableCache tableCache;
 
@@ -48,10 +46,15 @@ public class TableCache {
                 continue;
             }
             String definitionId = definition.getId();
-            List<DispatchIpc> dispatchIpcs = dispatchIpcMapper.selectById(definitionId);
-            List<DispatchName> dispatchNames = dispatchNameMapper.selectById(definitionId);
-            for(DispatchIpc dispatchIpc : dispatchIpcs){
-                Set<float[]> set = temp.computeIfAbsent(dispatchIpc.getIpc(), k -> new HashSet<>());
+            String ipcs = definition.getIpcs();
+            if(ipcs == null || "".equals(ipcs)){
+                continue;
+            }
+            List<String> ipcList = Arrays.asList(ipcs.split(","));
+
+            List<DispatchName> dispatchNames = dispatchNameMapper.selectByDefiId(definitionId);
+            for(String ipc : ipcList){
+                Set<float[]> set = temp.computeIfAbsent(ipc, k -> new HashSet<>());
                 for(DispatchName dispatchName : dispatchNames){
                     set.add(FaceUtil.base64Str2floatFeature(dispatchName.getFeature()));
                 }

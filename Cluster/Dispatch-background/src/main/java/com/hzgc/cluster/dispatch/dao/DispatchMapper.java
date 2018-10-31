@@ -1,7 +1,6 @@
 package com.hzgc.cluster.dispatch.dao;
 
 import com.hzgc.cluster.dispatch.model.Dispatch;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

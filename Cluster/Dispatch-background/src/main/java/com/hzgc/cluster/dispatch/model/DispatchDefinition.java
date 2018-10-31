@@ -9,6 +9,8 @@ public class DispatchDefinition {
 
     private Integer status;
 
+    private String ipcs;
+
     public String getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class DispatchDefinition {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getIpcs() {
+        return ipcs;
+    }
+
+    public void setIpcs(String ipcs) {
+        this.ipcs = ipcs == null ? null : ipcs.trim();
     }
 }

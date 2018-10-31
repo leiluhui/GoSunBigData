@@ -1,6 +1,8 @@
 package com.hzgc.cluster.dispatch.model;
 
 public class DispatchName {
+    private Integer id;
+
     private String defid;
 
     private String name;
@@ -10,6 +12,14 @@ public class DispatchName {
     private String bitFeature;
 
     private byte[] picture;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getDefid() {
         return defid;

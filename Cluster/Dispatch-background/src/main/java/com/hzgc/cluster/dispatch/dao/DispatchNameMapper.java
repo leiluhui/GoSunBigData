@@ -5,9 +5,19 @@ import com.hzgc.cluster.dispatch.model.DispatchName;
 import java.util.List;
 
 public interface DispatchNameMapper {
+    int deleteByPrimaryKey(Integer id);
+
     int insert(DispatchName record);
 
     int insertSelective(DispatchName record);
 
-    List<DispatchName> selectById(String defid);
+    DispatchName selectByPrimaryKey(Integer id);
+
+    List<DispatchName> selectByDefiId(String defid);
+
+    int updateByPrimaryKeySelective(DispatchName record);
+
+    int updateByPrimaryKeyWithBLOBs(DispatchName record);
+
+    int updateByPrimaryKey(DispatchName record);
 }

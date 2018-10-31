@@ -46,9 +46,6 @@
         <table tableName="t_dispatch_definition" domainObjectName="DispatchDefinition" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
-        <table tableName="t_dispatch_ipc" domainObjectName="DispatchIpc" enableCountByExample="false"
-               enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <table tableName="t_dispatch_name" domainObjectName="DispatchName" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
