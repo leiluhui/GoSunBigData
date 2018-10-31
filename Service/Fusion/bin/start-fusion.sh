@@ -49,6 +49,7 @@ function start_springCloud()
        --eureka.ip=${EUREKA_IP} \
        --eureka.port=${EUREKA_PORT} \
        --kafka.host=${KAFKA_HOST} \
+       --mysql.host=${MYSQL_HOST} \
        --spring.cloud.config.enabled=false  2>&1 &
    fi
 
