@@ -5,6 +5,7 @@ import com.hzgc.service.people.model.Flag;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -20,7 +21,7 @@ public class ImportantPeopleRecognize implements Serializable {
     // 标签列表
     private List<Flag> flag;
     // 最后抓拍时间
-    private String lastTime;
+    private Timestamp lastTime;
     // 人员照片ID
     private Long peoplePictureId;
     // 被设别照片ID
@@ -32,7 +33,7 @@ public class ImportantPeopleRecognize implements Serializable {
     // 匹配相似度
     private Float similarity;
     // 抓拍时间
-    private String captureTime;
+    private Timestamp captureTime;
     // 抓拍设备ID
     private String deviceId;
 }
