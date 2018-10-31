@@ -34,10 +34,10 @@ JNIEXPORT jobject JNICALL Java_com_hzgc_jniface_FaceFunction_bigPictureCheck
 /*
  * Class:     com_hzgc_jniface_FaceFunction
  * Method:    faceCheck
- * Signature: ([BLjava/lang/String;)Ljava/util/ArrayList;
+ * Signature: ([BLjava/lang/String;I)Ljava/util/ArrayList;
  */
 JNIEXPORT jobject JNICALL Java_com_hzgc_jniface_FaceFunction_faceCheck
-  (JNIEnv *, jclass, jbyteArray, jstring);
+  (JNIEnv *, jclass, jbyteArray, jstring, jint);
 
 /*
  * Class:     com_hzgc_jniface_FaceFunction

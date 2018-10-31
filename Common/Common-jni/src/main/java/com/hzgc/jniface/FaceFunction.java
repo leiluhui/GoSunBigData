@@ -37,9 +37,10 @@ public class FaceFunction implements Serializable {
      *
      * @param pictureStream 二进制图片
      * @param pictureFormat 图片格式
+     * @param levelWidth 分辨率
      * @return 检测结果, 检测不到返回 null
      */
-    public static native ArrayList<SmallImage> faceCheck(byte[] pictureStream, String pictureFormat);
+    public static native ArrayList<SmallImage> faceCheck(byte[] pictureStream, String pictureFormat, int levelWidth);
 
     /**
      * 大图检测功能,此方法只能检测行人图片
@@ -119,11 +120,11 @@ public class FaceFunction implements Serializable {
     public static void main(String[] args) {
         FaceFunction.init();
 //        FaceFunction.bigPictureCheck(new byte[0], "JPG");
-        FaceFunction.faceCheck(new byte[0], "JPG");
+        FaceFunction.faceCheck(new byte[0], "JPG", PictureFormat.LEVEL_WIDTH_3);
         System.out.println("1");
-        FaceFunction.faceCheck(new byte[0], "JPG");
+        FaceFunction.faceCheck(new byte[0], "JPG", PictureFormat.LEVEL_WIDTH_3);
         System.out.println("2");
-        FaceFunction.faceCheck(new byte[0], "JPG");
+        FaceFunction.faceCheck(new byte[0], "JPG", PictureFormat.LEVEL_WIDTH_3);
         System.out.println("3");
         System.out.println(FaceFunction.bigPictureCheck(new byte[0], "JPG"));
     }
