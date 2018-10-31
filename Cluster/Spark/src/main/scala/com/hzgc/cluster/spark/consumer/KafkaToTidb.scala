@@ -15,7 +15,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object KafkaToTidb {
-  val log: Logger = Logger.getLogger(KafkaToParquet.getClass)
+  val log: Logger = Logger.getLogger(KafkaToTidb.getClass)
 
   def main(args: Array[String]): Unit = {
     val properties: Properties = PropertiesUtil.getProperties
