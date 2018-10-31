@@ -43,7 +43,7 @@ public class FaceAttribute implements Serializable {
     private int age;
 
     /**
-     * 清晰度评价,清晰为0，不清晰为1
+     * 清晰度评价,不清晰为0,清晰为1
      */
     private int sharpness;
 
