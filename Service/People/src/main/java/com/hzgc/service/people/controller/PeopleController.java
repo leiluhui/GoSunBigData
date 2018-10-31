@@ -240,7 +240,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "人口库excel表格导入")
     @RequestMapping(value = BigDataPath.PEOPLE_EXCEL_IMPORT, method = RequestMethod.POST)
-    public ResponseResult <Integer> excelImport(MultipartFile file) throws Exception {
+    public ResponseResult <Integer> excelImport(MultipartFile file){
         if (file == null){
             log.error("Start import excel data, but filepath is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "excel表格导入路径为空，请检查");

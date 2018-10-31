@@ -17,6 +17,7 @@ import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -868,156 +869,86 @@ public class PeopleService {
         return peopleVO;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Integer excelImport(MultipartFile file) throws Exception {
+    public Integer excelImport(MultipartFile file){
         PeopleExcelUtils excelUtils = new PeopleExcelUtils(file);
-        Map<Integer, Map<Integer, Object>> excelMap = excelUtils.readExcelContent();
+        Map<Integer, Map<Integer, Object>> excelMap = null;
+        try {
+            excelMap = excelUtils.readExcelContent();
+        } catch (Exception e) {
+            log.error("Import excel data failed, because read excel error");
+            e.printStackTrace();
+        }
+        if (excelMap == null || excelMap.size() == 0){
+            return 0;
+        }
+        List<Long> regionId_all = platformService.getAllRegionId();
+        List<Long> communityId_all = platformService.getAllCommunityId();
         List<PeopleDTO> peopleDTOList = new ArrayList<>();
         for (int i = 1; i <= excelMap.size(); i++) {
             Map<Integer, Object> map = excelMap.get(i);
             PeopleDTO peopleDTO = new PeopleDTO();
             if (map.get(0) != null && !"".equals(map.get(0))) {
-                String name = (String) map.get(0);
-                peopleDTO.setName(name);
+                peopleDTO.setName(String.valueOf(map.get(0)));
             } else {
-                log.error("Name is null, please check line: " + i);
+                log.error("Import excel data failed, because name is error, please check line: " + i);
                 return 0;
             }
-            if (map.get(1) != null && !"".equals(map.get(1))) {
-                String idCard = (String) map.get(1);
-                if (PeopleExcelUtils.isIdCard(idCard)) {
-                    peopleDTO.setIdCard(idCard);
-                } else {
-                    log.error("IdCard is error, please check line: " + i);
+            if (map.get(1) != null && !"".equals(map.get(1)) &&
+                    PeopleExcelUtils.isIdCard(String.valueOf(map.get(1)))) {
+                peopleDTO.setIdCard(String.valueOf(map.get(1)));
+            } else {
+                log.error("Import excel data failed, because idCard is error, please check line: " + i);
+                return 0;
+            }
+            if (map.get(2) != null && !"".equals(map.get(2)) &&
+                    regionId_all.contains(Long.valueOf(String.valueOf(map.get(2))))) {
+                peopleDTO.setRegion(Long.valueOf(String.valueOf(map.get(2))));
+            } else {
+                log.error("Import excel data failed, because region id is error, please check line: " + i);
+                return 0;
+            }
+            if (map.get(3) != null && !"".equals(map.get(3))){
+                Long communityId = Long.valueOf(String.valueOf(map.get(3)));
+                if (communityId_all.contains(communityId)){
+                    peopleDTO.setCommunity(communityId);
+                }else {
+                    log.error("Import excel data failed, because community is error, please check line: " + i);
                     return 0;
                 }
-            } else {
-                log.error("IdCard is null");
-                return 0;
             }
-            if (map.get(2) != null) {
-                String regionId = (String) map.get(2);
-                Float aFloat = Float.valueOf(regionId);
-                Long region = aFloat.longValue();
-                List<Long> allRegionId = platformService.getAllRegionId();
-                if (allRegionId.contains(region)) {
-                    peopleDTO.setRegion(region);
-                } else {
-                    log.error("Region is error, please check line: " + i);
-                    return 0;
-                }
-            } else {
-                log.error("Region is null");
-                return 0;
+            if (map.get(4) != null && "".equals(map.get(4))){
+                peopleDTO.setSex(String.valueOf(map.get(4)));
             }
-            if (map.get(3) != null) {
-                String communityId = (String) map.get(3);
-                Float aFloat = Float.valueOf(communityId);
-                Long community = aFloat.longValue();
-                List<Long> allRegionId = platformService.getAllCommunityId();
-                if (allRegionId.contains(community)) {
-                    peopleDTO.setCommunity(community);
-                } else {
-                    log.error("Community is error, please check line: " + i);
-                    return 0;
-                }
-            } else {
-                log.error("Community is null");
-                return 0;
+            if (map.get(5) != null && "".equals(map.get(5))) {
+                peopleDTO.setAge(Integer.valueOf(String.valueOf(map.get(5))));
             }
-            if (map.get(4) != null) {
-                String sex = (String) map.get(4);
-                peopleDTO.setSex(sex);
+            if (map.get(6) != null && "".equals(map.get(6))) {
+                peopleDTO.setJob(String.valueOf(map.get(6)));
             }
-            if (map.get(5) != null) {
-                String ageString = (String) map.get(5);
-                Float aFloat = Float.valueOf(ageString);
-                Integer age = Math.round(aFloat);
-                peopleDTO.setAge(age);
+            if (map.get(7) != null && "".equals(map.get(7))) {
+                peopleDTO.setBirthday(String.valueOf(map.get(7)));
             }
-            if (map.get(5) != null) {
-                String job = (String) map.get(5);
-                peopleDTO.setJob(job);
+            if (map.get(8) != null && "".equals(map.get(8))) {
+                peopleDTO.setAddress(String.valueOf(map.get(8)));
             }
-            if (map.get(6) != null) {
-                String birthday = (String) map.get(6);
-                peopleDTO.setBirthday(birthday);
+            if (map.get(9) != null && "".equals(map.get(9))) {
+                peopleDTO.setHousehold(String.valueOf(map.get(9)));
             }
-            if (map.get(7) != null) {
-                String address = (String) map.get(7);
-                peopleDTO.setAddress(address);
+            if (map.get(10) != null && "".equals(map.get(10))) {
+                peopleDTO.setBirthplace(String.valueOf(map.get(10)));
             }
-            if (map.get(8) != null) {
-                String household = (String) map.get(8);
-                peopleDTO.setHousehold(household);
+            if (map.get(11) != null && "".equals(map.get(11))) {
+                peopleDTO.setPolitic(String.valueOf(map.get(11)));
             }
-            if (map.get(9) != null) {
-                String birthplace = (String) map.get(9);
-                peopleDTO.setBirthplace(birthplace);
+            if (map.get(12) != null && "".equals(map.get(12))) {
+                peopleDTO.setEduLevel(String.valueOf(12));
             }
-            if (map.get(10) != null) {
-                String politic = (String) map.get(10);
-                peopleDTO.setPolitic(politic);
-            }
-            if (map.get(11) != null) {
-                String eduLevel = (String) map.get(11);
-                peopleDTO.setEduLevel(eduLevel);
-            }
-            if (map.get(12) != null) {
-                String eduLevel = (String) map.get(11);
-                peopleDTO.setEduLevel(eduLevel);
-            }
-            /*//标签用逗号分隔
-            if (map.get(13) != null) {
-                String flags = (String) map.get(13);
-                String[] split = flags.split(",");
-                System.out.println("split :" + JacksonUtil.toJson(split));
-                List<Integer> flagList = new ArrayList<>();
-                for (String flagString : split) {
-                    Map<Integer, String> flagMap = Flag.getFlag();
-                    System.out.println(JacksonUtil.toJson("flagMap :" + flagMap));
-                    for (Map.Entry<Integer, String> entry : flagMap.entrySet()) {
-                        if (flagString.equals(entry.getValue())) {
-                            System.out.println("entry.getValue() :" + entry.getValue());
-                            System.out.println("entry.getKey() :" + entry.getKey());
-                            flagList.add(entry.getKey());
-                        }
-                    }
-                }
-                peopleDTO.setFlagId(flagList);
-            }
-            //电话号码用逗号分隔
-            if (map.get(14) != null) {
-                String phones = (String) map.get(14);
-                String[] split = phones.split(",");
-                List<String> phoneList = new ArrayList<>(Arrays.asList(split));
-                peopleDTO.setPhone(phoneList);
-            }
-            //房产用逗号分隔
-            if (map.get(15) != null) {
-                String houses = (String) map.get(15);
-                String[] split = houses.split(",");
-                List<String> houseList = new ArrayList<>(Arrays.asList(split));
-                peopleDTO.setHouse(houseList);
-            }
-            //车辆用逗号分隔
-            if (map.get(16) != null) {
-                String cars = (String) map.get(16);
-                String[] split = cars.split(",");
-                List<String> carList = new ArrayList<>(Arrays.asList(split));
-                peopleDTO.setCar(carList);
-            }
-            //imsi用逗号分隔
-            if (map.get(16) != null) {
-                String imsis = (String) map.get(16);
-                String[] split = imsis.split(",");
-                List<String> imsiList = new ArrayList<>(Arrays.asList(split));
-                peopleDTO.setCar(imsiList);
-            }*/
             peopleDTOList.add(peopleDTO);
         }
+        log.info("Excel data conversion is completed, start insert into t_people table");
         Integer status = this.excelImport(peopleDTOList);
         if (status != 1) {
+            log.error("Import excel data failed, because insert into t_people table failed");
             return 0;
         }
         return 1;
@@ -1026,9 +957,9 @@ public class PeopleService {
     @Transactional(rollbackFor = Exception.class)
     private Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
-            ReturnMessage returnMessage = this.insertPeople(peopleDTO);
-            if (returnMessage.getStatus() != 1) {
-                throw new RuntimeException("Import excel data failed");
+            ReturnMessage message = this.insertPeople(peopleDTO);
+            if (message == null || message.getStatus() != 1){
+                throw new RuntimeException("Insert into t_people table failed");
             }
         }
         return 1;
