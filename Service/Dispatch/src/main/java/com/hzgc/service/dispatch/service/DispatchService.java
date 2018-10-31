@@ -11,6 +11,7 @@ import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
+import com.hzgc.service.dispatch.Util.DispatchExcelUtils;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.model.Dispatch;
@@ -24,12 +25,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -315,6 +319,98 @@ public class DispatchService {
     private String getDeviceName(String deviceId){
         String cameraDeviceName = platformService.getCameraDeviceName(deviceId);
         return cameraDeviceName;
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public Integer excelImport(MultipartFile file) throws Exception {
+        DispatchExcelUtils excelUtils = new DispatchExcelUtils(file);
+        Map<Integer, Map<Integer, Object>> excelMap = excelUtils.readExcelContent();
+        List<Dispatch> dispatchList = new ArrayList<>();
+        for (int i = 1; i <= excelMap.size(); i++) {
+            Map<Integer, Object> map = excelMap.get(i);
+            Dispatch dispatch = new Dispatch();
+            if (map.get(0) != null) {
+                String regionId = (String) map.get(0);
+                Float aFloat = Float.valueOf(regionId);
+                Long region = aFloat.longValue();
+                List<Long> allRegionId = platformService.getAllRegionId();
+                if (allRegionId.contains(region)) {
+                    dispatch.setRegion(region);
+                } else {
+                    log.error("Region is error, please check line: " + i);
+                    throw new RuntimeException("Region is error");
+                }
+            } else {
+                log.error("Region is null");
+            }
+            if (map.get(1) != null && !"".equals(map.get(1))) {
+                dispatch.setName((String) map.get(1));
+            }
+            if (map.get(2) != null && !"".equals(map.get(2))) {
+                String car = (String) map.get(2);
+                if (DispatchExcelUtils.isCarNumber(car)) {
+                    dispatch.setCar(car);
+                } else {
+                    log.error("Car is error, please check line: " + i);
+                    throw new RuntimeException("Car is error");
+                }
+            }else {
+                log.error("Car is null");
+            }
+            if (map.get(3) != null && !"".equals(map.get(3))) {
+                String mac = (String) map.get(3);
+                if (DispatchExcelUtils.isMac(mac)) {
+                    dispatch.setMac(mac);
+                } else {
+                    log.error("Mac is error, please check line: " + i);
+                    throw new RuntimeException("Mac is error");
+                }
+            }else {
+                log.error("Mac is null");
+            }
+            if (map.get(4) != null && !"".equals(map.get(4))) {
+                String idCard = (String) map.get(4);
+                if (DispatchExcelUtils.isIdCard(idCard)) {
+                    dispatch.setIdcard(idCard);
+                } else {
+                    log.error("IdCard is error, please check line: " + i);
+                    throw new RuntimeException("IdCard is error");
+                }
+            }else {
+                log.error("IdCard is null");
+            }
+            if (map.get(5) != null) {
+                String threshold = (String) map.get(5);
+                Float thresholdToFloat = Float.valueOf(threshold);
+                if (DispatchExcelUtils.isThreshold(threshold)) {
+                    dispatch.setThreshold(thresholdToFloat);
+                } else {
+                    log.error("Threshold is error, please check line: " + i);
+                    throw new RuntimeException("Threshold is error");
+                }
+            }else {
+                log.error("Threshold is null");
+            }
+            String notes = (String) map.get(6);
+            dispatch.setNotes(notes);
+            dispatchList.add(dispatch);
+        }
+        Integer status = this.excelImport(dispatchList);
+        if (status != 1) {
+            return 0;
+        }
+        return 1;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    private Integer excelImport(List<Dispatch> dispatchList) {
+        for (Dispatch dispatch : dispatchList) {
+            dispatch.setId(UuidUtil.getUuid());
+            int status = dispatchMapper.insertSelective(dispatch);
+            if (status != 1) {
+                throw new RuntimeException("Import excel data failed");
+            }
+        }
+        return 1;
     }
 
 }

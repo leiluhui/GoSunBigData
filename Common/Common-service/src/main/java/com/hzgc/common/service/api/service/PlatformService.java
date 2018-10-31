@@ -70,6 +70,44 @@ public class PlatformService {
     }
 
     /**
+     * 获取所有区域ID
+     *
+     * @return 区域ID集合
+     */
+    public List<Long> getAllRegionId() {
+        List<Long> regionIdList = new ArrayList<>();
+        AreaCriteria areaCriteria = new AreaCriteria();
+        areaCriteria.setId(1L);
+        areaCriteria.setLevel("district");
+        AreaSDTO areaSDTO = restTemplate.postForObject("http://platform:8888/api/v1/region/internal/region/all/query_region_info", areaCriteria, AreaSDTO.class);
+        List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
+        for (AreaDTO areaDTO : areaDTOs){
+            regionIdList.add(areaDTO.getId());
+        }
+
+        return regionIdList;
+    }
+
+    /**
+     * 获取所有小区ID
+     *
+     * @return 小区ID集合
+     */
+    public List<Long> getAllCommunityId() {
+        List<Long> regionIdList = new ArrayList<>();
+        AreaCriteria areaCriteria = new AreaCriteria();
+        areaCriteria.setId(1L);
+        areaCriteria.setLevel("region");
+        AreaSDTO areaSDTO = restTemplate.postForObject("http://platform:8888/api/v1/region/internal/region/all/query_region_info", areaCriteria, AreaSDTO.class);
+        List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
+        for (AreaDTO areaDTO : areaDTOs){
+            regionIdList.add(areaDTO.getId());
+        }
+
+        return regionIdList;
+    }
+
+    /**
      * 获取社区ID列表
      *
      * @param regionId 区域ID

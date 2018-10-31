@@ -25,10 +25,10 @@ public class FaceExtractService {
     public BigPictureData featureExtractByImage(byte[] imageBytes) {
         String imageType = null;
         BigPictureData bigPictureData = new BigPictureData();
-        ArrayList <PictureData> smallPictures = new ArrayList <>();
-        ArrayList <SmallImage> smallImages = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
+        ArrayList<PictureData> smallPictures = new ArrayList<>();
+        ArrayList<SmallImage> smallImages = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
         if (null != smallImages && smallImages.size() > 0) {
-            for (SmallImage smallImage: smallImages) {
+            for (SmallImage smallImage : smallImages) {
                 PictureData pictureData = new PictureData();
                 pictureData.setImageData(smallImage.getPictureStream());
                 pictureData.setImageID(UuidUtil.getUuid());
@@ -53,7 +53,7 @@ public class FaceExtractService {
         PictureData pictureData = new PictureData();
         pictureData.setImageID(UuidUtil.getUuid());
         pictureData.setImageData(imageBytes);
-        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG);
+        ArrayList<SmallImage> checkResult = FaceFunction.faceCheck(imageBytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
         if (checkResult != null && checkResult.size() > 0) {
             log.info("Face check successful, image contains feature");
             pictureData.setFeature(checkResult.get(0).getFaceAttribute());

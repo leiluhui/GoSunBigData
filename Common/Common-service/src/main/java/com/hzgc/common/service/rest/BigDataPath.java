@@ -135,6 +135,7 @@ public class BigDataPath {
     public static final String DISPATCH_DELETE_DEPLOY = "/delete";
     public static final String DISPATCH_UPDATE_DEPLOY = "/update";
     public static final String DISPATCH_SEARCH_HISTORY = "/search_recognize";
+    public static final String EXCEL_IMPORT = "/excel_import";
 
 
     public static final String OBJECTINFO_ADD = "/object_add";
@@ -177,5 +178,6 @@ public class BigDataPath {
      * ImsiDynrepo模块请求路径
      */
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
+    public static final String MAC_SEARCH_BY_SNS = "query_by_sns";
 
 }

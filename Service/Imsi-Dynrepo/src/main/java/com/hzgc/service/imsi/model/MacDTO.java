@@ -2,9 +2,12 @@ package com.hzgc.service.imsi.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
 
 @Data
-public class MacInfo {
+public class MacDTO implements Serializable {
+
     private Integer id;
 
     private String sn;
@@ -13,6 +16,5 @@ public class MacInfo {
 
     private String wifisn;
 
-    private String time;
-
+    private Date time;
 }

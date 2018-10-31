@@ -23,7 +23,7 @@
     select
     <include refid="Base_Column_List" />
     from t_imsi_all
-    where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+    where savetime between #{startTime,jdbcType=BIGINT} and #{endTime,jdbcType=BIGINT}
   </select>
   <insert id="insertSelective" parameterType="com.hzgc.service.imsi.model.ImsiInfo">
     insert into t_imsi_all
