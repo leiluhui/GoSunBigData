@@ -1,6 +1,5 @@
 package com.hzgc.seemmo.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hzgc.common.util.json.JacksonUtil;
@@ -18,9 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,11 +116,12 @@ public class ImageToData {
                                     vehicle_object.setPlate_schelter_code("1");
                                 }
                                 int plate_flag = (int) plate.get("Flag");
-                                if (plate_flag == 0 || plate_flag == 5) {
-                                    continue;
-                                }
                                 vehicle_object.setPlate_flag_code(String.valueOf(plate_flag));
-                                vehicle_object.setPlate_licence((String) plate.get("Licence"));
+                                if (plate_flag == 0 || plate_flag == 5) {
+                                    vehicle_object.setPlate_licence((null));
+                                }else {
+                                    vehicle_object.setPlate_licence((String) plate.get("Licence"));
+                                }
                                 if ((boolean) plate.get("Destain")) {
                                     vehicle_object.setPlate_destain_code("2");
                                 } else {
