@@ -11,6 +11,7 @@ import com.hzgc.collect.service.ftp.listener.ListenerFactory;
 import com.hzgc.collect.service.ftp.nativefs.filesystem.NativeFileSystemFactory;
 import com.hzgc.collect.service.ftp.usermanager.PropertiesUserManagerFactory;
 import com.hzgc.jniface.FaceFunction;
+import com.hzgc.jniface.PictureFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -79,33 +80,6 @@ public class FTP extends ClusterOverFtp implements Serializable {
         }
         //print ftp log
         log.info("\n" + collectContext.getLogo());
-
-    }
-
-    public static void main(String[] args) throws IOException {
-        FaceFunction.init();
-        String path = "/opt/image";
-        File home = new File(path);
-        String[] list = home.list();
-        assert list != null;
-        for (String str : list) {
-            byte[] data = null;
-            FileImageInputStream input = null;
-            input = new FileImageInputStream(new File(str));
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            int numBytesRead = 0;
-            while ((numBytesRead = input.read(buf)) != -1){
-                output.write(buf, 0, numBytesRead);
-            }
-            data = output.toByteArray();
-            System.out.println(data.length);
-            for (int j = 0; j < 100; j++){
-                FaceFunction.faceCheck(data,"JPG");
-            }
-            FaceFunction.faceFeatureExtract(data,"JPG");
-
-        }
 
     }
 }

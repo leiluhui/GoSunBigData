@@ -4,6 +4,7 @@ import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.UrlInfo;
+import com.hzgc.service.collect.model.FtpInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,10 @@ public class FtpService implements Serializable {
 
     @Autowired
     private FtpSubscribeClient subscribe;
-
+    @Autowired
+    private FtpInfo ftpInfo;
     private String getIPAddress(String hostname) {
-            String ip =  register.getFtpIpMapping().get(hostname);
+        String ip = ftpInfo.getFtpHome();
             if (ip != null) {
                 return ip;
             } else {

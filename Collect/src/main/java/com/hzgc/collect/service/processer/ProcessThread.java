@@ -19,7 +19,6 @@ import com.hzgc.seemmo.bean.carbean.Vehicle;
 import com.hzgc.seemmo.bean.personbean.Person;
 import com.hzgc.seemmo.service.ImageToData;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -58,7 +57,7 @@ public class ProcessThread implements Runnable {
                 //log.error("Camera error, This is a small picture, fileName: " + event.getbAbsolutePath());
                 //continue;
                 //}
-                ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG);
+                ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_1);
                 if (smallImageList != null && smallImageList.size() > 0) {
                     int index = 1;
                     for (SmallImage smallImage : smallImageList) {
@@ -104,7 +103,9 @@ public class ProcessThread implements Runnable {
                     log.info("Person check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Person person : personList) {
-                        if (person.getCar_data() == null || person.getCar_data().length == 0) {
+                        if (person.getCar_data() == null || person.getCar_data().length == 0
+                                //临时添加行人检测人脸,用来提高检测质量
+                                || !tem_person_check(person.getCar_data())) {
                             log.info("Person small image are not extracted, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
@@ -135,6 +136,11 @@ public class ProcessThread implements Runnable {
                             log.info("Vehicle small image are not extracted, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
+                        //临时添加过滤,用来提高图片质量,过滤掉没有车牌的图片
+                        if (vehicle.getPlate_licence() == null || vehicle.getPlate_licence().length() == 0) {
+                            log.info("Vehicle small image is not plate_licence, fileName: " + event.getbAbsolutePath());
+                            continue;
+                        }
                         String smallImagePath = parser.path_b2s(event.getbAbsolutePath(), CAR, index);
                         boolean boo = ImageUtil.save(smallImagePath, vehicle.getVehicle_data());
                         if (boo) {
@@ -153,6 +159,13 @@ public class ProcessThread implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    //临时方法
+    private boolean tem_person_check(byte[] personStream) {
+        ArrayList<SmallImage> result =
+                FaceFunction.faceCheck(personStream, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
+        return result != null;
     }
 
     private void sendKafka(Event event, FaceAttribute faceAttribute) {
@@ -209,7 +222,6 @@ public class ProcessThread implements Runnable {
                             pesonId,
                             JacksonUtil.toJson(personObject));
             RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
             if (metaData != null) {
                 log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
                         metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
@@ -243,7 +255,6 @@ public class ProcessThread implements Runnable {
                             carId,
                             JacksonUtil.toJson(carObject));
             RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
             if (metaData != null) {
                 log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
                         metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
