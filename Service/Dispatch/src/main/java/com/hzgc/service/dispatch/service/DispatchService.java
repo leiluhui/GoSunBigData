@@ -320,7 +320,7 @@ public class DispatchService {
         String cameraDeviceName = platformService.getCameraDeviceName(deviceId);
         return cameraDeviceName;
     }
-    @Transactional(rollbackFor = Exception.class)
+
     public Integer excelImport(MultipartFile file) throws Exception {
         DispatchExcelUtils excelUtils = new DispatchExcelUtils(file);
         Map<Integer, Map<Integer, Object>> excelMap = excelUtils.readExcelContent();
@@ -337,13 +337,16 @@ public class DispatchService {
                     dispatch.setRegion(region);
                 } else {
                     log.error("Region is error, please check line: " + i);
-                    throw new RuntimeException("Region is error");
+                    return 0;
                 }
             } else {
                 log.error("Region is null");
+                return 0;
             }
             if (map.get(1) != null && !"".equals(map.get(1))) {
                 dispatch.setName((String) map.get(1));
+            }else {
+                return null;
             }
             if (map.get(2) != null && !"".equals(map.get(2))) {
                 String car = (String) map.get(2);
@@ -351,10 +354,11 @@ public class DispatchService {
                     dispatch.setCar(car);
                 } else {
                     log.error("Car is error, please check line: " + i);
-                    throw new RuntimeException("Car is error");
+                    return 0;
                 }
             }else {
                 log.error("Car is null");
+                return 0;
             }
             if (map.get(3) != null && !"".equals(map.get(3))) {
                 String mac = (String) map.get(3);
@@ -362,10 +366,11 @@ public class DispatchService {
                     dispatch.setMac(mac);
                 } else {
                     log.error("Mac is error, please check line: " + i);
-                    throw new RuntimeException("Mac is error");
+                    return 0;
                 }
             }else {
                 log.error("Mac is null");
+                return 0;
             }
             if (map.get(4) != null && !"".equals(map.get(4))) {
                 String idCard = (String) map.get(4);
@@ -373,10 +378,11 @@ public class DispatchService {
                     dispatch.setIdcard(idCard);
                 } else {
                     log.error("IdCard is error, please check line: " + i);
-                    throw new RuntimeException("IdCard is error");
+                    return 0;
                 }
             }else {
                 log.error("IdCard is null");
+                return 0;
             }
             if (map.get(5) != null) {
                 String threshold = (String) map.get(5);
@@ -385,14 +391,17 @@ public class DispatchService {
                     dispatch.setThreshold(thresholdToFloat);
                 } else {
                     log.error("Threshold is error, please check line: " + i);
-                    throw new RuntimeException("Threshold is error");
+                    return 0;
                 }
             }else {
                 log.error("Threshold is null");
+                return 0;
             }
-            String notes = (String) map.get(6);
-            dispatch.setNotes(notes);
-            dispatchList.add(dispatch);
+            if (map.get(6) != null){
+                String notes = (String) map.get(6);
+                dispatch.setNotes(notes);
+                dispatchList.add(dispatch);
+            }
         }
         Integer status = this.excelImport(dispatchList);
         if (status != 1) {
