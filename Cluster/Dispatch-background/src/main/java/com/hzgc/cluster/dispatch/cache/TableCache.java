@@ -52,7 +52,7 @@ public class TableCache {
             }
             List<String> ipcList = Arrays.asList(ipcs.split(","));
 
-            List<DispatchName> dispatchNames = dispatchNameMapper.selectByDefiId(definitionId);
+            List<DispatchName> dispatchNames = dispatchNameMapper.selectByDefid(definitionId);
             for(String ipc : ipcList){
                 Set<float[]> set = temp.computeIfAbsent(ipc, k -> new HashSet<>());
                 for(DispatchName dispatchName : dispatchNames){
