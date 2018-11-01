@@ -94,7 +94,6 @@ public class ImageToData {
     @SuppressWarnings("unchecked")
     private static List <Vehicle> getCarData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
         ArrayList <Vehicle> vehicleList = new ArrayList <>();
-        System.out.println("***" + JacksonUtil.toJson(imageResults));
         if (imageResults.size() > 0) {
             for (JSONObject js : imageResults) {
                 List <JSONObject> vehicles = (List <JSONObject>) js.get("Vehicles");
