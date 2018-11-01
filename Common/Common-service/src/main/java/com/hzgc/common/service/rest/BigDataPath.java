@@ -48,6 +48,7 @@ public class BigDataPath {
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";
     public static final String PEOPLE_SELECT_COMMUNITY="/search_community";
+    public static final String PEOPLE_EXCEL_IMPORT = "/excel_import";
 
     public static final String COMMUNITY_COUNT = "/count_people";
     public static final String COMMUNITY_PEOPLE = "/people";
@@ -135,7 +136,7 @@ public class BigDataPath {
     public static final String DISPATCH_DELETE_DEPLOY = "/delete";
     public static final String DISPATCH_UPDATE_DEPLOY = "/update";
     public static final String DISPATCH_SEARCH_HISTORY = "/search_recognize";
-    public static final String EXCEL_IMPORT = "/excel_import";
+    public static final String DISPATCH_EXCEL_IMPORT = "/excel_import";
 
 
     public static final String OBJECTINFO_ADD = "/object_add";

@@ -5,21 +5,29 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
+import com.hzgc.service.Util.PeopleExcelUtils;
+import com.hzgc.service.people.controller.PeopleController;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -859,5 +867,101 @@ public class PeopleService {
             peopleVO.setPhone(phoneList);
         }
         return peopleVO;
+    }
+
+    public Integer excelImport(MultipartFile file){
+        PeopleExcelUtils excelUtils = new PeopleExcelUtils(file);
+        Map<Integer, Map<Integer, Object>> excelMap = null;
+        try {
+            excelMap = excelUtils.readExcelContent();
+        } catch (Exception e) {
+            log.error("Import excel data failed, because read excel error");
+            e.printStackTrace();
+        }
+        if (excelMap == null || excelMap.size() == 0){
+            return 0;
+        }
+        List<Long> regionId_all = platformService.getAllRegionId();
+        List<Long> communityId_all = platformService.getAllCommunityId();
+        List<PeopleDTO> peopleDTOList = new ArrayList<>();
+        for (int i = 1; i <= excelMap.size(); i++) {
+            Map<Integer, Object> map = excelMap.get(i);
+            PeopleDTO peopleDTO = new PeopleDTO();
+            if (map.get(0) != null && !"".equals(map.get(0))) {
+                peopleDTO.setName(String.valueOf(map.get(0)));
+            } else {
+                log.error("Import excel data failed, because name is error, please check line: " + i);
+                return 0;
+            }
+            if (map.get(1) != null && !"".equals(map.get(1)) &&
+                    PeopleExcelUtils.isIdCard(String.valueOf(map.get(1)))) {
+                peopleDTO.setIdCard(String.valueOf(map.get(1)));
+            } else {
+                log.error("Import excel data failed, because idCard is error, please check line: " + i);
+                return 0;
+            }
+            if (map.get(2) != null && !"".equals(map.get(2)) &&
+                    regionId_all.contains(Long.valueOf(String.valueOf(map.get(2))))) {
+                peopleDTO.setRegion(Long.valueOf(String.valueOf(map.get(2))));
+            } else {
+                log.error("Import excel data failed, because region id is error, please check line: " + i);
+                return 0;
+            }
+            if (map.get(3) != null && !"".equals(map.get(3))){
+                Long communityId = Long.valueOf(String.valueOf(map.get(3)));
+                if (communityId_all.contains(communityId)){
+                    peopleDTO.setCommunity(communityId);
+                }else {
+                    log.error("Import excel data failed, because community is error, please check line: " + i);
+                    return 0;
+                }
+            }
+            if (map.get(4) != null && "".equals(map.get(4))){
+                peopleDTO.setSex(String.valueOf(map.get(4)));
+            }
+            if (map.get(5) != null && "".equals(map.get(5))) {
+                peopleDTO.setAge(Integer.valueOf(String.valueOf(map.get(5))));
+            }
+            if (map.get(6) != null && "".equals(map.get(6))) {
+                peopleDTO.setJob(String.valueOf(map.get(6)));
+            }
+            if (map.get(7) != null && "".equals(map.get(7))) {
+                peopleDTO.setBirthday(String.valueOf(map.get(7)));
+            }
+            if (map.get(8) != null && "".equals(map.get(8))) {
+                peopleDTO.setAddress(String.valueOf(map.get(8)));
+            }
+            if (map.get(9) != null && "".equals(map.get(9))) {
+                peopleDTO.setHousehold(String.valueOf(map.get(9)));
+            }
+            if (map.get(10) != null && "".equals(map.get(10))) {
+                peopleDTO.setBirthplace(String.valueOf(map.get(10)));
+            }
+            if (map.get(11) != null && "".equals(map.get(11))) {
+                peopleDTO.setPolitic(String.valueOf(map.get(11)));
+            }
+            if (map.get(12) != null && "".equals(map.get(12))) {
+                peopleDTO.setEduLevel(String.valueOf(12));
+            }
+            peopleDTOList.add(peopleDTO);
+        }
+        log.info("Excel data conversion is completed, start insert into t_people table");
+        Integer status = this.excelImport(peopleDTOList);
+        if (status != 1) {
+            log.error("Import excel data failed, because insert into t_people table failed");
+            return 0;
+        }
+        return 1;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    private Integer excelImport(List<PeopleDTO> peopleDTOList) {
+        for (PeopleDTO peopleDTO : peopleDTOList) {
+            ReturnMessage message = this.insertPeople(peopleDTO);
+            if (message == null || message.getStatus() != 1){
+                throw new RuntimeException("Insert into t_people table failed");
+            }
+        }
+        return 1;
     }
 }

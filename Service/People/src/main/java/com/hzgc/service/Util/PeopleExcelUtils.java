@@ -1,4 +1,4 @@
-package com.hzgc.service.dispatch.Util;
+package com.hzgc.service.Util;
 
 import com.hzgc.common.service.api.service.PlatformService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -22,13 +22,13 @@ import java.util.regex.Pattern;
  *
  * @author yinhang
  */
-public class DispatchExcelUtils {
-    private Logger logger = LoggerFactory.getLogger(DispatchExcelUtils.class);
+public class PeopleExcelUtils {
+    private Logger logger = LoggerFactory.getLogger(PeopleExcelUtils.class);
     private Workbook wb;
     private Sheet sheet;
     private Row row;
 
-    public DispatchExcelUtils(MultipartFile file) {
+    public PeopleExcelUtils(MultipartFile file) {
         if (file == null) {
             return;
         }
@@ -187,7 +187,7 @@ public class DispatchExcelUtils {
         boolean matches = idCard.matches(regularExpression);
 
         //判断第18位校验值
-        if (matches) {
+/*        if (matches) {
 
             if (idCard.length() == 18) {
                 try {
@@ -219,7 +219,7 @@ public class DispatchExcelUtils {
                 }
             }
 
-        }
+        }*/
         return matches;
     }
 
