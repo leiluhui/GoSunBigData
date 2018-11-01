@@ -242,14 +242,14 @@ public class PeopleController {
     @RequestMapping(value = BigDataPath.PEOPLE_EXCEL_IMPORT, method = RequestMethod.POST)
     public ResponseResult <Integer> excelImport(MultipartFile file){
         if (file == null){
-            log.error("Start import excel data, but filepath is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "excel表格导入路径为空，请检查");
+            log.error("Start import excel data, but file is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "导入表格为空，请检查！");
         }
         log.info("Start import excel data");
         Integer status = peopleService.excelImport(file);
         if (status != 1) {
             log.error("Import excel data failed");
-            return ResponseResult.error(0, "excel表格导入失败！");
+            return ResponseResult.error(0, "导入表格失败！");
         }
         log.info("Import excel data successfully");
         return ResponseResult.init(1);

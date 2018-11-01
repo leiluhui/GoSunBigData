@@ -60,6 +60,7 @@
         select capturetime, deviceid, surl
         from t_people_recognize
         where peopleid = #{peopleId,jdbcType=VARCHAR} and community = #{communityId,jdbcType=BIGINT}
+        and DATE_FORMAT(capturetime, '%Y%m') = #{month,jdbcType=VARCHAR}
         order by capturetime desc
     </select>
     <!--小区迁入人口抓拍详情:人员抓拍列表-->
