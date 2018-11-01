@@ -5,29 +5,31 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
-import com.hzgc.common.service.response.ResponseResult;
-import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.common.service.peoman.SyncPeopleManager;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.service.Util.PeopleExcelUtils;
-import com.hzgc.service.people.controller.PeopleController;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -68,11 +70,33 @@ public class PeopleService {
     @SuppressWarnings("unused")
     private InnerService innerService;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    //Spring-kafka-template
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    private final static String TOPIC = "PeoMan-Inner";
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private final static String IDCARD_PIC = "idcardpic";
 
     private final static String CAPTURE_PIC = "capturepic";
+
+    private void sendKafka(String key, Object data) {
+        try {
+            ListenableFuture<SendResult<String, String>> resultFuture =
+                    kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
+            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
+            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
+            if (metaData != null) {
+                log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
+                        metaData.topic(), key, JacksonUtil.toJson(data));
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.getMessage());
+        }
+    }
 
     public boolean CheckIdCard(String idCard) {
         People people = peopleMapper.searchPeopleByIdCard(idCard);
@@ -183,6 +207,10 @@ public class PeopleService {
             }
         }
         log.info("Insert people info successfully");
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("2");
+        manager.setPersonid(people.getId());
+        this.sendKafka("ADD", manager);
         ReturnMessage message = new ReturnMessage();
         message.setStatus(1);
         message.setMessage("添加成功");
@@ -203,7 +231,7 @@ public class PeopleService {
         }
         log.info("Update people to t_people successfully");
         List<Long> t_flag_ids = flagMapper.selectIdByPeopleId(people.getId());
-        if (t_flag_ids != null && t_flag_ids.size() > 0){
+        if (t_flag_ids != null && t_flag_ids.size() > 0) {
             for (Long id : t_flag_ids) {
                 int status = flagMapper.deleteByPrimaryKey(id);
                 if (status != 1) {
@@ -321,7 +349,7 @@ public class PeopleService {
                 return message;
             }
         }
-        if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0){
+        if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
             for (String s : peopleDTO.getCar()) {
                 Car car = new Car();
                 car.setPeopleid(people.getId());
@@ -347,7 +375,7 @@ public class PeopleService {
                 return message;
             }
         }
-        if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0){
+        if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
             for (String photo : peopleDTO.getIdCardPic()) {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
@@ -369,7 +397,7 @@ public class PeopleService {
                 }
             }
         }
-        if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0){
+        if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
             for (String photo : peopleDTO.getCapturePic()) {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
@@ -392,6 +420,10 @@ public class PeopleService {
             }
         }
         log.info("Update people info successfully");
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("3");
+        manager.setPersonid(people.getId());
+        this.sendKafka("UPDATE", manager);
         ReturnMessage message = new ReturnMessage();
         message.setStatus(1);
         message.setMessage("修改成功");
@@ -869,7 +901,7 @@ public class PeopleService {
         return peopleVO;
     }
 
-    public Integer excelImport(MultipartFile file){
+    public Integer excelImport(MultipartFile file) {
         PeopleExcelUtils excelUtils = new PeopleExcelUtils(file);
         Map<Integer, Map<Integer, Object>> excelMap = null;
         try {
@@ -878,7 +910,7 @@ public class PeopleService {
             log.error("Import excel data failed, because read excel error");
             e.printStackTrace();
         }
-        if (excelMap == null || excelMap.size() == 0){
+        if (excelMap == null || excelMap.size() == 0) {
             return 0;
         }
         List<Long> regionId_all = platformService.getAllRegionId();
@@ -907,16 +939,16 @@ public class PeopleService {
                 log.error("Import excel data failed, because region id is error, please check line: " + i);
                 return 0;
             }
-            if (map.get(3) != null && !"".equals(map.get(3))){
+            if (map.get(3) != null && !"".equals(map.get(3))) {
                 Long communityId = Long.valueOf(String.valueOf(map.get(3)));
-                if (communityId_all.contains(communityId)){
+                if (communityId_all.contains(communityId)) {
                     peopleDTO.setCommunity(communityId);
-                }else {
+                } else {
                     log.error("Import excel data failed, because community is error, please check line: " + i);
                     return 0;
                 }
             }
-            if (map.get(4) != null && "".equals(map.get(4))){
+            if (map.get(4) != null && "".equals(map.get(4))) {
                 peopleDTO.setSex(String.valueOf(map.get(4)));
             }
             if (map.get(5) != null && "".equals(map.get(5))) {
@@ -958,7 +990,7 @@ public class PeopleService {
     private Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
             ReturnMessage message = this.insertPeople(peopleDTO);
-            if (message == null || message.getStatus() != 1){
+            if (message == null || message.getStatus() != 1) {
                 throw new RuntimeException("Insert into t_people table failed");
             }
         }
