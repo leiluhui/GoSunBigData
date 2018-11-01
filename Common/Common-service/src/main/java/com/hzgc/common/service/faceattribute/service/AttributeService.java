@@ -24,7 +24,7 @@ public class AttributeService {
     public List<Attribute> getAttribute() {
         List<Attribute> attributeList = new ArrayList<>();
             Attribute gender = new Attribute();
-            gender.setIdentify("gender");
+            gender.setIdentify(Gender.class.getSimpleName());
             gender.setDesc("性别");
             gender.setLogistic(Logistic.OR);
             List<AttributeValue> genderValueList = new ArrayList<>();
@@ -38,7 +38,7 @@ public class AttributeService {
             attributeList.add(gender);
 
             Attribute mask = new Attribute();
-            mask.setIdentify("mask");
+            mask.setIdentify(Tie.class.getSimpleName());
             mask.setDesc("口罩");
             mask.setLogistic(Logistic.OR);
             List<AttributeValue> maskValueList = new ArrayList<>();
@@ -52,7 +52,7 @@ public class AttributeService {
             attributeList.add(mask);
 
             Attribute huzi = new Attribute();
-            huzi.setIdentify("huzi");
+            huzi.setIdentify(Huzi.class.getSimpleName());
             huzi.setDesc("胡子");
             huzi.setLogistic(Logistic.OR);
             List<AttributeValue> huziValueList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class AttributeService {
             attributeList.add(huzi);
 
             Attribute eyeglasses = new Attribute();
-            eyeglasses.setIdentify("eyeglasses");
+            eyeglasses.setIdentify(Eyeglasses.class.getSimpleName());
             eyeglasses.setDesc("眼镜");
             eyeglasses.setLogistic(Logistic.OR);
             List<AttributeValue> eyeglassesValueList = new ArrayList<>();
