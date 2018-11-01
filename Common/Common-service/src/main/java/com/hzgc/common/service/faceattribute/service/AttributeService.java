@@ -98,7 +98,7 @@ public class AttributeService {
         List<AttributeValue> objectTypeValueList = new ArrayList<>();
         Map<Integer, String> vehicle_object_type = vehicleMap.get("vehicle_object_type");
         for (Integer key : vehicle_object_type.keySet()){
-            String value = (String) vehicle_object_type.get(key);
+            String value = vehicle_object_type.get(key);
             AttributeValue objectTypeValue = new AttributeValue();
             objectTypeValue.setDesc(value);
             objectTypeValue.setValue(key);
@@ -114,7 +114,7 @@ public class AttributeService {
         List<AttributeValue> plateTypeCodeValueList = new ArrayList<>();
         Map<Integer, String> plate_type_code = vehicleMap.get("plate_type_code");
         for (Integer key : plate_type_code.keySet()){
-            String value = (String) plate_type_code.get(key);
+            String value = plate_type_code.get(key);
             AttributeValue plateTypeCodeValue = new AttributeValue();
             plateTypeCodeValue.setDesc(value);
             plateTypeCodeValue.setValue(key);
@@ -130,7 +130,7 @@ public class AttributeService {
         List<AttributeValue> plateColorCodeValueList = new ArrayList<>();
         Map<Integer, String> plate_color_code = vehicleMap.get("plate_color_code");
         for (Integer key : plate_color_code.keySet()){
-            String value = (String) plate_color_code.get(key);
+            String value = plate_color_code.get(key);
             AttributeValue plateColorCodeValue = new AttributeValue();
             plateColorCodeValue.setDesc(value);
             plateColorCodeValue.setValue(key);
@@ -146,7 +146,7 @@ public class AttributeService {
         List<AttributeValue> plateFlagCodeValueList = new ArrayList<>();
         Map<Integer, String> plate_flag_code = vehicleMap.get("plate_flag_code");
         for (Integer key : plate_flag_code.keySet()) {
-            String value = (String) plate_flag_code.get(key);
+            String value = plate_flag_code.get(key);
             AttributeValue plateFlagCodeValue = new AttributeValue();
             plateFlagCodeValue.setDesc(value);
             plateFlagCodeValue.setValue(key);
@@ -162,7 +162,7 @@ public class AttributeService {
         List<AttributeValue> vehicleColorValueList = new ArrayList<>();
         Map<Integer, String> vehicle_color = vehicleMap.get("vehicle_color");
         for (Integer key : vehicle_color.keySet()) {
-            String value = (String) vehicle_color.get(key);
+            String value = vehicle_color.get(key);
             AttributeValue vehicleColorValue = new AttributeValue();
             vehicleColorValue.setDesc(value);
             vehicleColorValue.setValue(key);
@@ -178,7 +178,7 @@ public class AttributeService {
         List<AttributeValue> vehicleTypeValueList = new ArrayList<>();
         Map<Integer, String> vehicle_type = vehicleMap.get("vehicle_type");
         for (Integer key : vehicle_type.keySet()) {
-            String value = (String) vehicle_type.get(key);
+            String value = vehicle_type.get(key);
             AttributeValue vehicleTypeValue = new AttributeValue();
             vehicleTypeValue.setDesc(value);
             vehicleTypeValue.setValue(key);
@@ -194,7 +194,7 @@ public class AttributeService {
         List<AttributeValue> mistakeCodeValueList = new ArrayList<>();
         Map<Integer, String> mistake_code = vehicleMap.get("mistake_code");
         for (Integer key : mistake_code.keySet()) {
-            String value = (String) mistake_code.get(key);
+            String value = mistake_code.get(key);
             AttributeValue vehicleTypeValue = new AttributeValue();
             vehicleTypeValue.setDesc(value);
             vehicleTypeValue.setValue(key);
@@ -211,7 +211,7 @@ public class AttributeService {
         List<AttributeValue>sunroofCodeValueList = new ArrayList<>();
         Map<Integer, String> sunroof_code = vehicleMap.get("sunroof_code");
         for (Integer key : sunroof_code.keySet()) {
-            String value = (String) sunroof_code.get(key);
+            String value = sunroof_code.get(key);
             AttributeValue vsunroofCodeValue = new AttributeValue();
             vsunroofCodeValue.setDesc(value);
             vsunroofCodeValue.setValue(key);

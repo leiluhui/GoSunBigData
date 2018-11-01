@@ -120,7 +120,7 @@ public class ImageToData {
                                 }
                                 int plate_flag = (int) plate.get("Flag");
                                 vehicle_object.setPlate_flag_code(String.valueOf(plate_flag));
-                                if (plate_flag == 0 || plate_flag == 5) {
+                                if (plate_flag == 0 || plate_flag == 5 || plate_flag == 4 || plate_flag == 3) {
                                     vehicle_object.setPlate_licence(null);
                                 }else {
                                     vehicle_object.setPlate_licence((String) plate.get("Licence"));
@@ -587,6 +587,6 @@ public class ImageToData {
 //        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\123.jpg");
 //        data = new byte[inputStream.available()];
 //        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\1.jpg", "66");
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\aaaa.jpg", "66");
     }
 }

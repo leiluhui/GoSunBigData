@@ -172,7 +172,7 @@ public class ProcessThread implements Runnable {
     private boolean tem_person_check(byte[] personStream) {
         ArrayList<SmallImage> result =
                 FaceFunction.faceCheck(personStream, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
-        return result != null;
+        return result != null && result.size() > 0;
     }
 
     private void sendKafka(Event event, FaceAttribute faceAttribute) {
