@@ -117,7 +117,7 @@ public class ImageToData {
                                 }
                                 int plate_flag = (int) plate.get("Flag");
                                 vehicle_object.setPlate_flag_code(String.valueOf(plate_flag));
-                                if (plate_flag == 0 || plate_flag == 5) {
+                                if (plate_flag == 0 || plate_flag == 5  || plate_flag == 4 || plate_flag == 3) {
                                     vehicle_object.setPlate_licence((null));
                                 }else {
                                     vehicle_object.setPlate_licence((String) plate.get("Licence"));
