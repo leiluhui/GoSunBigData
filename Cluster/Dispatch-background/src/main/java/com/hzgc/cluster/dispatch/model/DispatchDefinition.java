@@ -11,6 +11,8 @@ public class DispatchDefinition {
 
     private String ipcs;
 
+    private String organization;
+
     public String getId() {
         return id;
     }
@@ -49,5 +51,13 @@ public class DispatchDefinition {
 
     public void setIpcs(String ipcs) {
         this.ipcs = ipcs == null ? null : ipcs.trim();
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization == null ? null : organization.trim();
     }
 }

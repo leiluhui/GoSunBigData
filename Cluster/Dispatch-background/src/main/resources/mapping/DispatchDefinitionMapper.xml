@@ -7,9 +7,10 @@
     <result column="designation" property="designation" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="ipcs" property="ipcs" jdbcType="VARCHAR" />
+    <result column="organization" property="organization" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, region, designation, status, ipcs
+    id, region, designation, status, ipcs, organization
   </sql>
 
   <select id="selectAll" resultMap="BaseResultMap" >
@@ -30,9 +31,11 @@
   </delete>
   <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchDefinition" >
     insert into t_dispatch_definition (id, region, designation, 
-      status, ipcs)
+      status, ipcs, organization
+      )
     values (#{id,jdbcType=VARCHAR}, #{region,jdbcType=BIGINT}, #{designation,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{ipcs,jdbcType=VARCHAR})
+      #{status,jdbcType=INTEGER}, #{ipcs,jdbcType=VARCHAR}, #{organization,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchDefinition" >
     insert into t_dispatch_definition
@@ -52,6 +55,9 @@
       <if test="ipcs != null" >
         ipcs,
       </if>
+      <if test="organization != null" >
+        organization,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -68,6 +74,9 @@
       </if>
       <if test="ipcs != null" >
         #{ipcs,jdbcType=VARCHAR},
+      </if>
+      <if test="organization != null" >
+        #{organization,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -86,6 +95,9 @@
       <if test="ipcs != null" >
         ipcs = #{ipcs,jdbcType=VARCHAR},
       </if>
+      <if test="organization != null" >
+        organization = #{organization,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -94,7 +106,8 @@
     set region = #{region,jdbcType=BIGINT},
       designation = #{designation,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
-      ipcs = #{ipcs,jdbcType=VARCHAR}
+      ipcs = #{ipcs,jdbcType=VARCHAR},
+      organization = #{organization,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
