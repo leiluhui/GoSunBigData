@@ -41,7 +41,6 @@ public class ConsumerImsi implements Runnable {
      * 接收从kafka中传来的数据并进行TIDB存储
      * */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void run() {
         consumer.subscribe(Collections.singletonList("imsi"));
         log.info("Comsumer is started to accept kafka info");
