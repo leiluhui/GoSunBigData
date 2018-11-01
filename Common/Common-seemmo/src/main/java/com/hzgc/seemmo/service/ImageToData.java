@@ -94,6 +94,7 @@ public class ImageToData {
     @SuppressWarnings("unchecked")
     private static List <Vehicle> getCarData(List <JSONObject> imageResults, String imagePath, byte[] bytess) {
         ArrayList <Vehicle> vehicleList = new ArrayList <>();
+        System.out.println("***" + JacksonUtil.toJson(imageResults));
         if (imageResults.size() > 0) {
             for (JSONObject js : imageResults) {
                 List <JSONObject> vehicles = (List <JSONObject>) js.get("Vehicles");
@@ -587,6 +588,6 @@ public class ImageToData {
 //        inputStream = new FileInputStream("C:\\Users\\g10255\\Desktop\\123.jpg");
 //        data = new byte[inputStream.available()];
 //        inputStream.read(data);
-        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\1.jpg", "66");
+        ImageResult imageResult = ImageToData.getImageResult("http://172.18.18.138:7000/ImgProcService/Recognize", "C:\\Users\\g10255\\Desktop\\aaaa.jpg", "66");
     }
 }
