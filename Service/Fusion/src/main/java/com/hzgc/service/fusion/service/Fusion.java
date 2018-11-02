@@ -63,7 +63,6 @@ public class Fusion implements Runnable {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void run() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         while (true) {
