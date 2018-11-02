@@ -26,7 +26,6 @@ ZOOKEEPER_HOST=172.18.18.202:2181
 MYSQL_HOST=172.18.18.202:4000
 QUERY_TIME=30
 KAFKA_HOST=172.18.18.202:9092,172.18.18.103:9092,172.18.18.104:9092,172.18.18.108:9092
-MYSQL_USERNAME=root
 
 
 #---------------------------------------------------------------------#
@@ -51,7 +50,6 @@ function start_springCloud()
        --eureka.port=${EUREKA_PORT} \
        --spring.cloud.config.enabled=false \
        --mysql.host=${MYSQL_HOST} \
-       --mysql.username=${MYSQL_USERNAME} \
        --query.time=${QUERY_TIME} \
        --kafka.host=${KAFKA_HOST} 2>&1 &
    fi
