@@ -15,7 +15,6 @@ public class ImsiService {
     private ImsiDao imsiDao;
 
     public List <ImsiInfo> queryByTime(Long time) {
-        List <ImsiInfo> imsiInfos = imsiDao.queryByTime(time);
-        return imsiInfos;
+        return imsiDao.queryByTime(time);
     }
 }

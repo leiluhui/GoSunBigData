@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,13 @@ public class ImsiController {
         }
         log.info("Start search imsi by time, this time is: " + time);
         List <ImsiInfo> listResponseResult = imsiService.queryByTime(time);
-        log.info("Query search imsi is " + JacksonUtil.toJson(listResponseResult));
+        log.info("Query search imsi is " + listResponseResult.size());
         return listResponseResult;
+    }
+
+    public static void main(String[] args) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format = simpleDateFormat.format(1541123008000L);
+        System.out.println(format);
     }
 }
