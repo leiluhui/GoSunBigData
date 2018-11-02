@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -230,5 +231,27 @@ public class PeopleController {
         List<Long> communityIds = peopleService.searchCommunityIdsByRegionId(regionId);
         log.info("Search community id list successfully, result:" + JacksonUtil.toJson(communityIds));
         return ResponseResult.init(communityIds);
+    }
+
+    /**
+     * excel表格导入
+     * @param file 文件路径
+     * @return 状态 1 ：修改成功 0 ：修改失败
+     */
+    @ApiOperation(value = "人口库excel表格导入")
+    @RequestMapping(value = BigDataPath.PEOPLE_EXCEL_IMPORT, method = RequestMethod.POST)
+    public ResponseResult <Integer> excelImport(MultipartFile file){
+        if (file == null){
+            log.error("Start import excel data, but file is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "导入表格为空，请检查！");
+        }
+        log.info("Start import excel data");
+        Integer status = peopleService.excelImport(file);
+        if (status != 1) {
+            log.error("Import excel data failed");
+            return ResponseResult.error(0, "导入表格失败！");
+        }
+        log.info("Import excel data successfully");
+        return ResponseResult.init(1);
     }
 }

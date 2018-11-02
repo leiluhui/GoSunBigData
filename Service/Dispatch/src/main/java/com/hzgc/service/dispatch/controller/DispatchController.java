@@ -198,17 +198,17 @@ public class DispatchController {
      * @return 状态 1 ：修改成功 0 ：修改失败
      */
     @ApiOperation(value = "布控库excel表格导入")
-    @RequestMapping(value = BigDataPath.EXCEL_IMPORT, method = RequestMethod.POST)
-    public ResponseResult<Integer> excelImport(MultipartFile file) throws Exception {
+    @RequestMapping(value = BigDataPath.DISPATCH_EXCEL_IMPORT, method = RequestMethod.POST)
+    public ResponseResult<Integer> excelImport(MultipartFile file) {
         if (file == null) {
             log.error("Start import excel data, but file is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "excel表格文件为空，请检查");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "导入表格为空，请检查！");
         }
         log.info("Start import excel data");
         Integer status = dispatchService.excelImport(file);
         if (status != 1) {
             log.error("Import excel data failed");
-            return ResponseResult.error(0, "excel表格导入失败！");
+            return ResponseResult.error(0, "导入表格失败！");
         }
         log.info("Import excel data successfully");
         return ResponseResult.init(1);

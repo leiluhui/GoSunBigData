@@ -18,7 +18,7 @@
     picture
   </sql>
 
-  <select id="selectByDefiId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="selectByDefid" resultMap="BaseResultMap" parameterType="java.lang.String">
     select name, feature from t_dispatch_name where defid = #{defid,jdbcType=VARCHAR}
   </select>
 

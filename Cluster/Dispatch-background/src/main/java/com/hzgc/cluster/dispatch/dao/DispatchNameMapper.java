@@ -13,7 +13,7 @@ public interface DispatchNameMapper {
 
     DispatchName selectByPrimaryKey(Integer id);
 
-    List<DispatchName> selectByDefiId(String defid);
+    List<DispatchName> selectByDefid(String defid);
 
     int updateByPrimaryKeySelective(DispatchName record);
 

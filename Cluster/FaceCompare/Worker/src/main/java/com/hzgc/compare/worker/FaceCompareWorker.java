@@ -71,7 +71,9 @@ public class FaceCompareWorker {
         // FIXME: 18-9-21 
         fileManager.checkTaskTodo();
 //        hBaseClient.timeToWrite();
-        FaceFunction.init();
+        for(int i = 0; i < Config.WORKER_EXECUTORS_TO_COMPARE ; i++){
+            FaceFunction.init();
+        }
     }
 
     public static void main(String args[]){
