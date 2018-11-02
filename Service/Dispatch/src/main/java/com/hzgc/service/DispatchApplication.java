@@ -1,4 +1,4 @@
-package com.hzgc.service.dispatch;
+package com.hzgc.service;
 
 import com.hzgc.common.service.api.config.EnableInnerService;
 import com.hzgc.common.service.api.config.EnablePlatformService;
