@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 java -jar /app.jar \
 --spring.profiles.active=pro \

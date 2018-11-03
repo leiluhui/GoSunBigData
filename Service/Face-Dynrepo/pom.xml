@@ -140,6 +140,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>face-dynrepo</finalName>
     </build>
 
 </project>

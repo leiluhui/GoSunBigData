@@ -116,6 +116,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>person-dynrepo</finalName>
     </build>
 
 </project>

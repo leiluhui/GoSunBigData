@@ -5,6 +5,7 @@ import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.common.service.carattribute.service.CarAttributeService;
 import com.hzgc.common.service.faceattribute.service.AttributeService;
 import com.hzgc.common.service.personattribute.service.PersonAttributeService;
+import com.hzgc.service.collect.model.FtpInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,5 +40,8 @@ public class BeanConfig {
     CarAttributeService carAttributeService() {
         return new CarAttributeService();
     }
+
+    @Bean
+    FtpInfo ftpInfo() {return new FtpInfo();}
 }
 
