@@ -9,7 +9,7 @@ import com.hzgc.common.service.peoman.SyncPeopleManager;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
-import com.hzgc.service.Util.PeopleExcelUtils;
+import com.hzgc.service.people.util.PeopleExcelUtils;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
@@ -84,18 +84,7 @@ public class PeopleService {
     private final static String CAPTURE_PIC = "capturepic";
 
     private void sendKafka(String key, Object data) {
-        try {
-            ListenableFuture<SendResult<String, String>> resultFuture =
-                    kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
-            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
-            if (metaData != null) {
-                log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
-                        metaData.topic(), key, JacksonUtil.toJson(data));
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
-        }
+        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
     }
 
     public boolean CheckIdCard(String idCard) {
@@ -221,7 +210,7 @@ public class PeopleService {
     public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update t_people, param is:" + JacksonUtil.toJson(people));
-        Integer status_people_update = people_update(people);
+        Integer status_people_update = peopleMapper.updateByPrimaryKeySelective(people);
         if (status_people_update != 1) {
             log.info("Update t_people failed");
             ReturnMessage message = new ReturnMessage();
@@ -434,10 +423,6 @@ public class PeopleService {
         return peopleMapper.insertSelective(people);
     }
 
-    private Integer people_update(People people) {
-        return peopleMapper.updateByPrimaryKeySelective(people);
-    }
-
     private Integer people_flag_insert(String peopleId, List<Integer> flags) {
         for (Integer integer : flags) {
             com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
@@ -447,29 +432,6 @@ public class PeopleService {
             int status = flagMapper.insertSelective(flag);
             if (status != 1) {
                 log.info("Insert people, but insert t_flag failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_flag_update(String peopleId, List<Integer> flags) {
-        List<Long> idList = flagMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = flagMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_flag failed, id: " + id);
-                return 0;
-            }
-        }
-        for (Integer integer : flags) {
-            com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
-            flag.setPeopleid(peopleId);
-            flag.setFlagid(integer);
-            flag.setFlag(Flag.getFlag(integer));
-            int insertStatus = flagMapper.insertSelective(flag);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert flag to t_flag failed, flag:" + integer);
                 return 0;
             }
         }
@@ -503,41 +465,6 @@ public class PeopleService {
         return 1;
     }
 
-    private Integer people_picture_update(String peopleId, String picType, List<String> pics) {
-        List<Long> idList = pictureMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = pictureMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_picture failed, id: " + id);
-                return 0;
-            }
-        }
-        for (String photo : pics) {
-            PictureWithBLOBs picture = new PictureWithBLOBs();
-            picture.setPeopleid(peopleId);
-            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
-            if (IDCARD_PIC.equals(picType)) {
-                picture.setIdcardpic(bytes);
-            }
-            if (CAPTURE_PIC.equals(picType)) {
-                picture.setCapturepic(bytes);
-            }
-            FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
-            if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, insert picture to t_picture failed");
-                throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
-            }
-            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-            int insertStatus = pictureMapper.insertSelective(picture);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert picture to t_picture failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
     private Integer people_imsi_insert(String peopleId, List<String> imsis) {
         for (String s : imsis) {
             Imsi imsi = new Imsi();
@@ -546,28 +473,6 @@ public class PeopleService {
             int status = imsiMapper.insertSelective(imsi);
             if (status != 1) {
                 log.info("Insert people, but insert imsi to t_imsi failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_imsi_update(String peopleId, List<String> imsis) {
-        List<Long> idList = imsiMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = imsiMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_imsi failed, id: " + id);
-                return 0;
-            }
-        }
-        for (String s : imsis) {
-            Imsi imsi = new Imsi();
-            imsi.setPeopleid(peopleId);
-            imsi.setImsi(s);
-            int insertStatus = imsiMapper.insertSelective(imsi);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert imsi to t_imsi failed, imsi: " + s);
                 return 0;
             }
         }
@@ -588,28 +493,6 @@ public class PeopleService {
         return 1;
     }
 
-    private Integer people_phone_update(String peopleId, List<String> phones) {
-        List<Long> idList = phoneMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = phoneMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_phone failed, id: " + id);
-                return 0;
-            }
-        }
-        for (String s : phones) {
-            Phone phone = new Phone();
-            phone.setPeopleid(peopleId);
-            phone.setPhone(s);
-            int insertStatus = phoneMapper.insertSelective(phone);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert phone to t_phone failed, phone: " + s);
-                return 0;
-            }
-        }
-        return 1;
-    }
-
     private Integer people_house_insert(String peopleId, List<String> houses) {
         for (String s : houses) {
             House house = new House();
@@ -624,28 +507,6 @@ public class PeopleService {
         return 1;
     }
 
-    private Integer people_house_update(String peopleId, List<String> houses) {
-        List<Long> idList = houseMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = houseMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_house failed, id: " + id);
-                return 0;
-            }
-        }
-        for (String s : houses) {
-            House house = new House();
-            house.setPeopleid(peopleId);
-            house.setHouse(s);
-            int insertStatus = houseMapper.insertSelective(house);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert house to t_house failed, house: " + s);
-                return 0;
-            }
-        }
-        return 1;
-    }
-
     private Integer people_car_insert(String peopleId, List<String> cars) {
         for (String s : cars) {
             Car car = new Car();
@@ -654,28 +515,6 @@ public class PeopleService {
             int status = carMapper.insertSelective(car);
             if (status != 1) {
                 log.info("Insert people, but insert car to t_car failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_car_update(String peopleId, List<String> cars) {
-        List<Long> idList = carMapper.selectIdByPeopleId(peopleId);
-        for (Long id : idList) {
-            int status = carMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.info("Update people, but delete t_car failed, id: " + id);
-                return 0;
-            }
-        }
-        for (String s : cars) {
-            Car car = new Car();
-            car.setPeopleid(peopleId);
-            car.setCar(s);
-            int insertStatus = carMapper.insertSelective(car);
-            if (insertStatus != 1) {
-                log.info("Update people, but insert car to t_car failed, car: " + s);
                 return 0;
             }
         }
