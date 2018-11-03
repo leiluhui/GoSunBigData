@@ -2,7 +2,7 @@
 #/bin/bash
 cd `dirname $0`
 HOME_DIR=`pwd`
-VERSION_INFO=1.0
+VERSION_INFO=2.3.0
 IMAGE_NAME=collect-ftp
 DOCKER_REPO=172.18.18.122
 DATE_YMD=`date +%Y-%m-%d`
