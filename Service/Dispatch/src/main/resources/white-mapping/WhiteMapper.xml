@@ -124,7 +124,4 @@
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateStatusById" parameterType="com.hzgc.service.white.model.White">
-    update t_dispatch_white set status = #{status,jdbcType=INTEGER} where id = #{id,jdbcType=VARCHAR}
-  </update>
 </mapper>

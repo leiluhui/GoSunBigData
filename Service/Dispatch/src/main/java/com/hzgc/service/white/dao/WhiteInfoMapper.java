@@ -1,6 +1,5 @@
 package com.hzgc.service.white.dao;
 
-import com.hzgc.service.white.model.White;
 import com.hzgc.service.white.model.WhiteInfo;
 
 import java.util.List;
@@ -20,5 +19,5 @@ public interface WhiteInfoMapper {
 
     int updateByPrimaryKey(WhiteInfo record);
 
-    List<WhiteInfo> selectByDefid(White white);
+    List<WhiteInfo> selectByWhiteId(String whiteid);
 }

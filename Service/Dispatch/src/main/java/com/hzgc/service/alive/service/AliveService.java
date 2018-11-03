@@ -56,18 +56,7 @@ public class AliveService {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private void sendKafka(String key, Object data) {
-        try {
-            ListenableFuture<SendResult<String, String>> resultFuture =
-                    kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
-            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
-            if (metaData != null) {
-                log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
-                        metaData.topic(), key, JacksonUtil.toJson(data));
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
-        }
+        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
     }
 
     public Integer insertAliveInfo(AliveInfoDTO dto) {
@@ -84,7 +73,7 @@ public class AliveService {
         }
         alive.setStatus(0);
         alive.setCreateTime(new Date());
-        Integer status = aliveMapper.insertSelective(alive);
+        int status = aliveMapper.insertSelective(alive);
         if (status != 1) {
             log.info("Insert info,but insert info to t_dispatch_white failed");
             return 0;
@@ -123,7 +112,7 @@ public class AliveService {
     }
 
     public Integer deleteAliveInfo(String id) {
-        Integer status = aliveMapper.deleteByPrimaryKey(id);
+        int status = aliveMapper.deleteByPrimaryKey(id);
         if (status != 1){
             log.info("Delete info failed ");
             return 0;

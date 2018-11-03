@@ -16,6 +16,7 @@ import com.hzgc.service.white.model.White;
 import com.hzgc.service.white.model.WhiteInfo;
 import com.hzgc.service.white.param.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -33,13 +35,17 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class WhiteService {
     @Autowired
+    @SuppressWarnings("unused")
     private WhiteInfoMapper whiteInfoMapper;
 
     @Autowired
+    @SuppressWarnings("unused")
     private WhiteMapper whiteMapper;
 
     @Autowired
+    @SuppressWarnings("unused")
     private InnerService innerService;
+
     @Autowired
     @SuppressWarnings("unused")
     private PlatformService platformService;
@@ -56,194 +62,134 @@ public class WhiteService {
 
     private static final String UPDATE = "UPDATE";
 
-    private static final String IMPORT = "IMPORT";
-
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private void sendKafka(String key, Object data) {
-        try {
-            ListenableFuture<SendResult<String, String>> resultFuture =
-                    kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
-            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            ProducerRecord<String, String> producerRecord = resultFuture.get().getProducerRecord();
-            if (metaData != null) {
-                log.info("Send Kafka successfully! message:[topic:{}, key:{}, data:{}]",
-                        metaData.topic(), key, JacksonUtil.toJson(data));
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
-        }
+        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
     }
 
-    public Integer insertDispatch_white(DispatchWhiteDTO dto) {
+    public Integer insertWhiteInfo(WhiteDTO dto) {
         White white = new White();
-        white.setId(UuidUtil.getUuid());
-        white.setName(dto.getDesignation());
-        String deviceCode = "";
-        if (dto.getIpc_list() != null) {
-            for (DeviceIps ipc : dto.getIpc_list()) {
-                deviceCode = deviceCode + ipc.getDeviceCode() + ",";
-            }
-            white.setDevices(deviceCode);
-            white.setOrganization(dto.getOrganization());
-            Integer Status = whiteMapper.insertSelective(white);
-            if (Status != 1) {
-                log.info("Insert info,but insert info to t_dispatch_white failed");
+        if (StringUtils.isBlank(dto.getId())){
+            white.setId(UuidUtil.getUuid());
+        } else {
+            white.setId(dto.getId());
+        }
+        white.setName(dto.getName());
+        white.setDevices(StringUtils.join(dto.getDeviceIds().toArray(), ","));
+        white.setOrganization(dto.getOrganization());
+        int status = whiteMapper.insertSelective(white);
+        if (status != 1) {
+            log.info("Insert white info, but insert into t_dispatch_white failed");
+            return 0;
+        }
+        for (PeopleInfo people : dto.getPeopleInfos()) {
+            WhiteInfo whiteInfo = new WhiteInfo();
+            whiteInfo.setWhiteId(white.getId());
+            whiteInfo.setName(people.getName());
+            if (people.getPicture() != null) {
+                byte[] bytes = FaceUtil.base64Str2BitFeature(people.getPicture());
+                FaceAttribute faceAttribute = innerService.faceFeautreExtract(people.getPicture()).getFeature();
+                if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                    log.error("Face feature extract failed, insert t_dispatch_white failed");
+                    throw new RuntimeException("Face feature extract failed, insert t_dispatch_white failed");
+                }
+                whiteInfo.setPicture(bytes);
+                whiteInfo.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+                whiteInfo.setBitFeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+            }else {
+                log.error("Param error, picture is not null");
                 return 0;
             }
-        }
-        if (dto.getName_list() != null) {
-            for (WhiteName name : dto.getName_list()) {
-                WhiteInfo whiteInfo = new WhiteInfo();
-                whiteInfo.setWhiteId(white.getId());
-                whiteInfo.setName(name.getName());
-                if (name.getPicture() != null) {
-                    byte[] bytes = FaceUtil.base64Str2BitFeature(name.getPicture());
-                    FaceAttribute faceAttribute = innerService.faceFeautreExtract(name.getPicture()).getFeature();
-                    if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                        log.error("Face feature extract failed, insert t_dispatch_white failed");
-                        throw new RuntimeException("Face feature extract failed, insert t_dispatch_white failed");
-                    }
-                    whiteInfo.setPicture(bytes);
-                    whiteInfo.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-                    whiteInfo.setBitFeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-                }
-                Integer insertstatus = whiteInfoMapper.insertSelective(whiteInfo);
-                if (insertstatus != 1) {
-                    log.info("Insert info,but insert peoplename to t_dispatchname failed");
-                    return 0;
-                }
-                KafkaMessage message = new KafkaMessage();
-                message.setId(white.getId());
-                this.sendKafka(ADD,message);
-                log.info("Insert info successfully");
+            int insertstatus = whiteInfoMapper.insertSelective(whiteInfo);
+            if (insertstatus != 1) {
+                log.info("Insert white info, but insert into t_dispatch_whiteinfo failed");
+                return 0;
             }
+            this.sendKafka(ADD, white.getId());
         }
-        return null;
+        return 1;
     }
 
-    public Integer deleteDispatch_white(String id) {
-        Integer status = whiteMapper.deleteByPrimaryKey(id);
+    public Integer deleteWhiteInfo(String id) {
+        int status = whiteMapper.deleteByPrimaryKey(id);
         if (status != 1){
             log.info("Delete info failed");
             return 0;
         }
-        this.sendKafka(DELETE,id);
-        log.info("Delete info successfully");
+        this.sendKafka(DELETE, id);
         return status;
     }
 
-    public Integer update_Dispatch_white(DispatchWhiteDTO dto) {
-        Integer status = whiteMapper.deleteByPrimaryKey(dto.getId());
-        if (status !=1){
-            log.info("Update t_dispatch_definion failed :" + dto.getId());
+    public Integer updateWhiteInfo(WhiteDTO dto) {
+        int status_delete = whiteMapper.deleteByPrimaryKey(dto.getId());
+        if (status_delete !=1){
+            log.info("Delete t_dispatch_white failed, id is:" + dto.getId());
             return 0;
         }
-        String uuid = UuidUtil.getUuid();
-        if (dto.getDesignation() !=null || dto.getIpc_list() !=null){
-            //String uuid = UuidUtil.getUuid();
-            String designation = dto.getDesignation();
-            if (dto.getIpc_list() != null){
-                for (DeviceIps ipc : dto.getIpc_list()) {
-                    White white = new White();
-                    white.setId(uuid);
-                    white.setName(designation);
-                    white.setDevices(ipc.getDeviceCode());
-                    status = whiteMapper.insertSelective(white);
-                    if (status != 1) {
-                        log.info("Insert info to t_dispatch_white failed");
-                        return 0;
-                    }
-                }
-            }
+        int status = this.insertWhiteInfo(dto);
+        if (status != 1){
+            log.info("Update failed");
+            return 0;
         }
-        if (dto.getName_list()!= null) {
-            for (WhiteName name : dto.getName_list()) {
-                WhiteInfo whiteInfo = new WhiteInfo();
-                whiteInfo.setWhiteId(uuid);
-                whiteInfo.setName(name.getName());
-                if (name.getPicture() != null) {
-                    byte[] bytes = FaceUtil.base64Str2BitFeature(name.getPicture());
-                    FaceAttribute faceAttribute = innerService.faceFeautreExtract(name.getPicture()).getFeature();
-                    if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                        log.error("Face feature extract failed, insert t_dispatch_white failed");
-                        throw new RuntimeException("Face feature extract failed, insert t_dispatch_white failed");
-                    }
-                    whiteInfo.setPicture(bytes);
-                    whiteInfo.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-                    whiteInfo.setBitFeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-                }
-                status = whiteInfoMapper.insertSelective(whiteInfo);
-                if (status != 1) {
-                    log.info("Insert info,but insert peoplename to t_dispatch_whiteinfo failed");
-                }
-                KafkaMessage message = new KafkaMessage();
-                message.setId(whiteInfo.getWhiteId());
-                this.sendKafka(UPDATE, message);
-                log.info("update info successfully");
-            }
-            return status;
-        }
-        return null;
+        this.sendKafka(UPDATE, dto.getId());
+        return status;
     }
 
-    public Integer dispatch_whiteStatus(String id, int status) {
+    public Integer updateWhiteStatus(String id, int status) {
         White white = new White();
         white.setId(id);
         white.setStatus(status);
-        int i = whiteMapper.updateStatusById(white);
-        if ( i != 1){
-            log.info("Update status failed ");
+        int i = whiteMapper.updateByPrimaryKeySelective(white);
+        if (i != 1){
+            log.info("Update white status failed");
             return 0;
         }
-        if (i == 1) {
-            if (status == 0) {
-                KafkaMessage kafkaMessage = new KafkaMessage();
-                kafkaMessage.setId(id);
-                this.sendKafka(ADD, kafkaMessage);
-            }
-            if (status == 1) {
-                this.sendKafka(DELETE, id);
-            }
-            return 1;
+        if (status == 0) {
+            this.sendKafka(ADD, id);
+        }
+        if (status == 1) {
+            this.sendKafka(DELETE, id);
         }
         return 1;
     }
 
 
-    public SearchDispatchWhiteVO searchDispatch_white(SearchDispatchWhiteDTO dto) {
-        SearchDispatchWhiteVO vo = new SearchDispatchWhiteVO();
+    public SearchWhiteVO searchWhiteInfo(SearchWhiteDTO dto) {
+        SearchWhiteVO vo = new SearchWhiteVO();
         Page page = PageHelper.offsetPage(dto.getStart(), dto.getLimit(), true);
-        List<White> whites = whiteMapper.searchInfo(dto);
+        List<White> whiteList = whiteMapper.searchWhiteInfo(dto);
         PageInfo info = new PageInfo(page.getResult());
         int total = (int) info.getTotal();
         vo.setTotal(total);
-        List<DispatchWhiteVO> dispatchWhiteVOS = new ArrayList<DispatchWhiteVO>();
-        for( White white: whites){
-            String ipcs = white.getDevices();
-            String[] split = ipcs.split(",");
-            List<DeviceIps> deviceIps = new ArrayList<>();
-            for(int i = 0; i < split.length; i++ ){
-                DeviceIps deviceIp = new DeviceIps();
-                deviceIp.setDeviceName(split[i]);
-                deviceIps.add(deviceIp);
+        List<WhiteVO> dispatchWhiteVOS = new ArrayList<>();
+        for(White white: whiteList){
+            WhiteVO whiteVO = new WhiteVO();
+            whiteVO.setId(white.getId());
+            whiteVO.setName(white.getName());
+            List<String> deviceIds = Arrays.asList(white.getDevices().split(","));
+            whiteVO.setDeviceIds(deviceIds);
+            List<String> deviceNames = new ArrayList<>();
+            for (String deviceId : deviceIds){
+                String deviceName = platformService.getCameraDeviceName(deviceId);
+                deviceNames.add(deviceName);
             }
-            List<WhiteInfo> whiteInfos = whiteInfoMapper.selectByDefid(white);
-            List<WhiteName> whiteNames = new ArrayList<WhiteName>();
-            for (WhiteInfo whiteInfo: whiteInfos){
-                WhiteName whiteName =
-                        new WhiteName(whiteInfo.getId().toString(), toString().valueOf(whiteInfo.getPicture()), whiteInfo.getName());
-                whiteNames.add(whiteName);
+            whiteVO.setDeviceNames(deviceNames);
+            whiteVO.setOrganization(white.getOrganization());
+            whiteVO.setStatus(white.getStatus());
+            List<WhiteInfo> whiteInfoList = whiteInfoMapper.selectByWhiteId(white.getId());
+            List<WhiteInfoVO> whiteInfoVOS = new ArrayList<>();
+            for (WhiteInfo whiteInfo: whiteInfoList){
+                WhiteInfoVO infoVO = new WhiteInfoVO();
+                infoVO.setId(whiteInfo.getId());
+                infoVO.setWhiteId(whiteInfo.getWhiteId());
+                infoVO.setName(whiteInfo.getName());
+                whiteInfoVOS.add(infoVO);
             }
-            DispatchWhiteVO dispatchWhiteVO = new DispatchWhiteVO();
-            dispatchWhiteVO.setId(white.getId());
-            dispatchWhiteVO.setDesignation(white.getName());
-            dispatchWhiteVO.setIpc_list(deviceIps);
-            dispatchWhiteVO.setStatus(white.getStatus());
-            dispatchWhiteVO.setName_list(whiteNames);
-            dispatchWhiteVOS.add(dispatchWhiteVO);
+            whiteVO.setWhiteInfoVOS(whiteInfoVOS);
+            dispatchWhiteVOS.add(whiteVO);
         }
-        vo.setDispatch_list(dispatchWhiteVOS);
+        vo.setWhiteVOS(dispatchWhiteVOS);
         return vo;
     }
 }

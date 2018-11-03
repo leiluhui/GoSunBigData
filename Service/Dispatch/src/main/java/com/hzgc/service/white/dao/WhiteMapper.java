@@ -1,7 +1,7 @@
 package com.hzgc.service.white.dao;
 
 import com.hzgc.service.white.model.White;
-import com.hzgc.service.white.param.SearchDispatchWhiteDTO;
+import com.hzgc.service.white.param.SearchWhiteDTO;
 
 import java.util.List;
 
@@ -20,7 +20,5 @@ public interface WhiteMapper {
 
     int updateByPrimaryKey(White record);
 
-    int updateStatusById(White record);
-
-    List<White> searchInfo(SearchDispatchWhiteDTO dto);
+    List<White> searchWhiteInfo(SearchWhiteDTO dto);
 }

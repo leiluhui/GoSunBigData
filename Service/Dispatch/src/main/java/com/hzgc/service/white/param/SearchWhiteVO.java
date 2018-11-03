@@ -9,13 +9,9 @@ import java.util.List;
 
 @ApiModel(value = "白名单库模糊查询出参")
 @Data
-public class SearchDispatchWhiteVO implements Serializable {
-
+public class SearchWhiteVO implements Serializable {
     @ApiModelProperty(value = "总条数")
     private int total;
-
-    @ApiModelProperty(value = "布控名称列表")
-    private List<DispatchWhiteVO> dispatch_list;
-
-
+    @ApiModelProperty(value = "布控信息列表")
+    private List<WhiteVO> whiteVOS;
 }

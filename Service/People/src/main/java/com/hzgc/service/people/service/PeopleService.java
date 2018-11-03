@@ -207,7 +207,7 @@ public class PeopleService {
     public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update t_people, param is:" + JacksonUtil.toJson(people));
-        Integer status_people_update = peopleMapper.updateByPrimaryKeySelective(people);
+        int status_people_update = peopleMapper.updateByPrimaryKeySelective(people);
         if (status_people_update != 1) {
             log.info("Update t_people failed");
             ReturnMessage message = new ReturnMessage();
