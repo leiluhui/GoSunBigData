@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.peoman.SyncPeopleManager;
+import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
@@ -25,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -747,10 +749,15 @@ public class PeopleService {
         if (excelMap == null || excelMap.size() == 0) {
             return 0;
         }
-        List<Long> regionId_all = platformService.getAllRegionId();
-        List<Long> communityId_all = platformService.getAllCommunityId();
+
         List<PeopleDTO> peopleDTOList = new ArrayList<>();
         for (int i = 1; i <= excelMap.size(); i++) {
+            Map<String, Long> regionMap = platformService.getAllRegionId();
+            Set<String> regionKeys = regionMap.keySet();
+            List<String> regionNames = new ArrayList<>(regionKeys);
+            Map<String, Long> communityMap = platformService.getAllCommunityId();
+            Set<String> communityKeys = communityMap.keySet();
+            List<String> communityNames = new ArrayList<>(communityKeys);
             Map<Integer, Object> map = excelMap.get(i);
             PeopleDTO peopleDTO = new PeopleDTO();
             if (map.get(0) != null && !"".equals(map.get(0))) {
@@ -766,47 +773,46 @@ public class PeopleService {
                 log.error("Import excel data failed, because idCard is error, please check line: " + i);
                 return 0;
             }
-            if (map.get(2) != null && !"".equals(map.get(2)) &&
-                    regionId_all.contains(Long.valueOf(String.valueOf(map.get(2))))) {
-                peopleDTO.setRegion(Long.valueOf(String.valueOf(map.get(2))));
+            if (map.get(2) != null && !"".equals(map.get(2))
+                    && regionNames.contains(String.valueOf(map.get(2)))){
+                peopleDTO.setRegion(regionMap.get(String.valueOf(map.get(2))));
             } else {
-                log.error("Import excel data failed, because region id is error, please check line: " + i);
+                log.error("Import excel data failed, because region is error, please check line: " + i);
                 return 0;
             }
-            if (map.get(3) != null && !"".equals(map.get(3))) {
-                Long communityId = Long.valueOf(String.valueOf(map.get(3)));
-                if (communityId_all.contains(communityId)) {
-                    peopleDTO.setCommunity(communityId);
-                } else {
+            if (map.get(3) != null && !"".equals(map.get(3))){
+                if (communityNames.contains(String.valueOf(map.get(3)))){
+                    peopleDTO.setCommunity(communityMap.get(String.valueOf(map.get(3))));
+                }else {
                     log.error("Import excel data failed, because community is error, please check line: " + i);
                     return 0;
                 }
             }
-            if (map.get(4) != null && "".equals(map.get(4))) {
+            if (map.get(4) != null && !"".equals(map.get(4))) {
                 peopleDTO.setSex(String.valueOf(map.get(4)));
             }
-            if (map.get(5) != null && "".equals(map.get(5))) {
-                peopleDTO.setAge(Integer.valueOf(String.valueOf(map.get(5))));
+            if (map.get(5) != null && !"".equals(map.get(5))) {
+                peopleDTO.setAge(Float.valueOf(String.valueOf(map.get(5))).intValue());
             }
-            if (map.get(6) != null && "".equals(map.get(6))) {
+            if (map.get(6) != null && !"".equals(map.get(6))) {
                 peopleDTO.setJob(String.valueOf(map.get(6)));
             }
-            if (map.get(7) != null && "".equals(map.get(7))) {
+            if (map.get(7) != null && !"".equals(map.get(7))) {
                 peopleDTO.setBirthday(String.valueOf(map.get(7)));
             }
-            if (map.get(8) != null && "".equals(map.get(8))) {
+            if (map.get(8) != null && !"".equals(map.get(8))) {
                 peopleDTO.setAddress(String.valueOf(map.get(8)));
             }
-            if (map.get(9) != null && "".equals(map.get(9))) {
+            if (map.get(9) != null && !"".equals(map.get(9))) {
                 peopleDTO.setHousehold(String.valueOf(map.get(9)));
             }
-            if (map.get(10) != null && "".equals(map.get(10))) {
+            if (map.get(10) != null && !"".equals(map.get(10))) {
                 peopleDTO.setBirthplace(String.valueOf(map.get(10)));
             }
-            if (map.get(11) != null && "".equals(map.get(11))) {
+            if (map.get(11) != null && !"".equals(map.get(11))) {
                 peopleDTO.setPolitic(String.valueOf(map.get(11)));
             }
-            if (map.get(12) != null && "".equals(map.get(12))) {
+            if (map.get(12) != null && !"".equals(map.get(12))) {
                 peopleDTO.setEduLevel(String.valueOf(12));
             }
             peopleDTOList.add(peopleDTO);
@@ -823,6 +829,7 @@ public class PeopleService {
     @Transactional(rollbackFor = Exception.class)
     private Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
+            peopleDTO.setId(UuidUtil.getUuid());
             ReturnMessage message = this.insertPeople(peopleDTO);
             if (message == null || message.getStatus() != 1) {
                 throw new RuntimeException("Insert into t_people table failed");
