@@ -10,9 +10,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>peoman-worker</artifactId>
-    <version>1.0</version>
+    <version>2.3.0</version>
 
     <build>
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}</targetPath>
+                <directory>docker</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
