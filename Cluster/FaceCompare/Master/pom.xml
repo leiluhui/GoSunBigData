@@ -21,7 +21,6 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-rpc</artifactId>
-            <version>1.0</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
