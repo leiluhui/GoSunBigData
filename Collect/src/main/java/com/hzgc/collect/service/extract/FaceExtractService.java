@@ -1,6 +1,7 @@
 package com.hzgc.collect.service.extract;
 
 import com.hzgc.common.util.basic.UuidUtil;
+import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.*;
 import com.hzgc.seemmo.util.BASE64Util;
 import lombok.extern.slf4j.Slf4j;

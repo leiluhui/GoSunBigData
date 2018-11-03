@@ -98,7 +98,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hzgc.service.dispatch.DispatchApplication</mainClass>
+                    <mainClass>com.hzgc.service.DispatchApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
