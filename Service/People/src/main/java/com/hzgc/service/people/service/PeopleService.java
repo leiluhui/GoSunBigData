@@ -9,27 +9,22 @@ import com.hzgc.common.service.peoman.SyncPeopleManager;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
-import com.hzgc.service.people.util.PeopleExcelUtils;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
+import com.hzgc.service.people.util.PeopleExcelUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
