@@ -1,14 +1,12 @@
 package com.hzgc.service.white.controller;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.service.white.param.DispatchWhiteDTO;
-import com.hzgc.service.white.param.DispatchWhiteVO;
-import com.hzgc.service.white.param.SearchDispatchWhiteDTO;
-import com.hzgc.service.white.param.SearchDispatchWhiteVO;
+import com.hzgc.service.white.param.SearchWhiteDTO;
+import com.hzgc.service.white.param.SearchWhiteVO;
+import com.hzgc.service.white.param.WhiteDTO;
 import com.hzgc.service.white.service.WhiteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,120 +22,130 @@ import org.springframework.web.bind.annotation.*;
 public class WhiteController {
     @Autowired
     private WhiteService whiteService;
-    /**
-     * 添加白名单库对象
-     *
-     * @param dto 请求参数
-     * @return 成功状态 1 ：插入成功 0 ：插入失败
-     */
+
     @ApiOperation(value = "添加白名单信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_INSERT_WHITE, method = RequestMethod.POST)
-    public ResponseResult<Integer> insertDispatch_white(@RequestBody @ApiParam(name = "入参", value = "布控信息") DispatchWhiteDTO dto) {
+    public ResponseResult<Integer> insertWhiteInfo(@RequestBody @ApiParam(name = "入参", value = "布控信息") WhiteDTO dto) {
         if (dto == null) {
-            log.error("Start insert white info, but dto is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加白名单信息为空,请检查 !");
+            log.error("Start insert white info, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空,请检查!");
         }
-        if (dto.getIpc_list() == null && dto.getIpc_list().size() == 0){
-            log.error("Start insert white info, but Ipc_list is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "相机选择为空,请检查 ! ");
+        if (StringUtils.isNotBlank(dto.getId())) {
+            log.error("Start insert white info, but param is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加不需要ID,请检查!");
         }
-        if (dto.getName_list() == null && dto.getName_list().size() > 0){
-            log.info("Start insert white info,but name is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "姓名为空,请检查 ! ");
+        if (StringUtils.isBlank(dto.getName())){
+            log.error("Start insert white info, but name is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控名称为空,请检查!");
         }
-        log.info("Start insert white info, dto is :" + JacksonUtil.toJson(dto));
-        Integer status = whiteService.insertDispatch_white(dto);
-        log.info("Insert info successfully");
-        return ResponseResult.init(status);
+        if (dto.getDeviceIds() == null || dto.getDeviceIds().size() == 0){
+            log.error("Start insert white info, but device id list is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "相机列表为空,请检查!");
+        }
+        if (dto.getPeopleInfos() == null || dto.getPeopleInfos().size() == 0){
+            log.info("Start insert white info, but people info list is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控成员为空,请检查!");
+        }
+        log.info("Start insert white info, param is :" + JacksonUtil.toJson(dto));
+        Integer status = whiteService.insertWhiteInfo(dto);
+        if (status == 1) {
+            log.info("Insert white info successfully");
+            return ResponseResult.init(1);
+        } else {
+            log.info("Insert white info failed");
+            return ResponseResult.init(0);
+        }
     }
-    /**
-     * 删除布控对象
-     *
-     * @param id ID
-     * @return 成功状态 1 ：删除成功 0 :删除失败
-     */
+
     @ApiOperation(value = "删除白名单信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DELETE_WHITE, method = RequestMethod.DELETE)
-    public ResponseResult<Integer> deleteDispatch_white(@ApiParam(value = "ID", required = true) @RequestParam String id) {
-        if (id == null || "".equals(id)) {
-            log.error("Start delete white info,but id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除id为空,请检查");
+    public ResponseResult<Integer> deleteWhiteInfo(@ApiParam(value = "ID", required = true) @RequestParam String id) {
+        if (StringUtils.isBlank(id)) {
+            log.error("Start delete white info, but id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除ID为空,请检查");
         }
-        log.info("Start delete white info,,id is " + JSONUtils.toJSONString(id));
-        Integer status = whiteService.deleteDispatch_white(id);
+        log.info("Start delete white info, id is:" + id);
+        Integer status = whiteService.deleteWhiteInfo(id);
         if (status == 1) {
-            log.info("Delete white info  successfully");
+            log.info("Delete white info successfully");
             return ResponseResult.init(1);
         } else {
             log.info("Delete white info failed");
             return ResponseResult.init(0);
         }
     }
-    /**
-     * 修改信息
-     *
-     * @param dto 请求参数
-     * @return 成功状态 1 ：修改成功 0 :修改失败
-     */
+
     @ApiOperation(value = "修改白名单信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_UPDATE_WHITE, method = RequestMethod.POST)
-    public ResponseResult<Integer> update_Dispatch_white(@RequestBody @ApiParam(name = "入参", value = "人员信息") DispatchWhiteDTO dto) {
+    public ResponseResult<Integer> updateWhiteInfo(@RequestBody @ApiParam(name = "入参", value = "人员信息") WhiteDTO dto) {
         if (dto == null) {
-            log.error("Start update white info,but dto is null");
+            log.error("Start update white info, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改对象为空,请检查!");
         }
         if (StringUtils.isBlank(dto.getId())) {
-            log.error("Start update white info,but id is null");
+            log.error("Start update white info, but id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改对象ID为空,请检查!");
         }
-        log.info("Start update white info ,dto : " + JacksonUtil.toJson(dto));
-        Integer status = whiteService.update_Dispatch_white(dto);
+        if (StringUtils.isBlank(dto.getName())){
+            log.error("Start insert white info, but name is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控名称为空,请检查!");
+        }
+        if (dto.getDeviceIds() == null || dto.getDeviceIds().size() == 0){
+            log.error("Start insert white info, but device id list is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "相机列表为空,请检查!");
+        }
+        if (dto.getPeopleInfos() == null || dto.getPeopleInfos().size() == 0){
+            log.info("Start insert white info, but people info list is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控成员为空,请检查!");
+        }
+        log.info("Start update white info , param is:" + JacksonUtil.toJson(dto));
+        Integer status = whiteService.updateWhiteInfo(dto);
         if (status == 1) {
-            log.info("Update white info sucessfully");
+            log.info("Update white info successfully");
             return ResponseResult.init(1);
         } else {
             log.info("Update white info failed");
             return ResponseResult.init(0);
         }
     }
-    /**
-     * @param id (人员ID)
-     * @parm status （状态 0：开启，1：停止）
-     */
+
     @ApiOperation(value = "开启/停止白名单人员", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_WHITE_STATUS, method = RequestMethod.GET)
-    public ResponseResult<Integer> dispatch_whiteStatus(@ApiParam(value = "人员ID", required = true) @RequestParam String id,
-                                                        @ApiParam(value = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
-        if (id == null) {
-            log.error("Start update white status, but id is error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员ID为空，请检查");
+    public ResponseResult<Integer> updateWhiteStatus(
+            @ApiParam(value = "人员ID", required = true) @RequestParam String id,
+            @ApiParam(value = "人员状态(0:开启,1:停止)", required = true) @RequestParam int status) {
+        if (StringUtils.isBlank(id)) {
+            log.error("Start update white status, but id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控ID为空，请检查!");
         }
         if (status != 0 && status != 1) {
             log.error("Start update white status, but status is error");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人员状态错误，请检查");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控状态错误，请检查!");
         }
-        log.info("Start update white status, id: " + id + ", status: " + status);
-        Integer i = whiteService.dispatch_whiteStatus(id,status);
+        log.info("Start update white status, id:" + id + ", status:" + status);
+        Integer i = whiteService.updateWhiteStatus(id, status);
         if (i == 1) {
             log.info("Update white status successfully");
             return ResponseResult.init(1);
+        } else {
+            log.info("Update white status failed");
+            return ResponseResult.init(0);
         }
-        return ResponseResult.error(0, "修改布控人员状态失败！");
     }
 
     /**
      *
      */
-    @ApiOperation(value = "查询人员白名单信息（模糊查询）", response = DispatchWhiteVO.class)
+    @ApiOperation(value = "查询人员白名单信息（模糊查询）", response = SearchWhiteVO.class)
     @RequestMapping(value = BigDataPath.DISPATCH_SEARCH_WHITE, method = RequestMethod.POST)
-    public ResponseResult<SearchDispatchWhiteVO> searchDispatch_white(@RequestBody SearchDispatchWhiteDTO dto) {
+    public ResponseResult<SearchWhiteVO> searchWhiteInfo(@RequestBody SearchWhiteDTO dto) {
         if (dto == null) {
             log.error("Start search white info , but dto is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空，请检查");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空，请检查!");
         }
-        if (dto.getType() == null || "".equals(dto.getType())){
-            log.error("Start search white info, but type is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询名称为空，请检查");
+        if (StringUtils.isBlank(dto.getName())){
+            log.error("Start search white info, but search name is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询名称为空，请检查!");
         }
         if (dto.getStart() < 0) {
             log.error("Start search info, but start < 0");
@@ -148,7 +156,7 @@ public class WhiteController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search dispatch, search dispatch:" + JacksonUtil.toJson(dto));
-        SearchDispatchWhiteVO vo = whiteService.searchDispatch_white(dto);
+        SearchWhiteVO vo = whiteService.searchWhiteInfo(dto);
         log.info("Search search dispatch successfully, result:" + JacksonUtil.toJson(vo));
         return ResponseResult.init(vo, vo != null ? vo.getTotal() : 0);
     }
