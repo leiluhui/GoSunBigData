@@ -14,6 +14,7 @@ import com.hzgc.common.service.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.jniface.*;
+import com.hzgc.seemmo.util.BASE64Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
