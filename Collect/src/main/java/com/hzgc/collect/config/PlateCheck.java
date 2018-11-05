@@ -16,23 +16,23 @@ public class PlateCheck {
                 if ((System.currentTimeMillis()- aLong) > 3600000) {
                     //更新时间，返回添加
                     longMap.put(plate,System.currentTimeMillis());
-                    return false;
+                    return true;
                 }else {
                     //更新时间，返回不添加
                     longMap.put(plate,System.currentTimeMillis());
-                    return true;
+                    return false;
                 }
             } else {
                 //新增
                 longMap.put(plate,System.currentTimeMillis());
-                return false;
+                return true;
             }
         }else {
             //新增
             HashMap <String, Long> hashMap = new HashMap <>();
             hashMap.put(plate,System.currentTimeMillis());
             map.put(ipcid,hashMap);
-            return false;
+            return true;
         }
     }
 }

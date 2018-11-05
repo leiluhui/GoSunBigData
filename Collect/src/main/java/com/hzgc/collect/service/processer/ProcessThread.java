@@ -24,8 +24,9 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,12 @@ public class ProcessThread implements Runnable {
         try {
             while ((event = queue.take()) != null) {
                 byte[] bytes = FileUtil.fileToByteArray(event.getbAbsolutePath());
+                if (bytes == null) {
+                    continue;
+                }
                 try {
-                    BufferedImage read = ImageIO.read(new File(event.getbAbsolutePath()));
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+                    BufferedImage read = ImageIO.read(inputStream);
                     int width = read.getWidth();
                     int height = read.getHeight();
                     if (!(width >= WIDTH && height >= HEIGHT)) {
@@ -62,9 +67,6 @@ public class ProcessThread implements Runnable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                if (bytes == null) {
-                    continue;
                 }
                 Parser parser = event.getParser();
                 //BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
