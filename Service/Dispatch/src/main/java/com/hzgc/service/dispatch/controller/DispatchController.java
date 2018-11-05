@@ -181,7 +181,9 @@ public class DispatchController {
     public ResponseResult <WarnHistoryVO> searchDeployRecognize(@RequestBody DispatchRecognizeDTO dispatchRecognizeDTO) {
         if (null == dispatchRecognizeDTO) {
             log.info("Dispatch search history param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"参数错误");
         }
+        log.info("Start query dispatch history, param is: " + JacksonUtil.toJson(dispatchRecognizeDTO));
         return dispatchService.searchDeployRecognize(dispatchRecognizeDTO);
     }
 
