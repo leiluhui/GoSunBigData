@@ -3,7 +3,7 @@
 cd `dirname $0`
 HOME_DIR=`pwd`
 VERSION_INFO=2.3.0
-IMAGE_NAME=people
+IMAGE_NAME=dispatch-background
 DOCKER_REPO=172.18.18.122
 DATE_YMD=`date +%Y-%m-%d`
 DATE_HMS=`date +%H:%m:%S`

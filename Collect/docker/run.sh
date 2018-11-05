@@ -1,4 +1,5 @@
-#/bin/bash
+#!/usr/bin/env bash
+
 DOCKER_LOG_HOME=/opt/logs
 DOCKER_IMAGE_NAME=172.18.18.122/hzgc/collect-ftp:1.0
 ARGS=(docker

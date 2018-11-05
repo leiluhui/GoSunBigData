@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#/bin/bash
+
 
 exec java -jar app.jar \
 --spring.profiles.active=pro \
