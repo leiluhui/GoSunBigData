@@ -244,6 +244,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>collect</finalName>
     </build>
 
 </project>

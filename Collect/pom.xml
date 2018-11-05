@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>collect-ftp</artifactId>
-    <version>1.0</version>
 
     <dependencies>
         <dependency>
@@ -100,6 +99,22 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <targetPath>${project.build.directory}</targetPath>
+                <directory>docker</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -124,5 +139,6 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>collect-ftp</finalName>
     </build>
 </project>
