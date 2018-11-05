@@ -23,6 +23,10 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -35,6 +39,8 @@ public class ProcessThread implements Runnable {
     private final static String FACE = "face";
     private final static String PERSON = "person";
     private final static String CAR = "car";
+    private final static Integer WIDTH = 500;
+    private final static Integer HEIGHT = 500;
 
     public ProcessThread(BlockingQueue<Event> queue, CollectContext collectContext) {
         this.queue = queue;
@@ -47,6 +53,16 @@ public class ProcessThread implements Runnable {
         try {
             while ((event = queue.take()) != null) {
                 byte[] bytes = FileUtil.fileToByteArray(event.getbAbsolutePath());
+                try {
+                    BufferedImage read = ImageIO.read(new File(event.getbAbsolutePath()));
+                    int width = read.getWidth();
+                    int height = read.getHeight();
+                    if (!(width >= WIDTH && height >= HEIGHT)) {
+                        continue;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 if (bytes == null) {
                     continue;
                 }
