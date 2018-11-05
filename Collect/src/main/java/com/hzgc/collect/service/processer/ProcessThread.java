@@ -24,7 +24,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class ProcessThread implements Runnable {
-    private BlockingQueue<Event> queue;
+    private BlockingQueue <Event> queue;
     private CollectContext collectContext;
     private final static String FACE = "face";
     private final static String PERSON = "person";
@@ -43,7 +42,7 @@ public class ProcessThread implements Runnable {
     private final static Integer WIDTH = 500;
     private final static Integer HEIGHT = 500;
 
-    public ProcessThread(BlockingQueue<Event> queue, CollectContext collectContext) {
+    public ProcessThread(BlockingQueue <Event> queue, CollectContext collectContext) {
         this.queue = queue;
         this.collectContext = collectContext;
     }
@@ -66,7 +65,7 @@ public class ProcessThread implements Runnable {
                         continue;
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Image size is not more than 500 * 500");
                 }
                 Parser parser = event.getParser();
                 //BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
@@ -75,7 +74,7 @@ public class ProcessThread implements Runnable {
                 //log.error("Camera error, This is a small picture, fileName: " + event.getbAbsolutePath());
                 //continue;
                 //}
-                ArrayList<SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_1);
+                ArrayList <SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_1);
                 if (smallImageList != null && smallImageList.size() > 0) {
                     int index = 1;
                     for (SmallImage smallImage : smallImageList) {
@@ -108,8 +107,8 @@ public class ProcessThread implements Runnable {
                     log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
                 }
 
-                List<Person> personList = null;
-                List<Vehicle> vehicleList = null;
+                List <Person> personList = null;
+                List <Vehicle> vehicleList = null;
                 ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
                 if (result != null) {
                     personList = result.getPersonList();
@@ -181,9 +180,9 @@ public class ProcessThread implements Runnable {
 
     //临时方法
     private boolean tem_person_check(byte[] personStream) {
-        ArrayList<SmallImage> result =
+        ArrayList <SmallImage> result =
                 FaceFunction.faceCheck(personStream, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_3);
-        return result != null  && result.size() > 0;
+        return result != null && result.size() > 0;
     }
 
     private void sendKafka(Event event, FaceAttribute faceAttribute) {
@@ -202,7 +201,7 @@ public class ProcessThread implements Runnable {
                 .setbRelativePath(event.getbRelativePath())
                 .setId(faceId)
                 .setIp(collectContext.getFtpIp());
-        ListenableFuture<SendResult<String, String>> resultFuture =
+        ListenableFuture <SendResult <String, String>> resultFuture =
                 collectContext.getKafkaTemplate().send(collectContext.getKafkaFaceObjectTopic(),
                         faceId,
                         JacksonUtil.toJson(faceObject));
@@ -235,7 +234,7 @@ public class ProcessThread implements Runnable {
                 .setIp(collectContext.getFtpIp());
 
         try {
-            ListenableFuture<SendResult<String, String>> resultFuture =
+            ListenableFuture <SendResult <String, String>> resultFuture =
                     collectContext.getKafkaTemplate().send(collectContext.getKafkaPersonObjectTopic(),
                             pesonId,
                             JacksonUtil.toJson(personObject));
@@ -252,7 +251,7 @@ public class ProcessThread implements Runnable {
     }
 
     private void sendKafka(Event event, Vehicle vehicle) {
-        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(),vehicle.getPlate_licence())) {
+        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(), vehicle.getPlate_licence())) {
             vehicle.setVehicle_data(null);
             String carId = UuidUtil.getUuid();
             CarObject carObject = CarObject.builder()
@@ -269,7 +268,7 @@ public class ProcessThread implements Runnable {
                     .setId(carId)
                     .setIp(collectContext.getFtpIp());
             try {
-                ListenableFuture<SendResult<String, String>> resultFuture =
+                ListenableFuture <SendResult <String, String>> resultFuture =
                         collectContext.getKafkaTemplate().send(collectContext.getKafkaCarObjectTopic(),
                                 carId,
                                 JacksonUtil.toJson(carObject));
