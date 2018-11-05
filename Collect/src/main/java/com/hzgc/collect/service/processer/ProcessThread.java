@@ -252,33 +252,35 @@ public class ProcessThread implements Runnable {
     }
 
     private void sendKafka(Event event, Vehicle vehicle) {
-        vehicle.setVehicle_data(null);
-        String carId = UuidUtil.getUuid();
-        CarObject carObject = CarObject.builder()
-                .setIpcId(event.getIpcId())
-                .setTimeStamp(event.getTimeStamp())
-                .setAttribute(vehicle)
-                .setHostname(event.getHostname())
-                .setbAbsolutePath(event.getbAbsolutePath())
-                .setsAbsolutePath(event.getsAbsolutePath())
-                .setbFtpUrl(event.getbFtpUrl())
-                .setsFtpUrl(event.getsFtpUrl())
-                .setsRelativePath(event.getsRelativePath())
-                .setbRelativePath(event.getbRelativePath())
-                .setId(carId)
-                .setIp(collectContext.getFtpIp());
-        try {
-            ListenableFuture<SendResult<String, String>> resultFuture =
-                    collectContext.getKafkaTemplate().send(collectContext.getKafkaCarObjectTopic(),
-                            carId,
-                            JacksonUtil.toJson(carObject));
-            RecordMetadata metaData = resultFuture.get().getRecordMetadata();
-            if (metaData != null) {
-                log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
-                        metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
+        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(),vehicle.getPlate_licence())) {
+            vehicle.setVehicle_data(null);
+            String carId = UuidUtil.getUuid();
+            CarObject carObject = CarObject.builder()
+                    .setIpcId(event.getIpcId())
+                    .setTimeStamp(event.getTimeStamp())
+                    .setAttribute(vehicle)
+                    .setHostname(event.getHostname())
+                    .setbAbsolutePath(event.getbAbsolutePath())
+                    .setsAbsolutePath(event.getsAbsolutePath())
+                    .setbFtpUrl(event.getbFtpUrl())
+                    .setsFtpUrl(event.getsFtpUrl())
+                    .setsRelativePath(event.getsRelativePath())
+                    .setbRelativePath(event.getbRelativePath())
+                    .setId(carId)
+                    .setIp(collectContext.getFtpIp());
+            try {
+                ListenableFuture<SendResult<String, String>> resultFuture =
+                        collectContext.getKafkaTemplate().send(collectContext.getKafkaCarObjectTopic(),
+                                carId,
+                                JacksonUtil.toJson(carObject));
+                RecordMetadata metaData = resultFuture.get().getRecordMetadata();
+                if (metaData != null) {
+                    log.info("Send Kafka successfully! message:[topic:{}, sAbsolutePath:{}, bAbsolutePath:{}]",
+                            metaData.topic(), event.getsAbsolutePath(), event.getbAbsolutePath());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                log.error(e.getMessage());
             }
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.getMessage());
         }
     }
 }
