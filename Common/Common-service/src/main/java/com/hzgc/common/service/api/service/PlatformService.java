@@ -74,18 +74,21 @@ public class PlatformService {
      *
      * @return 区域ID集合
      */
-    public List<Long> getAllRegionId() {
-        List<Long> regionIdList = new ArrayList<>();
+    public Map<String, Long> getAllRegionId() {
         AreaCriteria areaCriteria = new AreaCriteria();
+        Map<String, Long> map = new HashMap<>();
         areaCriteria.setId(1L);
         areaCriteria.setLevel("district");
         AreaSDTO areaSDTO = restTemplate.postForObject("http://platform:8888/api/v1/region/internal/region/all/query_region_info", areaCriteria, AreaSDTO.class);
         List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
         for (AreaDTO areaDTO : areaDTOs){
-            regionIdList.add(areaDTO.getId());
+            String provinceName = areaDTO.getProvinceName();
+            String cityName = areaDTO.getCityName();
+            String districtName = areaDTO.getDistrictName();
+            String region = provinceName + cityName + districtName;
+            map.put(region,areaDTO.getId());
         }
-
-        return regionIdList;
+        return map;
     }
 
     /**
@@ -93,18 +96,19 @@ public class PlatformService {
      *
      * @return 小区ID集合
      */
-    public List<Long> getAllCommunityId() {
-        List<Long> regionIdList = new ArrayList<>();
+    public Map<String, Long> getAllCommunityId() {
+        Map<String, Long> map = new HashMap<>();
         AreaCriteria areaCriteria = new AreaCriteria();
         areaCriteria.setId(1L);
         areaCriteria.setLevel("region");
         AreaSDTO areaSDTO = restTemplate.postForObject("http://platform:8888/api/v1/region/internal/region/all/query_region_info", areaCriteria, AreaSDTO.class);
         List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
         for (AreaDTO areaDTO : areaDTOs){
-            regionIdList.add(areaDTO.getId());
+            String mergerName = areaDTO.getMergerName();
+            Long id = areaDTO.getId();
+            map.put(mergerName, id);
         }
-
-        return regionIdList;
+        return map;
     }
 
     /**

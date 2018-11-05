@@ -1,4 +1,4 @@
-package com.hzgc.service.dispatch.util;
+package com.hzgc.service.people.util;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -20,13 +20,13 @@ import java.util.regex.Pattern;
  *
  * @author yinhang
  */
-public class DispatchExcelUtils {
-    private Logger logger = LoggerFactory.getLogger(DispatchExcelUtils.class);
+public class PeopleExcelUtils {
+    private Logger logger = LoggerFactory.getLogger(PeopleExcelUtils.class);
     private Workbook wb;
     private Sheet sheet;
     private Row row;
 
-    public DispatchExcelUtils(MultipartFile file) {
+    public PeopleExcelUtils(MultipartFile file) {
         if (file == null) {
             return;
         }
