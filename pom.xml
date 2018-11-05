@@ -95,6 +95,8 @@
         <mina.core-version>2.0.16</mina.core-version>
         <jfiglet-version>0.0.3</jfiglet-version>
         <log4j.api-version>2.8.2</log4j.api-version>
+        <commons.logging-version>1.2</commons.logging-version>
+        <spring.web.servlet-version>3.2.2.RELEASE</spring.web.servlet-version>
     </properties>
 
     <repositories>
@@ -537,6 +539,16 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
                 <version>${log4j.api-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>org.springframework.web.servlet</artifactId>
+                <version>${spring.web.servlet-version}</version>
             </dependency>
     </dependencies>
     </dependencyManagement>
