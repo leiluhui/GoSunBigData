@@ -2,6 +2,7 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.PictureMapper;
 import com.hzgc.cluster.peoman.worker.model.Picture;
+import com.hzgc.common.service.peoman.SyncPeopleManager;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.*;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,33 @@ public class MemeoryCache {
         }
     }
 
+    void delData(List<SyncPeopleManager> managerList) {
+        try {
+            lock.lock();
+            for (SyncPeopleManager message : managerList) {
+                List<ComparePicture> comparePictures = getPeople(message.getPersonid());
+                if (comparePictures != null && comparePictures.size() > 0) {
+                    pictureMap.remove(message.getPersonid());
+                    Iterator<Map.Entry<Integer, String>> it = indexToPictureKey.entrySet().iterator();
+                    int index = -1;
+                    while (it.hasNext()) {
+                        Map.Entry<Integer, String> entry = it.next();
+                        if (entry.getValue().equals(message.getPersonid())) {
+                            index = entry.getKey();
+                            it.remove();
+                        }
+                    }
+                    if (index != -1) {
+                        byte[] invalidBit = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+                        bitFeatureList.set(index, invalidBit);
+                    }
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public ComparePicture comparePicture(FaceAttribute faceAttribute) {
         byte[] bitFeature = faceAttribute.getBitFeature();
         if (bitFeature != null && bitFeature.length > 0) {
@@ -82,6 +110,9 @@ public class MemeoryCache {
             int index = faceFeatureInfo.getIndex();
             String pictureKey = indexToPictureKey.get(index);
             List<ComparePicture> comparePictures = pictureMap.get(pictureKey);
+            if (comparePictures == null) {
+                return null;
+            }
             ComparePicture comparePicture = null;
             for (ComparePicture pic : comparePictures) {
                 if (pic.getIndex() == index) {
