@@ -97,6 +97,9 @@
         <log4j.api-version>2.8.2</log4j.api-version>
         <commons.logging-version>1.2</commons.logging-version>
         <spring.web.servlet-version>3.2.2.RELEASE</spring.web.servlet-version>
+        <servlet.api-version>6.1.14</servlet.api-version>
+        <hibernet-version>5.3.6.Final</hibernet-version>
+        <spring.boot.web-version>1.5.10.RELEASE</spring.boot.web-version>
     </properties>
 
     <repositories>
@@ -208,8 +211,6 @@
                 <artifactId>common-rpc</artifactId>
                 <version>${common.rpc-version}</version>
             </dependency>
-
-
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -549,6 +550,21 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>org.springframework.web.servlet</artifactId>
                 <version>${spring.web.servlet-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>servlet-api-2.5</artifactId>
+                <version>${servlet.api-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernet-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.boot.web-version}</version>
             </dependency>
     </dependencies>
     </dependencyManagement>
