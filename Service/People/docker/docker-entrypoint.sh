@@ -6,3 +6,4 @@ exec java -jar app.jar \
 --eureka.ip=${EUREKA_IP} \
 --eureka.port=${EUREKA_PORT} \
 --mysql.host=${MYSQL_HOST}
+

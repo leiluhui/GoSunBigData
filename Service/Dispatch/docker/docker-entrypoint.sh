@@ -8,3 +8,4 @@ exec java -jar app.jar \
 --eureka.port=${EUREKA_PORT} \
 --kafka.host=${KAFKA_HOST} \
 --mysql.host=${MYSQL_HOST}
+

@@ -15,6 +15,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.1.10.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-service</artifactId>
             <exclusions>

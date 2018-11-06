@@ -9,3 +9,4 @@ exec java -jar app.jar \
 --mysql.host=${MYSQL_HOST} \
 --query.time=${QUERY_TIME} \
 --kafka.host=${KAFKA_HOST}
+
