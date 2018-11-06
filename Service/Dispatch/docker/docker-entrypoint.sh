@@ -7,6 +7,4 @@ exec java -jar app.jar \
 --eureka.ip=${EUREKA_IP} \
 --eureka.port=${EUREKA_PORT} \
 --kafka.host=${KAFKA_HOST} \
---mysql.host=${MYSQL_HOST} \
---mysql.username=${MYSQL_USERNAME} \
---mysql.password=${MYSQL_PASSWORD}
+--mysql.host=${MYSQL_HOST}
