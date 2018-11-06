@@ -101,6 +101,8 @@
         <spring-boot-starter-web-version>1.5.10.RELEASE</spring-boot-starter-web-version>
         <servlet.api-version>6.1.14</servlet.api-version>
         <hibernet-version>5.3.6.Final</hibernet-version>
+        <hystrix-version>1.5.12</hystrix-version>
+        <archaius-version>0.7.5</archaius-version>
     </properties>
 
     <repositories>
@@ -571,6 +573,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot-starter-web-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-javanica</artifactId>
+                <version>${hystrix-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius-core</artifactId>
+                <version>${archaius-version}</version>
             </dependency>
     </dependencies>
     </dependencyManagement>
