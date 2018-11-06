@@ -134,6 +134,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>people</finalName>
     </build>
 
 </project>
