@@ -124,6 +124,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>imsi-dynrepo</finalName>
     </build>
 
 </project>

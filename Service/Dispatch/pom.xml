@@ -135,6 +135,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>dispatch</finalName>
     </build>
 
 </project>
