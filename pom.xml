@@ -71,7 +71,7 @@
         <commons.lang-version>2.6</commons.lang-version>
         <commons.net-version>3.1</commons.net-version>
         <spring.cloud.eureka.client-version>1.4.4.RELEASE</spring.cloud.eureka.client-version>
-        <spring.kafka-version>2.1.10.RELEASE</spring.kafka-version>
+        <spring.kafka-version>1.3.5.RELEASE</spring.kafka-version>
         <poi-vresion>3.15</poi-vresion>
         <poi.ooxml-version>3.15</poi.ooxml-version>
         <pagehelper-version>5.0.3</pagehelper-version>
@@ -97,6 +97,8 @@
         <log4j.api-version>2.8.2</log4j.api-version>
         <commons.logging-version>1.2</commons.logging-version>
         <spring.web.servlet-version>3.2.2.RELEASE</spring.web.servlet-version>
+        <javax.servlet-version>2.5</javax.servlet-version>
+        <spring-boot-starter-web-version>1.5.10.RELEASE</spring-boot-starter-web-version>
         <servlet.api-version>6.1.14</servlet.api-version>
         <hibernet-version>5.3.6.Final</hibernet-version>
         <spring.boot.web-version>1.5.10.RELEASE</spring.boot.web-version>
@@ -552,6 +554,11 @@
                 <version>${spring.web.servlet-version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${javax.servlet-version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>servlet-api-2.5</artifactId>
                 <version>${servlet.api-version}</version>
@@ -564,7 +571,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring.boot.web-version}</version>
+                <version>${spring-boot-starter-web-version}</version>
             </dependency>
     </dependencies>
     </dependencyManagement>
