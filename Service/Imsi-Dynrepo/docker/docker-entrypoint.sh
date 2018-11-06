@@ -8,6 +8,5 @@ exec java -jar app.jar \
 --eureka.port=${EUREKA_PORT} \
 --mysql.host=${MYSQL_HOST} \
 --query.time=${QUERY_TIME} \
---kafka.host=${KAFKA_HOST} \
---mysql.username=${MYSQL_USERNAME} \
---mysql.password=${MYSQL_PASSWORD}
+--kafka.host=${KAFKA_HOST}
+
