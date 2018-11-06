@@ -147,6 +147,7 @@ public class BigDataPath {
     public static final String DISPATCH_UPDATE_ALIVE = "/update_alive";
     public static final String DISPATCH_ALIVE_STATUS = "/alive_status";
     public static final String DISPATCH_SEARCH_ALIVE = "/search_alive";
+    public static final String DISPATCH_EXCEL_TEMPLATE = "/template";
 
 
     public static final String OBJECTINFO_ADD = "/object_add";
