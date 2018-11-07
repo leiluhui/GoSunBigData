@@ -45,7 +45,8 @@ function create_person_table_mid_table() {
                                     timestamp     Timestamp, \
                                     hostname     string, \
                                     sabsolutepath     string, \
-                                    babsolutepath     string) \
+                                    babsolutepath     string, \
+                                    sharpness         int)    \
                                     partitioned by (date string) \
                                     STORED AS PARQUET \
                                     LOCATION '/user/hive/warehouse/person_table';
@@ -65,7 +66,8 @@ function create_person_table_mid_table() {
                                     date     string, \
                                     hostname     string, \
                                     sabsolutepath     string, \
-                                    babsolutepath     string) \
+                                    babsolutepath     string, \
+                                    sharpness         int)    \
                                     STORED AS PARQUET \
                                     LOCATION '/user/hive/warehouse/mid_table';
                                     show tables"
