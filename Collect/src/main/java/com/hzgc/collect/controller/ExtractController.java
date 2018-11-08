@@ -13,7 +13,10 @@ import com.hzgc.common.service.personattribute.bean.PersonAttribute;
 import com.hzgc.common.service.personattribute.service.PersonAttributeService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
-import com.hzgc.jniface.*;
+import com.hzgc.jniface.BigCarPictureData;
+import com.hzgc.jniface.BigPersonPictureData;
+import com.hzgc.jniface.BigPictureData;
+import com.hzgc.jniface.PictureData;
 import com.hzgc.seemmo.util.BASE64Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -224,10 +227,10 @@ public class ExtractController {
         return null;
     }
 
-//    @ApiIgnore(value = "内部调用的人脸提特征接口,入参为图片的Base64字符串")
+    @ApiIgnore(value = "内部调用的人脸提特征接口,入参为图片的Base64字符串")
     @RequestMapping(value = BigDataPath.FEATURE_EXTRACT_BASE64, method = RequestMethod.POST)
-    public ResponseEntity <BigPictureData> faceFeatureExtract_base64(@RequestBody String baseStr) {
-        BigPictureData pictureData = faceExtractService.featureExtractByImage(baseStr);
+    public ResponseEntity <PictureData> faceFeatureExtract_base64(String baseStr) {
+        PictureData pictureData = faceExtractService.featureExtractByImage(baseStr);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
     }
 
