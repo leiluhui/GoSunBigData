@@ -86,10 +86,8 @@ public class DispatchService {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
                 DispatchDTO dispatchDTO = new DispatchDTO();
                 String dispatchId = dispatchRecognize.getDispatchId();
-                System.out.println(dispatchId);
                 dispatchDTO.setId(dispatchId);
                 dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
-                System.out.println(JacksonUtil.toJson(dispatchDTO));
                 Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
                 if (null != dispatch) {
                     DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
