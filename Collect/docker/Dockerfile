@@ -1,5 +1,5 @@
 #指定镜像
-FROM 172.18.18.122/hzgc/cuda8-java8:1.0
+FROM cq.xuduan.tech:60419/hzgc/cuda8-java8:1.0
 
 #操作文件
 COPY docker-entrypoint.sh /

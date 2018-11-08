@@ -1,0 +1,12 @@
+172.18.18.123/hzgc/dispatch-background:2.3.0
+172.18.18.123/hzgc/peoman-worker:2.3.0
+172.18.18.123/hzgc/spark:2.3.0
+172.18.18.123/hzgc/collect-ftp:2.3.0
+172.18.18.123/hzgc/collect:2.3.0
+172.18.18.123/hzgc/dispatch:2.3.0
+172.18.18.123/hzgc/face-dynrepo:2.3.0
+172.18.18.123/hzgc/fusion:2.3.0
+172.18.18.123/hzgc/imsi-dynrepo:2.3.0
+172.18.18.123/hzgc/people:2.3.0
+172.18.18.123/hzgc/person-dynrepo:2.3.0
+172.18.18.123/hzgc/vehicle-dynrepo:2.3.0

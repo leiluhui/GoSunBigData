@@ -1,5 +1,5 @@
 #指定镜像
-FROM 172.18.18.122/hzgc/java:8
+FROM cq.xuduan.tech:60419/hzgc/java:8
 
 #设置环境变量
 ENV PATH /usr/local/bin:$PATH

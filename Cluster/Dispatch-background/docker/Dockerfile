@@ -1,8 +1,8 @@
 #指定镜像
-FROM 172.18.18.122/hzgc/java:8
+FROM cq.xuduan.tech:60419/hzgc/java-all:8
 
 #操作文件
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY docker-entrypoint.sh /
 COPY dispatch-background.jar /app.jar
 
 #执行命令

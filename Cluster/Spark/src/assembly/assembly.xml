@@ -18,7 +18,7 @@
         <fileSet>
             <directory>${project.basedir}/target</directory>
             <includes>
-                <include>spark-${project.parent.version}.jar</include>
+                <include>spark.jar</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
         </fileSet>
@@ -38,14 +38,4 @@
             <outputDirectory>conf</outputDirectory>
         </fileSet>
     </fileSets>
-    <dependencySets>
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <!--把间接依赖的jar 也包含进来 -->
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <!--是否解压 -->
-            <unpack>false</unpack>
-            <outputDirectory>lib</outputDirectory>
-        </dependencySet>
-    </dependencySets>
 </assembly>

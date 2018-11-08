@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
-#/bin/bash
+#!/bin/bash
 cd `dirname $0`
 HOME_DIR=`pwd`
 VERSION_INFO=${1}
-IMAGE_NAME=fusion
+IMAGE_NAME=spark
 DOCKER_REPO=${2}
 DATE_YMD=`date +%Y-%m-%d`
 DATE_HMS=`date +%H:%m:%S`

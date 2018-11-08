@@ -2,7 +2,7 @@
 
 #set -x  ## 用于调试使用，不用的时候可以注释掉
 JARS=(
-spark-2.3.0.jar
+spark.jar
 )
 ## spark class
 SPARK_CLASS_PARAM=com.hzgc.cluster.spark.consumer.KafkaToTidb

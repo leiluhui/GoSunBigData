@@ -27,7 +27,8 @@ object KafkaToTidb {
     val gourpId = properties.getProperty("job.kafkaToTidb.group.id")
     val timeOut = properties.getProperty("job.kafkaToTidb.timeout")
     val topic = properties.getProperty("job.kafkaToTidb.topic")
-    val jdbc = "jdbc:mysql://" + jdbcIp + ":4000/people?user=root&password="
+    val jdbcPort = properties.getProperty("job.kafkaToTidb.jdbc.port")
+    val jdbc = "jdbc:mysql://" + jdbcIp + ":" + jdbcPort + "/people?user=root&password=Hzgc@123"
     classOf[com.mysql.jdbc.Driver]
     Class.forName(driver)
 

@@ -27,7 +27,7 @@ services:
     - ${DOCKER_HOME}/mysql/sql/peopleDatabase.sql:/docker-entrypoint-initdb.d/peopleDatabase.sql
 
   mysql-cron:
-    image: cq.xuduan.tech:60419/hzgc/mysql-cron:5.7.19
+    image: cq.xuduan.tech:60419/mysql/mysql-cron:5.7.19
     container_name: mysql-cron
     restart: always
     links:
