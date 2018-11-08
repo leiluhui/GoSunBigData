@@ -17,6 +17,11 @@
   <sql id="Blob_Column_List" >
     picture
   </sql>
+
+  <select id="selectByWhiteId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select name, feature from t_dispatch_whiteinfo where white_id = #{whiteId, jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

@@ -20,7 +20,9 @@
   <select id="selectAll" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from t_dispatch_definition
+    ,
+    <include refid="Blob_Column_List" />
+    from t_dispatch_white
   </select>
 
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
