@@ -69,42 +69,52 @@ public class CarCompareForLive implements Runnable{
 
             Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
             for(CarObject carObject : carObjects){
-                DispatchAlive dispachAliveRule = tableCache.getDispachAlive(carObject.getIpcId());
-                if(dispachAliveRule == null){
+                List<DispatchAlive> dispachAliveRules = tableCache.getDispachAlive(carObject.getIpcId());
+                if(dispachAliveRules == null || dispachAliveRules.size() == 0){
                     continue;
                 }
-                String captachTime = carObject.getTimeStamp();
-                try {
-                    if(dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0){
-                        DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                        dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                        dispatureRecognize.setDispatchId("111111");
-                        dispatureRecognize.setDeviceId(carObject.getIpcId());
-                        dispatureRecognize.setType(4);
-                        String surl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath());
-                        String burl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath());
-                        dispatureRecognize.setSurl(surl);
-                        dispatureRecognize.setBurl(burl);
-                        dispatureRecognize.setRecordTime(sdf.parse(carObject.getTimeStamp()));
-                        dispatureRecognize.setCreateTime(new Date());
-                        try {
-                            dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            log.error(e.getMessage());
-                        }
+                String captachDate = carObject.getTimeStamp();
+                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || captachDate.contains(" ")){
+                    log.error("The time of captach is not complant format :" + captachDate);
+                    continue;
+                }
 
-                        AlarmMessage alarmMessage = new AlarmMessage();
-                        String ip = carObject.getIp();
-                        alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
-                        alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
-                        alarmMessage.setDeviceId(carObject.getIpcId());
-                        alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
-                        alarmMessage.setType(4);
-                        alarmMessage.setTime(carObject.getTimeStamp());
-                        producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                try {
+                    String captachTime = captachDate.split(" ")[1];
+                    for(DispatchAlive dispachAliveRule : dispachAliveRules) {
+                        if (dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0) {
+                            DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                            dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                            dispatureRecognize.setDispatchId("111111");
+                            dispatureRecognize.setDeviceId(carObject.getIpcId());
+                            dispatureRecognize.setType(4);
+                            String surl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath());
+                            String burl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath());
+                            dispatureRecognize.setSurl(surl);
+                            dispatureRecognize.setBurl(burl);
+                            dispatureRecognize.setRecordTime(sdf.parse(carObject.getTimeStamp()));
+                            dispatureRecognize.setCreateTime(new Date());
+                            try {
+                                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                log.error(e.getMessage());
+                            }
+
+                            AlarmMessage alarmMessage = new AlarmMessage();
+                            String ip = carObject.getIp();
+                            alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
+                            alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
+                            alarmMessage.setDeviceId(carObject.getIpcId());
+                            alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
+                            alarmMessage.setType(4);
+                            alarmMessage.setTime(carObject.getTimeStamp());
+                            producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                            break;
+                        }
                     }
-                } catch (ParseException e) {
+                } catch (Exception e) {
+                    log.error(e.getMessage());
                     e.printStackTrace();
                 }
 
