@@ -82,6 +82,10 @@ public class CommunityService {
 
     @Autowired
     @SuppressWarnings("unused")
+    private ImsiAllMapper imsiAllMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private PlatformService platformService;
 
     @Autowired
@@ -633,25 +637,31 @@ public class CommunityService {
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
-        List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(param.getPeopleId());
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setDeviceId(people.getDeviceid());
-                vo.setDeviceName(platformService.getCameraDeviceName(people.getDeviceid()));
+                vo.setCameraDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
                 vo.setFtpUrl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
                 voList.add(vo);
             }
         }
-        if (imsiList != null && imsiList.size() > 0) {
-            for (FusionImsi imsi : imsiList) {
-                PeopleCaptureVO vo = new PeopleCaptureVO();
-                vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
-                vo.setDeviceId(imsi.getDeviceid());
-                vo.setDeviceName(platformService.getImsiDeviceName(imsi.getDeviceid()));
-                vo.setImsi(imsi.getImsi());
-                voList.add(vo);
+        People people = peopleMapper.selectByPrimaryKey(param.getPeopleId());
+        List<Imsi> imsis = people.getImsi();
+        if (imsis != null && imsis.size() > 0){
+            List<String> people_imsi = new ArrayList<>();
+            for (Imsi imsi : imsis) {
+                people_imsi.add(imsi.getImsi());
+            }
+            List<ImsiAll> imsiList = imsiAllMapper.selectByImsi(people_imsi);
+            if (imsiList != null && imsiList.size() > 0) {
+                for (ImsiAll imsiAll : imsiList) {
+                    PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
+                    vo.setImsiDeviceId(platformService.getImsiDeviceName(imsiAll.getControlsn()));
+                    vo.setImsi(imsiAll.getImsi());
+                    voList.add(vo);
+                }
             }
         }
         voList.sort(new Comparator<PeopleCaptureVO>() {
@@ -678,23 +688,31 @@ public class CommunityService {
     public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(peopleId);
-        List<FusionImsi> imsiList = fusionImsiMapper.searchCapture1Month(peopleId);
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setDeviceId(people.getDeviceid());
+                vo.setCameraDeviceId(people.getDeviceid());
                 vo.setFtpUrl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
                 voList.add(vo);
             }
         }
-        if (imsiList != null && imsiList.size() > 0) {
-            for (FusionImsi imsi : imsiList) {
-                PeopleCaptureVO vo = new PeopleCaptureVO();
-                vo.setCaptureTime(sdf.format(imsi.getReceivetime()));
-                vo.setDeviceId(imsi.getDeviceid());
-                vo.setImsi(imsi.getImsi());
-                voList.add(vo);
+        People people = peopleMapper.selectByPrimaryKey(peopleId);
+        List<Imsi> imsis = people.getImsi();
+        if (imsis != null && imsis.size() > 0){
+            List<String> people_imsi = new ArrayList<>();
+            for (Imsi imsi : imsis) {
+                people_imsi.add(imsi.getImsi());
+            }
+            List<ImsiAll> imsiList = imsiAllMapper.selectByImsi(people_imsi);
+            if (imsiList != null && imsiList.size() > 0) {
+                for (ImsiAll imsiAll : imsiList) {
+                    PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
+                    vo.setImsiDeviceId(imsiAll.getControlsn());
+                    vo.setImsi(imsiAll.getImsi());
+                    voList.add(vo);
+                }
             }
         }
         voList.sort(new Comparator<PeopleCaptureVO>() {
