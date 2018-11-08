@@ -17,5 +17,7 @@ public interface DispatchAliveMapper {
 
     int updateByPrimaryKeySelective(DispatchAlive record);
 
+    int updateByPrimaryKeyWithBLOBs(DispatchAlive record);
+
     int updateByPrimaryKey(DispatchAlive record);
 }

@@ -17,9 +17,9 @@ public class TableCache {
     @Autowired
     private DispatchAliveMapper dispachAliveMapper;
     @Autowired
-    private DispatchDefinitionMapper dispatchDefinitionMapper;
+    private DispatchWhiteMapper dispatchWhiteMapper;
     @Autowired
-    private DispatchNameMapper dispatchNameMapper;
+    private DispatchWhiteinfoMapper dispatchWhiteinfoMapper;
     //    private static TableCache tableCache;
 
     private Map<Long, List<DispachData>> faceInfos; //人脸布控信息
@@ -35,27 +35,32 @@ public class TableCache {
     public void loadDispatchWhite(){
         log.info("Load table for white list to cache.");
         Map<String, Set<float[]>> temp = new HashMap<>();
-        List<DispatchDefinition> definitions = dispatchDefinitionMapper.selectAll();
-        if(definitions == null){
+        List<DispatchWhite> dispatchWhites = dispatchWhiteMapper.selectAll();
+        if(dispatchWhites == null){
             ipcToFeatures = temp;
             return;
         }
-        log.info("Load table to cache. The size is " + definitions.size());
-        for(DispatchDefinition definition : definitions){
-            if(definition.getStatus() != 0){
+        log.info("Load table to cache. The size is " + dispatchWhites.size());
+        for(DispatchWhite dispatchWhite : dispatchWhites){
+            if(dispatchWhite.getStatus() != 0){
                 continue;
             }
-            String definitionId = definition.getId();
-            String ipcs = definition.getIpcs();
-            if(ipcs == null || "".equals(ipcs)){
+            String dispatchWhiteId = dispatchWhite.getId();
+            String devices = dispatchWhite.getDevices();
+            if(devices == null || "".equals(devices)){
                 continue;
             }
-            List<String> ipcList = Arrays.asList(ipcs.split(","));
-
-            List<DispatchName> dispatchNames = dispatchNameMapper.selectByDefid(definitionId);
-            for(String ipc : ipcList){
-                Set<float[]> set = temp.computeIfAbsent(ipc, k -> new HashSet<>());
-                for(DispatchName dispatchName : dispatchNames){
+            List<String> deviceList = Arrays.asList(devices.split(","));
+            if(deviceList.size() == 0){
+                continue;
+            }
+            List<DispatchWhiteinfo> dispatchWhiteinfos = dispatchWhiteinfoMapper.selectByWhiteId(dispatchWhiteId);
+            if(dispatchWhiteinfos == null || dispatchWhiteinfos.size() == 0){
+                continue;
+            }
+            for(String device : deviceList){
+                Set<float[]> set = temp.computeIfAbsent(device, k -> new HashSet<>());
+                for(DispatchWhiteinfo dispatchName : dispatchWhiteinfos){
                     set.add(FaceUtil.base64Str2floatFeature(dispatchName.getFeature()));
                 }
             }
@@ -141,7 +146,17 @@ public class TableCache {
         log.info("Load table to cache. The size is " + list.size());
         for(DispatchAlive dispachAlive : list){
             if(dispachAlive.getStatus() == 0){
-                temp.put(dispachAlive.getIpc(), dispachAlive);
+                String devices = dispachAlive.getDevices();
+                if(devices == null || devices.equals("")){
+                    continue;
+                }
+                String[] deviceArr = devices.split(",");
+                if(deviceArr.length == 0){
+                    continue;
+                }
+                for(String devece : deviceArr){
+                    temp.put(devece, dispachAlive);
+                }
             }
         }
         dispachAlives = temp;

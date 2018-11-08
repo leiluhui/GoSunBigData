@@ -79,8 +79,7 @@ public class FaceCompareForLive implements Runnable{
                 }
                 String captachTime = faceObject.getTimeStamp();
                 try {
-                    long time = sdf.parse(captachTime).getTime();
-                    if(dispachAliveRule.getStartTime().getTime() < time && dispachAliveRule.getEndTime().getTime() > time){
+                    if(dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0){
                         DispatchRecognize dispatureRecognize = new DispatchRecognize();
                         dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
                         dispatureRecognize.setDispatchId("111111");

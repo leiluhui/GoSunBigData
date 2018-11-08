@@ -1,9 +1,9 @@
 package com.hzgc.cluster.dispatch.model;
 
-public class DispatchName {
-    private Integer id;
+public class DispatchWhiteinfo {
+    private Long id;
 
-    private String defid;
+    private String whiteId;
 
     private String name;
 
@@ -13,20 +13,20 @@ public class DispatchName {
 
     private byte[] picture;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getDefid() {
-        return defid;
+    public String getWhiteId() {
+        return whiteId;
     }
 
-    public void setDefid(String defid) {
-        this.defid = defid == null ? null : defid.trim();
+    public void setWhiteId(String whiteId) {
+        this.whiteId = whiteId == null ? null : whiteId.trim();
     }
 
     public String getName() {

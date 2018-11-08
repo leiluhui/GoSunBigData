@@ -13,7 +13,7 @@
         </commentGenerator>
         <!-- 数据库 url,用户名,密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.202:4000/people"
-                        userId="root" password="">
+                        userId="root" password="Hzgc@123">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
@@ -43,10 +43,10 @@
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
 
-        <table tableName="t_dispatch_definition" domainObjectName="DispatchDefinition" enableCountByExample="false"
+        <table tableName="t_dispatch_white" domainObjectName="DispatchWhite" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
-        <table tableName="t_dispatch_name" domainObjectName="DispatchName" enableCountByExample="false"
+        <table tableName="t_dispatch_whiteinfo" domainObjectName="DispatchWhiteinfo" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>

@@ -1,55 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.cluster.dispatch.dao.DispatchNameMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispatch.model.DispatchName" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="defid" property="defid" jdbcType="VARCHAR" />
+<mapper namespace="com.hzgc.cluster.dispatch.dao.DispatchWhiteinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="white_id" property="whiteId" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="feature" property="feature" jdbcType="VARCHAR" />
     <result column="bit_feature" property="bitFeature" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispatch.model.DispatchName" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" extends="BaseResultMap" >
     <result column="picture" property="picture" jdbcType="LONGVARBINARY" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, defid, name, feature, bit_feature
+    id, white_id, name, feature, bit_feature
   </sql>
   <sql id="Blob_Column_List" >
     picture
   </sql>
-
-  <select id="selectByDefid" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select name, feature from t_dispatch_name where defid = #{defid,jdbcType=VARCHAR}
-  </select>
-
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from t_dispatch_name
-    where id = #{id,jdbcType=INTEGER}
+    from t_dispatch_whiteinfo
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from t_dispatch_name
-    where id = #{id,jdbcType=INTEGER}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_dispatch_whiteinfo
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
-    insert into t_dispatch_name (id, defid, name, 
+  <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    insert into t_dispatch_whiteinfo (id, white_id, name, 
       feature, bit_feature, picture
       )
-    values (#{id,jdbcType=INTEGER}, #{defid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{whiteId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{feature,jdbcType=VARCHAR}, #{bitFeature,jdbcType=VARCHAR}, #{picture,jdbcType=LONGVARBINARY}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
-    insert into t_dispatch_name
+  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    insert into t_dispatch_whiteinfo
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="defid != null" >
-        defid,
+      <if test="whiteId != null" >
+        white_id,
       </if>
       <if test="name != null" >
         name,
@@ -66,10 +61,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
-      <if test="defid != null" >
-        #{defid,jdbcType=VARCHAR},
+      <if test="whiteId != null" >
+        #{whiteId,jdbcType=VARCHAR},
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
@@ -85,11 +80,11 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
-    update t_dispatch_name
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    update t_dispatch_whiteinfo
     <set >
-      <if test="defid != null" >
-        defid = #{defid,jdbcType=VARCHAR},
+      <if test="whiteId != null" >
+        white_id = #{whiteId,jdbcType=VARCHAR},
       </if>
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
@@ -104,23 +99,23 @@
         picture = #{picture,jdbcType=LONGVARBINARY},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
-    update t_dispatch_name
-    set defid = #{defid,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    update t_dispatch_whiteinfo
+    set white_id = #{whiteId,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       feature = #{feature,jdbcType=VARCHAR},
       bit_feature = #{bitFeature,jdbcType=VARCHAR},
       picture = #{picture,jdbcType=LONGVARBINARY}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispatch.model.DispatchName" >
-    update t_dispatch_name
-    set defid = #{defid,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhiteinfo" >
+    update t_dispatch_whiteinfo
+    set white_id = #{whiteId,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       feature = #{feature,jdbcType=VARCHAR},
       bit_feature = #{bitFeature,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

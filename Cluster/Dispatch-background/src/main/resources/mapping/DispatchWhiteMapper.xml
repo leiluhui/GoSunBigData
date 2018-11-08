@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hzgc.cluster.dispatch.dao.DispatchAliveMapper" >
-  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispatch.model.DispatchAlive" >
+<mapper namespace="com.hzgc.cluster.dispatch.dao.DispatchWhiteMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cluster.dispatch.model.DispatchWhite" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="organization" property="organization" jdbcType="VARCHAR" />
-    <result column="start_time" property="startTime" jdbcType="VARCHAR" />
-    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispatch.model.DispatchAlive" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="com.hzgc.cluster.dispatch.model.DispatchWhite" extends="BaseResultMap" >
     <result column="devices" property="devices" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, organization, start_time, end_time, status, create_time
+    id, name, organization, status
   </sql>
   <sql id="Blob_Column_List" >
     devices
   </sql>
 
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from t_dispatch_alive
+    from t_dispatch_definition
   </select>
 
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
@@ -31,23 +28,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from t_dispatch_alive
+    from t_dispatch_white
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_dispatch_alive
+    delete from t_dispatch_white
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchAlive" >
-    insert into t_dispatch_alive (id, name, organization, 
-      start_time, end_time, status, 
-      create_time, devices)
+  <insert id="insert" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhite" >
+    insert into t_dispatch_white (id, name, organization, 
+      status, devices)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{organization,jdbcType=VARCHAR}, 
-      #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{devices,jdbcType=LONGVARCHAR})
+      #{status,jdbcType=INTEGER}, #{devices,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchAlive" >
-    insert into t_dispatch_alive
+  <insert id="insertSelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhite" >
+    insert into t_dispatch_white
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -58,17 +53,8 @@
       <if test="organization != null" >
         organization,
       </if>
-      <if test="startTime != null" >
-        start_time,
-      </if>
-      <if test="endTime != null" >
-        end_time,
-      </if>
       <if test="status != null" >
         status,
-      </if>
-      <if test="createTime != null" >
-        create_time,
       </if>
       <if test="devices != null" >
         devices,
@@ -84,25 +70,16 @@
       <if test="organization != null" >
         #{organization,jdbcType=VARCHAR},
       </if>
-      <if test="startTime != null" >
-        #{startTime,jdbcType=VARCHAR},
-      </if>
-      <if test="endTime != null" >
-        #{endTime,jdbcType=VARCHAR},
-      </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="devices != null" >
         #{devices,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchAlive" >
-    update t_dispatch_alive
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhite" >
+    update t_dispatch_white
     <set >
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
@@ -110,17 +87,8 @@
       <if test="organization != null" >
         organization = #{organization,jdbcType=VARCHAR},
       </if>
-      <if test="startTime != null" >
-        start_time = #{startTime,jdbcType=VARCHAR},
-      </if>
-      <if test="endTime != null" >
-        end_time = #{endTime,jdbcType=VARCHAR},
-      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="devices != null" >
         devices = #{devices,jdbcType=LONGVARCHAR},
@@ -128,25 +96,19 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.cluster.dispatch.model.DispatchAlive" >
-    update t_dispatch_alive
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhite" >
+    update t_dispatch_white
     set name = #{name,jdbcType=VARCHAR},
       organization = #{organization,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=VARCHAR},
-      end_time = #{endTime,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       devices = #{devices,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispatch.model.DispatchAlive" >
-    update t_dispatch_alive
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cluster.dispatch.model.DispatchWhite" >
+    update t_dispatch_white
     set name = #{name,jdbcType=VARCHAR},
       organization = #{organization,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=VARCHAR},
-      end_time = #{endTime,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
