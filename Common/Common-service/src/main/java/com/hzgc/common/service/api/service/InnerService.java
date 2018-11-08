@@ -83,7 +83,7 @@ public class InnerService {
         }
     }
 
-    public BigPictureData faceFeautreExtract(String base64Str) {
+    public PictureData faceFeautreExtract(String base64Str) {
         if (base64Str != null && !"".equals(base64Str)) {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
