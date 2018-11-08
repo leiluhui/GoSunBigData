@@ -11,7 +11,6 @@ PROJECT_POM=${PROJECT_HOME_DIR}/pom.xml
 PROJECT_VERSION=`awk -v RS="</*version>" 'NR==2{print}' ${PROJECT_POM}`
 DEFAULT_DOCKER_REPOSTORY_ADDRESS=172.18.18.123
 DOCKER_REPOSITORY_GOURP=hzgc
-DOCKER_REPOSITORY_ADDRESS=${1}
 MAKE_RESULT=$SCRIPT_HOME_DIR/make_result
 
 
@@ -19,7 +18,7 @@ function find_make()
 {
     for make in `find $1 | grep target/make.sh`
     do
-        echo $DOCKER_REPOSITORY_ADDRESS
+
         sh $make $PROJECT_VERSION $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
         IMAGE_NAME=`cat $make | grep IMAGE_NAME=| awk -F= '{print $2}'`
         echo $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP/$IMAGE_NAME:$PROJECT_VERSION >> ${MAKE_RESULT}
@@ -52,9 +51,11 @@ function env_check()
         exit 1
     fi
 
-    if [ -z "$DOCKER_REPOSITORY_ADDRESS" ]; then
+    if [ -z "${DOCKER_REPOSITORY_ADDRESS}" ]; then
         print_info "Current docker repository is not specified, use default:$DEFAULT_DOCKER_REPOSTORY_ADDRESS"
-        DOCKER_REPOSTORY_ADDRESS=${DEFAULT_DOCKER_REPOSTORY_ADDRESS}
+        export DOCKER_REPOSITORY_ADDRESS=${DEFAULT_DOCKER_REPOSTORY_ADDRESS}
+    else
+        export DOCKER_REPOSITORY_ADDRESS=${1}
     fi
 }
 
