@@ -26,7 +26,7 @@ public class TableCache {
     private Map<Long, byte[][]> faceFeatures;
     private Map<Long, List<DispachData>> carInfos;  //车辆布控信息
     private Map<Long, List<DispachData>> macInfos;  //Mac布控信息
-    private Map<String, DispatchAlive> dispachAlives; //活体检测布控
+    private Map<String, List<DispatchAlive>> dispachAlives; //活体检测布控
     private Map<String, Set<float[]>> ipcToFeatures; //白名单布控
 
     /**
@@ -137,7 +137,7 @@ public class TableCache {
      */
     public void loadDispatchLive(){
         log.info("Load table for Live check to cache.");
-        Map<String, DispatchAlive> temp = new HashMap<>();
+        Map<String, List<DispatchAlive>> temp = new HashMap<>();
         List<DispatchAlive> list = dispachAliveMapper.selectAll();
         if(list == null){
             dispachAlives = temp;
@@ -155,7 +155,8 @@ public class TableCache {
                     continue;
                 }
                 for(String devece : deviceArr){
-                    temp.put(devece, dispachAlive);
+                    List<DispatchAlive> dispatchAlives = temp.computeIfAbsent(devece, k -> new ArrayList<>());
+                    dispatchAlives.add(dispachAlive);
                 }
             }
         }
@@ -365,7 +366,7 @@ public class TableCache {
         return macInfos.get(region);
     }
 
-    public DispatchAlive getDispachAlive(String ipcId){
+    public List<DispatchAlive> getDispachAlive(String ipcId){
         return dispachAlives.get(ipcId);
     }
 

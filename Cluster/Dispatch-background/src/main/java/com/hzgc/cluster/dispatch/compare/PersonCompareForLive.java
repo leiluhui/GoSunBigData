@@ -71,43 +71,52 @@ public class PersonCompareForLive implements Runnable{
             Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
 
             for(PersonObject personObject : personObjects){
-                DispatchAlive dispachAliveRule = tableCache.getDispachAlive(personObject.getIpcId());
-                if(dispachAliveRule == null){
+                List<DispatchAlive> dispachAliveRules = tableCache.getDispachAlive(personObject.getIpcId());
+                if(dispachAliveRules == null || dispachAliveRules.size() == 0){
                     continue;
                 }
 
-                String captachTime = personObject.getTimeStamp();
+                String captachDate = personObject.getTimeStamp();
+                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || captachDate.contains(" ")){
+                    log.error("The time of captach is not complant format :" + captachDate);
+                    continue;
+                }
                 try {
-                    if(dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0){
-                        DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                        dispatureRecognize.setDispatchId("111111");
-                        dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                        dispatureRecognize.setDeviceId(personObject.getIpcId());
-                        dispatureRecognize.setType(4);
-                        String surl = CollectUrlUtil.toHttpPath(personObject.getHostname(), "2573", personObject.getsAbsolutePath());
-                        String burl = CollectUrlUtil.toHttpPath(personObject.getHostname(), "2573", personObject.getbAbsolutePath());
-                        dispatureRecognize.setSurl(surl);
-                        dispatureRecognize.setBurl(burl);
-                        dispatureRecognize.setRecordTime(sdf.parse(personObject.getTimeStamp()));
-                        dispatureRecognize.setCreateTime(new Date());
-                        try {
-                            dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            log.error(e.getMessage());
-                        }
+                    String captachTime = captachDate.split(" ")[1];
+                    for(DispatchAlive dispachAliveRule : dispachAliveRules) {
+                        if (dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0) {
+                            DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                            dispatureRecognize.setDispatchId("111111");
+                            dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                            dispatureRecognize.setDeviceId(personObject.getIpcId());
+                            dispatureRecognize.setType(4);
+                            String surl = CollectUrlUtil.toHttpPath(personObject.getHostname(), "2573", personObject.getsAbsolutePath());
+                            String burl = CollectUrlUtil.toHttpPath(personObject.getHostname(), "2573", personObject.getbAbsolutePath());
+                            dispatureRecognize.setSurl(surl);
+                            dispatureRecognize.setBurl(burl);
+                            dispatureRecognize.setRecordTime(sdf.parse(personObject.getTimeStamp()));
+                            dispatureRecognize.setCreateTime(new Date());
+                            try {
+                                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                log.error(e.getMessage());
+                            }
 
-                        AlarmMessage alarmMessage = new AlarmMessage();
-                        String ip = personObject.getIp();
-                        alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getbAbsolutePath()));
-                        alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getsAbsolutePath()));
-                        alarmMessage.setDeviceId(personObject.getIpcId());
-                        alarmMessage.setDeviceName(map.get(personObject.getIpcId()).getCameraName());
-                        alarmMessage.setType(4);
-                        alarmMessage.setTime(personObject.getTimeStamp());
-                        producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                            AlarmMessage alarmMessage = new AlarmMessage();
+                            String ip = personObject.getIp();
+                            alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getbAbsolutePath()));
+                            alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getsAbsolutePath()));
+                            alarmMessage.setDeviceId(personObject.getIpcId());
+                            alarmMessage.setDeviceName(map.get(personObject.getIpcId()).getCameraName());
+                            alarmMessage.setType(4);
+                            alarmMessage.setTime(personObject.getTimeStamp());
+                            producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                            break;
+                        }
                     }
-                } catch (ParseException e) {
+                } catch (Exception e) {
+                    log.error(e.getMessage());
                     e.printStackTrace();
                 }
             }

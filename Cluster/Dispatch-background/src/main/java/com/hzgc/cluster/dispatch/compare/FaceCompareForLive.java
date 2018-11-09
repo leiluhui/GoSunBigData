@@ -70,44 +70,51 @@ public class FaceCompareForLive implements Runnable{
 //            CameraQueryDTO cameraQueryDTO = new CameraQueryDTO();
 //            cameraQueryDTO.setCameraName("asgag");
 //            map.put("4C05839PAJE8728", cameraQueryDTO);
-
-
             for(FaceObject faceObject : faceObjects){
-                DispatchAlive dispachAliveRule = tableCache.getDispachAlive(faceObject.getIpcId());
-                if(dispachAliveRule == null){
+                List<DispatchAlive> dispachAliveRules = tableCache.getDispachAlive(faceObject.getIpcId());
+                if(dispachAliveRules == null || dispachAliveRules.size() == 0){
                     continue;
                 }
-                String captachTime = faceObject.getTimeStamp();
+                String captachDate = faceObject.getTimeStamp();
+                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || captachDate.contains(" ")){
+                    log.error("The time of captach is not complant format :" + captachDate);
+                    continue;
+                }
                 try {
-                    if(dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0){
-                        DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                        dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                        dispatureRecognize.setDispatchId("111111");
-                        dispatureRecognize.setDeviceId(faceObject.getIpcId());
-                        dispatureRecognize.setType(4);
-                        String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
-                        String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
-                        dispatureRecognize.setSurl(surl);
-                        dispatureRecognize.setBurl(burl);
-                        dispatureRecognize.setRecordTime(sdf.parse(faceObject.getTimeStamp()));
-                        dispatureRecognize.setCreateTime(new Date());
-                        try {
-                            dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                        } catch (Exception e){
-                            e.printStackTrace();
-                            log.error(e.getMessage());
+                    String captachTime = captachDate.split(" ")[1];
+                    for(DispatchAlive dispachAliveRule : dispachAliveRules) {
+                        if (dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0) {
+                            DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                            dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                            dispatureRecognize.setDispatchId("111111");
+                            dispatureRecognize.setDeviceId(faceObject.getIpcId());
+                            dispatureRecognize.setType(4);
+                            String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
+                            String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
+                            dispatureRecognize.setSurl(surl);
+                            dispatureRecognize.setBurl(burl);
+                            dispatureRecognize.setRecordTime(sdf.parse(faceObject.getTimeStamp()));
+                            dispatureRecognize.setCreateTime(new Date());
+                            try {
+                                dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                log.error(e.getMessage());
+                            }
+                            AlarmMessage alarmMessage = new AlarmMessage();
+                            String ip = faceObject.getIp();
+                            alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                            alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
+                            alarmMessage.setDeviceId(faceObject.getIpcId());
+                            alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
+                            alarmMessage.setType(4);
+                            alarmMessage.setTime(faceObject.getTimeStamp());
+                            producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                            break;
                         }
-                        AlarmMessage alarmMessage = new AlarmMessage();
-                        String ip = faceObject.getIp();
-                        alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
-                        alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
-                        alarmMessage.setDeviceId(faceObject.getIpcId());
-                        alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
-                        alarmMessage.setType(4);
-                        alarmMessage.setTime(faceObject.getTimeStamp());
-                        producer.send(topic, JacksonUtil.toJson(alarmMessage));
                     }
-                } catch (ParseException e) {
+                } catch (Exception e) {
+                    log.error(e.getMessage());
                     e.printStackTrace();
                 }
             }
