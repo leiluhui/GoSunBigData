@@ -1,8 +1,12 @@
 package com.hzgc.service.dynrepo.service;
 
 import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.compare.CompareParam;
+import com.hzgc.compare.Feature;
+import com.hzgc.jniface.PictureData;
 import com.hzgc.service.dynrepo.bean.*;
 import com.hzgc.service.dynrepo.dao.ElasticSearchDao;
+import com.hzgc.service.dynrepo.dao.FaceCompareClient;
 import com.hzgc.service.dynrepo.dao.MemoryDao;
 import com.hzgc.service.dynrepo.dao.SparkJDBCDao;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +35,9 @@ public class CaptureSearchService {
     @Autowired
     @SuppressWarnings("unused")
     private MemoryDao memoryDao;
+
+    @Autowired
+    private FaceCompareClient client;
 
     public SearchResult searchPicture(SearchOption option, String searchId) throws SQLException {
         SearchResult searchResult;
@@ -78,6 +85,59 @@ public class CaptureSearchService {
             log.info("Start search picture, search result set is null");
         }
         sparkJDBCDao.closeConnection(searchCallBack.getConnection(), searchCallBack.getStatement());
+        return retrunResult;
+    }
+
+    public SearchResult searchPicture2(SearchOption option, String searchId){
+        String startDate = option.getStartTime().split(" ")[0];
+        String endDate = option.getEndTime().split(" ")[0];
+        List<Feature> features = new ArrayList<>();
+        for(PictureData pictureData : option.getImages()){
+            String id = pictureData.getImageID();
+            byte[] bitFeature = pictureData.getFeature().getBitFeature();
+            float[] feature = pictureData.getFeature().getFeature();
+            features.add(new Feature(id, bitFeature, feature));
+        }
+        float sim = option.getSimilarity();
+        boolean isTheSame = option.isSinglePerson();
+        //组合参数
+        CompareParam param = new CompareParam(startDate, endDate, features, sim, 20, isTheSame);
+        param.setSort(option.getSort());
+        List<String> ipcIds = new ArrayList<>();
+        ipcIds.addAll(option.getIpcMapping().keySet());
+        param.setIpcIds(ipcIds);
+        SearchResult searchResult = client.compare(param, option, searchId);
+
+        SearchResult retrunResult = new SearchResult();
+        if (option.getDeviceIpcs() != null && option.getDeviceIpcs().size() > 0) {
+            retrunResult.setDeivceCount(option.getDeviceIpcs().size());
+        }
+
+        //存储搜索历史记录
+        SearchCollection collection = new SearchCollection();
+        searchResult.setDeivceCount(retrunResult.getDeivceCount());
+        collection.setSearchOption(option);
+        collection.setSearchResult(searchResult);
+        boolean flag = memoryDao.insertSearchRes(collection);
+        if (memoryDao.getSearchRes(searchId).getSingleResults().size() > 0) {
+            if (flag) {
+                log.info("The search history saved successful, search id is:" + searchId);
+            } else {
+                log.warn("The search history saved failure, search id is:" + searchId);
+            }
+            retrunResult.setSearchId(searchResult.getSearchId());
+            List<SingleSearchResult> singleSearchResults = new ArrayList<>();
+            for (SingleSearchResult singleResult : searchResult.getSingleResults()) {
+                SingleSearchResult tempSingleResult = new SingleSearchResult();
+                tempSingleResult.setPictures(captureServiceHelper.pageSplit(singleResult.getPictures(),
+                        option.getStart(),
+                        option.getLimit()));
+                tempSingleResult.setSearchId(singleResult.getSearchId());
+                tempSingleResult.setTotal(singleResult.getTotal());
+                singleSearchResults.add(tempSingleResult);
+            }
+            retrunResult.setSingleResults(singleSearchResults);
+        }
         return retrunResult;
     }
 

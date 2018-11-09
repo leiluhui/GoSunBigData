@@ -11,6 +11,12 @@ public class Feature{
         this.feature2 = feature2;
     }
 
+    public Feature(String id, byte[] feature1, float[] feature2){
+        this.id = id;
+        this.feature1 = feature1;
+        this.feature2 = feature2;
+    }
+
     public byte[] getFeature1() {
         return feature1;
     }
