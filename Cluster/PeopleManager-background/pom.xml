@@ -16,7 +16,6 @@
 
     <modules>
         <module>PeopleManager-background-worker</module>
-        <module>PeopleManager-background-client</module>
     </modules>
 
     <dependencies>

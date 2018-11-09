@@ -11,7 +11,7 @@ services:
     - "9000:9000"
 
   mysql:
-    image: cq.xuduan.tech:60419/hzgc/mysql:5.7.19
+    image: ${DOCKER_REPOSITOR}/hzgc/mysql:5.7.19
     container_name: mysql
     restart: always
     environment:
@@ -27,7 +27,7 @@ services:
     - ${DOCKER_HOME}/mysql/sql/peopleDatabase.sql:/docker-entrypoint-initdb.d/peopleDatabase.sql
 
   mysql-cron:
-    image: cq.xuduan.tech:60419/hzgc/mysql-cron:5.7.19
+    image: ${DOCKER_REPOSITOR}/hzgc/mysql-cron:5.7.19
     container_name: mysql-cron
     restart: always
     links:
@@ -41,7 +41,7 @@ services:
     - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
 
   zookeeper:
-    image: cq.xuduan.tech:60419/hzgc/zookeeper:3.4.10
+    image: ${DOCKER_REPOSITOR}/hzgc/zookeeper:3.4.10
     container_name: zookeeper
     restart: always
     environment:
@@ -58,7 +58,7 @@ services:
     - /etc/localtime:/etc/localtime:ro
 
   kafka:
-    image: cq.xuduan.tech:60419/hzgc/kafka:1.0.0
+    image: ${DOCKER_REPOSITOR}/hzgc/kafka:1.0.0
     container_name: kafka
     restart: always
     #network_mode: "host"
@@ -81,7 +81,7 @@ services:
     - ${DOCKER_HOME}/kafka/logs:/opt/kafka/logs
 
   esearch:
-    image: cq.xuduan.tech:60419/hzgc/elasticsearch-ik:5.5.0
+    image: ${DOCKER_REPOSITOR}/hzgc/elasticsearch-ik:5.5.0
     container_name: esearch
     restart: always
     environment:
@@ -94,7 +94,7 @@ services:
     - ${DOCKER_HOME}/es/data:/usr/share/elasticsearch/data
 
   kibana:
-    image: cq.xuduan.tech:60419/hzgc/kibaba:5.5.0
+    image: ${DOCKER_REPOSITOR}/hzgc/kibaba:5.5.0
     depends_on:
     - esearch
     container_name: kibana
@@ -106,7 +106,7 @@ services:
     - "5601:5601"
 
   collect:
-    image: cq.xuduan.tech:60419/hzgc/collect:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect:${VERSION}
     depends_on:
     - zookeeper
     - eureka
@@ -118,11 +118,14 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/collect/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   peoman-worker:
-    image: cq.xuduan.tech:60419/hzgc/peoman-worker:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${VERSION}
     depends_on:
     - zookeeper
     - eureka
@@ -140,12 +143,15 @@ services:
     - FLOAT_COMPARE_OPEN=true
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GsFaceLib/face_libs
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
     - ${DOCKER_HOME}/peoman-worker/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   dispatch-background:
-    image: cq.xuduan.tech:60419/hzgc/dispatch-background:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/dispatch-background:${VERSION}
     depends_on:
     - kafka
     - mysql
@@ -159,12 +165,15 @@ services:
     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GsFaceLib/face_libs
     - MYSQL_USERNAME=${MYSQL_USERNAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
     - ${DOCKER_HOME}/dispatch-background/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   kafka-parquet:
-    image: cq.xuduan.tech:60419/hzgc/spark:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
     depends_on:
     - zookeeper
     - kafka
@@ -173,12 +182,15 @@ services:
     command: /start-kafka-to-parquet.sh
     restart: always
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   kafka-tidb:
-    image: cq.xuduan.tech:60419/hzgc/spark:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
     depends_on:
     - zookeeper
     - kafka
@@ -187,11 +199,14 @@ services:
     command: /start-kafka-to-tidb.sh
     restart: always
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   face-dynrepo:
-    image: cq.xuduan.tech:60419/hzgc/face-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
     depends_on:
     - zookeeper
     - esearch
@@ -205,11 +220,14 @@ services:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/face-dynrepo/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   person-dynrepo:
-    image: cq.xuduan.tech:60419/hzgc/person-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${VERSION}
     depends_on:
     - zookeeper
     - esearch
@@ -223,11 +241,14 @@ services:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/person-dynrepo/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   vehicle-dynrepo:
-    image: cq.xuduan.tech:60419/hzgc/vehicle-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VERSION}
     depends_on:
     - zookeeper
     - esearch
@@ -241,11 +262,14 @@ services:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/vehicle-dynrepo/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   people:
-    image: cq.xuduan.tech:60419/hzgc/people:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/people:${VERSION}
     depends_on:
     - mysql
     - eureka
@@ -257,18 +281,23 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
     - MYSQL_USERNAME=${MYSQL_USERNAME}
-    - MYSQL_PASSOWRD=${MYSQL_PASSWORD}
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     network_mode: "host"
     volumes:
     - ${DOCKER_HOME}/people/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   dispatch:
-    image: cq.xuduan.tech:60419/hzgc/dispatch:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${VERSION}
     depends_on:
     - mysql
     - eureka
     - collect
     container_name: dispatch
+    network_mode: "host"
     environment:
     - EUREKA_IP=${EUREKA_HOST_IP}
     - EUREKA_PORT=${EUREKA_HOST_PORT}
@@ -276,11 +305,14 @@ services:
     - MYSQL_USERNAME=${MYSQL_USERNAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/dispatch/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   imsi-dynrepo:
-    image: cq.xuduan.tech:60419/hzgc/imsi-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/imsi-dynrepo:${VERSION}
     depends_on:
     - mysql
     - eureka
@@ -295,11 +327,14 @@ services:
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - QUERY_TIME=30
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/imsi-dynrepo/log:/log
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   fusion:
-    image: cq.xuduan.tech:60419/hzgc/fusion:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/fusion:${VERSION}
     depends_on:
     - mysql
     - eureka
@@ -314,12 +349,14 @@ services:
     - QUERY_TIME=30
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/fusion/log:/log
-
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
 
   collect-ftp:
-    image: cq.xuduan.tech:60419/hzgc/collect-ftp:1.0
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:1.0
     container_name: collect-ftp
     restart: always
     runtime: nvidia
@@ -340,9 +377,12 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/GsFaceLib/face_libs
     network_mode: "host"
+    extra_hosts:
+    - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/collect-ftp/log:/log
     - /opt/GsFaceLib:/opt/GsFaceLib
     - /lib64:/lib64
+    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
     - /opt/ftpdata:/opt/ftpdata
     - /home/ftpdata:/home/ftpdata
