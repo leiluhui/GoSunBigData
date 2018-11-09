@@ -5,6 +5,7 @@ import com.hzgc.service.imsi.dao.ImsiInfoMapper;
 import com.hzgc.service.imsi.dao.MacInfoMapper;
 import com.hzgc.service.imsi.model.ImsiInfo;
 import com.hzgc.service.imsi.model.MacInfo;
+import com.hzgc.service.imsi.util.ImsiCheck;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,16 @@ public class Imsi_mac_Consumer {
                 String message = kafkaMessage.get();
                 log.info("Recevice imsi message is " + message);
                 ImsiInfo imsiInfo = JacksonUtil.toObject(message, ImsiInfo.class);
-                int i = imsiInfoMapper.insertSelective(imsiInfo);
-                if (i > 0) {
-                    log.info("Insert imsi info is successful");
-                } else {
-                    log.info("Insert imsi info is failed");
+                boolean b = ImsiCheck.checkImsi(imsiInfo.getImsi(), imsiInfo.getSavetime());
+                if (b) {
+                    int i = imsiInfoMapper.insertSelective(imsiInfo);
+                    if (i > 0) {
+                        log.info("Insert imsi info is successful");
+                    } else {
+                        log.info("Insert imsi info is failed");
+                    }
+                }else {
+                    log.info("Now time is less than origin time");
                 }
             }
         }
