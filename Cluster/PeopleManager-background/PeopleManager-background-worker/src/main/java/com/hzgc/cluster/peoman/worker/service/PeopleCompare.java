@@ -9,9 +9,9 @@ import com.hzgc.cluster.peoman.worker.model.PeopleRecognize;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.common.util.rocketmq.RocketMQProducer;
 import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
 import com.hzgc.jniface.FaceFunction;
@@ -19,7 +19,6 @@ import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.rocketmq.client.producer.SendResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,6 +33,10 @@ public class PeopleCompare {
     @Autowired
     @SuppressWarnings("unused")
     private PlatformService platformService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private InnerService innerService;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -67,6 +70,10 @@ public class PeopleCompare {
     @SuppressWarnings("unused")
     private float featureThreshold;
 
+    @Value("${filter.interval.time}")
+    @SuppressWarnings("unused")
+    private int filterTime;
+
     @Value("${face.float.compare.open}")
     @SuppressWarnings("unused")
     private boolean isOpen;
@@ -83,6 +90,7 @@ public class PeopleCompare {
     private KafkaProducer<String, String> producer;
 
     public PeopleCompare(@Value("${kafka.bootstrap.servers}") String kafkaHost) {
+        FaceFunction.init();
         Properties properties = new Properties();
         properties.put("bootstrap.servers", kafkaHost);
         properties.put("acks", "all");
@@ -144,13 +152,49 @@ public class PeopleCompare {
             addPeopleRecognize(faceObject, comparePicture, communityId);
             //重点人口推送
             if (comparePicture.getFlagId() != null && comparePicture.getFlagId() != 7) {
-                MessageMq mesg = new MessageMq();
-                Gson gson = new Gson();
-                mesg.setName(comparePicture.getName());
-                mesg.setTime(faceObject.getTimeStamp());
-                mesg.setDevId(faceObject.getIpcId());
-                ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, comparePicture.getPeopleId(), gson.toJson(mesg));
-                producer.send(record);
+                List<People> peopleList = peopleMapper.selectByPeopleId(comparePicture.getPeopleId());
+                if (peopleList != null) {
+                    MessageMq mesg = new MessageMq();
+                    Gson gson = new Gson();
+                    mesg.setDevId(faceObject.getIpcId());
+                    mesg.setTime(faceObject.getTimeStamp());
+                    mesg.setName(peopleList.get(0).getName());
+                    mesg.setAge(peopleList.get(0).getAge());
+                    mesg.setSex(peopleList.get(0).getSex());
+                    mesg.setBirthplace(peopleList.get(0).getBirthplace());
+                    mesg.setIdcard(peopleList.get(0).getIdcard());
+                    mesg.setAddress(peopleList.get(0).getAddress());
+
+                    HashSet<String>  phones= new HashSet<>();
+                    HashSet<String>  cars= new HashSet<>();
+                    HashSet<String>  imsis= new HashSet<>();
+                    HashSet<Long>  pictureids= new HashSet<>();
+                    for (People people : peopleList) {
+                        if (people.getPhone() != null)
+                            phones.add(people.getPhone());
+                        if (people.getCar() != null)
+                            cars.add(people.getCar());
+                        if (people.getImsi() != null) {
+                            String s = Long.toString(Long.valueOf(people.getImsi()), 32).toUpperCase();
+                            if (s !=null && s.length() == 10) {
+                                String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
+                                imsis.add(mac);
+                            }
+                        }
+                        if (people.getPictureid() != null)
+                            pictureids.add(people.getPictureid());
+                    }
+                    mesg.setPhone(new ArrayList<>(phones));
+                    mesg.setCar(new ArrayList<>(cars));
+                    mesg.setMac(new ArrayList<>(imsis));
+                    mesg.setPictureid(new ArrayList<>(pictureids));
+                    mesg.setCommuntidy(communityId);
+                    String s = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
+                    mesg.setSurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath())).getHttp_ip());
+                    mesg.setBurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath())).getHttp_ip());
+                    ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, comparePicture.getPeopleId(), gson.toJson(mesg));
+                    producer.send(record);
+                }
             }
             //数据融合推送
             ProducerRecord<String, String> record = new ProducerRecord<>(fusionTopic, faceObject.getId(), JacksonUtil.toJson(faceObject));
@@ -183,6 +227,7 @@ public class PeopleCompare {
         peopleRecognize.setBurl(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath()));
         peopleRecognize.setFlag(1);
         peopleRecognize.setSimilarity(comparePicture.getSimilarity());
+        peopleRecognize.setFilterTime(filterTime);
         log.info("insert people recognize value=" + JacksonUtil.toJson(peopleRecognize));
         try {
             peopleRecognizeMapper.insertUpdate(peopleRecognize);
@@ -219,10 +264,11 @@ public class PeopleCompare {
             peopleRecognize.setCommunity(communityId);
             peopleRecognize.setFlag(compareRes.getFlag());
             peopleRecognize.setSimilarity(compareRes.getSimilarity());
+            peopleRecognize.setFilterTime(filterTime);
             log.info("insert new add people recognize value=" + JacksonUtil.toJson(peopleRecognize));
             if(compareRes.getFlag() == 10) {
                 try {
-                    peopleRecognizeMapper.insertSelective(peopleRecognize);
+                    peopleRecognizeMapper.insert(peopleRecognize);
                 } catch (Exception e) {
                     bitFeatureList.removeLast();
                     floatFeatureList.removeLast();
@@ -232,7 +278,7 @@ public class PeopleCompare {
                 }
             } else {
                 try {
-                    peopleRecognizeMapper.insertSelective(peopleRecognize);
+                    peopleRecognizeMapper.insert(peopleRecognize);
                 } catch (Exception e) {
                     log.info("PeopelCompare flag=2 insert new add people recognize failed !!!");
                     log.error(e.getMessage());
@@ -320,6 +366,32 @@ public class PeopleCompare {
                 compareRes.setSimilarity(Float.valueOf("0.0"));
                 log.info("----------CompareNewPeople flag=10 compareResList is null");
                 return compareRes;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public CameraQueryDTO getCameraQueryDTO(String devId) {
+        if (devId != null) {
+            CameraQueryDTO cameraInfo = cameraInfos.get(devId);
+            if (cameraInfo == null) {
+                ArrayList<String> list = new ArrayList<>();
+                list.add(devId);
+                Map<String, CameraQueryDTO> cameraInfoByIpc = platformService.getCameraInfoByBatchIpc(list);
+                if (cameraInfoByIpc != null && cameraInfoByIpc.size() > 0) {
+                    CameraQueryDTO cameraIpc = cameraInfoByIpc.get(devId);
+                    if(cameraIpc != null) {
+                        cameraInfos.put(devId, cameraIpc);
+                        return cameraIpc;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return cameraInfo;
             }
         } else {
             return null;

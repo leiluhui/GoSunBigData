@@ -1,5 +1,6 @@
 package com.hzgc.cluster.peoman.worker;
 
+import com.hzgc.common.service.api.config.EnableInnerService;
 import com.hzgc.common.service.api.config.EnablePlatformService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @EnablePlatformService
 @EnableAutoConfiguration
 @EnableEurekaClient
+@EnableInnerService
 @MapperScan("com.hzgc.cluster.peoman.worker.dao")
 public class Application {
     public static void main(String[] args) {

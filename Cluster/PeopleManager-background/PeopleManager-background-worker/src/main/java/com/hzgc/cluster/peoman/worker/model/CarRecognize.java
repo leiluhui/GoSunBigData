@@ -5,16 +5,13 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class PeopleRecognize {
-    private String id;
+public class CarRecognize {
+    private Long id;
     private String peopleid;
     private Long community;
-    private Long pictureid;
+    private String  plate;
     private String deviceid;
     private Date capturetime;
     private String surl;
     private String burl;
-    private Integer flag;
-    private Float similarity;
-    private Integer filterTime;
 }
