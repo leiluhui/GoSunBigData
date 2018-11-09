@@ -83,7 +83,6 @@ public class PeopleCompare {
     private KafkaProducer<String, String> producer;
 
     public PeopleCompare(@Value("${kafka.bootstrap.servers}") String kafkaHost) {
-        FaceFunction.init();
         Properties properties = new Properties();
         properties.put("bootstrap.servers", kafkaHost);
         properties.put("acks", "all");

@@ -42,10 +42,6 @@ public class MemeoryCache {
     private AtomicInteger atomicInteger = new AtomicInteger();
     private ReentrantLock lock = new ReentrantLock();
 
-    public MemeoryCache() {
-        FaceFunction.init();
-    }
-
     void putData(List<ComparePicture> pictureList) {
         try {
             lock.lock();
