@@ -196,7 +196,7 @@ public class DispatchService {
         dispatch.setMac(dto.getMac());
         dispatch.setNotes(dto.getNotes());
         dispatch.setThreshold(dto.getThreshold());
-        if (dto.getFace() != null) {
+        if (dto.getFace() != null && dto.getFace().length() > 0) {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
             FaceAttribute faceAttribute =
                     innerService.faceFeautreCheck(dto.getFace()) != null ? innerService.faceFeautreCheck(dto.getFace()).getFeature() : null;
