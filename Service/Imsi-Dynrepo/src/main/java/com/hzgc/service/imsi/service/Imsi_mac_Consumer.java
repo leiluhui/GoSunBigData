@@ -25,10 +25,10 @@ public class Imsi_mac_Consumer {
     private MacInfoMapper macInfoMapper;
 
     @KafkaListener(topics = {"imsi", "mac"})
-    public void receiveMessage(ConsumerRecord <String, String> record) {
+    public void receiveMessage(ConsumerRecord<String, String> record) {
         String topic = record.topic();
         if ("imsi".equals(topic)) {
-            Optional <String> kafkaMessage = Optional.ofNullable(record.value());
+            Optional<String> kafkaMessage = Optional.ofNullable(record.value());
             if (kafkaMessage.isPresent()) {
                 String message = kafkaMessage.get();
                 log.info("Recevice imsi message is " + message);
@@ -41,13 +41,13 @@ public class Imsi_mac_Consumer {
                     } else {
                         log.info("Insert imsi info is failed");
                     }
-                }else {
+                } else {
                     log.info("Now time is less than origin time");
                 }
             }
         }
         if ("mac".equals(topic)) {
-            Optional <String> kafkaMessage = Optional.ofNullable(record.value());
+            Optional<String> kafkaMessage = Optional.ofNullable(record.value());
             if (kafkaMessage.isPresent()) {
                 String message = kafkaMessage.get();
                 log.info("Receive mac message is " + message);
