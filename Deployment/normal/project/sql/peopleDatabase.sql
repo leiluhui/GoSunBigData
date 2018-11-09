@@ -107,6 +107,18 @@ CREATE TABLE IF NOT EXISTS  `t_people_recognize` (
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='人口识别记录表';
 ALTER TABLE t_people_recognize ADD index origin_picture(peopleid, flag);
 
+CREATE TABLE t_car_recognize(
+id BIGINT(20)  NOT NULL AUTO_INCREMENT COMMENT 'ID',
+peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
+community BIGINT(20) NOT NULL COMMENT '小区ID（设备所在小区）',
+plate VARCHAR(50) NOT NULL COMMENT '抓拍车牌',
+deviceid VARCHAR(50) NOT NULL COMMENT '设备ID',
+capturetime TIMESTAMP NOT NULL COMMENT '抓拍时间',
+surl VARCHAR(255) NOT NULL COMMENT '小图ftp路径(带hostname的ftpurl)',
+burl VARCHAR(255) NOT NULL COMMENT '大图ftp路径(带hostname的ftpurl)',
+PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT '车辆识别记录表';
+
 CREATE TABLE IF NOT EXISTS  `t_device_recognize` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
