@@ -24,6 +24,10 @@ public class JobRunnerImpl implements ApplicationRunner {
 
     @Autowired
     @SuppressWarnings("unused")
+    private CarConsumer carConsumer;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private LoadDataFromTiDB loadDataFromTiDB;
 
     @Value("${zookeeper.address}")
@@ -58,9 +62,10 @@ public class JobRunnerImpl implements ApplicationRunner {
         log.info("========================Start run worker, worker id is {} ", workId);
         loadDataFromTiDB.load(offset, limit);
         innerConsumer.initInnerConsumer();
-        Thread thread = new Thread(innerConsumer);
-        thread.start();
+        new Thread(innerConsumer).start();
         faceConsumer.initFaceConsumer(workId);
         new Thread(faceConsumer).start();
+        carConsumer.initCarConsumer();
+        new Thread(carConsumer).start();
     }
 }

@@ -105,6 +105,10 @@
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>
+            <artifactId>common-seemmo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hzgc.common</groupId>
             <artifactId>common-service</artifactId>
             <exclusions>
                 <exclusion>
