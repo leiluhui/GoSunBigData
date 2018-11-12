@@ -18,7 +18,7 @@ public class CompareClient {
     private static Logger logger = Logger.getLogger(CompareClient.class);
     private Service service;
 
-    public void createService(String serverAddress){
+    public boolean createService(String serverAddress){
 
         Constant constant = new Constant(Config.JOB_PATH, "worker");
         RpcClient rpcClient = new RpcClient(serverAddress, constant);
@@ -28,20 +28,27 @@ public class CompareClient {
             e.printStackTrace();
         }
         service = rpcClient.createAll(Service.class);
+        return check();
+    }
+
+    public boolean check(){
         try {
             AllReturn<String> res = service.test();
             if(res == null){
                 logger.error("Connect to face compare service faild.");
-                return;
+                return false;
             }
             List<String> responses = res.getResult();
             if(responses == null || responses.size() == 0 || !responses.get(0).equals("response")){
-                logger.error("Connect to face compare service faild.");
+                logger.error("Connect to face compare service faild. Please to confirm the server were started .");
+                return false;
             }
         } catch (InterruptedException e) {
             logger.error("Connect to face compare service faild." + e.getMessage());
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public SearchResult retrievalOnePerson(CompareParam paramt){

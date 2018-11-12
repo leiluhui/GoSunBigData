@@ -1,5 +1,6 @@
 package com.hzgc.service.dynrepo.service;
 
+import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.service.api.bean.UrlInfo;
@@ -217,6 +218,35 @@ public class CaptureServiceHelper {
             log.error(e.getMessage());
         }
         return searchResult;
+    }
+
+    public List<CapturedPicture> getCapturedPictures(com.hzgc.compare.SearchResult result, SearchOption option){
+        List<CapturedPicture> capturedPictures = new ArrayList<>();
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for(com.hzgc.compare.SearchResult.Record record : result.getRecords()){
+            FaceObject faceObject = (FaceObject) record.getValue();
+            UrlInfo urlInfo = innerService.hostName2Ip(faceObject.getHostname());
+            CapturedPicture capturedPicture = new CapturedPicture();
+            capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getsFtpUrl()));
+            capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getbFtpUrl()));
+            String ipcId = option.getIpcMapping().get(faceObject.getIpcId()).getIpc();
+            capturedPicture.setDeviceId(ipcId);
+            capturedPicture.setDeviceName(option.getIpcMapping().get(faceObject.getIpcId()).getDeviceName());
+            capturedPicture.setTimeStamp(faceObject.getTimeStamp());
+            capturedPicture.setSimilarity(record.getKey());
+            capturedPicture.setAge(faceObject.getAttribute().getAge());
+            capturedPicture.setEyeglasses(faceObject.getAttribute().getEyeglasses());
+            capturedPicture.setGender(faceObject.getAttribute().getGender());
+            capturedPicture.setHuzi(faceObject.getAttribute().getHuzi());
+            capturedPicture.setMask(faceObject.getAttribute().getMask());
+            capturedPicture.setSharpness(faceObject.getAttribute().getSharpness());
+            CameraQueryDTO cameraInfo = platformService.getCameraInfoByBatchIpc(Collections.singletonList(ipcId)).get(ipcId);
+            if(cameraInfo != null) {
+                capturedPicture.setLocation(cameraInfo.getRegion() + cameraInfo.getCommunity());
+            }
+            capturedPictures.add(capturedPicture);
+        }
+        return capturedPictures;
     }
 
     SearchResult parseResultNotOnePerson(ResultSet resultSet, SearchOption option, String searchId) {
