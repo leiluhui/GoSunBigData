@@ -14,7 +14,7 @@ cd ..
 PEOMAN_WORKER_DIR=`pwd`                       ##peoman-worker目录地址
 LIB_DIR=${PEOMAN_WORKER_DIR}/lib              ##lib目录地址
 CONF_DIR=${PEOMAN_WORKER_DIR}/conf            ##conf目录地址
-PEOMAN_WORKER_JAR_NAME=`ls ${LIB_DIR} | grep ^peoman-worker-[0-9].[0-9].jar$`
+PEOMAN_WORKER_JAR_NAME=`ls ${LIB_DIR} | grep ^peoman-worker.jar$`
 PEOMAN_WORKER_JAR_PID=`jps | grep ${PEOMAN_WORKER_JAR_NAME} | awk '{print $1}'`
 
 
