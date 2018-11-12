@@ -10,6 +10,7 @@ import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
+import com.hzgc.jniface.PictureData;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
@@ -17,11 +18,13 @@ import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.util.PeopleExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +72,12 @@ public class PeopleService {
 
     @Autowired
     @SuppressWarnings("unused")
-    //Spring-kafka-template
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private final static String TOPIC = "PeoMan-Inner";
+    @Value("${people.kafka.topic}")
+    @NotNull
+    @SuppressWarnings("unused")
+    private String topic;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -81,7 +86,7 @@ public class PeopleService {
     private final static String CAPTURE_PIC = "capturepic";
 
     private void sendKafka(String key, Object data) {
-        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
+        kafkaTemplate.send(topic, key, JacksonUtil.toJson(data));
     }
 
     public boolean CheckIdCard(String idCard) {
@@ -366,7 +371,12 @@ public class PeopleService {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
                 picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
-                FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
+                PictureData pictureData = innerService.faceFeautreCheck(photo);
+                if (pictureData == null){
+                    log.error("Face feature extract is null");
+                    throw new RuntimeException("Face feature extract is null");
+                }
+                FaceAttribute faceAttribute = pictureData.getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                     log.error("Update people, but face feature extract failed, insert idCard picture to t_picture failed");
                     throw new RuntimeException("Face feature extract failed, insert idCard picture to t_picture failed");
@@ -388,7 +398,12 @@ public class PeopleService {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
                 picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
-                FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
+                PictureData pictureData = innerService.faceFeautreCheck(photo);
+                if (pictureData == null){
+                    log.error("Face feature extract is null");
+                    throw new RuntimeException("Face feature extract is null");
+                }
+                FaceAttribute faceAttribute = pictureData.getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                     log.error("Update people, but face feature extract failed, insert capture picture to t_picture failed");
                     throw new RuntimeException("Face feature extract failed, insert capture picture to t_picture failed");
@@ -446,7 +461,12 @@ public class PeopleService {
             if (CAPTURE_PIC.equals(picType)) {
                 picture.setCapturepic(bytes);
             }
-            FaceAttribute faceAttribute = innerService.faceFeautreCheck(photo).getFeature();
+            PictureData pictureData = innerService.faceFeautreCheck(photo);
+            if (pictureData == null){
+                log.error("Face feature extract is null");
+                throw new RuntimeException("Face feature extract is null");
+            }
+            FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.error("Face feature extract failed, insert picture to t_picture failed");
                 throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
