@@ -14,7 +14,7 @@ cd ..
 PEOMAN_WORKER_DIR=`pwd`                     ##peoman-worker目录地址
 LIB_DIR=${PEOMAN_WORKER_DIR}/lib            ##lib目录地址
 CONF_DIR=${PEOMAN_WORKER_DIR}/conf          ##conf目录地址
-PEOMAN_WORKER_JAR_NAME=`ls ${LIB_DIR} | grep ^peoman-worker-[0-9].[0-9].jar$`          ##获取peoman-worker的jar包名称
+PEOMAN_WORKER_JAR_NAME=`ls ${LIB_DIR} | grep ^peoman-worker.jar$`          ##获取peoman-worker的jar包名称
 PEOMAN_WORKER_JAR=${LIB_DIR}/${PEOMAN_WORKER_JAR_NAME}                        ##获取jar包的全路径
 
 
@@ -32,8 +32,8 @@ FLOAT_NEW_THRESHOLD=73
 FLOAT_COMPARE_OPEN=true
 ZK_ADDRESS=172.18.18.100
 MYSQL_HOST=172.18.18.119:4000
-#MYSQL_USERNAME=
-#MYSQL_PASSWORD=
+MYSQL_USERNAME=root
+MYSQL_PASSWORD=Hzgc@123
 
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
@@ -62,6 +62,8 @@ function start_springCloud()
       --float.compare.open=${FLOAT_COMPARE_OPEN} \
       --mysql.host=${MYSQL_HOST} \
       --kafka.host=${KAFKA_HOST} \
+      --mysql.username=${MYSQL_USERNAME} \
+      --mysql.password=${MYSQL_PASSWORD} \
       --spring.cloud.config.enabled=false  2>&1 &
    fi
 }

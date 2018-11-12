@@ -14,7 +14,7 @@ cd ..
 COLLECT_DIR=`pwd`                     ##collect目录地址
 LIB_DIR=${COLLECT_DIR}/lib            ##lib目录地址
 CONF_DIR=${COLLECT_DIR}/conf          ##conf目录地址
-COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp-[0-9].[0-9].jar$`          ##获取collect的jar包名称
+COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp.jar$`          ##获取collect的jar包名称
 COLLECT_JAR=${LIB_DIR}/${COLLECT_JAR_NAME}                        ##获取jar包的全路径
 CRONTAB_FILE=${LIB_DIR}/crontab.conf
 

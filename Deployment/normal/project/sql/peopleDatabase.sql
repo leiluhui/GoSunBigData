@@ -142,10 +142,10 @@ CREATE TABLE IF NOT EXISTS  `t_fusion_imsi` (
 
 CREATE TABLE IF NOT EXISTS  `t_mac_all` (
   `time` timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '存储时间',
-  `mac` varchar(255) DEFAULT NULL COMMENT 'mac地址',
-  `wifisn` varchar(255) DEFAULT NULL COMMENT 'wifi编号',
-  `sn` varchar(255) DEFAULT NULL COMMENT '设备编号',
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `mac` varchar(20) DEFAULT NULL COMMENT 'mac地址',
+  `wifisn` varchar(15) DEFAULT NULL COMMENT 'wifi编号',
+  `sn` varchar(15) DEFAULT NULL COMMENT '设备编号',
+  `id` bigint(15) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='mac地址信息库';
