@@ -168,7 +168,7 @@ public class TableCache {
         List<DispachData> list = faceInfos.get(region);
         for(DispachData dispachData : list){
             log.info("Region : " + region);
-            log.info("FaceInfo : " + dispachData.toString());
+            log.info("FaceInfo  Id : " + dispachData.getId() + " FaceInfo :" + dispachData.getBitfeature());
         }
 //        for(Map.Entry<Long, List<DispachData>> entry : faceInfos.entrySet()){
 //            Long region = entry.getKey();
@@ -182,7 +182,7 @@ public class TableCache {
 
     public void showFeatures(Long region){
         log.info("Show feature cache info.");
-        log.info("Feature : " + Arrays.toString(faceFeatures.get(region)));
+        log.info("Feature : " + faceFeatures.get(region).length);
 
 //        for(Map.Entry<Long, byte[][]> entry : faceFeatures.entrySet()){
 //            Long region = entry.getKey();
@@ -194,8 +194,9 @@ public class TableCache {
     public void showCarInfo(Long region){
         log.info("Show car cache info.");
         List<DispachData> list = carInfos.get(region);
+
         for(DispachData dispachData : list){
-            log.info("FaceInfo : " + dispachData.toString());
+            log.info("CarInfo  id :" + dispachData.getId() + " Car : " + dispachData.getCar());
         }
 
 //        for(Map.Entry<Long, List<DispachData>> entry : carInfos.entrySet()){
@@ -213,7 +214,7 @@ public class TableCache {
 
         List<DispachData> list = macInfos.get(region);
         for(DispachData dispachData : list){
-            log.info("FaceInfo : " + dispachData.toString());
+            log.info("MacInfo  Id : " + dispachData.getId() + " Mac : " + dispachData.getMac());
         }
 //        for(Map.Entry<Long, List<DispachData>> entry : macInfos.entrySet()){
 //            Long region = entry.getKey();
@@ -234,7 +235,7 @@ public class TableCache {
      */
     public void addCar(String id, Long region, String car){
         log.info("Add car dispatch : id " + id + " , region " + region + " , car " + car);
-        List<DispachData> list = carInfos.get(region);
+        List<DispachData> list = carInfos.computeIfAbsent(region, k -> new ArrayList<>());
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
         dispatureData.setCar(car);
@@ -249,7 +250,7 @@ public class TableCache {
      */
     public void addMac(String id, Long region, String mac){
         log.info("Add mac dispatch : id " + id + " , region " + region + " , mac " + mac);
-        List<DispachData> list = macInfos.get(region);
+        List<DispachData> list = macInfos.computeIfAbsent(region, k -> new ArrayList<>());
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
         dispatureData.setMac(mac);
@@ -264,18 +265,28 @@ public class TableCache {
      */
     public void addFace(String id, Long region, String bitFeature){
         log.info("Add face dispatch : id " + id + " , region " + region + " , bitFeature " + bitFeature);
-        List<DispachData> carinfo = carInfos.get(region);
+        List<DispachData> carinfo = faceInfos.computeIfAbsent(region, k -> new ArrayList<>());
         DispachData dispatureData = new DispachData();
         dispatureData.setId(id);
         dispatureData.setBitfeature(bitFeature);
-        dispatureData.setIndex(carInfos.size());
+        dispatureData.setIndex(faceInfos.size());
         carinfo.add(dispatureData);
 
         byte[][] features = faceFeatures.get(region);
-        byte[][] newFeaures = new byte[features.length + 1][32];
-        System.arraycopy(features, 0, newFeaures, 0, features.length);
-        newFeaures[features.length] = FaceUtil.base64Str2BitFeature(bitFeature);
+        if(features == null){
+            features = new byte[1][32];
+            features[0] = FaceUtil.base64Str2BitFeature(bitFeature);
+            faceFeatures.put(region, features);
+            dispatureData.setIndex(0);
+            return;
+        }
+
+        int len = features.length;
+        byte[][] newFeaures = new byte[len + 1][32];
+        System.arraycopy(features, 0, newFeaures, 0, len);
+        newFeaures[len] = FaceUtil.base64Str2BitFeature(bitFeature);
         faceFeatures.put(region, newFeaures);
+        dispatureData.setIndex(len);
     }
 
     /**
@@ -309,7 +320,7 @@ public class TableCache {
                 }
             }
         }
-        if(carToReove != null){
+        if(macToReove != null){
             macInfos.get(region).remove(macToReove);
         }
     }
@@ -332,9 +343,10 @@ public class TableCache {
             faceInfo.remove(faceToReove);
             int removeIndex = faceToReove.getIndex();
             byte[][] features = faceFeatures.get(region);
-            byte[][] newFeatures = new byte[features.length - 1][32];
+            int len = features.length;
+            byte[][] newFeatures = new byte[len - 1][32];
             System.arraycopy(features, 0, newFeatures, 0, removeIndex);
-            System.arraycopy(features, removeIndex + 1, newFeatures, removeIndex, features.length - 1 - removeIndex);
+            System.arraycopy(features, removeIndex + 1, newFeatures, removeIndex, len - 1 - removeIndex);
             faceFeatures.put(region, newFeatures);
         }
     }
