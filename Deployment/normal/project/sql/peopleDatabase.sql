@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS  t_dispatch_white(
   id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT '白名单ID',
   name VARCHAR(32) NOT NULL COMMENT '白名单名称',
   devices TEXT NOT NULL COMMENT '设备ID列表 ',
-  organization VARCHAR(2000) COMMENT '相机组织',
+  organization TEXT COMMENT '相机组织',
   status INT(2) NOT NULL DEFAULT 0 COMMENT  '状态值(0:开启,1:停止)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '白名单库';
 
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS  t_dispatch_alive(
   id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT 'ID',
   name VARCHAR(32) COMMENT '布控名称',
   devices TEXT COMMENT  '设备ID列表 ',
-  organization VARCHAR(2000) COMMENT '相机组织',
+  organization TEXT COMMENT '相机组织',
   start_time VARCHAR(10) NOT NULL COMMENT '开始时间',
   end_time VARCHAR(10) NOT NULL COMMENT '结束时间',
   status INT(2) NOT NULL DEFAULT 0 COMMENT  '状态值(0:开启,1:停止)',
