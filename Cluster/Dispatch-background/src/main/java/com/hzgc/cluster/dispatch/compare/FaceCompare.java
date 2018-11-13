@@ -75,30 +75,40 @@ public class FaceCompare implements Runnable{
                 ipcIds.add(faceObject.getIpcId());
             }
 
-            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
-//            Map<String, CameraQueryDTO> map = new HashMap<>();
-//            CameraQueryDTO cameraQueryDTO = new CameraQueryDTO();
-//            cameraQueryDTO.setCameraName("qqqq");
-//            cameraQueryDTO.setRegion("1000001");
-//            map.put("4C05839PAJE8728", cameraQueryDTO);
+            Map<String, CameraQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
 
             for(FaceObject faceObject : faceObjects){
-                Long region = Long.parseLong(map.get(faceObject.getIpcId()).getRegion());
+                Long region = (map.get(faceObject.getIpcId()).getDistrictId());
+//                log.info("The region is : " + region);
+//                region = 4L;
                 byte[][] queryList = new byte[1][32];
                 queryList[0] = faceObject.getAttribute().getBitFeature();
                 byte[][] features = tableCache.getFeatures(region);
                 if(features == null){
                     continue;
                 }
-                ArrayList<CompareResult> list = FaceFunction.faceCompareBit(features, queryList, sizeFirstCompareResult);
+//                log.info("Bit Compare.");
+                ArrayList<CompareResult> list;
+                try {
+                    list = FaceFunction.faceCompareBit(features, queryList, sizeFirstCompareResult);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    log.error(e.getMessage());
+                    continue;
+                }
+//                log.info("Get result of bit Compare");
                 List<String> ids = new ArrayList<>();
                 for(FaceFeatureInfo faceFeatureInfo : list.get(0).getPictureInfoArrayList()){
                     String id = tableCache.getIdByIndex(region, faceFeatureInfo.getIndex());
                     ids.add(id);
                 }
-//                List<String> ids = new ArrayList<>();
-//                ids.add("1000002");
-//                ids.add("1000001");
                 List<Dispatch> dispatures = dispatureMapper.selectByIds(ids);
                 float sim = 0.0f;
                 Dispatch disp = new Dispatch();

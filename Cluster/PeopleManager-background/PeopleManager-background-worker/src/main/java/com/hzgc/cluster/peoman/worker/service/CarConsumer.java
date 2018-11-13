@@ -8,7 +8,6 @@ import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.seemmo.bean.carbean.Vehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -76,7 +75,7 @@ public class CarConsumer implements Runnable{
             for (ConsumerRecord<String, String> record : records) {
 //                log.info("====================kafka value="+record.value());
                 if (record.value() != null && record.value().length() > 0) {
-                    log.info("===============================CarCompare Start===============================");
+                    log.info("********************************CarCompare Start************************************");
                     CarObject carObject = JacksonUtil.toObject(record.value(), CarObject.class);
                     if (carObject != null) {
                         String plate_licence = carObject.getAttribute().getPlate_licence();
@@ -103,11 +102,20 @@ public class CarConsumer implements Runnable{
                                 carRecognize.setSurl(CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath()));
                                 carRecognize.setBurl(CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath()));
                                 log.info("carRecognize value="+JacksonUtil.toJson(carRecognize));
-                                carRecognizeMapper.insertSelective(carRecognize);
+                                try {
+                                    carRecognizeMapper.insert(carRecognize);
+                                } catch (Exception e) {
+                                    log.info("CarCompare insert car recognize failed !!!");
+                                    log.error(e.getMessage());
+                                }
+                            } else {
+                                log.info("CarObject data not exist, plate_licence is={}, sFtpUrl={}",plate_licence, carObject.getsFtpUrl());
                             }
                         }
+                    } else {
+                        log.info("CarObject data value is null");
                     }
-                    log.info("===============================CarCompare End=================================");
+                    log.info("********************************CarCompare End************************************");
                 }
             }
         }

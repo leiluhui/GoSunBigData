@@ -397,7 +397,7 @@ public class PeopleService {
             for (String photo : peopleDTO.getCapturePic()) {
                 PictureWithBLOBs picture = new PictureWithBLOBs();
                 picture.setPeopleid(people.getId());
-                picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
+                picture.setCapturepic(FaceUtil.base64Str2BitFeature(photo));
                 PictureData pictureData = innerService.faceFeautreCheck(photo);
                 if (pictureData == null){
                     log.error("Face feature extract is null");

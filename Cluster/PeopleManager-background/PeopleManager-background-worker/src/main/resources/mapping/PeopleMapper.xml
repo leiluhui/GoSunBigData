@@ -24,10 +24,10 @@
         <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
         <result column="pictureid" property="pictureid" jdbcType="BIGINT"/>
     </resultMap>
-    <select id="selectByPeopleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-         t1.name, t1.age, t1.sex, t1.birthplace, t1.idcard, t1.address, t2.phone, t3.car, t4.imsi, t5.id as pictureid
-        from t_people as t1 left join t_phone as t2 on t1.id=t2.peopleid left join t_car as t3 on t1.id=t3.peopleid left join t_imsi as t4 on t1.id=t4.peopleid left join t_picture on t1.id=t5.peopleid where t1.id=#{peopleid,jdbcType=VARCHAR}
+          t1.name, t1.age, t1.sex, t1.birthplace, t1.idcard, t1.address, t2.phone, t3.car, t4.imsi, t5.id as pictureid
+        from t_people as t1 left join t_phone as t2 on t1.id=t2.peopleid left join t_car as t3 on t1.id=t3.peopleid left join t_imsi as t4 on t1.id=t4.peopleid left join t_picture as t5 on t1.id=t5.peopleid where t1.id=#{id,jdbcType=VARCHAR}
     </select>
     <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cluster.peoman.worker.model.People">
         update t_people
