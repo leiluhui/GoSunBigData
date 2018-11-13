@@ -540,7 +540,20 @@ public class Provinces implements Serializable {
         model.put(4000, xinJiang_province);
         province.put(4000, "新疆");
 
-
+        Map<Integer, String> taiWan_city = new LinkedHashMap<>();
+        taiWan_city.put(4101, "台南");
+        taiWan_city.put(4102, "台北");
+        taiWan_city.put(4103, "台中");
+        taiWan_city.put(4104, "高雄");
+        taiWan_city.put(4105, "桃园");
+        taiWan_city.put(4106, "新北");
+        taiWan_city.put(4107, "基隆");
+        taiWan_city.put(4108, "新竹");
+        taiWan_city.put(4109, "嘉义");
+        Map<String, Map<Integer, String>> taiWan_province = new LinkedHashMap<>();
+        taiWan_province.put("台湾", taiWan_city);
+        model.put(4100, taiWan_province);
+        province.put(4100, "台湾");
     }
 
     public static Map<Integer, String> getProvince() {

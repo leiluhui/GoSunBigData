@@ -5,7 +5,7 @@ USE people;
 
 CREATE TABLE IF NOT EXISTS  `t_people` (
   `id` varchar(32) NOT NULL COMMENT '人员全局ID',
-  `name` varchar(10) NOT NULL COMMENT '人员姓名',
+  `name` varchar(32) NOT NULL COMMENT '人员姓名',
   `idcard` varchar(18) NOT NULL COMMENT '身份证',
   `region` bigint(20) NOT NULL COMMENT '区域ID(省市区)',
   `household` varchar(100) DEFAULT NULL COMMENT '户籍',
