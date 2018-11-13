@@ -24,8 +24,8 @@
     <select id="selectByPeopleId" resultMap="BaseResultMap" parameterType="java.lang.String">
         select plate, deviceid, capturetime, surl, burl
         from t_car_recognize
-        where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
-        and peopleid = #{peopleid,jdbcType=BIGINT}
+        where peopleid = #{peopleid,jdbcType=BIGINT}
+        and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from t_car_recognize
