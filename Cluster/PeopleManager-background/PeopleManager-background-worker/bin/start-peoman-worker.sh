@@ -30,11 +30,13 @@ BIT_THRESHOLD=10
 FLOAT_THRESHOLD=90
 FLOAT_NEW_THRESHOLD=73
 FLOAT_COMPARE_OPEN=true
+SHARPNESS_OPEN=false
 ZK_ADDRESS=172.18.18.100
 MYSQL_HOST=172.18.18.119:4000
 MYSQL_USERNAME=root
 MYSQL_PASSWORD=Hzgc@123
-
+EUREKA_IP=172.18.18.40
+EUREKA_PORT=9000
 #------------------------------------------------------------------------------#
 #                                定义函数                                      #
 #------------------------------------------------------------------------------#
@@ -60,10 +62,12 @@ function start_springCloud()
       --float.threshold=${FLOAT_THRESHOLD} \
       --float.new.threshold=${FLOAT_NEW_THRESHOLD} \
       --float.compare.open=${FLOAT_COMPARE_OPEN} \
+      --sharpness.open=${SHARPNESS_OPEN} \
       --mysql.host=${MYSQL_HOST} \
-      --kafka.host=${KAFKA_HOST} \
       --mysql.username=${MYSQL_USERNAME} \
       --mysql.password=${MYSQL_PASSWORD} \
+      --eureka.ip=${EUREKA_IP} \
+      --eureka.port=${EUREKA_PORT} \
       --spring.cloud.config.enabled=false  2>&1 &
    fi
 }
