@@ -15,6 +15,7 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 @EnableInnerService
 public class DynRepoApplication {
     public static void main(String[] args) {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
         SpringApplication.run(DynRepoApplication.class, args);
     }
 }

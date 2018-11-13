@@ -645,6 +645,7 @@ public class CommunityService {
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
+                vo.setCaptureType(0);
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setCameraDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
                 vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
@@ -660,6 +661,7 @@ public class CommunityService {
             if (carRecognizeList != null && carRecognizeList.size() >0){
                 for (CarRecognize recognize : carRecognizeList){
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(2);
                     vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
                     vo.setCameraDeviceId(platformService.getCameraDeviceName(recognize.getDeviceid()));
                     vo.setPlate(recognize.getPlate());
@@ -680,6 +682,7 @@ public class CommunityService {
             if (imsiList != null && imsiList.size() > 0) {
                 for (ImsiAll imsiAll : imsiList) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(1);
                     vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
                     vo.setImsiDeviceId(platformService.getImsiDeviceName(imsiAll.getControlsn()));
                     vo.setImsi(imsiAll.getImsi());
@@ -715,6 +718,7 @@ public class CommunityService {
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
+                vo.setCaptureType(0);
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setCameraDeviceId(people.getDeviceid());
                 vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
@@ -730,6 +734,7 @@ public class CommunityService {
             if (carRecognizeList != null && carRecognizeList.size() >0){
                 for (CarRecognize recognize : carRecognizeList){
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(2);
                     vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
                     vo.setCameraDeviceId(recognize.getDeviceid());
                     vo.setPlate(recognize.getPlate());
@@ -750,6 +755,7 @@ public class CommunityService {
             if (imsiList != null && imsiList.size() > 0) {
                 for (ImsiAll imsiAll : imsiList) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(1);
                     vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
                     vo.setImsiDeviceId(imsiAll.getControlsn());
                     vo.setImsi(imsiAll.getImsi());

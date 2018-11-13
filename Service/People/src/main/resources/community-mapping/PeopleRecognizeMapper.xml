@@ -42,10 +42,10 @@
     <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.String">
         select capturetime, deviceid, burl, surl
         from t_people_recognize
-        where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
+        where peopleid = #{peopleid,jdbcType=BIGINT}
         and flag in (1, 2)
+        and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
         <!--and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})-->
-        and peopleid = #{peopleid,jdbcType=BIGINT}
     </select>
     <!--查询小区迁出人口最后抓拍信息-->
     <select id="searchCommunityOutPeopleLastCapture" resultMap="BaseResultMap" parameterType="java.lang.String">
