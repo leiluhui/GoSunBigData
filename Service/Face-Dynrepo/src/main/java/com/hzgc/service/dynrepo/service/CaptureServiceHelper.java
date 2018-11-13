@@ -227,8 +227,8 @@ public class CaptureServiceHelper {
             FaceObject faceObject = (FaceObject) record.getValue();
             UrlInfo urlInfo = innerService.hostName2Ip(faceObject.getHostname());
             CapturedPicture capturedPicture = new CapturedPicture();
-            capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getsFtpUrl()));
-            capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getbFtpUrl()));
+            capturedPicture.setSabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getsAbsolutePath()));
+            capturedPicture.setBabsolutepath(CollectUrlUtil.toHttpPath(urlInfo.getIp(),urlInfo.getPort(),faceObject.getbAbsolutePath()));
             String ipcId = option.getIpcMapping().get(faceObject.getIpcId()).getIpc();
             capturedPicture.setDeviceId(ipcId);
             capturedPicture.setDeviceName(option.getIpcMapping().get(faceObject.getIpcId()).getDeviceName());

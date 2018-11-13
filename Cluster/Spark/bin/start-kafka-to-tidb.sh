@@ -52,7 +52,7 @@ for jar in ${JARS[@]}; do
 done
 
 
-SPARK_API_VERSION=`ls ${SPARK_LIB_DIR} | grep ^spark-[0-9].[0-9].[0-9].jar$`
+SPARK_API_VERSION=`ls ${SPARK_LIB_DIR} | grep ^spark.jar$`
 source /etc/profile
 source /opt/hzgc/env_bigdata.sh
 nohup spark-submit \

@@ -27,7 +27,7 @@ CONF_DIR=$SPARK_DIR/conf                          ### cluster 目录
 LOG_DIR=$SPARK_DIR/logs                         ## log 日记目录
 LOG_FILE=${LOG_DIR}/schema-merge-parquet-file.log        ##  log 日记文件
 
-CLUSTER_VERSION=`ls ${SPARK_DIR}/lib| grep ^spark-[0-9].[0-9].[0-9].jar$`
+CLUSTER_VERSION=`ls ${SPARK_DIR}/lib| grep ^spark.jar$`
 SPARKJOB_PROPERTIES=${SPARK_DIR}/conf/sparkJob.properties
 
 hdfsClusterName=$(grep job.smallfile.merge.hdfs.name  ${SPARKJOB_PROPERTIES} | awk -F "=" '{print $2}')
