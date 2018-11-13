@@ -265,9 +265,7 @@ curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
          				"type": "keyword"
          			},
 					"brand_name": {
-         				"type": "text",
-         				"analyzer": "ik_smart",
-         				"search_analyzer": "ik_smart"
+         				"type": "keyword"
          			},
          			"call_code": {
                     	"type": "keyword"
