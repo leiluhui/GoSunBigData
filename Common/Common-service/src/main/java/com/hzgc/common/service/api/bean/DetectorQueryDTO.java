@@ -15,4 +15,5 @@ public class DetectorQueryDTO implements Serializable {
     private String latitude;
     private String region;
     private String community;
+    private Long districtId;
 }

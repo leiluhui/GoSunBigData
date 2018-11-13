@@ -38,7 +38,7 @@ public class ConsumerFunction implements CommandLineRunner {
         tableCache.loadData();
         tableCache.loadDispatchWhite();
         tableCache.loadDispatchLive();
-//        FaceFunction.init();
+        FaceFunction.init();
 //        tableCache.showCarInfo();
 //        tableCache.showFaceInfo();
 //        tableCache.showFeatures();

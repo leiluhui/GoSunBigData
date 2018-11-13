@@ -11,4 +11,5 @@ public class CameraQueryDTO {
     private String latitude;
     private String region;
     private String community;
+    private Long districtId;
 }
