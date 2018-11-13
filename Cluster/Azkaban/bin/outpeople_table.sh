@@ -1,7 +1,7 @@
 #!/bin/bash
-IP=172.18.18.119
-PORT=4000
- mysql -u root -h ${IP} -P ${PORT} << EOF
+IP=${IP}
+PORT=${PORT}
+ mysql -u root -h ${IP} -P ${PORT} -pHZGC@123 << EOF
 use people;
 
 INSERT INTO t_people_out (peopleid, community, \`month\`, isconfirm)

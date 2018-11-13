@@ -1,8 +1,8 @@
 #!/bin/bash
-IP=172.18.18.119
-PORT=4000
+IP=${IP}
+PORT=${PORT}
 COUNT=20
- mysql -u root -h ${IP} -P ${PORT} << EOF
+ mysql -u root -h ${IP} -P ${PORT} -pHZGC@123 << EOF
 use people;
 
 #新增
