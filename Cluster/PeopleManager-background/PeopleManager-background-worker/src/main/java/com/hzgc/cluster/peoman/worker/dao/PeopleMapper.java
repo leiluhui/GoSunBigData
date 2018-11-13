@@ -7,5 +7,5 @@ import java.util.List;
 public interface PeopleMapper {
     int updateByPrimaryKeySelective(People record);
     int updateByPrimaryKey(People record);
-    List<People> selectByPeopleId(String peopleid);
+    List<People> selectByPrimaryKey(String id);
 }
