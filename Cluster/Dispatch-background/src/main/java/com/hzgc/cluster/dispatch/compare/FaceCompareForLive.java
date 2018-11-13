@@ -17,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -64,8 +62,15 @@ public class FaceCompareForLive implements Runnable{
             for(FaceObject faceObject : faceObjects){
                 ipcIds.add(faceObject.getIpcId());
             }
+            Map<String, CameraQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
 
-            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
 //            Map<String, CameraQueryDTO> map = new HashMap<>();
 //            CameraQueryDTO cameraQueryDTO = new CameraQueryDTO();
 //            cameraQueryDTO.setCameraName("asgag");
@@ -76,7 +81,7 @@ public class FaceCompareForLive implements Runnable{
                     continue;
                 }
                 String captachDate = faceObject.getTimeStamp();
-                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || captachDate.contains(" ")){
+                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || !captachDate.contains(" ")){
                     log.error("The time of captach is not complant format :" + captachDate);
                     continue;
                 }

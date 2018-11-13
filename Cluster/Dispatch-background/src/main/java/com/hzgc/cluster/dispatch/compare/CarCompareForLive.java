@@ -17,13 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -67,14 +62,21 @@ public class CarCompareForLive implements Runnable{
                 ipcIds.add(carObject.getIpcId());
             }
 
-            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            Map<String, CameraQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
             for(CarObject carObject : carObjects){
                 List<DispatchAlive> dispachAliveRules = tableCache.getDispachAlive(carObject.getIpcId());
                 if(dispachAliveRules == null || dispachAliveRules.size() == 0){
                     continue;
                 }
                 String captachDate = carObject.getTimeStamp();
-                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || captachDate.contains(" ")){
+                if(captachDate == null || captachDate.equals("") || !captachDate.contains(":") || !captachDate.contains(" ")){
                     log.error("The time of captach is not complant format :" + captachDate);
                     continue;
                 }

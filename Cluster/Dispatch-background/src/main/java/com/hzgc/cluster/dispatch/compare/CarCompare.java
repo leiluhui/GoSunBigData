@@ -68,10 +68,18 @@ public class CarCompare implements Runnable{
             for(CarObject carObject : carObjects){
                 ipcIds.add(carObject.getIpcId());
             }
-            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds); //1000001
+
+            Map<String, CameraQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
 
             for(CarObject carObject : carObjects){
-                Long region = Long.parseLong(map.get(carObject.getIpcId()).getRegion());
+                Long region = map.get(carObject.getIpcId()).getDistrictId();
                 List<DispachData> dispatureDataList = tableCache.getCarInfo(region);
                 DispachData disp = null;
                 for(DispachData dispatureData : dispatureDataList){
