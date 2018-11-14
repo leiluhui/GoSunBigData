@@ -2,9 +2,8 @@ package com.hzgc.service.people.dao;
 
 import com.hzgc.service.community.param.AffirmOperationDTO;
 import com.hzgc.service.people.model.People;
-import com.hzgc.service.people.param.FilterField;
+import com.hzgc.service.people.param.SearchPeopleDTO;
 import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.Options;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,7 +24,7 @@ public interface PeopleMapper {
 
     int updateByPrimaryKey(People record);
 
-    List<People> searchPeople(FilterField field);
+    List<People> searchPeople(SearchPeopleDTO param);
 
     List<Long> getCommunityIdsById(List<Long> communityIds);
 

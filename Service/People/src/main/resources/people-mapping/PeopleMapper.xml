@@ -46,16 +46,12 @@
         <result column="edulevel" property="edulevel" jdbcType="VARCHAR"/>
         <result column="job" property="job" jdbcType="VARCHAR"/>
         <result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
+        <result column="community" property="community" jdbcType="BIGINT"/>
+        <result column="lasttime" property="lasttime" jdbcType="TIMESTAMP"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
         <collection property="flag" ofType="com.hzgc.service.people.model.Flag" column="id"
                     select="com.hzgc.service.people.dao.FlagMapper.selectByPeopleId"/>
-        <collection property="imsi" ofType="com.hzgc.service.people.model.Imsi" column="id"
-                    select="com.hzgc.service.people.dao.ImsiMapper.selectByPeopleId"/>
-        <collection property="phone" ofType="com.hzgc.service.people.model.Phone" column="id"
-                    select="com.hzgc.service.people.dao.PhoneMapper.selectByPeopleId"/>
-        <collection property="house" ofType="com.hzgc.service.people.model.House" column="id"
-                    select="com.hzgc.service.people.dao.HouseMapper.selectByPeopleId"/>
-        <collection property="car" ofType="com.hzgc.service.people.model.Car" column="id"
-                    select="com.hzgc.service.people.dao.CarMapper.selectByPeopleId"/>
         <collection property="picture" ofType="com.hzgc.service.people.model.PictureWithBLOBs" column="id"
                     select="com.hzgc.service.people.dao.PictureMapper.selectByPeopleId"/>
     </resultMap>
@@ -84,10 +80,6 @@
         id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
         job, birthplace, community, lasttime, createtime, updatetime
     </sql>
-    <sql id="Collection_Column_list">
-        id, name, idcard, region, household, address, sex, age, birthday, politic, edulevel,
-        job, birthplace, community
-    </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
@@ -105,35 +97,29 @@
         from t_people
         where idcard = #{idcard,jdbcType=VARCHAR}
     </select>
-    <!--姓名,身份证号,imis,电话号码模糊匹配和按ID,区域ID精确查找-->
-    <select id="searchPeople" resultMap="CollectionResultMap" parameterType="com.hzgc.service.people.param.FilterField">
+    <!--姓名,身份证号,imis,电话号码模糊匹配-->
+    <select id="searchPeople" resultMap="CollectionResultMap" parameterType="com.hzgc.service.people.param.SearchPeopleDTO">
         select
-        <include refid="Collection_Column_list"/>
+        <include refid="Base_Column_List"/>
         from t_people
         <where>
-            <if test="regionid != null ">
-                region = #{regionid,jdbcType=BIGINT}
+            <if test="regionId != null ">
+                region = #{regionId,jdbcType=BIGINT}
             </if>
-            <if test="communityid != null ">
-                and community = #{communityid,jdbcType=BIGINT}
+            <if test="communityId != null ">
+                and community = #{communityId,jdbcType=BIGINT}
             </if>
-            <if test="name != null and name.length() > 0">
-                and name like "%" #{name,jdbcType=VARCHAR} "%"
+            <if test="searchType == 0 ">
+                and name like "%" #{searchVal,jdbcType=VARCHAR} "%"
             </if>
-            <if test="idcard != null and idcard.length() > 0">
-                and idcard like "%" #{idcard,jdbcType=VARCHAR} "%"
+            <if test="searchType == 1 ">
+                and idcard like "%" #{searchVal,jdbcType=VARCHAR} "%"
             </if>
-            <if test="imsi != null">
-                and id in (select peopleid from t_imsi where imsi like "%" #{imsi,jdbcType=VARCHAR} "%")
+            <if test="searchType == 2 ">
+                and id in (select peopleid from t_imsi where imsi like "%" #{searchVal,jdbcType=VARCHAR} "%")
             </if>
-            <if test="phone != null">
-                and id in (select peopleid from t_phone where phone like "%" #{phone,jdbcType=VARCHAR} "%")
-            </if>
-            <if test="peopleIds != null and peopleIds.size() > 0">
-                and id in
-                <foreach collection="list" item="model" open="(" close=")" separator=",">
-                    #{model}
-                </foreach>
+            <if test="searchType == 3 ">
+                and id in (select peopleid from t_phone where phone like "%" #{searchVal,jdbcType=VARCHAR} "%")
             </if>
         </where>
     </select>

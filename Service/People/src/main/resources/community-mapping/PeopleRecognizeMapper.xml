@@ -94,6 +94,7 @@
             and c.flag = 1
             and a.id = b.peopleid
             and a.id = c.peopleid
+            and c.pictureid = b.id
         </where>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
