@@ -142,7 +142,11 @@ public class CaptureHistoryService {
                 int mask = (int) hit.getSource().get(FaceTable.MASK);
                 int huzi = (int) hit.getSource().get(FaceTable.HUZI);
                 int eyeglasses = (int) hit.getSource().get(FaceTable.EYEGLASSES);
-                int sharpness = (int) hit.getSource().get(FaceTable.SHARPNESS);
+                Object o = hit.getSource().get(FaceTable.SHARPNESS);
+                int sharpness = 0;
+                if (null != o) {
+                    sharpness = (int) hit.getSource().get(FaceTable.SHARPNESS);
+                }
                 capturePicture.setAge(age);
                 capturePicture.setGender(gender);
                 capturePicture.setMask(mask);

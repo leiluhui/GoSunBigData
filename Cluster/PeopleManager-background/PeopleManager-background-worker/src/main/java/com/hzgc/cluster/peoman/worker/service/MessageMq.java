@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 @Data
 public class MessageMq {
+    private Integer flag;
     private String name;
     private String time;
     private String devId;

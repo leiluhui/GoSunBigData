@@ -21,10 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -68,9 +65,16 @@ public class MacCompare implements Runnable{
             for(MacObject macObject : macObjects){
                 sns.add(macObject.getSn());
             }
-            Map<String, DetectorQueryDTO> map = platformService.getInfoByBatchSn(sns);
+            Map<String, DetectorQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getInfoByBatchSn(sns);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
             for(MacObject macObject : macObjects){
-                Long region = Long.parseLong(map.get(macObject.getSn()).getRegion());
+                Long region = map.get(macObject.getSn()).getDistrictId();
                 List<DispachData> dispatureDataList = tableCache.getMacInfo(region);
                 DispachData disp = null;
                 for(DispachData dispatureData : dispatureDataList){

@@ -13,7 +13,7 @@ BIN_DIR=`pwd`                         ##bin目录地址
 cd ..
 COLLECT_DIR=`pwd`                     ##collect目录地址
 LIB_DIR=${COLLECT_DIR}/lib            ##lib目录地址
-COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp-[0-9].[0-9].jar$`          ##获取collect的jar包名称
+COLLECT_JAR_NAME=`ls ${LIB_DIR} | grep ^collect-ftp.jar$`          ##获取collect的jar包名称
 CONF_DIR=$COLLECT_DIR/conf    ### 项目根目录
 LOG_DIR=${COLLECT_DIR}/log                       ## log 日记目录
 CHECK_LOG_FILE=${LOG_DIR}/check_ftpserver.log

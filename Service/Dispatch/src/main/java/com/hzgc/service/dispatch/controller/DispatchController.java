@@ -67,7 +67,7 @@ public class DispatchController {
      */
     @ApiOperation(value = "删除布控信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.DISPATCH_DELETE_DEPLOY, method = RequestMethod.DELETE)
-    public ResponseResult <Integer> deleteDeploy(@ApiParam(name = "人员ID", required = true) @RequestParam String id) {
+    public ResponseResult <Integer> deleteDeploy(@ApiParam(value = "人员ID", required = true) @RequestParam String id) {
         if (StringUtils.isBlank(id)) {
             log.error("Start delete dispatch info,but id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除id为空,请检查");

@@ -11,6 +11,7 @@ import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
+import com.hzgc.jniface.PictureData;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.param.*;
@@ -69,8 +70,6 @@ public class DispatchService {
     private static final String DELETE = "DELETE";
 
     private static final String UPDATE = "UPDATE";
-
-    private static final String IMPORT = "IMPORT";
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -179,7 +178,9 @@ public class DispatchService {
                 this.sendKafka(ADD, kafkaMessage);
             }
             if (status == 1) {
-                this.sendKafka(DELETE, id);
+                KafkaMessage kafkaMessage = new KafkaMessage();
+                kafkaMessage.setId(id);
+                this.sendKafka(DELETE, kafkaMessage);
             }
             return 1;
         }
@@ -198,8 +199,12 @@ public class DispatchService {
         dispatch.setThreshold(dto.getThreshold());
         if (dto.getFace() != null && dto.getFace().length() > 0) {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
-            FaceAttribute faceAttribute =
-                    innerService.faceFeautreCheck(dto.getFace()) != null ? innerService.faceFeautreCheck(dto.getFace()).getFeature() : null;
+            PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
+            if (pictureData == null){
+                log.error("Face feature extract is null");
+                throw new RuntimeException("Face feature extract is null");
+            }
+            FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.error("Face feature extract failed, insert t_dispatch failed");
                 throw new RuntimeException("Face feature extract failed, insert  t_dispatch failed");
@@ -230,7 +235,9 @@ public class DispatchService {
             log.info("Delete info failed ");
             return 0;
         }
-        this.sendKafka(DELETE, id);
+        KafkaMessage message = new KafkaMessage();
+        message.setId(id);
+        this.sendKafka(DELETE, message);
         log.info("Delete info successfully ");
         return status;
     }
@@ -247,7 +254,12 @@ public class DispatchService {
         dispatch.setThreshold(dto.getThreshold());
         if (dto.getFace() != null) {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
-            FaceAttribute faceAttribute = innerService.faceFeautreCheck(dto.getFace()).getFeature();
+            PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
+            if (pictureData == null){
+                log.error("Face feature extract is null");
+                throw new RuntimeException("Face feature extract is null");
+            }
+            FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                 log.error("Face feature extract failed, update t_dispatch failed");
                 throw new RuntimeException("Face feature extract failed, update t_dispatch failed");

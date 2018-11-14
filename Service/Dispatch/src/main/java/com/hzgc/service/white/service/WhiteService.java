@@ -7,12 +7,9 @@ import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
-import com.hzgc.jniface.BigPictureData;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
-import com.hzgc.seemmo.util.BASE64Util;
-import com.hzgc.service.dispatch.param.KafkaMessage;
 import com.hzgc.service.white.dao.WhiteInfoMapper;
 import com.hzgc.service.white.dao.WhiteMapper;
 import com.hzgc.service.white.model.White;
@@ -20,20 +17,16 @@ import com.hzgc.service.white.model.WhiteInfo;
 import com.hzgc.service.white.param.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 
-import java.text.SimpleDateFormat;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -58,18 +51,15 @@ public class WhiteService {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private static final String TOPIC = "dispatch";
+    @Value("${dispatch.kafka.topic}")
+    @NotNull
+    @SuppressWarnings("unused")
+    private String kafkaTopic;
 
-    private static final String ADD = "ADD";
+    private static final String KEY = "DISPATCH_WHITE_UPDATE";
 
-    private static final String DELETE = "DELETE";
-
-    private static final String UPDATE = "UPDATE";
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private void sendKafka(String key, Object data) {
-        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
+    private void sendKafka(Object data) {
+        kafkaTemplate.send(kafkaTopic, WhiteService.KEY, JacksonUtil.toJson(data));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -94,7 +84,12 @@ public class WhiteService {
             whiteInfo.setName(people.getName());
             if (people.getPicture() != null) {
                 byte[] bytes = FaceUtil.base64Str2BitFeature(people.getPicture());
-                FaceAttribute faceAttribute = innerService.faceFeautreCheck(people.getPicture()).getFeature();
+                PictureData pictureData = innerService.faceFeautreCheck(people.getPicture());
+                if (pictureData == null){
+                    log.error("Face feature extract is null");
+                    throw new RuntimeException("Face feature extract is null");
+                }
+                FaceAttribute faceAttribute = pictureData.getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
                     log.error("Face feature extract failed, insert t_dispatch_white failed");
                     throw new RuntimeException("Face feature extract failed, insert t_dispatch_white failed");
@@ -111,7 +106,7 @@ public class WhiteService {
                 log.info("Insert white info, but insert into t_dispatch_whiteinfo failed");
                 return 0;
             }
-            this.sendKafka(ADD, white.getId());
+            this.sendKafka(white.getId());
         }
         return 1;
     }
@@ -122,7 +117,7 @@ public class WhiteService {
             log.info("Delete info failed");
             return 0;
         }
-        this.sendKafka(DELETE, id);
+        this.sendKafka(id);
         return status;
     }
 
@@ -139,7 +134,7 @@ public class WhiteService {
             log.info("Update failed");
             return 0;
         }
-        this.sendKafka(UPDATE, dto.getId());
+        this.sendKafka(dto.getId());
         return status;
     }
 
@@ -153,10 +148,10 @@ public class WhiteService {
             return 0;
         }
         if (status == 0) {
-            this.sendKafka(ADD, id);
+            this.sendKafka(id);
         }
         if (status == 1) {
-            this.sendKafka(DELETE, id);
+            this.sendKafka(id);
         }
         return 1;
     }

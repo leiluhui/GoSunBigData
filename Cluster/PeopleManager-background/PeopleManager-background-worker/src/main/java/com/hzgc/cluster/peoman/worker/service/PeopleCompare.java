@@ -1,6 +1,5 @@
 package com.hzgc.cluster.peoman.worker.service;
 
-import com.google.gson.Gson;
 import com.hzgc.cluster.peoman.worker.dao.FlagMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleRecognizeMapper;
@@ -19,6 +18,7 @@ import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Future;
 
 @Component
 @Slf4j
@@ -152,10 +153,10 @@ public class PeopleCompare {
             addPeopleRecognize(faceObject, comparePicture, communityId);
             //重点人口推送
             if (comparePicture.getFlagId() != null && comparePicture.getFlagId() != 7) {
-                List<People> peopleList = peopleMapper.selectByPeopleId(comparePicture.getPeopleId());
+                List<People> peopleList = peopleMapper.selectByPrimaryKey(comparePicture.getPeopleId());
                 if (peopleList != null) {
                     MessageMq mesg = new MessageMq();
-                    Gson gson = new Gson();
+                    mesg.setFlag(1);
                     mesg.setDevId(faceObject.getIpcId());
                     mesg.setTime(faceObject.getTimeStamp());
                     mesg.setName(peopleList.get(0).getName());
@@ -174,7 +175,7 @@ public class PeopleCompare {
                             phones.add(people.getPhone());
                         if (people.getCar() != null)
                             cars.add(people.getCar());
-                        if (people.getImsi() != null) {
+                        if (people.getImsi() != null && people.getImsi().length() == 15) {
                             String s = Long.toString(Long.valueOf(people.getImsi()), 32).toUpperCase();
                             if (s !=null && s.length() == 10) {
                                 String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
@@ -189,16 +190,18 @@ public class PeopleCompare {
                     mesg.setMac(new ArrayList<>(imsis));
                     mesg.setPictureid(new ArrayList<>(pictureids));
                     mesg.setCommuntidy(communityId);
-                    String s = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
                     mesg.setSurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath())).getHttp_ip());
                     mesg.setBurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath())).getHttp_ip());
-                    ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, comparePicture.getPeopleId(), gson.toJson(mesg));
-                    producer.send(record);
+
+                    ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
+                    Future<RecordMetadata> send = producer.send(record);
+                    producer.flush();
                 }
             }
             //数据融合推送
             ProducerRecord<String, String> record = new ProducerRecord<>(fusionTopic, faceObject.getId(), JacksonUtil.toJson(faceObject));
             producer.send(record);
+            producer.flush();
         } else {
             addNewPeopleRecognize(faceObject, communityId);
         }

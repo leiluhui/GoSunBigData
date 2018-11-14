@@ -13,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 
 @Component
 @Slf4j
 public class KafkaComsumer {
+    private ReentrantLock writeLock = new ReentrantLock();
 
     @Autowired
     CaptureCache captureCache;
@@ -58,12 +61,24 @@ public class KafkaComsumer {
             case "ADD" :
 //                log.info("Add a dispach");
                 addDispach(messageObj);
+//                tableCache.showCarInfo(messageObj.getRegionId());
+//                tableCache.showFaceInfo(messageObj.getRegionId());
+//                tableCache.showFeatures(messageObj.getRegionId());
+//                tableCache.showMacInfo(messageObj.getRegionId());
                 break;
             case "DELETE" :
                 deleteDispach(messageObj);
+//                tableCache.showCarInfo(messageObj.getRegionId());
+//                tableCache.showFaceInfo(messageObj.getRegionId());
+//                tableCache.showFeatures(messageObj.getRegionId());
+//                tableCache.showMacInfo(messageObj.getRegionId());
                 break;
             case "UPDATE" :
                 updateDispach(messageObj);
+//                tableCache.showCarInfo(messageObj.getRegionId());
+//                tableCache.showFaceInfo(messageObj.getRegionId());
+//                tableCache.showFeatures(messageObj.getRegionId());
+//                tableCache.showMacInfo(messageObj.getRegionId());
                 break;
             case "RE_LOAD" :
                 tableCache.loadData();
@@ -92,27 +107,45 @@ public class KafkaComsumer {
     }
 
     private void addDispach(KafkaMessage messageObj){
-        String id = messageObj.getId();
-        Long region = messageObj.getRegionId();
-        if(messageObj.getMac() != null){
-            tableCache.addMac(id, region, messageObj.getMac());
+        writeLock.lock();
+        try {
+            String id = messageObj.getId();
+            Long region = messageObj.getRegionId();
+            if(messageObj.getMac() != null){
+                tableCache.addMac(id, region, messageObj.getMac());
+            }
+            if(messageObj.getCar() != null){ ;
+                tableCache.addCar(id, region, messageObj.getCar());
+            }
+            if(messageObj.getBitFeature() != null){
+                tableCache.addFace(id, region, messageObj.getBitFeature());
+            }
+        }finally {
+            writeLock.unlock();
         }
-        if(messageObj.getCar() != null){ ;
-            tableCache.addCar(id, region, messageObj.getCar());
-        }
-        if(messageObj.getBitFeature() != null){
-            tableCache.addFace(id, region, messageObj.getBitFeature());
-        }
+
     }
 
     private void deleteDispach(KafkaMessage messageObj){
-        tableCache.deleteFaceDispature(messageObj.getId());
-        tableCache.deleteDispature(messageObj.getId());
+        writeLock.lock();
+        try {
+            tableCache.deleteFaceDispature(messageObj.getId());
+            tableCache.deleteDispature(messageObj.getId());
+        }finally {
+            writeLock.unlock();
+        }
     }
 
     private void updateDispach(KafkaMessage messageObj){
-        deleteDispach(messageObj);
-        addDispach(messageObj);
+        log.info("Update message id : " + messageObj.getId());
+        writeLock.lock();
+        try {
+            deleteDispach(messageObj);
+            addDispach(messageObj);
+        }finally {
+            writeLock.unlock();
+        }
+
     }
 
     private void startDispach(KafkaMessage messageObj){
@@ -121,5 +154,11 @@ public class KafkaComsumer {
 
     private void stopDispach(KafkaMessage messageObj){
         deleteDispach(messageObj);
+    }
+
+    public static void main(String args[]){
+        String json = "{\"id\":\"636F93ED33A94647A87A3A624C0E288E\",\"regionId\":null,\"bitFeature\":null,\"car\":null,\"mac\":null}";
+        KafkaMessage messageObj = JacksonUtil.toObject(json, KafkaMessage.class);
+        System.out.println(messageObj);
     }
 }

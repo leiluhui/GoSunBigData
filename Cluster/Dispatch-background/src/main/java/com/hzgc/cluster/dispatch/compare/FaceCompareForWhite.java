@@ -64,12 +64,14 @@ public class FaceCompareForWhite implements Runnable{
                 ipcIds.add(faceObject.getIpcId());
             }
 
-            Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
-//            Map<String, CameraQueryDTO> map = new HashMap<>();
-//            CameraQueryDTO cameraQueryDTO = new CameraQueryDTO();
-//            cameraQueryDTO.setCameraName("qqqq");
-//            cameraQueryDTO.setRegion("1000001");
-//            map.put("4C05839PAJE8728", cameraQueryDTO);
+            Map<String, CameraQueryDTO> map = new HashMap<>();
+            try {
+                map = platformService.getCameraInfoByBatchIpc(ipcIds);
+            }catch (Exception e){
+                log.error(e.getMessage());
+                e.printStackTrace();
+                continue;
+            }
 
             for(FaceObject faceObject : faceObjects){
                 Set<float[]> features = tableCache.getFeatures(faceObject.getIpcId());

@@ -160,12 +160,11 @@ public class PeopleController {
             log.error("Start select picture, but picture id is null");
             ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(null);
         }
-        log.info("Start select picture, picture id is:" + pictureId);
+        log.debug("Start select picture, picture id is:" + pictureId);
         byte[] picture = peopleService.searchPictureByPicId(pictureId);
         if (picture == null || picture.length == 0) {
             return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
         }
-        log.info("Select picture successfully");
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(picture);
     }
 

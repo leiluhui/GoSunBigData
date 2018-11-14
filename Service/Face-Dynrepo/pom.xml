@@ -114,6 +114,29 @@
             <groupId>com.netflix.archaius</groupId>
             <artifactId>archaius-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>face-compare</groupId>
+            <artifactId>client</artifactId>
+            <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-buffer</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>face-compare</groupId>
+                    <artifactId>worker</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

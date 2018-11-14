@@ -80,7 +80,7 @@ public class CaptureSearchController {
         log.info("Start search picture, set search id");
         String searchId = UuidUtil.getUuid();
         log.info("Start search picture, search option is:" + JacksonUtil.toJson(searchOption));
-        searchResult = captureSearchService.searchPicture(searchOption, searchId);
+        searchResult = captureSearchService.searchPicture2(searchOption, searchId);
         return ResponseResult.init(searchResult);
     }
 

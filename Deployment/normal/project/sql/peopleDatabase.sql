@@ -5,7 +5,7 @@ USE people;
 
 CREATE TABLE IF NOT EXISTS  `t_people` (
   `id` varchar(32) NOT NULL COMMENT '人员全局ID',
-  `name` varchar(10) NOT NULL COMMENT '人员姓名',
+  `name` varchar(32) NOT NULL COMMENT '人员姓名',
   `idcard` varchar(18) NOT NULL COMMENT '身份证',
   `region` bigint(20) NOT NULL COMMENT '区域ID(省市区)',
   `household` varchar(100) DEFAULT NULL COMMENT '户籍',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS  `t_people` (
   `birthday` varchar(10) DEFAULT NULL COMMENT '出生日期',
   `politic` varchar(10) DEFAULT NULL COMMENT '政治面貌',
   `edulevel` varchar(10) DEFAULT NULL COMMENT '文化程度',
-  `job` varchar(10) DEFAULT NULL COMMENT '职业',
+  `job` varchar(32) DEFAULT NULL COMMENT '职业',
   `birthplace` varchar(10) DEFAULT NULL COMMENT '籍贯',
   `community` bigint(20) DEFAULT NULL COMMENT '小区ID',
   `lasttime` timestamp NULL DEFAULT NULL COMMENT '最后出现时间',
@@ -142,10 +142,10 @@ CREATE TABLE IF NOT EXISTS  `t_fusion_imsi` (
 
 CREATE TABLE IF NOT EXISTS  `t_mac_all` (
   `time` timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '存储时间',
-  `mac` varchar(255) DEFAULT NULL COMMENT 'mac地址',
-  `wifisn` varchar(255) DEFAULT NULL COMMENT 'wifi编号',
-  `sn` varchar(255) DEFAULT NULL COMMENT '设备编号',
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `mac` varchar(20) DEFAULT NULL COMMENT 'mac地址',
+  `wifisn` varchar(15) DEFAULT NULL COMMENT 'wifi编号',
+  `sn` varchar(15) DEFAULT NULL COMMENT '设备编号',
+  `id` bigint(15) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='mac地址信息库';
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS  t_dispatch_white(
   id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT '白名单ID',
   name VARCHAR(32) NOT NULL COMMENT '白名单名称',
   devices TEXT NOT NULL COMMENT '设备ID列表 ',
-  organization VARCHAR(2000) COMMENT '相机组织',
+  organization TEXT COMMENT '相机组织',
   status INT(2) NOT NULL DEFAULT 0 COMMENT  '状态值(0:开启,1:停止)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '白名单库';
 
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS  t_dispatch_alive(
   id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT 'ID',
   name VARCHAR(32) COMMENT '布控名称',
   devices TEXT COMMENT  '设备ID列表 ',
-  organization VARCHAR(2000) COMMENT '相机组织',
+  organization TEXT COMMENT '相机组织',
   start_time VARCHAR(10) NOT NULL COMMENT '开始时间',
   end_time VARCHAR(10) NOT NULL COMMENT '结束时间',
   status INT(2) NOT NULL DEFAULT 0 COMMENT  '状态值(0:开启,1:停止)',
