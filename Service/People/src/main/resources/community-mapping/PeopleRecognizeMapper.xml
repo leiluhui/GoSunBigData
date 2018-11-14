@@ -57,9 +57,10 @@
     <!--小区迁入人口抓拍详情:人员抓拍列表-->
     <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap"
             parameterType="com.hzgc.service.community.param.CaptureDetailsDTO">
-        select capturetime, deviceid, surl
+        select capturetime, deviceid, surl, burl
         from t_people_recognize
-        where peopleid = #{peopleId,jdbcType=VARCHAR} and community = #{communityId,jdbcType=BIGINT}
+        where peopleid = #{peopleId,jdbcType=VARCHAR}
+        and community = #{communityId,jdbcType=BIGINT}
         and DATE_FORMAT(capturetime, '%Y%m') = #{month,jdbcType=VARCHAR}
         order by capturetime desc
     </select>
