@@ -33,33 +33,11 @@
         </fileSet>
 
         <!--peoplemanager-background-->
-        <!--peoplemanager-background-client-->
-        <fileSet>
-            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/target</directory>
-            <includes>
-                <include>peoman-client-1.0.jar</include>
-            </includes>
-            <outputDirectory>normal/component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/bin</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>normal/component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/PeopleManager-background/PeopleManager-background-client/src/main/resources</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            <outputDirectory>normal/component/GoSunBigData/Cluster/peoplemanager/peoplemanager-client/conf</outputDirectory>
-        </fileSet>
         <!--peoplemanager-background-worker-->
         <fileSet>
             <directory>../Cluster/PeopleManager-background/PeopleManager-background-worker/target</directory>
             <includes>
-                <include>peoman-worker-1.0.jar</include>
+                <include>peoman-worker.jar</include>
             </includes>
             <outputDirectory>normal/component/GoSunBigData/Cluster/peoplemanager/peoplemanager-worker/lib</outputDirectory>
         </fileSet>
@@ -91,7 +69,7 @@
             <includes>
                 <include>create-kafka-topic.sh</include>
             </includes>
-            <outputDirectory>normal/project/bin/spark</outputDirectory>
+            <outputDirectory>normal/project/bin</outputDirectory>
         </fileSet>
 
         <!--Dispatch-background目录-->
@@ -137,7 +115,7 @@
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>normal/project/bin/spark</outputDirectory>
+            <outputDirectory>normal/project/bin</outputDirectory>
         </fileSet>
 
         <!--azkaban-->
