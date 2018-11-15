@@ -86,6 +86,7 @@ public class PeopleDTO implements Serializable {
         people.setName(peopleDTO.name);
         people.setIdcard(peopleDTO.idCard);
         people.setRegion(peopleDTO.region);
+        people.setCommunity(peopleDTO.community);
         people.setHousehold(peopleDTO.household);
         people.setAddress(peopleDTO.address);
         people.setSex(peopleDTO.sex);

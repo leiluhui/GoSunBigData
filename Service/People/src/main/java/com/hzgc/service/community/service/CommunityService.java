@@ -396,7 +396,8 @@ public class CommunityService {
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
             info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
+            info.setSurl(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
+            info.setBurl(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             Date date = peopleRecognize.getCapturetime();
             if (date != null) {
                 info.setCaptureTime(sdf.format(date));

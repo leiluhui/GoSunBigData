@@ -605,8 +605,10 @@ public class PeopleService {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
-            peopleVO.setCommunity(people.getCommunity());
-            peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
+            if (people.getCommunity() != null){
+                peopleVO.setCommunity(people.getCommunity());
+                peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
+            }
             if (people.getLasttime() != null) {
                 peopleVO.setLastTime(sdf.format(people.getLasttime()));
             }
@@ -616,36 +618,46 @@ public class PeopleService {
             if (people.getUpdatetime() != null) {
                 peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
             }
-            List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-            List<Integer> flagIdList = new ArrayList<>();
-            for (com.hzgc.service.people.model.Flag flag : flags) {
-                flagIdList.add(flag.getFlagid());
+            if (people.getFlag() != null && people.getFlag().size() > 0){
+                List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
+                List<Integer> flagIdList = new ArrayList<>();
+                for (com.hzgc.service.people.model.Flag flag : flags) {
+                    flagIdList.add(flag.getFlagid());
+                }
+                peopleVO.setFlag(flagIdList);
             }
-            peopleVO.setFlag(flagIdList);
-            List<Imsi> imsis = people.getImsi();
-            List<String> imsiList = new ArrayList<>();
-            for (Imsi imsi : imsis) {
-                imsiList.add(imsi.getImsi());
+            if (people.getImsi() != null && people.getImsi().size() > 0){
+                List<Imsi> imsis = people.getImsi();
+                List<String> imsiList = new ArrayList<>();
+                for (Imsi imsi : imsis) {
+                    imsiList.add(imsi.getImsi());
+                }
+                peopleVO.setImsi(imsiList);
             }
-            peopleVO.setImsi(imsiList);
-            List<Phone> phones = people.getPhone();
-            List<String> phoneList = new ArrayList<>();
-            for (Phone phone : phones) {
-                phoneList.add(phone.getPhone());
+            if (people.getPhone() != null && people.getPhone().size() > 0){
+                List<Phone> phones = people.getPhone();
+                List<String> phoneList = new ArrayList<>();
+                for (Phone phone : phones) {
+                    phoneList.add(phone.getPhone());
+                }
+                peopleVO.setPhone(phoneList);
             }
-            peopleVO.setPhone(phoneList);
-            List<House> houses = people.getHouse();
-            List<String> houseList = new ArrayList<>();
-            for (House house : houses) {
-                houseList.add(house.getHouse());
+            if (people.getHouse() != null && people.getHouse().size() > 0){
+                List<House> houses = people.getHouse();
+                List<String> houseList = new ArrayList<>();
+                for (House house : houses) {
+                    houseList.add(house.getHouse());
+                }
+                peopleVO.setHouse(houseList);
             }
-            peopleVO.setHouse(houseList);
-            List<Car> cars = people.getCar();
-            List<String> carList = new ArrayList<>();
-            for (Car car : cars) {
-                carList.add(car.getCar());
+            if (people.getCar() != null && people.getCar().size() > 0){
+                List<Car> cars = people.getCar();
+                List<String> carList = new ArrayList<>();
+                for (Car car : cars) {
+                    carList.add(car.getCar());
+                }
+                peopleVO.setCar(carList);
             }
-            peopleVO.setCar(carList);
             List<PictureWithBLOBs> pictures = people.getPicture();
             if (pictures != null && pictures.size() > 0) {
                 peopleVO.setPictureId(pictures.get(0).getId());
@@ -669,14 +681,14 @@ public class PeopleService {
     /**
      * 查询人员对象
      *
-     * @param field 查询过滤字段封装
+     * @param param 查询过滤字段封装
      * @return SearchPeopleVO 查询返回参数封装
      */
-    public SearchPeopleVO searchPeople(FilterField field) {
+    public SearchPeopleVO searchPeople(SearchPeopleDTO param) {
         SearchPeopleVO vo = new SearchPeopleVO();
         List<PeopleVO> list = new ArrayList<>();
-        Page page = PageHelper.offsetPage(field.getStart(), field.getLimit(), true);
-        List<People> peoples = peopleMapper.searchPeople(field);
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit(), true);
+        List<People> peoples = peopleMapper.searchPeople(param);
         PageInfo info = new PageInfo(page.getResult());
         int total = (int) info.getTotal();
         vo.setTotal(total);
@@ -687,6 +699,7 @@ public class PeopleService {
                     peopleVO.setId(people.getId());
                     peopleVO.setName(people.getName());
                     peopleVO.setIdCard(people.getIdcard());
+                    peopleVO.setRegionId(people.getRegion());
                     peopleVO.setRegion(platformService.getRegionName(people.getRegion()));
                     peopleVO.setHousehold(people.getHousehold());
                     peopleVO.setAddress(people.getAddress());
@@ -697,8 +710,10 @@ public class PeopleService {
                     peopleVO.setEduLevel(people.getEdulevel());
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
-                    peopleVO.setCommunity(people.getCommunity());
-                    peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
+                    if (people.getCommunity() != null){
+                        peopleVO.setCommunity(people.getCommunity());
+                        peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
+                    }
                     if (people.getLasttime() != null) {
                         peopleVO.setLastTime(sdf.format(people.getLasttime()));
                     }
@@ -708,12 +723,14 @@ public class PeopleService {
                     if (people.getUpdatetime() != null) {
                         peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
                     }
-                    List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-                    List<Integer> flagIdList = new ArrayList<>();
-                    for (com.hzgc.service.people.model.Flag flag : flags) {
-                        flagIdList.add(flag.getFlagid());
+                    if (people.getFlag() != null && people.getFlag().size() > 0){
+                        List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
+                        List<Integer> flagIdList = new ArrayList<>();
+                        for (com.hzgc.service.people.model.Flag flag : flags) {
+                            flagIdList.add(flag.getFlagid());
+                        }
+                        peopleVO.setFlag(flagIdList);
                     }
-                    peopleVO.setFlag(flagIdList);
                     if (people.getPicture() != null && people.getPicture().size() > 0) {
                         PictureWithBLOBs picture = people.getPicture().get(0);
                         peopleVO.setPictureId(picture.getId());
@@ -749,12 +766,13 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             peopleVO.setCommunity(people.getCommunity());
-            List<Phone> phones = people.getPhone();
-            List<String> phoneList = new ArrayList<>();
-            for (Phone phone : phones) {
-                phoneList.add(phone.getPhone());
+            if (people.getPhone() != null && people.getPhone().size() > 0){
+                List<String> phoneList = new ArrayList<>();
+                for (Phone phone : people.getPhone()) {
+                    phoneList.add(phone.getPhone());
+                }
+                peopleVO.setPhone(phoneList);
             }
-            peopleVO.setPhone(phoneList);
         }
         return peopleVO;
     }
