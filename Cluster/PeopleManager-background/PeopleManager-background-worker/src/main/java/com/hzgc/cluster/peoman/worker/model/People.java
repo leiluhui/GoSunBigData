@@ -1,6 +1,7 @@
 package com.hzgc.cluster.peoman.worker.model;
 
 import lombok.Data;
+
 import java.util.Date;
 
 @Data
@@ -24,4 +25,8 @@ public class People {
     private Date lasttime;
     private Date createtime;
     private Date updatetime;
+    private String phone;
+    private String car;
+    private String imsi;
+    private Long pictureid;
 }

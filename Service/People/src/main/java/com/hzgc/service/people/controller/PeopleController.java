@@ -160,12 +160,11 @@ public class PeopleController {
             log.error("Start select picture, but picture id is null");
             ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(null);
         }
-        log.info("Start select picture, picture id is:" + pictureId);
+        log.debug("Start select picture, picture id is:" + pictureId);
         byte[] picture = peopleService.searchPictureByPicId(pictureId);
         if (picture == null || picture.length == 0) {
             return ResponseEntity.badRequest().contentType(MediaType.IMAGE_JPEG).body(null);
         }
-        log.info("Select picture successfully");
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(picture);
     }
 
@@ -201,13 +200,13 @@ public class PeopleController {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
-        if (param.getRegionId() == null || param.getRegionId() == 0) {
-            log.error("Start search people, but region id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "区域ID不能为空,请检查!");
-        }
         if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 && param.getSearchType() != 3) {
             log.error("Start search people, but SearchType is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
+        }
+        if (param.getSearchVal() == null) {
+            log.error("Start search people, but searchVal is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询内容不能为NULL,请检查!");
         }
         if (param.getStart() < 0) {
             log.error("Start search people, but start < 0");
@@ -218,9 +217,7 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search people, search param DTO:" + JacksonUtil.toJson(param));
-        FilterField field = FilterField.SearchParamShift(param);
-        log.info("Start search people, FilterField param:" + JacksonUtil.toJson(field));
-        SearchPeopleVO vo = peopleService.searchPeople(field);
+        SearchPeopleVO vo = peopleService.searchPeople(param);
         log.info("Search people successfully, result:" + JacksonUtil.toJson(vo));
         return ResponseResult.init(vo, vo != null ? vo.getTotal() : 0);
     }

@@ -86,6 +86,10 @@ public class CommunityService {
 
     @Autowired
     @SuppressWarnings("unused")
+    private CarRecognizeMapper carRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private PlatformService platformService;
 
     @Autowired
@@ -392,7 +396,8 @@ public class CommunityService {
             CapturePictureInfo info = new CapturePictureInfo();
             info.setDeviceId(peopleRecognize.getDeviceid());
             info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            info.setPicture(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
+            info.setSurl(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
+            info.setBurl(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
             Date date = peopleRecognize.getCapturetime();
             if (date != null) {
                 info.setCaptureTime(sdf.format(date));
@@ -636,17 +641,38 @@ public class CommunityService {
 
     public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
+        // 人脸抓拍识别记录
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
+                vo.setCaptureType(0);
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setCameraDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
-                vo.setFtpUrl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
+                vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
+                vo.setSurl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
                 voList.add(vo);
             }
         }
         People people = peopleMapper.selectByPrimaryKey(param.getPeopleId());
+        // 车辆抓拍识别记录
+        List<Car> cars = people.getCar();
+        if (cars != null && cars.size() > 0){
+            List<CarRecognize> carRecognizeList = carRecognizeMapper.selectByPeopleId(param.getPeopleId());
+            if (carRecognizeList != null && carRecognizeList.size() >0){
+                for (CarRecognize recognize : carRecognizeList){
+                    PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(2);
+                    vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
+                    vo.setCameraDeviceId(platformService.getCameraDeviceName(recognize.getDeviceid()));
+                    vo.setPlate(recognize.getPlate());
+                    vo.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
+                    vo.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+                    voList.add(vo);
+                }
+            }
+        }
+        // IMSI码识别记录
         List<Imsi> imsis = people.getImsi();
         if (imsis != null && imsis.size() > 0){
             List<String> people_imsi = new ArrayList<>();
@@ -657,6 +683,7 @@ public class CommunityService {
             if (imsiList != null && imsiList.size() > 0) {
                 for (ImsiAll imsiAll : imsiList) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(1);
                     vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
                     vo.setImsiDeviceId(platformService.getImsiDeviceName(imsiAll.getControlsn()));
                     vo.setImsi(imsiAll.getImsi());
@@ -687,17 +714,38 @@ public class CommunityService {
 
     public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
+        // 人脸抓拍识别记录
         List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(peopleId);
         if (peopleList != null && peopleList.size() > 0) {
             for (PeopleRecognize people : peopleList) {
                 PeopleCaptureVO vo = new PeopleCaptureVO();
+                vo.setCaptureType(0);
                 vo.setCaptureTime(sdf.format(people.getCapturetime()));
                 vo.setCameraDeviceId(people.getDeviceid());
-                vo.setFtpUrl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
+                vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
+                vo.setSurl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
                 voList.add(vo);
             }
         }
         People people = peopleMapper.selectByPrimaryKey(peopleId);
+        // 车辆抓拍识别记录
+        List<Car> cars = people.getCar();
+        if (cars != null && cars.size() > 0){
+            List<CarRecognize> carRecognizeList = carRecognizeMapper.selectByPeopleId(peopleId);
+            if (carRecognizeList != null && carRecognizeList.size() >0){
+                for (CarRecognize recognize : carRecognizeList){
+                    PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(2);
+                    vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
+                    vo.setCameraDeviceId(recognize.getDeviceid());
+                    vo.setPlate(recognize.getPlate());
+                    vo.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
+                    vo.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+                    voList.add(vo);
+                }
+            }
+        }
+        // IMSI码识别记录
         List<Imsi> imsis = people.getImsi();
         if (imsis != null && imsis.size() > 0){
             List<String> people_imsi = new ArrayList<>();
@@ -708,6 +756,7 @@ public class CommunityService {
             if (imsiList != null && imsiList.size() > 0) {
                 for (ImsiAll imsiAll : imsiList) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
+                    vo.setCaptureType(1);
                     vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
                     vo.setImsiDeviceId(imsiAll.getControlsn());
                     vo.setImsi(imsiAll.getImsi());

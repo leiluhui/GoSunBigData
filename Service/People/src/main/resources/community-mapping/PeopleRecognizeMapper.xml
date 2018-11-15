@@ -42,10 +42,10 @@
     <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.String">
         select capturetime, deviceid, burl, surl
         from t_people_recognize
-        where capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
+        where peopleid = #{peopleid,jdbcType=BIGINT}
         and flag in (1, 2)
+        and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
         <!--and community = (select community from t_people where id = #{peopleid,jdbcType=VARCHAR})-->
-        and peopleid = #{peopleid,jdbcType=BIGINT}
     </select>
     <!--查询小区迁出人口最后抓拍信息-->
     <select id="searchCommunityOutPeopleLastCapture" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -57,9 +57,10 @@
     <!--小区迁入人口抓拍详情:人员抓拍列表-->
     <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap"
             parameterType="com.hzgc.service.community.param.CaptureDetailsDTO">
-        select capturetime, deviceid, surl
+        select capturetime, deviceid, surl, burl
         from t_people_recognize
-        where peopleid = #{peopleId,jdbcType=VARCHAR} and community = #{communityId,jdbcType=BIGINT}
+        where peopleid = #{peopleId,jdbcType=VARCHAR}
+        and community = #{communityId,jdbcType=BIGINT}
         and DATE_FORMAT(capturetime, '%Y%m') = #{month,jdbcType=VARCHAR}
         order by capturetime desc
     </select>
@@ -94,6 +95,7 @@
             and c.flag = 1
             and a.id = b.peopleid
             and a.id = c.peopleid
+            and c.pictureid = b.id
         </where>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

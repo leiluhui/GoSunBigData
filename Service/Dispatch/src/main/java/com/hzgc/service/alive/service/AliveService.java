@@ -15,21 +15,18 @@ import com.hzgc.service.alive.param.SearchAliveInfoDTO;
 import com.hzgc.service.dispatch.param.KafkaMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 
-import java.text.ParseException;
+import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 @Service
 @Slf4j
 public class AliveService {
@@ -44,18 +41,17 @@ public class AliveService {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    private static final String TOPIC = "dispatch";
+    @Value("${dispatch.kafka.topic}")
+    @NotNull
+    @SuppressWarnings("unused")
+    private String kafkaTopic;
 
-    private static final String ADD = "ADD";
-
-    private static final String DELETE = "DELETE";
-
-    private static final String UPDATE = "UPDATE";
+    private static final String KEY = "DISPATCH_LIVE_UPDATE";
 
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-    private void sendKafka(String key, Object data) {
-        kafkaTemplate.send(TOPIC, key, JacksonUtil.toJson(data));
+    private void sendKafka(Object data) {
+        kafkaTemplate.send(kafkaTopic, AliveService.KEY, JacksonUtil.toJson(data));
     }
 
     public Integer insertAliveInfo(AliveInfoDTO dto) {
@@ -73,7 +69,7 @@ public class AliveService {
         }
         KafkaMessage message = new KafkaMessage();
         message.setId(alive.getId());
-        this.sendKafka(ADD, message);
+        this.sendKafka(message);
         log.info("Insert info successfully");
         return 1;
     }
@@ -95,7 +91,7 @@ public class AliveService {
         }
         KafkaMessage message = new KafkaMessage();
         message.setId(alive.getId());
-        this.sendKafka(UPDATE, message);
+        this.sendKafka(message);
         log.info("update info successfully");
         return 1;
     }
@@ -106,7 +102,7 @@ public class AliveService {
             log.info("Delete info failed ");
             return 0;
         }
-        this.sendKafka(DELETE, id);
+        this.sendKafka(id);
         log.info("Delete info successfully ");
         return status;
     }
@@ -118,10 +114,10 @@ public class AliveService {
         int i = aliveMapper.updateByPrimaryKeySelective(alive);
         if (i == 1) {
             if (status == 0) {
-                this.sendKafka(ADD, id);
+                this.sendKafka(id);
             }
             if (status == 1) {
-                this.sendKafka(DELETE, id);
+                this.sendKafka(id);
             }
             return 1;
         }
