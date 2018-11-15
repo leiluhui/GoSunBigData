@@ -89,7 +89,7 @@ public class FaceCompareForWhite implements Runnable{
                 if(!isWhitePoeple){
                     DispatchRecognize dispatureRecognize = new DispatchRecognize();
                     dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                    dispatureRecognize.setDispatchId("111111");
+                    dispatureRecognize.setDispatchId(tableCache.getWhiteRuleId(faceObject.getIpcId()));
                     dispatureRecognize.setDeviceId(faceObject.getIpcId());
                     dispatureRecognize.setType(3);
                     String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
