@@ -217,9 +217,11 @@ curl -XPUT 'localhost:9200/dynamiccar?pretty' -H 'Content-Type: application/json
 	    "number_of_shards":5,
         "number_of_replicas":2,
         "analysis": {
-            "analyzer": {
-                "ik": {
-                    "tokenizer" : "ik_smart"
+            "filter": {
+                "trigrams_filter": {
+                    "type": "ngram",
+                    "min_gram": 2,
+                    "max_gram": 20
                 }
             }
         }

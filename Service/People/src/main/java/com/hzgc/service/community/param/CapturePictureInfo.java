@@ -15,6 +15,8 @@ public class CapturePictureInfo implements Serializable {
     private String deviceName;
     @ApiModelProperty(value = "抓拍时间")
     private String captureTime;
-    @ApiModelProperty(value = "抓拍照片")
-    private String picture;
+    @ApiModelProperty(value = "抓拍小图")
+    private String surl;
+    @ApiModelProperty(value = "抓拍大图")
+    private String burl;
 }

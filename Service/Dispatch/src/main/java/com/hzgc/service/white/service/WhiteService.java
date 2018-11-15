@@ -86,13 +86,13 @@ public class WhiteService {
                 byte[] bytes = FaceUtil.base64Str2BitFeature(people.getPicture());
                 PictureData pictureData = innerService.faceFeautreCheck(people.getPicture());
                 if (pictureData == null){
-                    log.error("Face feature extract is null");
-                    throw new RuntimeException("Face feature extract is null");
+                    log.error("Failed to get face feature");
+                    throw new RuntimeException("Failed to get face feature");
                 }
                 FaceAttribute faceAttribute = pictureData.getFeature();
                 if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                    log.error("Face feature extract failed, insert t_dispatch_white failed");
-                    throw new RuntimeException("Face feature extract failed, insert t_dispatch_white failed");
+                    log.error("Failed to get face feature, insert t_dispatch_white failed");
+                    throw new RuntimeException("Failed to get face feature, insert t_dispatch_white failed");
                 }
                 whiteInfo.setPicture(bytes);
                 whiteInfo.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));

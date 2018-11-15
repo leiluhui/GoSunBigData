@@ -50,7 +50,7 @@ public class DispatchController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "布控区域为空,请检查 ! ");
         }
         if (!(dto.getFace() != null || dto.getCar() != null || dto.getMac() != null)) {
-            log.error("Start insert dispatch info, but region is null ");
+            log.error("Start insert dispatch info, but face or car or mac is null ");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "三者必填一个,请检查 ! ");
         }
         log.info("Start insert dispatch info, dto is :" + JacksonUtil.toJson(dto));

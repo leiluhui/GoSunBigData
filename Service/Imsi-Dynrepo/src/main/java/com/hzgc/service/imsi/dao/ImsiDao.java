@@ -1,11 +1,10 @@
 package com.hzgc.service.imsi.dao;
 
-import com.hzgc.service.imsi.model.ImsiInfo;
+import com.hzgc.service.imsi.model.ImsiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Repository
@@ -16,8 +15,8 @@ public class ImsiDao {
     @Autowired
     ImsiInfoMapper imsiInfoMapper;
 
-    public List <ImsiInfo> queryByTime(Long timeParam) {
-        ImsiInfo imsiInfo = new ImsiInfo();
+    public List <ImsiParam> queryByTime(Long timeParam) {
+        ImsiParam imsiInfo = new ImsiParam();
         imsiInfo.setStartTime(timeParam - Long.valueOf(time) * 1000);
         imsiInfo.setEndTime(timeParam + Long.valueOf(time) * 1000);
         return imsiInfoMapper.selectByTime(imsiInfo);

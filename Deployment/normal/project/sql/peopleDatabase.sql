@@ -161,9 +161,9 @@ CREATE TABLE IF NOT EXISTS  `t_imsi_all` (
   `freq` varchar(20) DEFAULT NULL COMMENT '频点',
   `biscorpci` varchar(20) DEFAULT NULL COMMENT '小区识别',
   `attach` varchar(20) DEFAULT NULL COMMENT '通道编号',
-  `savetime` bigint(20) DEFAULT NULL COMMENT '时间',
+  `savetime` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `standard` varchar(10) DEFAULT NULL COMMENT '运营商',
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` varchar(32) NOT NULL COMMENT 'uuid',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=74 COMMENT='IMSI码总表';
 
