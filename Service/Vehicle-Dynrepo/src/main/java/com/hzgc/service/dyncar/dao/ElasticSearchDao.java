@@ -139,7 +139,8 @@ public class ElasticSearchDao {
                 String attributeName = attribute.getAttributeName();
                 if (attributeName.equals(CarData.VEHICLE_OBJECT_TYPE) || attributeName.equals(CarData.MISTAKE_CODE)
                         || attributeName.equals(CarData.SUNROOF_CODE) || attributeName.equals(CarData.BRAND_NAME)
-                        || attributeName.equals(CarData.PLATE_LICENCE)) {
+                        || attributeName.equals(CarData.PLATE_LICENCE) || attributeName.equals(CarData.SPARETIRE_CODE)
+                        || attributeName.equals(CarData.MARKER_CODE)) {
                     continue;
                 }
                 List <String> attributeValues = attribute.getAttributeCodes();
