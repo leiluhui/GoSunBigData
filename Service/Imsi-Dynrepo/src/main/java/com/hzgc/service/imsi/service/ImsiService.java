@@ -1,5 +1,6 @@
 package com.hzgc.service.imsi.service;
 
+import com.hzgc.common.service.imsi.ImsiInfo;
 import com.hzgc.service.imsi.dao.ImsiDao;
 import com.hzgc.service.imsi.model.ImsiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ public class ImsiService {
     @Autowired
     private ImsiDao imsiDao;
 
-    public List <ImsiParam> queryByTime(Long time) {
-        List <ImsiParam> imsiInfos = imsiDao.queryByTime(time);
+    public List <ImsiInfo> queryByTime(Long time) {
+        List <ImsiInfo> imsiInfos = imsiDao.queryByTime(time);
         return imsiInfos;
     }
 }
