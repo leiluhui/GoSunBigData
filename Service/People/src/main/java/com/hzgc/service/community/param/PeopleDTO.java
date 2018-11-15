@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class PeopleDTO implements Serializable {
     @ApiModelProperty(value = "小区ID")
     private Long communityId;
+    @ApiModelProperty(value = "用户输入内容")
+    private String searchVal;
     @ApiModelProperty(value = "起始行数")
     private int start;
     @ApiModelProperty(value = "分页行数")
