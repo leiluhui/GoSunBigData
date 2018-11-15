@@ -5,7 +5,6 @@ import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.imsi.dao.ImsiInfoMapper;
 import com.hzgc.service.imsi.dao.MacInfoMapper;
-import com.hzgc.service.imsi.model.ImsiParam;
 import com.hzgc.service.imsi.model.MacInfo;
 import com.hzgc.service.imsi.util.ImsiCheck;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,9 @@ public class Imsi_mac_Consumer {
     @Autowired
     private MacInfoMapper macInfoMapper;
 
+    @Autowired
+    private ImsiProducer imsiProducer;
+
     @Value(value = "${tag}")
     private String tag;
 
@@ -47,10 +49,12 @@ public class Imsi_mac_Consumer {
                     boolean b = ImsiCheck.checkImsi(imsiInfo.getImsi(), savetime);
                     if (b) {
                         imsiInfo.setTime(sdf.format(savetime));
-                        imsiInfo.setId(UuidUtil.getUuid());
+                        String id = UuidUtil.getUuid();
+                        imsiInfo.setId(id);
                         int i = imsiInfoMapper.insertSelective(imsiInfo);
                         if (i > 0) {
                             log.info("Insert imsi info is successful");
+                            imsiProducer.sendMessage("PeoMan-IMSI",id,JacksonUtil.toJson(imsiInfo));
                         } else {
                             log.info("Insert imsi info is failed");
                         }
@@ -59,10 +63,12 @@ public class Imsi_mac_Consumer {
                     }
                 }else {
                     imsiInfo.setTime(sdf.format(savetime));
-                    imsiInfo.setId(UuidUtil.getUuid());
+                    String id = UuidUtil.getUuid();
+                    imsiInfo.setId(id);
                     int i = imsiInfoMapper.insertSelective(imsiInfo);
                     if (i > 0) {
                         log.info("Insert imsi info is successful");
+                        imsiProducer.sendMessage("PeoMan-IMSI",id,JacksonUtil.toJson(imsiInfo));
                     } else {
                         log.info("Insert imsi info is failed");
                     }
