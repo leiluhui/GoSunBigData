@@ -3,7 +3,7 @@ package com.hzgc.service.imsi.service;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.imsi.dao.ImsiInfoMapper;
 import com.hzgc.service.imsi.dao.MacInfoMapper;
-import com.hzgc.service.imsi.model.ImsiInfo;
+import com.hzgc.service.imsi.model.ImsiParam;
 import com.hzgc.service.imsi.model.MacInfo;
 import com.hzgc.service.imsi.util.ImsiCheck;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class Imsi_mac_Consumer {
             if (kafkaMessage.isPresent()) {
                 String message = kafkaMessage.get();
                 log.info("Recevice imsi message is " + message);
-                ImsiInfo imsiInfo = JacksonUtil.toObject(message, ImsiInfo.class);
+                ImsiParam imsiInfo = JacksonUtil.toObject(message, ImsiParam.class);
                 boolean b = ImsiCheck.checkImsi(imsiInfo.getImsi(), imsiInfo.getSavetime());
                 if (b) {
                     int i = imsiInfoMapper.insertSelective(imsiInfo);

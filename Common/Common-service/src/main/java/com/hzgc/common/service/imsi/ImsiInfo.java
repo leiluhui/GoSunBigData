@@ -4,7 +4,6 @@ import lombok.Data;
 import org.apache.commons.net.ntp.TimeStamp;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 @Data
 public class ImsiInfo implements Serializable {
