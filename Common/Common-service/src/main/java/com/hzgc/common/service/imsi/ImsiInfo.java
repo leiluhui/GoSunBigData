@@ -32,9 +32,7 @@ public class ImsiInfo implements Serializable {
     //运营商制式
     private String standard;
     //时间
-    private TimeStamp savetime;
-    //开始时间
-    private String startTime;
-    //结束时间
-    private String endTime;
+    private long savetime;
+    //格式时间
+    private String time;
 }

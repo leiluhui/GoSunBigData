@@ -14,7 +14,7 @@
     <result column="biscorpci" jdbcType="VARCHAR" property="biscorpci" />
     <result column="attach" jdbcType="VARCHAR" property="attach" />
     <result column="standard" jdbcType="VARCHAR" property="standard" />
-    <result column="savetime" jdbcType="TIMESTAMP" property="savetime" />
+    <result column="savetime" jdbcType="TIMESTAMP" property="time" />
   </resultMap>
   <sql id="Base_Column_List">
     id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
