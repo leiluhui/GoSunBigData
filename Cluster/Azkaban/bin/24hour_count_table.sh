@@ -1,7 +1,7 @@
 #!/bin/bash
 IP=${IP}
 PORT=${PORT}
- mysql -u root -h ${IP} -P ${PORT} -pHZGC@123 << EOF
+ mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 
 INSERT INTO t_24hour_count (peopleid, hour, count, community)

@@ -2,7 +2,7 @@
 IP=${IP}
 PORT=${PORT}
 COUNT=20
- mysql -u root -h ${IP} -P ${PORT} -pHZGC@123 << EOF
+ mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 
 #新增
