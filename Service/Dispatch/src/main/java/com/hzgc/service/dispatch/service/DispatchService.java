@@ -201,13 +201,13 @@ public class DispatchService {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
             PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
             if (pictureData == null){
-                log.error("Face feature extract is null");
-                throw new RuntimeException("Face feature extract is null");
+                log.error("Failed to get face feature");
+                throw new RuntimeException("Failed to get face feature");
             }
             FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, insert t_dispatch failed");
-                throw new RuntimeException("Face feature extract failed, insert  t_dispatch failed");
+                log.error("Failed to get face feature, insert t_dispatch failed");
+                throw new RuntimeException("Failed to get face feature, insert  t_dispatch failed");
             }
             dispatch.setFace(bytes);
             dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
@@ -256,13 +256,13 @@ public class DispatchService {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
             PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
             if (pictureData == null){
-                log.error("Face feature extract is null");
-                throw new RuntimeException("Face feature extract is null");
+                log.error("Failed to get face feature");
+                throw new RuntimeException("Failed to get face feature");
             }
             FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, update t_dispatch failed");
-                throw new RuntimeException("Face feature extract failed, update t_dispatch failed");
+                log.error("Failed to get face feature, update t_dispatch failed");
+                throw new RuntimeException("Failed to get face feature, update t_dispatch failed");
             }
             dispatch.setFace(bytes);
             dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
