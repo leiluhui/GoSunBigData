@@ -1,11 +1,15 @@
 package com.hzgc.common.service.imsi;
 
 import lombok.Data;
+import org.apache.commons.net.ntp.TimeStamp;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 @Data
 public class ImsiInfo implements Serializable {
+    //uuid
+    private String id;
     //设备id
     private String controlsn;
     //基站
@@ -29,9 +33,9 @@ public class ImsiInfo implements Serializable {
     //运营商制式
     private String standard;
     //时间
-    private Long savetime;
+    private TimeStamp savetime;
     //开始时间
-    private Long startTime;
+    private String startTime;
     //结束时间
-    private Long endTime;
+    private String endTime;
 }
