@@ -24,3 +24,8 @@ WHERE DATE_FORMAT(capturetime,'%Y%m%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 
 GROUP BY peopleid,deviceid;
 
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec device sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec device sql success" >> /var/log/mysql.log 2>&1 &
+fi

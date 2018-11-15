@@ -1,6 +1,6 @@
-0 * * * * sh /mysql/24hour_count_table.sh
-0 0 * * * sh /mysql/device_recogize_table.sh
-0 0 * * * sh /mysql/imsi_blacklist_table.sh
-0 0 * * * sh /mysql/fusion_imsi_table.sh
-0 0 1 * * sh /mysql/newpeople_table.sh
-0 0 * * * sh /mysql/outpeople_table.sh
+0 * * * * /bin/sh /mysql/24hour_count_table.sh
+0 0 * * * /bin/sh /mysql/device_recogize_table.sh
+0 0 * * * /bin/sh /mysql/imsi_blacklist_table.sh
+0 0 * * * /bin/sh /mysql/fusion_imsi_table.sh
+0 0 1 * * /bin/sh /mysql/newpeople_table.sh
+0 0 * * * /bin/sh /mysql/outpeople_table.sh

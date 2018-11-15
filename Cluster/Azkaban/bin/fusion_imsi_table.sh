@@ -17,3 +17,8 @@ FROM(
     GROUP BY peopleid
 )AS final;
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec fusion sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec fusion sql success" >> /var/log/mysql.log 2>&1 &
+fi

@@ -16,3 +16,8 @@ FROM (
 ON people.id = t_picture.peopleid) AS o1;
 
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec outpeople sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec outpeople sql success" >> /var/log/mysql.log 2>&1 &
+fi

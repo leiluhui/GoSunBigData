@@ -16,3 +16,8 @@ FROM (SELECT imsi, savetime, FROM_UNIXTIME(savetime/1000,"%Y%m%d")
 WHERE f1.imsi = f2.imsi
 AND FROM_UNIXTIME(f1.savetime/1000,"%Y%m%d")=f2.currenttime;
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec blacklist sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec blacklist sql success" >> /var/log/mysql.log 2>&1 &
+fi
