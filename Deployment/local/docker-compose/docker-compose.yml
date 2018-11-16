@@ -430,3 +430,22 @@ services:
     - /opt/ftpdata:/opt/ftpdata
     - /home/ftpdata:/home/ftpdata
     - /etc/localtime:/etc/localtime:ro
+
+  facecompare:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}
+    container_name: facecompare
+    restart: always
+    depends_on:
+    - zookeeper
+    - kafka
+    - esearch
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - /opt/GsFaceLib:/opt/GsFaceLib
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+    - /etc/localtime:/etc/localtime:ro
