@@ -28,16 +28,19 @@ public class TableCache {
     private Map<Long, List<DispachData>> macInfos;  //Mac布控信息
     private Map<String, List<DispatchAlive>> dispachAlives; //活体检测布控
     private Map<String, Set<float[]>> ipcToFeatures; //白名单布控
+    private Map<String, String>  ipcIdToId; //白名单布控
 
     /**
      * 加载白名单布控数据
      */
     public void loadDispatchWhite(){
         log.info("Load table for white list to cache.");
-        Map<String, Set<float[]>> temp = new HashMap<>();
+        Map<String, Set<float[]>> temp = new HashMap<>(); //ipcIdToId
+        Map<String, String> ipcIdToIdTemp = new HashMap<>();
         List<DispatchWhite> dispatchWhites = dispatchWhiteMapper.selectAll();
         if(dispatchWhites == null){
             ipcToFeatures = temp;
+            ipcIdToId = ipcIdToIdTemp;
             return;
         }
         log.info("Load table to cache. The size is " + dispatchWhites.size());
@@ -59,6 +62,7 @@ public class TableCache {
                 continue;
             }
             for(String device : deviceList){
+                ipcIdToIdTemp.put(device, dispatchWhite.getId());
                 Set<float[]> set = temp.computeIfAbsent(device, k -> new HashSet<>());
                 for(DispatchWhiteinfo dispatchName : dispatchWhiteinfos){
                     set.add(FaceUtil.base64Str2floatFeature(dispatchName.getFeature()));
@@ -67,6 +71,7 @@ public class TableCache {
         }
 
         ipcToFeatures = temp;
+        ipcIdToId = ipcIdToIdTemp;
     }
 
     /**
@@ -380,6 +385,10 @@ public class TableCache {
 
     public List<DispatchAlive> getDispachAlive(String ipcId){
         return dispachAlives.get(ipcId);
+    }
+
+    public String getWhiteRuleId(String deviceId){
+        return ipcIdToId.get(deviceId);
     }
 
     public Set<float[]> getFeatures(String ipcId){

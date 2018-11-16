@@ -290,6 +290,8 @@ public class PlatformService {
     }
 }
 
+
+
 class DetectorQueryDTOSingleton {
     private Map<String, DetectorQueryInfo> xxxQueryInfoMap = new ConcurrentHashMap<>();
     private static DetectorQueryDTOSingleton instance = new DetectorQueryDTOSingleton();

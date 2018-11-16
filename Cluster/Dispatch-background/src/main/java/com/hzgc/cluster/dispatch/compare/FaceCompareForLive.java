@@ -91,7 +91,7 @@ public class FaceCompareForLive implements Runnable{
                         if (dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0) {
                             DispatchRecognize dispatureRecognize = new DispatchRecognize();
                             dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                            dispatureRecognize.setDispatchId("111111");
+                            dispatureRecognize.setDispatchId(dispachAliveRule.getId());
                             dispatureRecognize.setDeviceId(faceObject.getIpcId());
                             dispatureRecognize.setType(4);
                             String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());

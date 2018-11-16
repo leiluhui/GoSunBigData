@@ -3,11 +3,18 @@ package com.hzgc.cluster.dispatch;
 import com.hzgc.cluster.dispatch.cache.CaptureCache;
 import com.hzgc.cluster.dispatch.cache.TableCache;
 import com.hzgc.cluster.dispatch.compare.*;
+import com.hzgc.common.service.api.bean.CameraQueryDTO;
+import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.jniface.FaceFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,9 +39,15 @@ public class ConsumerFunction implements CommandLineRunner {
     PersonCompareForLive personCompareForLive;
     @Autowired
     FaceCompareForWhite faceCompareForWhite;
+    @Autowired
+    private PlatformService platformService;
 
     @Override
     public void run(String... strings) throws Exception {
+//        List<String> ipcIds = new ArrayList<>();
+//        ipcIds.add("3F064E2PAG00143");
+//        Map<String, CameraQueryDTO> map = platformService.getCameraInfoByBatchIpc(ipcIds);
+//        System.out.println(map);
         tableCache.loadData();
         tableCache.loadDispatchWhite();
         tableCache.loadDispatchLive();
