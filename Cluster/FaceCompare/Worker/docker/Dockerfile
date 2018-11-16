@@ -8,8 +8,7 @@ ENV LD_LIBRARY_PATH=/opt/GsFaceLib/face_libs
 COPY worker /worker
 
 #执行命令
-RUN rm -rf /worker/conf \
-     && chmod +x /worker/bin/*
+RUN chmod +x /worker/bin/*
 
 #初始化参数并启动应用
 ENTRYPOINT ["/bin/sh","-c","/worker/bin/start-worker.sh 1 aaa 9999 bbb"]
