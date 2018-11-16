@@ -198,10 +198,14 @@ public class PeopleService {
             }
         }
         log.info("Insert people info successfully");
-        SyncPeopleManager manager = new SyncPeopleManager();
-        manager.setType("2");
-        manager.setPersonid(people.getId());
-        this.sendKafka("ADD", manager);
+        boolean b1 = peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0;
+        boolean b2 = peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0;
+        if (b1 || b2){
+            SyncPeopleManager manager = new SyncPeopleManager();
+            manager.setType("2");
+            manager.setPersonid(people.getId());
+            this.sendKafka("ADD", manager);
+        }
         ReturnMessage message = new ReturnMessage();
         message.setStatus(1);
         message.setMessage("添加成功");
@@ -355,76 +359,7 @@ public class PeopleService {
                 }
             }
         }
-        List<Long> t_picture_ids = pictureMapper.selectIdByPeopleId(people.getId());
-        for (Long id : t_picture_ids) {
-            int status = pictureMapper.deleteByPrimaryKey(id);
-            if (status != 1) {
-                log.error("Update people, but delete picture from t_picture failed, t_picture.id: " + id);
-                ReturnMessage message = new ReturnMessage();
-                message.setStatus(0);
-                message.setMessage("修改人口照片表失败");
-                return message;
-            }
-        }
-        if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-            for (String photo : peopleDTO.getIdCardPic()) {
-                PictureWithBLOBs picture = new PictureWithBLOBs();
-                picture.setPeopleid(people.getId());
-                picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
-                PictureData pictureData = innerService.faceFeautreCheck(photo);
-                if (pictureData == null){
-                    log.error("Face feature extract is null");
-                    throw new RuntimeException("Face feature extract is null");
-                }
-                FaceAttribute faceAttribute = pictureData.getFeature();
-                if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                    log.error("Update people, but face feature extract failed, insert idCard picture to t_picture failed");
-                    throw new RuntimeException("Face feature extract failed, insert idCard picture to t_picture failed");
-                }
-                picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-                picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-                int status = pictureMapper.insertSelective(picture);
-                if (status != 1) {
-                    log.error("Update people, but insert idCard picture to t_picture failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口照片表失败");
-                    return message;
-                }
-            }
-        }
-        if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-            for (String photo : peopleDTO.getCapturePic()) {
-                PictureWithBLOBs picture = new PictureWithBLOBs();
-                picture.setPeopleid(people.getId());
-                picture.setCapturepic(FaceUtil.base64Str2BitFeature(photo));
-                PictureData pictureData = innerService.faceFeautreCheck(photo);
-                if (pictureData == null){
-                    log.error("Face feature extract is null");
-                    throw new RuntimeException("Face feature extract is null");
-                }
-                FaceAttribute faceAttribute = pictureData.getFeature();
-                if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                    log.error("Update people, but face feature extract failed, insert capture picture to t_picture failed");
-                    throw new RuntimeException("Face feature extract failed, insert capture picture to t_picture failed");
-                }
-                picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-                picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-                int status = pictureMapper.insertSelective(picture);
-                if (status != 1) {
-                    log.error("Update people, but insert capture picture to t_picture failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口照片表失败");
-                    return message;
-                }
-            }
-        }
         log.info("Update people info successfully");
-        SyncPeopleManager manager = new SyncPeopleManager();
-        manager.setType("3");
-        manager.setPersonid(people.getId());
-        this.sendKafka("UPDATE", manager);
         ReturnMessage message = new ReturnMessage();
         message.setStatus(1);
         message.setMessage("修改成功");
@@ -535,6 +470,105 @@ public class PeopleService {
                 return 0;
             }
         }
+        return 1;
+    }
+
+    /**
+     * 添加人口库照片信息
+     *
+     * @param dto 添加照片信息
+     * @return 成功状态 1：修改成功, 0：修改失败
+     */
+    public int insertPicture(PictureDTO dto) {
+        PictureWithBLOBs picture = new PictureWithBLOBs();
+        picture.setPeopleid(dto.getPeopleId());
+        byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getPicture());
+        if (dto.getType() == 0) {
+            picture.setIdcardpic(bytes);
+        }
+        if (dto.getType() == 1) {
+            picture.setCapturepic(bytes);
+        }
+        PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
+        if (pictureData == null){
+            log.error("Face feature extract is null");
+            return 0;
+        }
+        FaceAttribute faceAttribute = pictureData.getFeature();
+        if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+            log.error("Face feature extract failed");
+            return 0;
+        }
+        picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+        picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+        int status = pictureMapper.insertSelective(picture);
+        if (status != 1) {
+            log.info("Insert picture to t_picture failed");
+            return 0;
+        }
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("2");
+        manager.setPersonid(dto.getPeopleId());
+        this.sendKafka("ADD", manager);
+        return 1;
+    }
+
+    /**
+     * 修改人口库照片信息
+     *
+     * @param dto 修改照片信息
+     * @return 成功状态 1：修改成功, 0：修改失败
+     */
+    public int updatePicture(PictureDTO dto) {
+        PictureWithBLOBs picture = new PictureWithBLOBs();
+        picture.setPeopleid(dto.getPeopleId());
+        byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getPicture());
+        if (dto.getType() == 0) {
+            picture.setIdcardpic(bytes);
+        }
+        if (dto.getType() == 1) {
+            picture.setCapturepic(bytes);
+        }
+        PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
+        if (pictureData == null){
+            log.error("Face feature extract is null");
+            return 0;
+        }
+        FaceAttribute faceAttribute = pictureData.getFeature();
+        if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+            log.error("Face feature extract failed");
+            return 0;
+        }
+        picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+        picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+        int status = pictureMapper.updateByPrimaryKeyWithBLOBs(picture);
+        if (status != 1) {
+            log.info("Update picture to t_picture failed");
+            return 0;
+        }
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("3");
+        manager.setPersonid(dto.getPeopleId());
+        this.sendKafka("UPDATE", manager);
+        return 1;
+    }
+
+    /**
+     * 删除人口库照片信息
+     *
+     * @param dto 删除照片信息
+     * @return 成功状态 1：修改成功, 0：修改失败
+     */
+    public int deletePicture(PictureDTO dto) {
+        int status = pictureMapper.deleteByPrimaryKey(dto.getPictureId());
+        if (status != 1){
+            log.info("Delete picture to t_picture failed, picture id:" + dto.getPictureId());
+            return 0;
+        }
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("4");
+        manager.setPersonid(dto.getPeopleId());
+        this.sendKafka("DELETE", manager);
         return 1;
     }
 

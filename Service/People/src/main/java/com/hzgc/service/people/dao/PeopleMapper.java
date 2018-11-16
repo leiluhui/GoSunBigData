@@ -1,6 +1,7 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.community.param.AffirmOperationDTO;
+import com.hzgc.service.community.param.PeopleDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.SearchPeopleDTO;
 import org.apache.ibatis.annotations.CacheNamespace;
@@ -36,7 +37,7 @@ public interface PeopleMapper {
 
     List<People> searchCommunityPeople(Long community);
 
-    List<People> searchImportantPeople(Long community);
+    List<People> searchImportantPeople(PeopleDTO param);
 
     List<People> searchCarePeople(Long community);
 

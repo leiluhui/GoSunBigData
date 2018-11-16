@@ -70,9 +70,13 @@ public class CommunityController {
             log.error("Start search community important people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数不能为空,请检查！");
         }
-        if (param.getCommunityId() == null || param.getCommunityId() == 0) {
+        if (param.getCommunityId() == null) {
             log.error("Start search community important people, but community id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "小区ID不能为空,请检查！");
+        }
+        if (param.getSearchVal() == null) {
+            log.error("Start search community important people, but searchVal is error");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询内容不能为NULL,请检查!");
         }
         if (param.getStart() < 0) {
             log.error("Start search community important people, but start < 0");

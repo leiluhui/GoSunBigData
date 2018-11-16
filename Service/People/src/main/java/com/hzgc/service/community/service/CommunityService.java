@@ -119,7 +119,7 @@ public class CommunityService {
     // 重点人员查询条件：1.当前小区；2.符合重点标签；3.此人员须有照片
     public List<PeopleVO> searchCommunityImportantPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
-        List<People> peopleList = peopleMapper.searchImportantPeople(param.getCommunityId());
+        List<People> peopleList = peopleMapper.searchImportantPeople(param);
         return this.shift(peopleList);
     }
 

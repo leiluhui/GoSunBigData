@@ -12,8 +12,8 @@
             <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <!-- 数据库 url,用户名,密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.202:4000/people"
-                        userId="root" password="Hzgc@123">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.18.18.203:4000/people"
+                        userId="root" password="">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
@@ -33,7 +33,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainbjectame是实体类名-->
-        <table tableName="t_car_recognize" domainObjectName="CarRecognize" enableCountByExample="false"
+        <table tableName="t_recognize_record" domainObjectName="RecognizeRecord" enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
         <!--<table tableName="t_flag" domainObjectName="Flag" enableCountByExample="false"
