@@ -109,6 +109,7 @@ public class PersonCompareForLive implements Runnable{
                             String ip = personObject.getIp();
                             alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getbAbsolutePath()));
                             alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", personObject.getsAbsolutePath()));
+                            alarmMessage.setName(dispachAliveRule.getName());
                             alarmMessage.setDeviceId(personObject.getIpcId());
                             alarmMessage.setDeviceName(map.get(personObject.getIpcId()).getCameraName());
                             alarmMessage.setType(4);

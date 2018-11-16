@@ -108,6 +108,7 @@ public class CarCompareForLive implements Runnable{
                             alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
                             alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
                             alarmMessage.setDeviceId(carObject.getIpcId());
+                            alarmMessage.setName(dispachAliveRule.getName());
                             alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
                             alarmMessage.setType(4);
                             alarmMessage.setTime(carObject.getTimeStamp());

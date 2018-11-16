@@ -3,7 +3,9 @@ package com.hzgc.cluster.dispatch.compare;
 import com.hzgc.cluster.dispatch.cache.CaptureCache;
 import com.hzgc.cluster.dispatch.cache.TableCache;
 import com.hzgc.cluster.dispatch.dao.DispatchRecognizeMapper;
+import com.hzgc.cluster.dispatch.dao.DispatchWhiteMapper;
 import com.hzgc.cluster.dispatch.model.DispatchRecognize;
+import com.hzgc.cluster.dispatch.model.DispatchWhite;
 import com.hzgc.cluster.dispatch.producer.AlarmMessage;
 import com.hzgc.cluster.dispatch.producer.Producer;
 import com.hzgc.common.collect.bean.FaceObject;
@@ -32,6 +34,8 @@ public class FaceCompareForWhite implements Runnable{
     private TableCache tableCache;
     @Autowired
     private DispatchRecognizeMapper dispatureRecognizeMapper;
+    @Autowired
+    private DispatchWhiteMapper dispatchWhiteMapper;
     @Autowired
     private PlatformService platformService;
     @Autowired
@@ -109,11 +113,13 @@ public class FaceCompareForWhite implements Runnable{
                         log.error(e.getMessage());
                     }
 
+                    DispatchWhite dispatchWhite = dispatchWhiteMapper.selectByPrimaryKey(faceObject.getIpcId());
                     AlarmMessage alarmMessage = new AlarmMessage();
                     String ip = faceObject.getIp();
                     alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
                     alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
                     alarmMessage.setDeviceId(faceObject.getIpcId());
+                    alarmMessage.setName(dispatchWhite.getName());
                     alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
                     alarmMessage.setType(3);
                     alarmMessage.setTime(faceObject.getTimeStamp());
