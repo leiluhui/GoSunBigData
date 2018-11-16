@@ -1,7 +1,7 @@
 #!/bin/bash
-IP=172.18.18.119
-PORT=4000
- mysql -u root -h ${IP} -P ${PORT} << EOF
+IP=${IP}
+PORT=${PORT}
+ mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 
 INSERT INTO t_people_out (peopleid, community, \`month\`, isconfirm)
@@ -16,3 +16,8 @@ FROM (
 ON people.id = t_picture.peopleid) AS o1;
 
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec outpeople sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec outpeople sql success" >> /var/log/mysql.log 2>&1 &
+fi

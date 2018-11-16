@@ -1,8 +1,8 @@
 #!/bin/bash
-IP=172.18.18.119
-PORT=4000
+IP=${IP}
+PORT=${PORT}
 COUNT=20
- mysql -u root -h ${IP} -P ${PORT} << EOF
+ mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 
 #新增
@@ -24,7 +24,7 @@ SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'
 )AS aaa,t_people_recognize
 WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND t_people_recognize.flag=2
 GROUP BY aaa.peopleid, aaa.community
-ORDER BY peopleid DESC
+ORDER BY peopleid DESC;
 
 #实名
 INSERT INTO people.t_people_new (peopleid,community,month,isconfirm,flag)
@@ -38,5 +38,10 @@ SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'
 )AS aaa,t_people_recognize
 WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
 GROUP BY aaa.peopleid, aaa.community
-ORDER BY peopleid DESC
+ORDER BY peopleid DESC;
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec newpeople sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec newpeople sql success" >> /var/log/mysql.log 2>&1 &
+fi
