@@ -140,7 +140,7 @@
         select count(*) from
         (select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_flag b, t_picture c
-        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8)
+        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
         and a.id = b.peopleid
         and a.id = c.peopleid
         and a.community = #{community,jdbcType=BIGINT}
@@ -150,11 +150,11 @@
     <select id="searchImportantPeople"  resultMap="CommunityPeopleMap" parameterType="com.hzgc.service.community.param.PeopleDTO" >
         select a.id, a.name, a.idcard, a.lasttime, c.id as pid
         from t_people a, t_flag b, t_picture c
-        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8)
+        where b.flagid in (0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
         and a.id = b.peopleid
         and a.id = c.peopleid
-        and a.community = #{community,jdbcType=BIGINT}
-        and (a.name like "%" #{searchVal,jdbcType=VARCHAR} "%" or and a.idcard like "%" #{searchVal,jdbcType=VARCHAR} "%")
+        and a.community = #{communityId,jdbcType=BIGINT}
+        and (a.name like "%" #{searchVal,jdbcType=VARCHAR} "%" or a.idcard like "%" #{searchVal,jdbcType=VARCHAR} "%")
         group by a.id
     </select>
     <!--小区关爱人口数量统计-->
@@ -229,7 +229,7 @@
         <foreach collection="list" item="model" open="(" close=")" separator=",">
             #{model}
         </foreach>
-        and b.flagid in(0, 1, 2, 3, 4, 5, 6, 8)
+        and b.flagid in(0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
     </select>
     <!--根据人员ID删除小区ID-->
     <update id="deleteCommunityByPeopleId" parameterType="java.lang.String">
