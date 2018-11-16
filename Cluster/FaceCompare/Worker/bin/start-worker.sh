@@ -48,7 +48,7 @@ fi
 #####################################################################
 function start_worker()
 {
-    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} 2>&1 > $LOG_FILE_STDERR &
+    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} 2>&1 > $LOG_FILE_STDERR
     echo "start FaceCompareWorker ..."
 }
 
