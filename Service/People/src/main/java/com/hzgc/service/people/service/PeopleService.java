@@ -521,6 +521,7 @@ public class PeopleService {
      */
     public int updatePicture(PictureDTO dto) {
         PictureWithBLOBs picture = new PictureWithBLOBs();
+        picture.setId(dto.getPictureId());
         picture.setPeopleid(dto.getPeopleId());
         byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getPicture());
         if (dto.getType() == 0) {
