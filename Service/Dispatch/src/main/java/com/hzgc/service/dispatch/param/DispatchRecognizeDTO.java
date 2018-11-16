@@ -10,7 +10,7 @@ import java.io.Serializable;
 @ApiModel(value = "布控告警历史记录入参封装")
 @Data
 public class DispatchRecognizeDTO implements Serializable {
-    @ApiModelProperty(value = "查询类型（0：抓拍，1：识别）")
+    @ApiModelProperty(value = "查询类型（0：抓拍，1：识别，3：白名单，4：活体检测）")
     @NotNull
     private int searchType;
     @ApiModelProperty(value = "查询区域")
