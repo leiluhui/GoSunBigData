@@ -33,8 +33,9 @@
                 and type in(1,2)
             </if>
             <if test="startTime != null and endTime != null">
-                and create_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+                and record_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
             </if>
+            order by record_time desc
         </where>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

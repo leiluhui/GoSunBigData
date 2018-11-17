@@ -2,7 +2,7 @@ package com.hzgc.compare.worker.memory.manager;
 
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;

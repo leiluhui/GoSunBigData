@@ -1,10 +1,8 @@
 package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.CarMapper;
-import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
 import com.hzgc.cluster.peoman.worker.dao.RecognizeRecordMapper;
 import com.hzgc.cluster.peoman.worker.model.Car;
-import com.hzgc.cluster.peoman.worker.model.People;
 import com.hzgc.cluster.peoman.worker.model.RecognizeRecord;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
@@ -14,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Future;
 
 @Slf4j
 @Component
@@ -100,7 +95,7 @@ public class CarConsumer implements Runnable{
                                 } else {
                                     log.info("getCameraQueryDTO data no community !!!, devId="+carObject.getIpcId());
                                 }
-                                carRecognize.setType(2);
+                                carRecognize.setType(3);
                                 carRecognize.setId(carObject.getId());
                                 carRecognize.setPeopleid(car.getPeopleid());
                                 carRecognize.setPlate(car.getCar());

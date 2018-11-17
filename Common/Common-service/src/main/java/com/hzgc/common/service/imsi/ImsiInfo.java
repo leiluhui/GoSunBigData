@@ -1,7 +1,6 @@
 package com.hzgc.common.service.imsi;
 
 import lombok.Data;
-import org.apache.commons.net.ntp.TimeStamp;
 
 import java.io.Serializable;
 

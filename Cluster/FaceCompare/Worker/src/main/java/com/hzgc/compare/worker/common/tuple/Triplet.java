@@ -1,6 +1,5 @@
 package com.hzgc.compare.worker.common.tuple;
 
-import javafx.beans.NamedArg;
 
 import java.io.Serializable;
 
@@ -9,7 +8,7 @@ public class Triplet<A, B, C> implements Serializable{
     private B second;
     private C third;
 
-    public Triplet(@NamedArg("first") A first, @NamedArg("second") B second, @NamedArg("third") C third) {
+    public Triplet(A first, B second,C third) {
         this.first = first;
         this.second = second;
         this.third = third;

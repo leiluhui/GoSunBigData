@@ -30,6 +30,11 @@ public class RPCRegistry implements Runnable{
     @Override
     public void run() {
         log.info("Registry the service.");
+        log.info("The adddress of this node is " + Config.WORKER_ADDRESS);
+        if(Config.WORKER_ADDRESS == null){
+            log.error("Get local address faild .");
+            System.exit(1);
+        }
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);
         rpcServer.start();

@@ -110,6 +110,7 @@ public class FaceCompareForLive implements Runnable{
                             String ip = faceObject.getIp();
                             alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
                             alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
+                            alarmMessage.setName(dispachAliveRule.getName());
                             alarmMessage.setDeviceId(faceObject.getIpcId());
                             alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
                             alarmMessage.setType(4);

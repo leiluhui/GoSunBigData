@@ -3,7 +3,7 @@ package com.hzgc.compare.worker.compare;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.compare.Feature;
 import com.hzgc.compare.SearchResult;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;

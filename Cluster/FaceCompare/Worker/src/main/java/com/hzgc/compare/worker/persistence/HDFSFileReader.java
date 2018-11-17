@@ -4,7 +4,7 @@ import com.hzgc.compare.worker.common.collects.CustomizeArrayList;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.util.KryoSerializer;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
