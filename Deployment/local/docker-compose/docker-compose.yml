@@ -174,16 +174,12 @@ services:
     command: /start-kafka-to-parquet.sh
     restart: always
     network_mode: "host"
-    environment:
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   kafka-tidb:
     image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
@@ -195,15 +191,11 @@ services:
     command: /start-kafka-to-tidb.sh
     restart: always
     network_mode: "host"
-    environment:
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   face-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
