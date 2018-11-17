@@ -1,6 +1,5 @@
 package com.hzgc.cluster.peoman.worker.service;
 
-import com.hzgc.cluster.peoman.worker.dao.FlagMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
 import com.hzgc.cluster.peoman.worker.dao.RecognizeRecordMapper;
 import com.hzgc.cluster.peoman.worker.model.Car;
@@ -54,10 +53,6 @@ public class PeopleCompare {
     @Autowired
     @SuppressWarnings("unused")
     private RecognizeRecordMapper recognizeRecordMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private FlagMapper flagMapper;
 
     @Value("${kafka.fusion.topic}")
     @SuppressWarnings("unused")
