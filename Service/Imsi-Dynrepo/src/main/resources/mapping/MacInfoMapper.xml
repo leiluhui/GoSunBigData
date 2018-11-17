@@ -7,16 +7,10 @@
         <result column="mac" property="mac" jdbcType="VARCHAR"/>
         <result column="wifisn" property="wifisn" jdbcType="VARCHAR"/>
         <result column="time" property="time" jdbcType="TIMESTAMP"/>
-    </resultMap>
-    <resultMap id="BaseResultMapInfo" type="com.hzgc.service.imsi.model.MacDTO">
-        <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="sn" property="sn" jdbcType="VARCHAR"/>
-        <result column="mac" property="mac" jdbcType="VARCHAR"/>
-        <result column="wifisn" property="wifisn" jdbcType="VARCHAR"/>
-        <result column="time" property="time" jdbcType="TIMESTAMP"/>
+        <result column="communityId" property="communityId" jdbcType="BIGINT"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, sn, wifisn, mac, time
+        id, sn, wifisn, mac, time, communityId
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -48,12 +42,6 @@
         delete from t_mac_all
         where id = #{id,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.hzgc.service.imsi.model.MacInfo">
-        insert into t_mac_all (id, sn, mac,
-        savetime)
-        values (#{id,jdbcType=INTEGER}, #{sn,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR},
-        #{savetime,jdbcType=BIGINT})
-    </insert>
     <insert id="insertSelective" parameterType="com.hzgc.service.imsi.model.MacInfo">
         insert into t_mac_all
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -69,6 +57,9 @@
             <if test="time != null">
                 time,
             </if>
+            <if test="communityId != null">
+                communityId,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="sn != null">
@@ -83,28 +74,9 @@
             <if test="time != null">
                 #{time,jdbcType=TIMESTAMP},
             </if>
+            <if test="communityId != null">
+                #{communityId,jdbcType=BIGINT},
+            </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.service.imsi.model.MacInfo">
-        update t_mac_all
-        <set>
-            <if test="sn != null">
-                sn = #{sn,jdbcType=VARCHAR},
-            </if>
-            <if test="mac != null">
-                mac = #{mac,jdbcType=VARCHAR},
-            </if>
-            <if test="savetime != null">
-                savetime = #{savetime,jdbcType=BIGINT},
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.hzgc.service.imsi.model.MacInfo">
-        update t_mac_all
-        set sn = #{sn,jdbcType=VARCHAR},
-        mac = #{mac,jdbcType=VARCHAR},
-        savetime = #{savetime,jdbcType=BIGINT}
-        where id = #{id,jdbcType=INTEGER}
-    </update>
 </mapper>
