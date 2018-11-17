@@ -7,36 +7,36 @@ use people;
 
 #新增
 INSERT INTO people.t_people_new (peopleid,community,month,isconfirm,flag)
-SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') , 1 ,t_people_recognize.flag FROM
+SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') , 1 ,t_recognize_record.flag FROM
 (
-	SELECT aa.peopleid,t_people_recognize.community ,COUNT(t_people_recognize.community) AS num  FROM
+	SELECT aa.peopleid,t_recognize_record.community ,COUNT(t_recognize_record.community) AS num  FROM
 	(
 		SELECT DISTINCT a.peopleid FROM
 		(
-			SELECT * FROM t_people_recognize WHERE flag=2 AND DATE_FORMAT(capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
-		)AS a ,t_people_recognize
-		WHERE a.peopleid=t_people_recognize.peopleid AND t_people_recognize.flag=10
-	)AS aa ,t_people_recognize
-    WHERE aa.peopleid=t_people_recognize.peopleid AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
-	GROUP BY aa.peopleid,t_people_recognize.community
-	HAVING COUNT(t_people_recognize.community) >= ${COUNT}
+			SELECT peopleid FROM t_recognize_record WHERE DATE_FORMAT(capturetime ,'%Y%m') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND flag=2
+		)AS a ,t_recognize_record
+		WHERE a.peopleid=t_recognize_record.peopleid AND t_recognize_record.flag=10
+	)AS aa ,t_recognize_record
+    WHERE aa.peopleid=t_recognize_record.peopleid AND DATE_FORMAT(t_recognize_record.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
+	GROUP BY aa.peopleid,t_recognize_record.community
+	HAVING COUNT(t_recognize_record.community) >= ${COUNT}
 	ORDER BY num DESC
-)AS aaa,t_people_recognize
-WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND t_people_recognize.flag=2
+)AS aaa,t_recognize_record
+WHERE aaa.peopleid=t_recognize_record.peopleid AND aaa.community=t_recognize_record.community AND DATE_FORMAT(t_recognize_record.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND t_recognize_record.flag=2
 GROUP BY aaa.peopleid, aaa.community
 ORDER BY peopleid DESC;
 
 #实名
 INSERT INTO people.t_people_new (peopleid,community,month,isconfirm,flag)
-SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') ,1 ,t_people_recognize.flag FROM
+SELECT aaa.peopleid,aaa.community,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') ,1 ,t_recognize_record.flag FROM
 (
-	SELECT *,COUNT(community) FROM t_people_recognize
-	WHERE flag=1 AND DATE_FORMAT(capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
+	SELECT peopleid,community,COUNT(community) FROM t_recognize_record
+	WHERE DATE_FORMAT(capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m') AND flag=1
 	GROUP BY peopleid,community
 	HAVING COUNT(community) >= ${COUNT}
 	ORDER BY COUNT(community) DESC
-)AS aaa,t_people_recognize
-WHERE aaa.peopleid=t_people_recognize.peopleid AND aaa.community=t_people_recognize.community AND DATE_FORMAT(t_people_recognize.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
+)AS aaa,t_recognize_record
+WHERE aaa.peopleid=t_recognize_record.peopleid AND aaa.community=t_recognize_record.community AND DATE_FORMAT(t_recognize_record.capturetime ,'%Y%m') =DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
 GROUP BY aaa.peopleid, aaa.community
 ORDER BY peopleid DESC;
 EOF

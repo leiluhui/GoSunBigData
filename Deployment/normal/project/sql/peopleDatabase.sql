@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 CREATE DATABASE IF NOT EXISTS lts;
 CREATE DATABASE IF NOT EXISTS people;
 
@@ -92,32 +94,23 @@ CREATE TABLE IF NOT EXISTS  `t_24hour_count` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='24小时抓拍统计表';
 
-CREATE TABLE IF NOT EXISTS  `t_people_recognize` (
-  `id` VARCHAR(32) NOT NULL COMMENT 'ID',
-  `peopleid` VARCHAR(32) NOT NULL COMMENT '人口库人员全局唯一ID',
-  `community` BIGINT(20) NOT NULL COMMENT '小区ID',
-  `pictureid` BIGINT(20) NOT NULL COMMENT '人口库图片ID',
-  `deviceid` VARCHAR(50) NOT NULL COMMENT '抓拍设备ID',
-  `capturetime` TIMESTAMP NOT NULL COMMENT '抓拍时间',
-  `surl` VARCHAR(255) NOT NULL COMMENT '小图ftp路径(带hostname的ftpurl)',
-  `burl` VARCHAR(255) NOT NULL COMMENT '大图ftp路径(带hostname的ftpurl)',
-  `flag` INT(2) NOT NULL COMMENT '识别标签(0:未知, 1:实名, 2:新增 ,10:原图)',
-  `similarity` FLOAT DEFAULT NULL COMMENT '匹配相似度',
-  PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='人口识别记录表';
-ALTER TABLE t_people_recognize ADD index origin_picture(peopleid, flag);
-
-CREATE TABLE t_car_recognize(
-id BIGINT(20)  NOT NULL AUTO_INCREMENT COMMENT 'ID',
-peopleid VARCHAR(32) NOT NULL COMMENT '人员全局ID',
-community BIGINT(20) NOT NULL COMMENT '小区ID（设备所在小区）',
-plate VARCHAR(50) NOT NULL COMMENT '抓拍车牌',
-deviceid VARCHAR(50) NOT NULL COMMENT '设备ID',
-capturetime TIMESTAMP NOT NULL COMMENT '抓拍时间',
-surl VARCHAR(255) NOT NULL COMMENT '小图ftp路径(带hostname的ftpurl)',
-burl VARCHAR(255) NOT NULL COMMENT '大图ftp路径(带hostname的ftpurl)',
-PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT '车辆识别记录表';
+CREATE TABLE IF NOT EXISTS `t_recognize_record` (
+ `id` VARCHAR(32) NOT NULL COMMENT 'ID',
+ `peopleid` VARCHAR(32) NOT NULL COMMENT '人口库人员全局唯一ID',
+ `community` BIGINT(20) NOT NULL COMMENT '小区ID（设备所在小区）',
+ `pictureid` BIGINT(20) DEFAULT NULL COMMENT '人口库图片ID',
+ `deviceid` VARCHAR(50) NOT NULL COMMENT '抓拍设备ID',
+ `capturetime` TIMESTAMP NOT NULL COMMENT '抓拍时间',
+ `surl` VARCHAR(255) DEFAULT NULL COMMENT '小图ftp路径(带hostname的ftpurl)',
+ `burl` VARCHAR(255) DEFAULT NULL COMMENT '大图ftp路径(带hostname的ftpurl)',
+ `flag` INT(2) DEFAULT NULL COMMENT '识别标签(0:未知, 1:实名, 2:新增 ,10:原图)',
+ `similarity` FLOAT DEFAULT NULL COMMENT '匹配相似度',
+ `plate` VARCHAR(50) DEFAULT NULL COMMENT '抓拍车牌',
+ `type` INT(2) NOT NULL COMMENT '识别类型(1:人脸, 2:侦码, 3:车辆)',
+ `imsi` VARCHAR (20) DEFAULT NULL COMMENT '手机imsi码',
+ `mac` VARCHAR (20) DEFAULT NULL COMMENT 'Mac地址',
+ PRIMARY KEY (`id`)
+)  ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='识别记录表';
 
 CREATE TABLE IF NOT EXISTS  `t_device_recognize` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -146,6 +139,7 @@ CREATE TABLE IF NOT EXISTS  `t_mac_all` (
   `wifisn` varchar(15) DEFAULT NULL COMMENT 'wifi编号',
   `sn` varchar(15) DEFAULT NULL COMMENT '设备编号',
   `id` bigint(15) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `communityId ` bigint NOT NULL COMMENT '社区id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='mac地址信息库';
@@ -164,6 +158,7 @@ CREATE TABLE IF NOT EXISTS  `t_imsi_all` (
   `savetime` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `standard` varchar(10) DEFAULT NULL COMMENT '运营商',
   `id` varchar(32) NOT NULL COMMENT 'uuid',
+  `communityId ` bigint NOT NULL COMMENT '社区id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=74 COMMENT='IMSI码总表';
 

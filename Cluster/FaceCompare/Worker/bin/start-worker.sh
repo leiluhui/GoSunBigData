@@ -44,6 +44,7 @@ fi
 #####################################################################
 function start_worker()
 {
+
     echo "To Start FaceCompareWorker ${WORK_ID}"
     nohup java -server -Dkafka.servers=${KAFKA_SERVERS} -Dzookeeper.address=${ZOOKEEPER_ADDRESS} -Des.hosts=${ES_HOSTS} -Dworker.id=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker 2>&1 > $LOG_FILE_STDERR &
     echo "start FaceCompareWorker ..."

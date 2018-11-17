@@ -8,7 +8,7 @@ import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;

@@ -15,15 +15,12 @@ services:
     container_name: mysql
     restart: always
     environment:
-    - SET_CONTAINER_TIMEZONE=true
-    - TZ=Asia/Shanghai
     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     hostname: mysql
     ports:
     - "3306:3306"
     volumes:
     - ${DOCKER_HOME}/mysql/data:/var/lib/mysql
-    - /etc/localtime:/etc/localtime:ro
     - ${DOCKER_HOME}/mysql/sql/peopleDatabase.sql:/docker-entrypoint-initdb.d/peopleDatabase.sql
 
   mysql-cron:
@@ -33,11 +30,8 @@ services:
     links:
     - mysql
     environment:
-    - SET_CONTAINER_TIMEZONE=true
-    - TZ=Asia/Shanghai
     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-    - /etc/localtime:/etc/localtime:ro
     - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
     - ${DOCKER_HOME}/mysql/crontab:/crontab
     - ${DOCKER_HOME}/mysql/sql:/mysql
@@ -46,9 +40,6 @@ services:
     image: ${DOCKER_REPOSITOR}/hzgc/zookeeper:3.4.10
     container_name: zookeeper
     restart: always
-    environment:
-    - SET_CONTAINER_TIMEZONE=true
-    - TZ=Asia/Shanghai
     hostname: zookeeper
     ports:
     - "2181:2181"
@@ -57,7 +48,6 @@ services:
     volumes:
     - ${DOCKER_HOME}/zookeeper/data:/data
     - ${DOCKER_HOME}/zookeeper/datalog:/datalog
-    - /etc/localtime:/etc/localtime:ro
 
   kafka:
     image: ${DOCKER_REPOSITOR}/hzgc/kafka:1.0.0
@@ -67,8 +57,6 @@ services:
     depends_on:
     - zookeeper
     environment:
-    - SET_CONTAINER_TIMEZONE=true
-    - TZ=Asia/Shanghai
     - KAFKA_ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${DOCKER_HOST_IP}:${KAFKA_PORT}
     - KAFKA_CREATE_TOPICS=face:1:1,car:1:1,person:1:1
@@ -78,7 +66,6 @@ services:
     - "9092:9092"
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /etc/localtime:/etc/localtime:ro
     - ${DOCKER_HOME}/kafka/kafka-logs-kafka/:/kafka/kafka-logs-kafka/
     - ${DOCKER_HOME}/kafka/logs:/opt/kafka/logs
 
@@ -93,7 +80,6 @@ services:
     - network.host=172.18.18.201
     - cluster.name=docker-cluster
     - bootstrap.memory_lock=true
-    - TZ=Asia/Shanghai
     hostname: esearch
     privileged: true
     network_mode: "host"
@@ -102,10 +88,9 @@ services:
     - "9300:9300"
     volumes:
     - ${DOCKER_HOME}/es/data:/usr/share/elasticsearch/data
-    - /etc/localtime:/etc/localtime:ro
 
   kibana:
-    image: ${DOCKER_REPOSITOR}/hzgc/kibaba:5.5.0
+    image: ${DOCKER_REPOSITOR}/hzgc/kibana:5.5.0
     depends_on:
     - esearch
     container_name: kibana
@@ -113,11 +98,8 @@ services:
     environment:
     - SERVER_NAME=$DOCKER_HOST_IP
     - ELASTICSEARCH_URL=http://${ES_HOST}:${ES_PORT}
-    - TZ=Asia/Shanghai
     ports:
     - "5601:5601"
-    volumes:
-    - /etc/localtime:/etc/localtime:ro
 
   collect:
     image: ${DOCKER_REPOSITOR}/hzgc/collect:${VERSION}
@@ -131,14 +113,11 @@ services:
     - EUREKA_IP=${EUREKA_HOST_IP}
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/collect/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   peoman-worker:
     image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${VERSION}
@@ -158,15 +137,11 @@ services:
     - FLOAT_NEW_THRESHOLD=73
     - FLOAT_COMPARE_OPEN=true
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
-    - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GsFaceLib/face_libs
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
     - ${DOCKER_HOME}/peoman-worker/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   dispatch-background:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch-background:${VERSION}
@@ -183,14 +158,11 @@ services:
     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/GsFaceLib/face_libs
     - MYSQL_USERNAME=${MYSQL_USERNAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
     - ${DOCKER_HOME}/dispatch-background/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   kafka-parquet:
     image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
@@ -202,16 +174,12 @@ services:
     command: /start-kafka-to-parquet.sh
     restart: always
     network_mode: "host"
-    environment:
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   kafka-tidb:
     image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
@@ -223,15 +191,11 @@ services:
     command: /start-kafka-to-tidb.sh
     restart: always
     network_mode: "host"
-    environment:
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   face-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
@@ -247,14 +211,11 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/face-dynrepo/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   person-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${VERSION}
@@ -270,14 +231,11 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/person-dynrepo/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   vehicle-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VERSION}
@@ -293,14 +251,11 @@ services:
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/vehicle-dynrepo/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   people:
     image: ${DOCKER_REPOSITOR}/hzgc/people:${VERSION}
@@ -317,14 +272,11 @@ services:
     - MYSQL_USERNAME=${MYSQL_USERNAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     network_mode: "host"
     volumes:
     - ${DOCKER_HOME}/people/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   dispatch:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${VERSION}
@@ -341,13 +293,10 @@ services:
     - MYSQL_USERNAME=${MYSQL_USERNAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/dispatch/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   imsi-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/imsi-dynrepo:${VERSION}
@@ -366,13 +315,10 @@ services:
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - QUERY_TIME=30
-    - TZ=Asia/Shanghai
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/imsi-dynrepo/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   fusion:
     image: ${DOCKER_REPOSITOR}/hzgc/fusion:${VERSION}
@@ -389,14 +335,11 @@ services:
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
     - QUERY_TIME=30
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
     - ${DOCKER_HOME}/fusion/log:/log
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
-    - /etc/localtime:/etc/localtime:ro
 
   collect-ftp:
     image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:1.0
@@ -431,3 +374,21 @@ services:
     - /opt/ftpdata:/opt/ftpdata
     - /home/ftpdata:/home/ftpdata
     - /etc/localtime:/etc/localtime:ro
+
+  facecompare:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}
+    container_name: facecompare
+    restart: always
+    depends_on:
+    - zookeeper
+    - kafka
+    - esearch
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - /opt/GsFaceLib:/opt/GsFaceLib
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata

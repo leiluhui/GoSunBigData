@@ -178,7 +178,7 @@ public class PlatformService {
         return null;
     }
 
-    private Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
+    public Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
         if (idList != null) {
             log.debug("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));
             ParameterizedTypeReference<Map<String, DetectorQueryDTO>> parameterizedTypeReference =

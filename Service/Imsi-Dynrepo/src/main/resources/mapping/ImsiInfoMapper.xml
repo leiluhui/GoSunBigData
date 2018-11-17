@@ -15,9 +15,10 @@
     <result column="attach" jdbcType="VARCHAR" property="attach" />
     <result column="standard" jdbcType="VARCHAR" property="standard" />
     <result column="savetime" jdbcType="TIMESTAMP" property="time" />
+    <result column="communityId" jdbcType="BIGINT" property="communityId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
+    id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime, communityId
   </sql>
 
   <select id="selectByTime" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.ImsiParam">
@@ -25,6 +26,28 @@
     <include refid="Base_Column_List" />
     from t_imsi_all
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+  </select>
+
+  <select id="searchIMSI" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.searchImsiDTO">
+    select
+    <include refid="Base_Column_List" />
+    from t_imsi_all
+    <where>
+      <if test="searchType == 0 ">
+        controlsn like "%" #{searchVal,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="searchType == 1 ">
+        imsi like "%" #{searchVal,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="cellid != null and cellid.length() > 0" >
+        and
+        cellid = #{cellid,jdbcType=VARCHAR}
+      </if>
+      <if test="lac != null and lac.length() > 0" >
+        and
+        lac = #{lac,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
   <insert id="insertSelective" parameterType="com.hzgc.common.service.imsi.ImsiInfo">
     insert into t_imsi_all
@@ -65,8 +88,11 @@
       <if test="standard != null">
         standard,
       </if>
-      <if test="savetime != null">
+      <if test="time != null">
         savetime,
+      </if>
+      <if test="communityId != null">
+        communityId
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -106,8 +132,11 @@
       <if test="standard != null">
         #{standard,jdbcType=VARCHAR},
       </if>
-      <if test="savetime != null">
-        #{savetime,jdbcType=BIGINT},
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="communityId != null">
+        #{communityId,jdbcType=BIGINT}
       </if>
     </trim>
   </insert>

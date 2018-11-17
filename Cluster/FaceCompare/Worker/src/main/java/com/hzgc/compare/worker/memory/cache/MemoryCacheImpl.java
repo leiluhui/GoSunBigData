@@ -6,7 +6,7 @@ import com.hzgc.compare.worker.common.taskhandle.FlushTask;
 import com.hzgc.compare.worker.common.taskhandle.TaskToHandleQueue;
 import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.List;

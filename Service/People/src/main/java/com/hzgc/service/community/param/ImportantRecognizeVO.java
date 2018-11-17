@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 public class ImportantRecognizeVO implements Serializable {
     @ApiModelProperty(value = "重点人员抓拍记录")
-    private List<ImportantPeopleRecognizeVO> importantPeopleRecognizeList;
+    private List<ImportantPeopleRecognizeVO> importantPeopleCaptureList;
     @ApiModelProperty(value = "重点人员识别记录")
-    private List<Object> importantRecognizeList;
+    private List<ImportantPeopleRecognizeVO> importantPeopleRecognizeList;
     @ApiModelProperty(value = "记录总数")
     private int totalNum;
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
@@ -23,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -70,7 +74,7 @@ public class CommunityService {
 
     @Autowired
     @SuppressWarnings("unused")
-    private PeopleRecognizeMapper peopleRecognizeMapper;
+    private RecognizeRecordMapper recognizeRecordMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -304,7 +308,7 @@ public class CommunityService {
     }
 
     private String getSurlByPeopleId(String peopleId) {
-        return peopleRecognizeMapper.getSurlByPeopleId(peopleId);
+        return recognizeRecordMapper.getSurlByPeopleId(peopleId);
     }
 
     public CommunityPeopleInfoVO searchCommunityPeopleInfo(String peopleId) {
@@ -360,7 +364,7 @@ public class CommunityService {
             }
         }
         vo.setDeviceCountList(deviceCountList);
-        // 小区迁入人口抓拍详情:24小时统计
+        // 小区迁入人口抓拍详情:24小时统计(30天总和)
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         List<String> hourList = new ArrayList<>();
@@ -377,7 +381,7 @@ public class CommunityService {
             if (count24Hours != null && count24Hours.size() > 0) {
                 for (Count24Hour count24Hour : count24Hours) {
                     if (hour.equals(count24Hour.getHour())) {
-                        count.setCount(count24Hour.getCount());
+                        count.setCount(count.getCount() + count24Hour.getCount());
                     }
                 }
                 hourCountList.add(count);
@@ -386,22 +390,19 @@ public class CommunityService {
         vo.setHourCountList(hourCountList);
         // 小区迁入人口抓拍详情:人员抓拍列表
         Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
-        List<PeopleRecognize> peopleRecognizes = peopleRecognizeMapper.searchCommunityNewPeopleCaptureData(param);
+        List<RecognizeRecord> records = recognizeRecordMapper.searchCommunityNewPeopleCaptureData(param);
         PageInfo pageInfo = new PageInfo(page.getResult());
         int total = (int) pageInfo.getTotal();
         CapturePeopleCount capturePeopleCount = new CapturePeopleCount();
         capturePeopleCount.setTotal(total);
         List<CapturePictureInfo> infoList = new ArrayList<>();
-        for (PeopleRecognize peopleRecognize : peopleRecognizes) {
+        for (RecognizeRecord record : records) {
             CapturePictureInfo info = new CapturePictureInfo();
-            info.setDeviceId(peopleRecognize.getDeviceid());
-            info.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            info.setSurl(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
-            info.setBurl(innerService.httpHostNameToIp(peopleRecognize.getBurl()).getHttp_ip());
-            Date date = peopleRecognize.getCapturetime();
-            if (date != null) {
-                info.setCaptureTime(sdf.format(date));
-            }
+            info.setDeviceId(record.getDeviceid());
+            info.setDeviceName(platformService.getCameraDeviceName(record.getDeviceid()));
+            info.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+            info.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+            info.setCaptureTime(sdf.format(record.getCapturetime()));
             infoList.add(info);
         }
         capturePeopleCount.setPictureInfos(infoList);
@@ -411,17 +412,14 @@ public class CommunityService {
 
     public OutPeopleLastCaptureVO searchCommunityOutPeopleLastCapture(String peopleId) {
         OutPeopleLastCaptureVO vo = new OutPeopleLastCaptureVO();
-        PeopleRecognize peopleRecognize = peopleRecognizeMapper.searchCommunityOutPeopleLastCapture(peopleId);
-        if (peopleRecognize != null) {
-            vo.setDeviceId(peopleRecognize.getDeviceid());
-            vo.setDeviceName(platformService.getCameraDeviceName(peopleRecognize.getDeviceid()));
-            vo.setPicture(innerService.httpHostNameToIp(peopleRecognize.getSurl()).getHttp_ip());
-            vo.setLastTime(sdf.format(peopleRecognize.getCapturetime()));
-        }
-        Timestamp lastTime = peopleMapper.getLastTime(peopleId);
-        if (lastTime != null) {
+        RecognizeRecord record = recognizeRecordMapper.searchCommunityOutPeopleLastCapture(peopleId);
+        if (record != null) {
+            vo.setDeviceId(record.getDeviceid());
+            vo.setDeviceName(platformService.getCameraDeviceName(record.getDeviceid()));
+            vo.setPicture(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+            vo.setLastTime(sdf.format(record.getCapturetime()));
             long now = new Date().getTime();
-            int day = Math.toIntExact((now - lastTime.getTime()) / (24 * 60 * 60 * 1000));
+            int day = Math.toIntExact((now - record.getCapturetime().getTime()) / (24 * 60 * 60 * 1000));
             vo.setLastDay(day);
         }
         return vo;
@@ -639,149 +637,106 @@ public class CommunityService {
         return 1;
     }
 
-    public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
+    public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(PeopleCaptureDTO param) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
-        // 人脸抓拍识别记录
-        List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(param.getPeopleId());
-        if (peopleList != null && peopleList.size() > 0) {
-            for (PeopleRecognize people : peopleList) {
-                PeopleCaptureVO vo = new PeopleCaptureVO();
-                vo.setCaptureType(0);
-                vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setCameraDeviceId(platformService.getCameraDeviceName(people.getDeviceid()));
-                vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
-                vo.setSurl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
-                voList.add(vo);
-            }
-        }
-        People people = peopleMapper.selectByPrimaryKey(param.getPeopleId());
-        // 车辆抓拍识别记录
-        List<Car> cars = people.getCar();
-        if (cars != null && cars.size() > 0){
-            List<CarRecognize> carRecognizeList = carRecognizeMapper.selectByPeopleId(param.getPeopleId());
-            if (carRecognizeList != null && carRecognizeList.size() >0){
-                for (CarRecognize recognize : carRecognizeList){
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit(), true);
+        List<RecognizeRecord> records = recognizeRecordMapper.searchCapture1Month(param);
+        PageInfo info = new PageInfo(page.getResult());
+        if (records != null && records.size() > 0){
+            for (RecognizeRecord record : records){
+                if (record != null){
                     PeopleCaptureVO vo = new PeopleCaptureVO();
-                    vo.setCaptureType(2);
-                    vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
-                    vo.setCameraDeviceId(platformService.getCameraDeviceName(recognize.getDeviceid()));
-                    vo.setPlate(recognize.getPlate());
-                    vo.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
-                    vo.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+                    switch (record.getType()){
+                        case 1:
+                            // 人脸抓拍识别记录
+                            vo.setCaptureType(0);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            break;
+                        case 2:
+                            // IMSI码识别记录
+                            vo.setCaptureType(1);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setImsiDeviceId(platformService.getImsiDeviceName(record.getDeviceid()));
+                            vo.setImsi(record.getImsi());
+                            break;
+                        case 3:
+                            // 车辆抓拍识别记录
+                            vo.setCaptureType(2);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                            vo.setPlate(record.getPlate());
+                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            break;
+                        default:
+                            break;
+                    }
                     voList.add(vo);
                 }
             }
         }
-        // IMSI码识别记录
-        List<Imsi> imsis = people.getImsi();
-        if (imsis != null && imsis.size() > 0){
-            List<String> people_imsi = new ArrayList<>();
-            for (Imsi imsi : imsis) {
-                people_imsi.add(imsi.getImsi());
-            }
-            List<ImsiAll> imsiList = imsiAllMapper.selectByImsi(people_imsi);
-            if (imsiList != null && imsiList.size() > 0) {
-                for (ImsiAll imsiAll : imsiList) {
-                    PeopleCaptureVO vo = new PeopleCaptureVO();
-                    vo.setCaptureType(1);
-                    vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
-                    vo.setImsiDeviceId(platformService.getImsiDeviceName(imsiAll.getControlsn()));
-                    vo.setImsi(imsiAll.getImsi());
-                    voList.add(vo);
-                }
+        return ResponseResult.init(voList, info.getTotal());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteRecognizeRecord(List<String> idList) {
+        for (String id : idList){
+            int status = recognizeRecordMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                throw new RuntimeException("删除抓拍识别记录失败！");
             }
         }
-        voList.sort(new Comparator<PeopleCaptureVO>() {
-            @Override
-            public int compare(PeopleCaptureVO o1, PeopleCaptureVO o2) {
-                try {
-                    Long l1 = sdf.parse(o1.getCaptureTime()).getTime();
-                    Long l2 = sdf.parse(o2.getCaptureTime()).getTime();
-                    if (l2 > l1) {
-                        return 1;
-                    }
-                    if (l1.equals(l2)) {
-                        return 0;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return -1;
-            }
-        });
-        return ListUtil.pageSplit(voList, param.getStart(), param.getLimit());
+        return 1;
     }
 
     public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
-        // 人脸抓拍识别记录
-        List<PeopleRecognize> peopleList = peopleRecognizeMapper.searchCapture1Month(peopleId);
-        if (peopleList != null && peopleList.size() > 0) {
-            for (PeopleRecognize people : peopleList) {
-                PeopleCaptureVO vo = new PeopleCaptureVO();
-                vo.setCaptureType(0);
-                vo.setCaptureTime(sdf.format(people.getCapturetime()));
-                vo.setCameraDeviceId(people.getDeviceid());
-                vo.setBurl(innerService.httpHostNameToIp(people.getBurl()).getHttp_ip());
-                vo.setSurl(innerService.httpHostNameToIp(people.getSurl()).getHttp_ip());
-                voList.add(vo);
-            }
-        }
-        People people = peopleMapper.selectByPrimaryKey(peopleId);
-        // 车辆抓拍识别记录
-        List<Car> cars = people.getCar();
-        if (cars != null && cars.size() > 0){
-            List<CarRecognize> carRecognizeList = carRecognizeMapper.selectByPeopleId(peopleId);
-            if (carRecognizeList != null && carRecognizeList.size() >0){
-                for (CarRecognize recognize : carRecognizeList){
+        List<RecognizeRecord> records = recognizeRecordMapper.searchPeopleTrack1Month(peopleId);
+        if (records != null && records.size() > 0){
+            for (RecognizeRecord record : records){
+                if (record != null){
                     PeopleCaptureVO vo = new PeopleCaptureVO();
-                    vo.setCaptureType(2);
-                    vo.setCaptureTime(sdf.format(recognize.getCapturetime()));
-                    vo.setCameraDeviceId(recognize.getDeviceid());
-                    vo.setPlate(recognize.getPlate());
-                    vo.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
-                    vo.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+                    switch (record.getType()){
+                        case 1:
+                            // 人脸抓拍识别记录
+                            vo.setCaptureType(0);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setCameraDeviceId(record.getDeviceid());
+                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            break;
+                        case 2:
+                            // IMSI码识别记录
+                            vo.setCaptureType(1);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setImsiDeviceId(record.getDeviceid());
+                            vo.setImsi(record.getImsi());
+                            break;
+                        case 3:
+                            // 车辆抓拍识别记录
+                            vo.setCaptureType(2);
+                            vo.setRecordId(record.getId());
+                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                            vo.setCameraDeviceId((record.getDeviceid()));
+                            vo.setPlate(record.getPlate());
+                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            break;
+                        default:
+                            break;
+                    }
                     voList.add(vo);
                 }
             }
         }
-        // IMSI码识别记录
-        List<Imsi> imsis = people.getImsi();
-        if (imsis != null && imsis.size() > 0){
-            List<String> people_imsi = new ArrayList<>();
-            for (Imsi imsi : imsis) {
-                people_imsi.add(imsi.getImsi());
-            }
-            List<ImsiAll> imsiList = imsiAllMapper.selectByImsi(people_imsi);
-            if (imsiList != null && imsiList.size() > 0) {
-                for (ImsiAll imsiAll : imsiList) {
-                    PeopleCaptureVO vo = new PeopleCaptureVO();
-                    vo.setCaptureType(1);
-                    vo.setCaptureTime(sdf.format(imsiAll.getSavetime()));
-                    vo.setImsiDeviceId(imsiAll.getControlsn());
-                    vo.setImsi(imsiAll.getImsi());
-                    voList.add(vo);
-                }
-            }
-        }
-        voList.sort(new Comparator<PeopleCaptureVO>() {
-            @Override
-            public int compare(PeopleCaptureVO o1, PeopleCaptureVO o2) {
-                try {
-                    Long l1 = sdf.parse(o1.getCaptureTime()).getTime();
-                    Long l2 = sdf.parse(o2.getCaptureTime()).getTime();
-                    if (l1 > l2) {
-                        return 1;
-                    }
-                    if (l1.equals(l2)) {
-                        return 0;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return -1;
-            }
-        });
         return voList;
     }
 
@@ -862,74 +817,84 @@ public class CommunityService {
 
     public ImportantRecognizeVO importantPeopleRecognize(ImportantRecognizeDTO param) {
         ImportantRecognizeVO vo = new ImportantRecognizeVO();
-        if (param.getSearchType() == 0) {
-            List<Long> communityIds = platformService.getCommunityIdsById(param.getRegionId());
-            if (communityIds == null || communityIds.size() == 0) {
-                log.info("Search community ids by region id is null, so return null");
-                return null;
-            }
-            log.info("Search community ids by region id is:" + JacksonUtil.toJson(communityIds));
-            List<String> importantIds = peopleMapper.getImportantPeopleId(communityIds);
-            if (importantIds == null || importantIds.size() == 0) {
-                log.info("Search community important people ids is null, so return null");
-                return null;
-            }
-            log.info("Search community important people ids is:" + JacksonUtil.toJson(importantIds));
-            ImportantRecognizeSearchParam search = new ImportantRecognizeSearchParam();
-            search.setImportantIds(importantIds);
-            try {
-                Timestamp startTime = new Timestamp(sdf.parse(param.getStartTime()).getTime());
-                Timestamp endTime = new Timestamp(sdf.parse(param.getEndTime()).getTime());
-                search.setStartTime(startTime);
-                search.setEndTime(endTime);
-            } catch (ParseException e) {
-                log.error("Date parse error, because param time error, so return null");
-                return null;
-            }
-            log.info("Search community important people recognize param:" + JacksonUtil.toJson(search));
-            List<ImportantPeopleRecognize> recognizes = peopleRecognizeMapper.importantPeopleRecognize(search);
-            if (recognizes == null || recognizes.size() == 0) {
-                log.info("Search community important people recognize is null, so return null");
-                return null;
-            }
-            List<ImportantPeopleRecognizeVO> voList = new ArrayList<>();
-            for (ImportantPeopleRecognize recognize : recognizes) {
-                if (recognize != null) {
-                    ImportantPeopleRecognizeVO importantPeopleRecognize = new ImportantPeopleRecognizeVO();
-                    importantPeopleRecognize.setId(recognize.getId());
-                    importantPeopleRecognize.setName(recognize.getName());
-                    importantPeopleRecognize.setIdCard(recognize.getIdCard());
-                    importantPeopleRecognize.setLastTime(sdf.format(recognize.getLastTime()));
-                    importantPeopleRecognize.setPeoplePictureId(recognize.getPeoplePictureId());
-                    importantPeopleRecognize.setPictureId(recognize.getPictureId());
-                    importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
-                    importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
-                    importantPeopleRecognize.setSimilarity(recognize.getSimilarity());
-                    importantPeopleRecognize.setCaptureTime(sdf.format(recognize.getCaptureTime()));
-                    importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
-                    importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
-                    List<Car> cars = recognize.getCar();
-                    List<String> carList = new ArrayList<>();
-                    for (Car car : cars) {
-                        carList.add(car.getCar());
-                    }
-                    importantPeopleRecognize.setCar(carList);
-                    List<Flag> flags = recognize.getFlag();
-                    List<Integer> flagList = new ArrayList<>();
-                    for (Flag flag : flags) {
-                        flagList.add(flag.getFlagid());
-                    }
-                    importantPeopleRecognize.setFlag(flagList);
-                    voList.add(importantPeopleRecognize);
-                }
-            }
-            vo.setTotalNum(voList.size());
-            vo.setImportantPeopleRecognizeList(ListUtil.pageSplit(voList, param.getStart(), param.getLimit()));
-        } else if (param.getSearchType() == 1) {
-            // TODO 设别记录查询
-        } else {
-            log.error("param search type error");
+        List<Long> communityIds = platformService.getCommunityIdsById(param.getRegionId());
+        if (communityIds == null || communityIds.size() == 0) {
+            log.info("Search community ids by region id is null, so return null");
+            return null;
         }
+        log.info("Search community ids by region id is:" + JacksonUtil.toJson(communityIds));
+        ImportantRecognizeSearchParam search = new ImportantRecognizeSearchParam();
+        search.setSearchType(param.getSearchType());
+        search.setCommunityIds(communityIds);
+        try {
+            Timestamp startTime = new Timestamp(sdf.parse(param.getStartTime()).getTime());
+            Timestamp endTime = new Timestamp(sdf.parse(param.getEndTime()).getTime());
+            search.setStartTime(startTime);
+            search.setEndTime(endTime);
+        } catch (ParseException e) {
+            log.error("Date parse error, because param time error, so return null");
+            return null;
+        }
+        log.info("Search community important people recognize param:" + JacksonUtil.toJson(search));
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
+        List<ImportantPeopleRecognize> recognizes = recognizeRecordMapper.getImportantRecognizeRecord(search);
+        PageInfo info = new PageInfo(page.getResult());
+        if (recognizes == null || recognizes.size() == 0) {
+            log.info("Search community important people recognize is null, so return null");
+            return null;
+        }
+        List<ImportantPeopleRecognizeVO> voList = new ArrayList<>();
+        for (ImportantPeopleRecognize recognize : recognizes) {
+            ImportantPeopleRecognizeVO importantPeopleRecognize = new ImportantPeopleRecognizeVO();
+            importantPeopleRecognize.setId(recognize.getPeopleId());
+            importantPeopleRecognize.setType(recognize.getType());
+            importantPeopleRecognize.setName(recognize.getName());
+            importantPeopleRecognize.setIdCard(recognize.getIdCard());
+            importantPeopleRecognize.setLastTime(recognize.getLastTime() != null ? sdf.format(recognize.getLastTime()) : "");
+            //当搜索类型不是0的时候为识别类型,识别类型数据库pictureid为空,所以需要手动查询一张图片出来
+            if (param.getSearchType() == 0) {
+                importantPeopleRecognize.setPeoplePictureId(recognize.getPictureId());
+                importantPeopleRecognize.setPictureId(recognize.getPictureId());
+            } else {
+                Long picId = pictureMapper.getPictureIdByPeopleId(recognize.getPeopleId());
+                importantPeopleRecognize.setPeoplePictureId(picId);
+                importantPeopleRecognize.setPictureId(picId);
+            }
+            importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
+            importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
+            importantPeopleRecognize.setCaptureTime(sdf.format(recognize.getCaptureTime()));
+            List<Car> cars = recognize.getCar();
+            List<String> carList = new ArrayList<>();
+            for (Car car : cars) {
+                carList.add(car.getCar());
+            }
+            importantPeopleRecognize.setCar(carList);
+            List<Flag> flags = recognize.getFlag();
+            List<Integer> flagList = new ArrayList<>();
+            for (Flag flag : flags) {
+                flagList.add(flag.getFlagid());
+            }
+            importantPeopleRecognize.setFlag(flagList);
+            importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
+            importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+            importantPeopleRecognize.setSimilarity(recognize.getSimilarity());
+            importantPeopleRecognize.setImsi(recognize.getImsi());
+            importantPeopleRecognize.setMac(recognize.getMac());
+            importantPeopleRecognize.setPlate(recognize.getPlate());
+            voList.add(importantPeopleRecognize);
+        }
+        switch (param.getSearchType()) {
+            case 0:
+                vo.setImportantPeopleCaptureList(voList);
+                break;
+            case 1:
+                vo.setImportantPeopleRecognizeList(voList);
+                break;
+            default:
+                log.error("param search type error");
+                return null;
+        }
+        vo.setTotalNum((int) info.getTotal());
         return vo;
     }
 }

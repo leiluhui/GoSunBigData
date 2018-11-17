@@ -1,7 +1,6 @@
 package com.hzgc.common.service.imsi;
 
 import lombok.Data;
-import org.apache.commons.net.ntp.TimeStamp;
 
 import java.io.Serializable;
 
@@ -35,4 +34,6 @@ public class ImsiInfo implements Serializable {
     private long savetime;
     //格式时间
     private String time;
+    //小区ID
+    private Long communityId;
 }
