@@ -60,10 +60,6 @@ public class ImsiController {
         }
         log.info("Start search imsi info, searchImsiDTO is:" + JacksonUtil.toJson(searchImsiDTO));
         List<ImsiVO> imsiVOList = imsiService.searchIMSI(searchImsiDTO);
-        if (imsiVOList == null || imsiVOList.size() == 0){
-            log.error("Start search imsi info faild");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "返回信息为空,请检查！");
-        }
         log.info("Start search imsi info successfully");
         return ResponseResult.init(imsiVOList);
     }
