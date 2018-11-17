@@ -34,4 +34,6 @@ public class ImsiInfo implements Serializable {
     private long savetime;
     //格式时间
     private String time;
+    //小区ID
+    private Long communityId;
 }

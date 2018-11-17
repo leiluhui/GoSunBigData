@@ -199,6 +199,19 @@ function create_kafka_topic()
         echo "创建kafka alarm_message topic 失败......" | tee -a $LOG_FILE
     fi
 
+    #创建kafka alarm_message topic
+    ./kafka-topic.sh --create \
+    --zookeeper ${zkpro} \
+    --replication-factor ${repl_factor} \
+    --partitions ${part_num} \
+    --topic PeoMan-IMSI >> ${LOG_FILE} 2>&1 &
+    if [ $? = 0 ]; then
+        echo "创建 PeoMan-IMSI topic 成功...."  | tee -a $LOG_FILE
+        echo "kafka PeoMan-IMSI topic 副本数为${repl_factor},分区数为${part_num}." | tee -a $LOG_FILE
+    else
+        echo "创建kafka PeoMan-IMSI topic 失败......" | tee -a $LOG_FILE
+    fi
+
     # 列出所有topic
 	echo ""  | tee -a $LOG_FILE
 	echo "**********************************************" | tee -a $LOG_FILE

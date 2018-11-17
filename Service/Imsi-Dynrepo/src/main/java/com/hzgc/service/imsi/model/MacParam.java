@@ -12,4 +12,6 @@ public class MacParam implements Serializable{
     private List<String> list;
     private String startTime;
     private String endTime;
+    private int start;
+    private int limit;
 }

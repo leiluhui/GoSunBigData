@@ -15,9 +15,10 @@
     <result column="attach" jdbcType="VARCHAR" property="attach" />
     <result column="standard" jdbcType="VARCHAR" property="standard" />
     <result column="savetime" jdbcType="TIMESTAMP" property="time" />
+    <result column="communityId" jdbcType="BIGINT" property="communityId"></result>
   </resultMap>
   <sql id="Base_Column_List">
-    id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime
+    id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime, communityId
   </sql>
 
   <select id="selectByTime" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.ImsiParam">
@@ -27,7 +28,7 @@
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
   </select>
   <insert id="insertSelective" parameterType="com.hzgc.common.service.imsi.ImsiInfo">
-    insert into t_imsi_all
+    insert into t_imsi_all_01
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -65,8 +66,11 @@
       <if test="standard != null">
         standard,
       </if>
-      <if test="savetime != null">
+      <if test="time != null">
         savetime,
+      </if>
+      <if test="communityId != null">
+        communityId
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -106,8 +110,11 @@
       <if test="standard != null">
         #{standard,jdbcType=VARCHAR},
       </if>
-      <if test="savetime != null">
-        #{savetime,jdbcType=BIGINT},
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="communityId != null">
+        #{communityId,jdbcType=BIGINT}
       </if>
     </trim>
   </insert>

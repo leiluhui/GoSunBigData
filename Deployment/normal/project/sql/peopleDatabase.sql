@@ -146,6 +146,7 @@ CREATE TABLE IF NOT EXISTS  `t_mac_all` (
   `wifisn` varchar(15) DEFAULT NULL COMMENT 'wifi编号',
   `sn` varchar(15) DEFAULT NULL COMMENT '设备编号',
   `id` bigint(15) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `communityId ` bigint NOT NULL COMMENT '社区id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='mac地址信息库';
@@ -164,6 +165,7 @@ CREATE TABLE IF NOT EXISTS  `t_imsi_all` (
   `savetime` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `standard` varchar(10) DEFAULT NULL COMMENT '运营商',
   `id` varchar(32) NOT NULL COMMENT 'uuid',
+  `communityId ` bigint NOT NULL COMMENT '社区id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=74 COMMENT='IMSI码总表';
 
