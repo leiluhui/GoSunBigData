@@ -31,6 +31,7 @@ public class Comsumer extends Thread{
      */
     private void init(){
         Properties prop = new Properties();
+        log.info("Bootstrap.servers is" + Config.KAFKA_BOOTSTRAP_SERVERS);
         prop.put("bootstrap.servers", Config.KAFKA_BOOTSTRAP_SERVERS);
         prop.put("group.id", Config.KAFKA_GROUP_ID);
         prop.put("key.deserializer", Config.KAFKA_DESERIALIZER);

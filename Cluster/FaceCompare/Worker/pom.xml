@@ -571,6 +571,14 @@
             <artifactId>protostuff-runtime</artifactId>
             <!--<version>1.0.8</version>-->
         </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

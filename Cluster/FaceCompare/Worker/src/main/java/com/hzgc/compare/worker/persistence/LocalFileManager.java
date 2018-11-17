@@ -83,25 +83,12 @@ public class LocalFileManager implements FileManager {
      * @throws IOException
      */
     private void flushForMonth(String month, List<Triplet<String, String, String>>  datas) throws IOException {
-        log.info("Flush data for month : " + month + ". The path is : " + path + "/" + work_id + "/" + month);
-        File rootPath = new File(path);
-        if (!rootPath.exists() || !rootPath.isDirectory()) {
-            boolean res = rootPath.mkdir();
-            if(!res){
-                throw new IOException("创建文件夹 " + rootPath.getAbsolutePath() + " 失败");
-            }
-        }
-        //创建workid目录
-        File workFile = new File(path, work_id);
-        if (!workFile.exists() || !workFile.isDirectory()) {
-            boolean res = workFile.mkdir();
-            if(!res){
-                throw new IOException("创建文件夹 " + workFile.getAbsolutePath() + " 失败");
-            }
-            log.info("WorkFile name is " + workFile.getName());
-        }
+        log.info("Flush data for month : " + month + ". The path is : " + path + "/" + Config.DIR_PATH_TO_USE + "/" + month);
+
+        File workFile = new File(Config.DIR_PATH_TO_USE);
+
         //寻找目标月的文件夹
-        File dirMonth = new File(workFile, month);
+        File dirMonth = new File(path + "/" + Config.DIR_PATH_TO_USE + "/" + month);
         File[] ymFiles = workFile.listFiles();
         if (ymFiles != null && ymFiles.length > 0){
             for (File f : ymFiles){

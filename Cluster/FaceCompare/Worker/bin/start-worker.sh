@@ -22,13 +22,9 @@ CONF_DIR=${COMPARE_DIR}/conf                                ### conf目录
 LIB_DIR=${COMPARE_DIR}/lib                                  ### lib目录
 LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`
 
+WORK_ID=`cat /proc/sys/kernel/random/uuid`
+WORK_ID=${WORK_ID%%-*}
 
-WORK_ID=${1}
-NODE_GROUP=${2}
-NODE_PORT=${3}
-TASK_ID=${4}
-
-LOG_FILE=${LOG_DIR}/worker-${WORK_ID}.log
 LOG_FILE_STDERR=${LOG_DIR}/${WORK_ID}/stderr.log
 
 if [ ! -d ${LOG_DIR} ]; then
@@ -48,7 +44,8 @@ fi
 #####################################################################
 function start_worker()
 {
-    nohup java -server -DworkerId=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker ${WORK_ID} ${NODE_GROUP} ${NODE_PORT} ${TASK_ID} 2>&1 > $LOG_FILE_STDERR &
+    echo "To Start FaceCompareWorker ${WORK_ID}"
+    nohup java -server -Dkafka.servers=${KAFKA_SERVERS} -Dzookeeper.address=${ZOOKEEPER_ADDRESS} -Des.hosts=${ES_HOSTS} -Dworker.id=${WORK_ID} -Xms1g -Xmx4g -classpath $CONF_DIR:$LIB_JARS com.hzgc.compare.worker.FaceCompareWorker 2>&1 > $LOG_FILE_STDERR &
     echo "start FaceCompareWorker ..."
 }
 
