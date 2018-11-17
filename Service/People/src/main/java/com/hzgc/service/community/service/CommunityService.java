@@ -363,7 +363,7 @@ public class CommunityService {
             }
         }
         vo.setDeviceCountList(deviceCountList);
-        // 小区迁入人口抓拍详情:24小时统计
+        // 小区迁入人口抓拍详情:24小时统计(30天总和)
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         List<String> hourList = new ArrayList<>();
