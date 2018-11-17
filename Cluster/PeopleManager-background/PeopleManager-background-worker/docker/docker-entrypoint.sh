@@ -4,7 +4,7 @@ exec java -jar app.jar \
 --spring.profiles.active=pro \
 --spring.cloud.config.enabled=false \
 --kafka.host=${KAFKA_HOST} \
---zookeeper.address=${ZK_ADDRESS} \
+--zookeeper.address=${ZOOKEEPER_HOST} \
 --compare.number=${COMPARE_NUMBER} \
 --filter.interval.time=${FILTER_INTERVAL_TIME} \
 --bit.threshold=${BIT_THRESHOLD} \

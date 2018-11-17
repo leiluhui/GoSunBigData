@@ -6,7 +6,7 @@ import com.hzgc.common.util.es.ElasticSearchHelper;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;

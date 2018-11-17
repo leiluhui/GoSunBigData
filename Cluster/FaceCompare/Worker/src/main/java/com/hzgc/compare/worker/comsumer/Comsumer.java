@@ -35,6 +35,8 @@ public class Comsumer extends Thread{
         prop.put("group.id", Config.KAFKA_GROUP_ID);
         prop.put("key.deserializer", Config.KAFKA_DESERIALIZER);
         prop.put("value.deserializer", Config.KAFKA_DESERIALIZER);
+        prop.put("enable.auto.commit", "true");
+        prop.put("auto.offset.reset", "latest");
         comsumer = new KafkaConsumer<>(prop);
         log.info("Kafka comsumer is init.");
         memoryCache = MemoryCacheImpl.getInstance();

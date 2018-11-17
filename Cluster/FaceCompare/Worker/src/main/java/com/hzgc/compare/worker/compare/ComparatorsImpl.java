@@ -8,7 +8,7 @@ import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
 import com.hzgc.jniface.FaceFunction;
 import com.hzgc.jniface.FaceUtil;
-import javafx.util.Pair;
+import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.*;

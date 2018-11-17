@@ -1,6 +1,5 @@
 package com.hzgc.compare.worker.common.tuple;
 
-import javafx.beans.NamedArg;
 
 public class Quintuple<A, B, C, D ,E> {
     private A first;
@@ -9,8 +8,8 @@ public class Quintuple<A, B, C, D ,E> {
     private D fourth;
     private E fifth;
 
-    public Quintuple(@NamedArg("first") A first, @NamedArg("second") B second,
-                     @NamedArg("third") C third, @NamedArg("fourth") D fourth, @NamedArg("fifth") E fifth) {
+    public Quintuple(A first, B second,
+                      C third,  D fourth,  E fifth) {
         this.first = first;
         this.second = second;
         this.third = third;

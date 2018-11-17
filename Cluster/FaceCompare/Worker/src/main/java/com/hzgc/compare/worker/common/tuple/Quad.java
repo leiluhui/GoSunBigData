@@ -1,6 +1,5 @@
 package com.hzgc.compare.worker.common.tuple;
 
-import javafx.beans.NamedArg;
 
 import java.io.Serializable;
 
@@ -10,7 +9,7 @@ public class Quad<A, B, C, D> implements Serializable {
     private C third;
     private D fourth;
 
-    public Quad(@NamedArg("first") A first, @NamedArg("second") B second, @NamedArg("third") C third, @NamedArg("fourth") D fourth) {
+    public Quad(A first,  B second, C third, D fourth) {
         this.first = first;
         this.second = second;
         this.third = third;
