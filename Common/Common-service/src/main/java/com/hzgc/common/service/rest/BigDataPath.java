@@ -72,6 +72,7 @@ public class BigDataPath {
     public static final String COMMUNITY_AFFIRM_NEW_HANDLE = "/affirm_new_handle";
     public static final String COMMUNITY_AFFIRM_OUT = "/affirm_out";
     public static final String COMMUNITY_PEOPLE_CAPTURE_1MONTH = "/search_capture";
+    public static final String DELETE_RECOGNIZE_RECORD = "/delete_recognize_record";
     public static final String COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH = "/device_track";
     public static final String COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH = "/device_capture";
     public static final String COMMUNITY_PEOPLE_CAPTURE_3MONTH = "/count_capture";
@@ -196,5 +197,5 @@ public class BigDataPath {
      */
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
     public static final String MAC_SEARCH_BY_SNS = "query_by_sns";
-
+    public static final String SEARCH_IMSI = "/search_imsi";
 }

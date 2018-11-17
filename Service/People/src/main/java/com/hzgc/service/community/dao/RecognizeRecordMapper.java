@@ -18,7 +18,7 @@ public interface RecognizeRecordMapper {
 
     int updateByPrimaryKey(RecognizeRecord record);
 
-    List<RecognizeRecord> searchCapture1Month(String peopleid);
+    List<RecognizeRecord> searchCapture1Month(PeopleCaptureDTO param);
 
     List<RecognizeRecord> searchPeopleTrack1Month(String peopleid);
 

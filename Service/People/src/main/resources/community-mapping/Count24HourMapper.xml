@@ -23,7 +23,7 @@
     from t_24hour_count
     where community = #{communityId,jdbcType=BIGINT}
     and peopleid = #{peopleId,jdbcType=VARCHAR}
-    and hour >= DATE_FORMAT(NOW() - INTERVAL 24 HOUR, '%Y%m%d%H')
+    and hour >= DATE_FORMAT(NOW() - INTERVAL 720 HOUR, '%Y%m%d%H')
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_24hour_count

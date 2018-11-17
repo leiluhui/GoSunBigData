@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
@@ -363,7 +364,7 @@ public class CommunityService {
             }
         }
         vo.setDeviceCountList(deviceCountList);
-        // 小区迁入人口抓拍详情:24小时统计
+        // 小区迁入人口抓拍详情:24小时统计(30天总和)
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         List<String> hourList = new ArrayList<>();
@@ -380,7 +381,7 @@ public class CommunityService {
             if (count24Hours != null && count24Hours.size() > 0) {
                 for (Count24Hour count24Hour : count24Hours) {
                     if (hour.equals(count24Hour.getHour())) {
-                        count.setCount(count24Hour.getCount());
+                        count.setCount(count.getCount() + count24Hour.getCount());
                     }
                 }
                 hourCountList.add(count);
@@ -636,10 +637,11 @@ public class CommunityService {
         return 1;
     }
 
-    public List<PeopleCaptureVO> searchCapture1Month(PeopleCaptureDTO param) {
+    public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(PeopleCaptureDTO param) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
-        PageHelper.offsetPage(param.getStart(), param.getLimit(), true);
-        List<RecognizeRecord> records = recognizeRecordMapper.searchCapture1Month(param.getPeopleId());
+        Page page = PageHelper.offsetPage(param.getStart(), param.getLimit(), true);
+        List<RecognizeRecord> records = recognizeRecordMapper.searchCapture1Month(param);
+        PageInfo info = new PageInfo(page.getResult());
         if (records != null && records.size() > 0){
             for (RecognizeRecord record : records){
                 if (record != null){
@@ -679,7 +681,18 @@ public class CommunityService {
                 }
             }
         }
-        return voList;
+        return ResponseResult.init(voList, info.getTotal());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteRecognizeRecord(List<String> idList) {
+        for (String id : idList){
+            int status = recognizeRecordMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                throw new RuntimeException("删除抓拍识别记录失败！");
+            }
+        }
+        return 1;
     }
 
     public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
