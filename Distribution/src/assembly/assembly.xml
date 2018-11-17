@@ -177,21 +177,21 @@
             <includes>
                 <include>dispatch.jar</include>
             </includes>
-            <outputDirectory>normal/component/GoSunBigData/Service/Cloud/dispatch/lib</outputDirectory>
+            <outputDirectory>normal/component/GoSunBigData/Service/Basic/dispatch/lib</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Dispatch/bin</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>normal/component/GoSunBigData/Service/Cloud/dispatch/bin</outputDirectory>
+            <outputDirectory>normal/component/GoSunBigData/Service/Basic/dispatch/bin</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>../Service/Dispatch/src/main/resources</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>normal/component/GoSunBigData/Service/Cloud/dispatch/conf</outputDirectory>
+            <outputDirectory>normal/component/GoSunBigData/Service/Basic/dispatch/conf</outputDirectory>
         </fileSet>
         <!--Imsi-Dynrepo目录-->
         <fileSet>
