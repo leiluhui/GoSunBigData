@@ -28,7 +28,7 @@
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
   </select>
   <insert id="insertSelective" parameterType="com.hzgc.common.service.imsi.ImsiInfo">
-    insert into t_imsi_all_01
+    insert into t_imsi_all
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
