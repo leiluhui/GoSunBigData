@@ -380,7 +380,7 @@ public class CommunityService {
             if (count24Hours != null && count24Hours.size() > 0) {
                 for (Count24Hour count24Hour : count24Hours) {
                     if (hour.equals(count24Hour.getHour())) {
-                        count.setCount(count24Hour.getCount());
+                        count.setCount(count.getCount() + count24Hour.getCount());
                     }
                 }
                 hourCountList.add(count);
@@ -883,5 +883,16 @@ public class CommunityService {
         }
         vo.setTotalNum((int) info.getTotal());
         return vo;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteCaptrueData(List<String> idList) {
+        for (String id : idList){
+            int status = recognizeRecordMapper.deleteByPrimaryKey(id);
+            if (status != 1){
+                throw new RuntimeException("Delete captrue data is faild");
+            }
+        }
+        return 1;
     }
 }

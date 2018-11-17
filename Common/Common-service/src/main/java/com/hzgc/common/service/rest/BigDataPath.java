@@ -76,6 +76,7 @@ public class BigDataPath {
     public static final String COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH = "/device_capture";
     public static final String COMMUNITY_PEOPLE_CAPTURE_3MONTH = "/count_capture";
     public static final String COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE = "/important_recognize";
+    public static final String COMMUNITY_DELETE_CAPTRUE_DATA = "/community_delete_captrue_data";
 
     /**
      * Clustering模块请求路径
@@ -196,5 +197,5 @@ public class BigDataPath {
      */
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
     public static final String MAC_SEARCH_BY_SNS = "query_by_sns";
-
+    public static final String SEARCH_IMSI = "/search_imsi";
 }

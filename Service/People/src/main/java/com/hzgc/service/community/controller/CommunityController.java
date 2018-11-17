@@ -492,4 +492,21 @@ public class CommunityController {
         log.info("Search important people recognize successfully");
         return ResponseResult.init(vo);
     }
+
+    @ApiOperation(value = "根据ID删除聚焦人员人脸抓拍数据", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_DELETE_CAPTRUE_DATA, method = RequestMethod.DELETE)
+    public ResponseResult<Integer> deleteCaptrueData(@RequestBody List<String> idList) {
+        if (idList == null || idList.size() == 0) {
+            log.error("Start delete captrue data, but idList is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "ID不能为空,请检查！");
+        }
+        log.info("Start delete captrue data");
+        Integer status = communityService.deleteCaptrueData(idList);
+        if (status != 1){
+            log.error("Delete captrue data is faild");
+            return ResponseResult.init(0);
+        }
+        log.info("Delete captrue data is successful");
+        return ResponseResult.init(1);
+    }
 }
