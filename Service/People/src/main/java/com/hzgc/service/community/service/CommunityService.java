@@ -861,7 +861,9 @@ public class CommunityService {
                 importantPeopleRecognize.setPictureId(picId);
             }
             importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
-            importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
+            importantPeopleRecognize.setDeviceName(param.getSearchType() == 2 ?
+                    platformService.getImsiDeviceName(recognize.getDeviceId()):
+                    platformService.getCameraDeviceName(recognize.getDeviceId()));
             importantPeopleRecognize.setCaptureTime(sdf.format(recognize.getCaptureTime()));
             List<Car> cars = recognize.getCar();
             List<String> carList = new ArrayList<>();
