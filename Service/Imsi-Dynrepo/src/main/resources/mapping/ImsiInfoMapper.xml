@@ -27,6 +27,28 @@
     from t_imsi_all
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
   </select>
+
+  <select id="searchIMSI" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.searchImsiDTO">
+    select
+    <include refid="Base_Column_List" />
+    from t_imsi_all
+    <where>
+      <if test="searchType == 0 ">
+        controlsn like "%" #{searchVal,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="searchType == 1 ">
+        imsi like "%" #{searchVal,jdbcType=VARCHAR} "%"
+      </if>
+      <if test="cellid != null and cellid.length() > 0" >
+        and
+        cellid = #{cellid,jdbcType=VARCHAR}
+      </if>
+      <if test="lac != null and lac.length() > 0" >
+        and
+        lac = #{lac,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
   <insert id="insertSelective" parameterType="com.hzgc.common.service.imsi.ImsiInfo">
     insert into t_imsi_all
     <trim prefix="(" suffix=")" suffixOverrides=",">
