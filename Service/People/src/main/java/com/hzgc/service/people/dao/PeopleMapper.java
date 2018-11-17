@@ -1,6 +1,7 @@
 package com.hzgc.service.people.dao;
 
 import com.hzgc.service.community.param.AffirmOperationDTO;
+import com.hzgc.service.community.param.ImportantRecognizeDTO;
 import com.hzgc.service.community.param.PeopleDTO;
 import com.hzgc.service.people.model.People;
 import com.hzgc.service.people.param.SearchPeopleDTO;
@@ -49,11 +50,11 @@ public interface PeopleMapper {
 
     People searchPeopleByIdCard(String idcard);
 
-    Timestamp getLastTime(String id);
-
     Integer deleteCommunityByPeopleId(String id);
 
     Integer insertCommunityByPeopleId(AffirmOperationDTO param);
 
     List<String> getImportantPeopleId(List<Long> communityIds);
+
+    List<String> getImportantRecognizeRecord(ImportantRecognizeDTO param);
 }

@@ -395,7 +395,7 @@ public class CommunityController {
         return ResponseResult.init(integer);
     }
 
-    @ApiOperation(value = "聚焦人员人脸抓拍、车辆抓拍、电围数据查询", response = PeopleCaptureVO.class)
+    @ApiOperation(value = "聚焦人员人脸、车辆、电围数据查询", response = PeopleCaptureVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_CAPTURE_1MONTH, method = RequestMethod.POST)
     public ResponseResult<List<PeopleCaptureVO>> searchCapture1Month(@RequestBody PeopleCaptureDTO param) {
         if (param == null) {

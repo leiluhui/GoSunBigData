@@ -8,8 +8,9 @@ import java.util.List;
 
 @Data
 public class ImportantRecognizeSearchParam implements Serializable {
-    private List<String> importantIds;
+    private List<Long> communityIds;
     private Timestamp startTime;
     private Timestamp endTime;
+    private int searchType;
 
 }

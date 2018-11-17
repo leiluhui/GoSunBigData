@@ -11,7 +11,9 @@ import java.util.List;
 @Data
 public class ImportantPeopleRecognize implements Serializable {
     // 重点人员ID
-    private String id;
+    private String peopleId;
+    // 识别记录类型
+    private int type;
     // 姓名
     private String name;
     // 身份证
@@ -36,4 +38,10 @@ public class ImportantPeopleRecognize implements Serializable {
     private Timestamp captureTime;
     // 抓拍设备ID
     private String deviceId;
+    //imis码
+    private String imsi;
+    //mac码
+    private String mac;
+    //车牌
+    private String plate;
 }
