@@ -15,7 +15,7 @@
     <result column="attach" jdbcType="VARCHAR" property="attach" />
     <result column="standard" jdbcType="VARCHAR" property="standard" />
     <result column="savetime" jdbcType="TIMESTAMP" property="time" />
-    <result column="communityId" jdbcType="BIGINT" property="communityId"></result>
+    <result column="communityId" jdbcType="BIGINT" property="communityId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, controlsn, sourcesn, imsi, cellid, lac, mscid, imei, freq, biscorpci, attach, standard, savetime, communityId
