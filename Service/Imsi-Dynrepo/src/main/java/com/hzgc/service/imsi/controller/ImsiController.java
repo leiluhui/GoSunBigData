@@ -59,8 +59,8 @@ public class ImsiController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search imsi info, searchImsiDTO is:" + JacksonUtil.toJson(searchImsiDTO));
-        List<ImsiVO> imsiVOList = imsiService.searchIMSI(searchImsiDTO);
+        ResponseResult<List<ImsiVO>> imsiVOList = imsiService.searchIMSI(searchImsiDTO);
         log.info("Start search imsi info successfully");
-        return ResponseResult.init(imsiVOList);
+        return imsiVOList;
     }
 }

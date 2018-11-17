@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.hzgc.common.service.api.bean.DetectorQueryDTO;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.imsi.ImsiInfo;
+import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.service.imsi.dao.ImsiDao;
 import com.hzgc.service.imsi.dao.ImsiInfoMapper;
@@ -36,7 +37,7 @@ public class ImsiService {
         return imsiDao.queryByTime(time);
     }
 
-    public List<ImsiVO> searchIMSI(SearchImsiDTO searchImsiDTO) {
+    public ResponseResult<List<ImsiVO>> searchIMSI(SearchImsiDTO searchImsiDTO) {
         SearchImsiParam param = new SearchImsiParam();
         param.setSearchType(searchImsiDTO.getSearchType());
         param.setSearchVal(searchImsiDTO.getSearchVal());
@@ -56,7 +57,7 @@ public class ImsiService {
         }
         log.info("Start search imsi info, search param:" + JacksonUtil.toJson(param));
         List<ImsiVO> imsiVOList = new ArrayList<>();
-        PageHelper.offsetPage(searchImsiDTO.getStart(), searchImsiDTO.getLimit(), true);
+        Page page = PageHelper.offsetPage(searchImsiDTO.getStart(), searchImsiDTO.getLimit(), true);
         List<ImsiInfo> imsiInfoList = imsiInfoMapper.searchIMSI(param);
         for (ImsiInfo imsiInfo : imsiInfoList){
             ImsiVO imsiVO = new ImsiVO();
@@ -75,6 +76,6 @@ public class ImsiService {
             imsiVO.setDeviceName(platformService.getImsiDeviceName(imsiInfo.getControlsn()));
             imsiVOList.add(imsiVO);
         }
-        return imsiVOList;
+        return ResponseResult.init(imsiVOList, page.getTotal());
     }
 }
