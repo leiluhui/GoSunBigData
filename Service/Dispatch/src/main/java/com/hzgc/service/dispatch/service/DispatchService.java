@@ -12,12 +12,16 @@ import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
+import com.hzgc.service.alive.dao.AliveMapper;
+import com.hzgc.service.alive.model.Alive;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.param.*;
 import com.hzgc.service.util.DispatchExcelUtils;
 import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
+import com.hzgc.service.white.dao.WhiteMapper;
+import com.hzgc.service.white.model.White;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,14 @@ public class DispatchService {
     @Autowired
     @SuppressWarnings("unused")
     private DispatchRecognizeMapper dispatchRecognizeMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private WhiteMapper whiteMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private AliveMapper aliveMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -79,11 +91,23 @@ public class DispatchService {
         if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
                 DispatchDTO dispatchDTO = new DispatchDTO();
-                dispatchDTO.setId(dispatchRecognize.getDispatchId());
+                String dispatchId = dispatchRecognize.getDispatchId();
+                dispatchDTO.setId(dispatchId);
                 dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
-                if (4 == dispatchRecognizeDTO.getSearchType() || 3 == dispatchRecognizeDTO.getSearchType()) {
-                    DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
-                    dispatchRecognizeVOS.add(dispatchRecognizeVO);
+                if (4 == dispatchRecognizeDTO.getSearchType()) {  //活体检测
+                    Alive alive = aliveMapper.selectByPrimaryKey(dispatchId);
+                    if (null != alive) {
+                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
+                        dispatchRecognizeVO.setName(alive.getName());
+                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+                    }
+                }else if (3 == dispatchRecognizeDTO.getSearchType()) {  //白名单
+                    White white = whiteMapper.selectByPrimaryKey(dispatchId);
+                    if (white != null) {
+                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
+                        dispatchRecognizeVO.setName(white.getName());
+                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+                    }
                 }else {
                     Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
                     if (null != dispatch) {
@@ -423,5 +447,4 @@ public class DispatchService {
         }
         return 1;
     }
-
 }
