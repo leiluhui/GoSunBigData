@@ -20,6 +20,8 @@ public class Flag implements Serializable {
         model.put(6, "重点青少年");
         model.put(7, "留守人员");
         model.put(8, "涉军人员");
+        model.put(9, "信访人员");
+        model.put(10, "邪教人员");
     }
 
     public static Map<Integer, String> getFlag() {
