@@ -52,7 +52,7 @@ public class FusionKafka {
                         Map map = gson.fromJson(JacksonUtil.toJson(imsiList.get(i)),Map.class);
                         fusionImsi.setCommunity(Long.valueOf(map.get("cellid").toString()));
                         fusionImsi.setDeviceid(map.get("controlsn").toString());
-                        fusionImsi.setReceivetime(simpleDateFormat.format(map.get("savetime")));
+                        fusionImsi.setReceivetime(map.get("time").toString());
                         fusionImsi.setImsi(map.get("imsi").toString());
                         log.info("The fusionImsi is :" + fusionImsi);
                         int status = fusionImsiMapper.insertSelective(fusionImsi);
