@@ -415,10 +415,28 @@ public class CommunityController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "分页行数不能小于或等于0,请检查！");
         }
         log.info("Start search people capture info, param is:" + JacksonUtil.toJson(param));
-        List<PeopleCaptureVO> voList = communityService.searchCapture1Month(param);
+        ResponseResult<List<PeopleCaptureVO>> result = communityService.searchCapture1Month(param);
         log.info("Search people capture info successfully");
-        return ResponseResult.init(voList);
+        return result;
     }
+
+    @ApiOperation(value = "人脸、车辆、电围记录数据删除", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.DELETE_RECOGNIZE_RECORD, method = RequestMethod.DELETE)
+    public ResponseResult<Integer> deleteRecognizeRecord(@RequestBody List<String> idList) {
+        if (idList == null || idList.size() == 0) {
+            log.error("Start delete recognize record, but id list is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除ID列表为空,请检查！");
+        }
+        log.info("Start delete recognize record, param:" + JacksonUtil.toJson(idList));
+        Integer status = communityService.deleteRecognizeRecord(idList);
+        if (status != 1){
+            log.error("Delete recognize record failed");
+            return ResponseResult.init(0);
+        }
+        log.info("Delete recognize record successful");
+        return ResponseResult.init(1);
+    }
+
 
     @ApiOperation(value = "聚焦人员轨迹查询", response = PeopleCaptureVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE_DEVICE_TRACK_1MONTH, method = RequestMethod.GET)

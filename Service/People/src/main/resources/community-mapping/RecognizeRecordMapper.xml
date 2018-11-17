@@ -92,12 +92,23 @@
     order by capturetime desc
   </select>
   <!--聚焦人员人脸、车辆、电围数据查询-->
-  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="com.hzgc.service.community.param.PeopleCaptureDTO" >
     select id, deviceid, capturetime, surl, burl, plate, type, imsi, mac
     from t_recognize_record
-    where peopleid = #{peopleid,jdbcType=VARCHAR}
-    and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
-    and (flag in (1, 2) or flag is NULL)
+    <where>
+      <if test="searchType == '1'.toString()">
+        type = 1
+      </if>
+      <if test="searchType == '2'.toString()">
+        type = 2
+      </if>
+      <if test="searchType == '3'.toString()">
+        type = 3
+      </if>
+      and peopleid = #{peopleId,jdbcType=VARCHAR}
+      and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
+      and (flag in (1, 2) or flag is NULL)
+    </where>
     order by capturetime desc
   </select>
   <!--聚焦人员人脸、车辆、电围轨迹查询-->
