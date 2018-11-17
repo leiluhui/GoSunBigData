@@ -884,15 +884,4 @@ public class CommunityService {
         vo.setTotalNum((int) info.getTotal());
         return vo;
     }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Integer deleteCaptrueData(List<String> idList) {
-        for (String id : idList){
-            int status = recognizeRecordMapper.deleteByPrimaryKey(id);
-            if (status != 1){
-                throw new RuntimeException("Delete captrue data is faild");
-            }
-        }
-        return 1;
-    }
 }
