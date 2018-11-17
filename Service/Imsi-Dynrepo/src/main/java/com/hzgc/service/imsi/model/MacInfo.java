@@ -15,4 +15,7 @@ public class MacInfo {
 
     private String time;
 
+    //小区ID
+    private Long communityId;
+
 }
