@@ -7,8 +7,10 @@ import lombok.Data;
 public class MacInfo {
     private Integer id;
 
+    //电围设备
     private String sn;
 
+    //mac地址
     private String mac;
 
     private String wifisn;
