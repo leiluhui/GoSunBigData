@@ -6,8 +6,8 @@ use people;
 
 INSERT INTO t_24hour_count (peopleid, hour, count, community)
 SELECT peopleid, DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 HOUR),'%Y%m%d%H'),COUNT(peopleid),community
-FROM t_people_recognize
-WHERE DATE_FORMAT(capturetime,'%Y%m%d%H')= DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 HOUR),'%Y%m%d%H')
+FROM t_recognize_record
+WHERE DATE_FORMAT(capturetime,'%Y%m%d%H')= DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 HOUR),'%Y%m%d%H') AND type=1
 GROUP BY community,peopleid;
 EOF
 if [ $? != 0 ];then
