@@ -368,26 +368,24 @@ public class CommunityService {
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         List<String> hourList = new ArrayList<>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
-        long longTime = System.currentTimeMillis();
-        for (int i = 0; i < 24; i++) {
-            longTime = longTime - 3600000;
-            String time = dateFormat.format(new Date(longTime));
-            hourList.add(time);
-        }
+        hourList.add("00");hourList.add("01");hourList.add("02");hourList.add("03");hourList.add("04");hourList.add("05");
+        hourList.add("06");hourList.add("07");hourList.add("08");hourList.add("09");hourList.add("10");hourList.add("11");
+        hourList.add("12");hourList.add("13");hourList.add("14");hourList.add("15");hourList.add("16");hourList.add("17");
+        hourList.add("18");hourList.add("19");hourList.add("20");hourList.add("21");hourList.add("22");hourList.add("23");
         for (String hour : hourList) {
             CaptureHourCount count = new CaptureHourCount();
-            count.setHour(hour.substring(8, 10));
+            count.setHour(hour);
             if (count24Hours != null && count24Hours.size() > 0) {
                 for (Count24Hour count24Hour : count24Hours) {
                     if (hour.equals(count24Hour.getHour())) {
-                        count.setCount(count.getCount() + count24Hour.getCount());
+                        count.setCount(count24Hour.getCount());
                     }
                 }
                 hourCountList.add(count);
             }
         }
         vo.setHourCountList(hourCountList);
+        log.info("hourCountList:" + JacksonUtil.toJson(hourCountList));
         // 小区迁入人口抓拍详情:人员抓拍列表
         Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<RecognizeRecord> records = recognizeRecordMapper.searchCommunityNewPeopleCaptureData(param);
