@@ -18,4 +18,7 @@
             <artifactId>hive-exec</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>spark-udf</finalName>
+    </build>
 </project>

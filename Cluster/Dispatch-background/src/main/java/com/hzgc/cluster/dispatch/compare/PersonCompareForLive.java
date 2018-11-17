@@ -88,7 +88,7 @@ public class PersonCompareForLive implements Runnable{
                     for(DispatchAlive dispachAliveRule : dispachAliveRules) {
                         if (dispachAliveRule.getStartTime().compareTo(captachTime) < 0 && dispachAliveRule.getEndTime().compareTo(captachTime) > 0) {
                             DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                            dispatureRecognize.setDispatchId("111111");
+                            dispatureRecognize.setDispatchId(dispachAliveRule.getId());
                             dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
                             dispatureRecognize.setDeviceId(personObject.getIpcId());
                             dispatureRecognize.setType(4);

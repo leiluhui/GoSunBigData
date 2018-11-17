@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class PeopleCaptureVO implements Serializable {
     @ApiModelProperty(value = "抓拍类型(0:人脸,1:IMSI,2:车辆)")
     private int captureType;
+    @ApiModelProperty(value = "抓拍记录ID")
+    private String recordId;
     @ApiModelProperty(value = "抓拍时间")
     private String captureTime;
     @ApiModelProperty(value = "人脸、车辆抓拍设备")

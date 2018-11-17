@@ -12,6 +12,8 @@ import java.util.List;
 public class ImportantPeopleRecognizeVO implements Serializable {
     @ApiModelProperty(value = "重点人员ID")
     private String id;
+    @ApiModelProperty(value = "识别记录类型")
+    private int type;
     @ApiModelProperty(value = "姓名")
     private String name;
     @ApiModelProperty(value = "身份证")
@@ -38,4 +40,10 @@ public class ImportantPeopleRecognizeVO implements Serializable {
     private String deviceId;
     @ApiModelProperty(value = "抓拍设备")
     private String deviceName;
+    @ApiModelProperty(value = "IMSI码")
+    private String imsi;
+    @ApiModelProperty(value = "Mac地址")
+    private String mac;
+    @ApiModelProperty(value = "车牌号")
+    private String plate;
 }

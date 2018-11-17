@@ -28,6 +28,7 @@ QUERY_TIME=30
 KAFKA_HOST=172.18.18.202:9092,172.18.18.103:9092,172.18.18.104:9092,172.18.18.108:9092
 MYSQL_USERNAME=root
 MYSQL_PASSWORD=Hzgc@123
+TAG=1
 
 
 #---------------------------------------------------------------------#
@@ -53,6 +54,7 @@ function start_springCloud()
        --spring.cloud.config.enabled=false \
        --mysql.host=${MYSQL_HOST} \
        --query.time=${QUERY_TIME} \
+       --tag=${TAG} \
        --mysql.username=${MYSQL_USERNAME} \
        --mysql.password=${MYSQL_PASSWORD} \
        --kafka.host=${KAFKA_HOST} 2>&1 &

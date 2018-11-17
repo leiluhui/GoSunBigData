@@ -1,9 +1,11 @@
 package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.CarMapper;
-import com.hzgc.cluster.peoman.worker.dao.CarRecognizeMapper;
+import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
+import com.hzgc.cluster.peoman.worker.dao.RecognizeRecordMapper;
 import com.hzgc.cluster.peoman.worker.model.Car;
-import com.hzgc.cluster.peoman.worker.model.CarRecognize;
+import com.hzgc.cluster.peoman.worker.model.People;
+import com.hzgc.cluster.peoman.worker.model.RecognizeRecord;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +23,8 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Component
@@ -32,7 +35,7 @@ public class CarConsumer implements Runnable{
 
     @Autowired
     @SuppressWarnings("unused")
-    private CarRecognizeMapper carRecognizeMapper;
+    private RecognizeRecordMapper recognizeRecordMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -49,7 +52,6 @@ public class CarConsumer implements Runnable{
     @Value("${kafka.car.groupId}")
     @SuppressWarnings("unused")
     private String carGroupId;
-
 
     @Value("${kafka.inner.topic.polltime}")
     @SuppressWarnings("unused")
@@ -82,7 +84,10 @@ public class CarConsumer implements Runnable{
                         if (plate_licence != null) {
                             Car car = carMapper.selectByCar(plate_licence);
                             if (car != null && car.getPeopleid() != null) {
-                                CarRecognize carRecognize = new CarRecognize();
+                                //识别车推送
+                                peopleCompare.sendCarFocalRecord(carObject, car);
+
+                                RecognizeRecord carRecognize = new RecognizeRecord();
                                 Date date = null;
                                 try {
                                     date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(carObject.getTimeStamp());
@@ -95,6 +100,8 @@ public class CarConsumer implements Runnable{
                                 } else {
                                     log.info("getCameraQueryDTO data no community !!!, devId="+carObject.getIpcId());
                                 }
+                                carRecognize.setType(2);
+                                carRecognize.setId(carObject.getId());
                                 carRecognize.setPeopleid(car.getPeopleid());
                                 carRecognize.setPlate(car.getCar());
                                 carRecognize.setDeviceid(carObject.getIpcId());
@@ -103,7 +110,7 @@ public class CarConsumer implements Runnable{
                                 carRecognize.setBurl(CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath()));
                                 log.info("carRecognize value="+JacksonUtil.toJson(carRecognize));
                                 try {
-                                    carRecognizeMapper.insert(carRecognize);
+                                    recognizeRecordMapper.insertSelective(carRecognize);
                                 } catch (Exception e) {
                                     log.info("CarCompare insert car recognize failed !!!");
                                     log.error(e.getMessage());
