@@ -31,44 +31,30 @@ public class LocalFileReader extends FileReader {
     }
 
     public void loadRecord() {
-        String workId = Config.WORKER_ID;
+//        String workId = Config.WORKER_ID;
         File workFile = new File(path);
         if(!workFile.isDirectory()){
-            return;
+            log.error("The path " + path + " is not exist.");
+            System.exit(1);
         }
-        File[] listFiles = workFile.listFiles();
-        // 得到当前worker的目录
-        File dirForThisWorker = null;
-        if (listFiles != null && listFiles.length > 0) {
-            for(File fi : listFiles){
-                if(fi.isDirectory() && workId.equals(fi.getName())){
-                    dirForThisWorker = fi;
-                }
-            }
+        String dirPathNotLocked = FileLockManager.getInstance(Config.ZOOKEEPER_ADDRESS).getDirNotLockd();
+        if(dirPathNotLocked == null){
+            log.error("Get file lock faild.");
+            System.exit(1);
         }
 
-        if(dirForThisWorker == null || !dirForThisWorker.isDirectory()){
-            return;
-        }
+        File dirForThisWorker = new File(workFile, dirPathNotLocked);
 
-        //得到本月和上月
-//        Date date = new Date();
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-//        String ym = sdf.format(date);
-//        String [] strings = ym.split("-");
-//        Integer m = Integer.valueOf(strings[1]) - 1;
-//        String lastMonth = null;
-//        if (m > 0 && m < 10){
-//            lastMonth = strings[0] + "-0" + m;
-//        }
-//        if (m == 0) {
-//            int year = Integer.valueOf(strings[0]) - 1;
-//            lastMonth = String.valueOf(year) + "-" + String.valueOf(12);
-//        }
+        if(!dirForThisWorker.isDirectory()){
+            log.info("The path " + dirPathNotLocked + " is not a dir.");
+            System.exit(1);
+        }
+        Config.DIR_PATH_TO_USE = dirPathNotLocked;
 
         // 得到所有月份目录
         File[] files = dirForThisWorker.listFiles();
         if(files == null || files.length == 0){
+            log.info("There are no month dir int the path.");
             return;
         }
         List<String> months = new ArrayList<>();
@@ -188,6 +174,7 @@ public class LocalFileReader extends FileReader {
         //遍历加载数据文件
         File[] files1 = monthdir.listFiles();
         if(files1 == null || files1.length == 0){
+            log.info("There are no file int the month " + month);
             return;
         }
         ReadFileForLocal readFile = new ReadFileForLocal();
@@ -277,6 +264,7 @@ class ReadFileForLocal implements Runnable{
                     bufferedReader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         }

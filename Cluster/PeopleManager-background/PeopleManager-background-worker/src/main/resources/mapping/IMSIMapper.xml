@@ -13,6 +13,6 @@
   <select id="selectByIMSI" resultMap="BaseResultMap" parameterType="java.lang.String">
     select
     <include refid="Base_Column_List" />
-    from t_imsi where t_imsi.imsi = #{imsi,jdbcType=VARCHAR}
+    from t_imsi where t_imsi.imsi = #{imsi,jdbcType=VARCHAR} limit 1
   </select>
 </mapper>
