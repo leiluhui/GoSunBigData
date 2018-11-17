@@ -95,7 +95,7 @@ public class IMSIConsumer implements Runnable{
                                 } else {
                                     log.info("getCameraQueryDTO data no community !!!, devId="+carObject.getIpcId());
                                 }*/
-                               imsiRecognize.setType(3);
+                               imsiRecognize.setType(2);
                                imsiRecognize.setId(imsiInfo.getId());
                                imsiRecognize.setPeopleid(imsiData.getPeopleid());
                                imsiRecognize.setCommunity(Long.valueOf(imsiInfo.getCellid()));

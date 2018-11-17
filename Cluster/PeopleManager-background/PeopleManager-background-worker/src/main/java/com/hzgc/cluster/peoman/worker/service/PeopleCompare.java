@@ -466,7 +466,7 @@ public class PeopleCompare {
         List<People> peopleList = peopleMapper.selectByPrimaryKey(imsiData.getPeopleid());
         if (peopleList != null && peopleList.size() > 0) {
             MessageMq mesg = new MessageMq();
-            mesg.setFlag(2);
+            mesg.setFlag(3);
             mesg.setDevId(imsiInfo.getControlsn());
             mesg.setTime(imsiInfo.getTime());
             mesg.setName(peopleList.get(0).getName());
