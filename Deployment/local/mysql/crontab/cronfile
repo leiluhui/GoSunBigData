@@ -1,6 +1,6 @@
-0 * * * * /GoSunBigDataDeploy/mysql/sql/sh 24hour_count_table.sh >> /opt/GoSunBigDataDeploy/24hour_count.log 2>&1
-0 0 * * * /GoSunBigDataDeploy/mysql/sql/sh device_recogize_table.sh >> /opt/GoSunBigDataDeploy/device_recogize.log 2>&1
-0 0 * * * /GoSunBigDataDeploy/mysql/sql/sh imsi_blacklist_table.sh >> /opt/GoSunBigDataDeploy/imsi_blacklist.log 2>&1
-0 0 * * * /GoSunBigDataDeploy/mysql/sql/sh fusion_imsi_table.sh >> /opt/GoSunBigDataDeploy/fusion_imsi.log 2>&1
-0 0 1 * * /GoSunBigDataDeploy/mysql/sql/sh newpeople_table.sh >> /opt/GoSunBigDataDeploy/newpeople.log 2>&1
-0 0 * * * /GoSunBigDataDeploy/mysql/sql/sh outpeople_table.sh >> /opt/GoSunBigDataDeploy/outpeople.log 2>&1
+0 * * * * /bin/sh /mysql/24hour_count_table.sh
+0 0 * * * /bin/sh /mysql/device_recogize_table.sh
+0 0 * * * /bin/sh /mysql/imsi_blacklist_table.sh
+0 0 * * * /bin/sh /mysql/fusion_imsi_table.sh
+0 0 1 * * /bin/sh /mysql/newpeople_table.sh
+0 0 * * * /bin/sh /mysql/outpeople_table.sh

@@ -2,11 +2,11 @@
 ## 动态信息库person 表的映射
 
 ## 删除索引
-##curl -XDELETE 's100:9200/dynamicface?pretty'  -H 'Content-Type: application/json'
-##curl -XDELETE 's100:9200/dynamicperson?pretty' -H 'Content-Type:application/json'
-##curl -XDELETE 's100:9200/dynamiccar?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 'localhost:9200/dynamicface?pretty'  -H 'Content-Type: application/json'
+##curl -XDELETE 'localhost:9200/dynamicperson?pretty' -H 'Content-Type:application/json'
+##curl -XDELETE 'localhost:9200/dynamiccar?pretty'  -H 'Content-Type: application/json'
 
-curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d'
+curl -XPUT 'localhost:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d'
 {
     "settings": {
 	    "number_of_shards":5,
@@ -88,14 +88,14 @@ curl -XPUT 's100:9200/dynamicface?pretty' -H 'Content-Type: application/json' -d
         }
     }'
 
-curl -XPUT 's100:9200/dynamicface/_settings' -d '{
+curl -XPUT 'localhost:9200/dynamicface/_settings' -d '{
     "index": {
         "max_result_window": 1000000000
     }
 }'
 
 ##创建索引--行人
-curl -XPUT 's100:9200/dynamicperson?pretty' -H 'Content-Type: application/json' -d'
+curl -XPUT 'localhost:9200/dynamicperson?pretty' -H 'Content-Type: application/json' -d'
 {
     "settings": {
 	    "number_of_shards":5,
@@ -204,22 +204,24 @@ curl -XPUT 's100:9200/dynamicperson?pretty' -H 'Content-Type: application/json' 
         }
     }'
 
-curl -XPUT 's100:9200/dynamicperson/_settings' -d '{
+curl -XPUT 'localhost:9200/dynamicperson/_settings' -d '{
      "index": {
         "max_result_window": 1000000000
     }
 }'
 
 ## 创建索引--车辆
-curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
+curl -XPUT 'localhost:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
 {
     "settings": {
 	    "number_of_shards":5,
         "number_of_replicas":2,
         "analysis": {
-            "analyzer": {
-                "ik": {
-                    "tokenizer" : "ik_smart"
+            "filter": {
+                "trigrams_filter": {
+                    "type": "ngram",
+                    "min_gram": 2,
+                    "max_gram": 20
                 }
             }
         }
@@ -314,7 +316,7 @@ curl -XPUT 's100:9200/dynamiccar?pretty' -H 'Content-Type: application/json' -d'
         }
     }'
 
-curl -XPUT 's100:9200/dynamiccar/_settings' -d '{
+curl -XPUT 'localhost:9200/dynamiccar/_settings' -d '{
      "index": {
         "max_result_window": 1000000000
     }

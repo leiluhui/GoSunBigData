@@ -28,6 +28,10 @@ public class JobRunnerImpl implements ApplicationRunner {
 
     @Autowired
     @SuppressWarnings("unused")
+    private IMSIConsumer imsiConsumer;
+
+    @Autowired
+    @SuppressWarnings("unused")
     private LoadDataFromTiDB loadDataFromTiDB;
 
     @Value("${zookeeper.address}")
@@ -67,5 +71,7 @@ public class JobRunnerImpl implements ApplicationRunner {
         new Thread(faceConsumer).start();
         carConsumer.initCarConsumer();
         new Thread(carConsumer).start();
+        imsiConsumer.initIMSIConsumer();
+        new Thread(imsiConsumer).start();
     }
 }

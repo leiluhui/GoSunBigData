@@ -20,21 +20,16 @@ import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -84,13 +79,17 @@ public class DispatchService {
         if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
             for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
                 DispatchDTO dispatchDTO = new DispatchDTO();
-                String dispatchId = dispatchRecognize.getDispatchId();
-                dispatchDTO.setId(dispatchId);
+                dispatchDTO.setId(dispatchRecognize.getDispatchId());
                 dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
-                Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
-                if (null != dispatch) {
-                    DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
+                if (4 == dispatchRecognizeDTO.getSearchType() || 3 == dispatchRecognizeDTO.getSearchType()) {
+                    DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
                     dispatchRecognizeVOS.add(dispatchRecognizeVO);
+                }else {
+                    Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
+                    if (null != dispatch) {
+                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
+                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+                    }
                 }
             }
         }
@@ -201,13 +200,13 @@ public class DispatchService {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
             PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
             if (pictureData == null){
-                log.error("Face feature extract is null");
-                throw new RuntimeException("Face feature extract is null");
+                log.error("Failed to get face feature");
+                throw new RuntimeException("Failed to get face feature");
             }
             FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, insert t_dispatch failed");
-                throw new RuntimeException("Face feature extract failed, insert  t_dispatch failed");
+                log.error("Failed to get face feature, insert t_dispatch failed");
+                throw new RuntimeException("Failed to get face feature, insert  t_dispatch failed");
             }
             dispatch.setFace(bytes);
             dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
@@ -256,13 +255,13 @@ public class DispatchService {
             byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getFace());
             PictureData pictureData = innerService.faceFeautreCheck(dto.getFace());
             if (pictureData == null){
-                log.error("Face feature extract is null");
-                throw new RuntimeException("Face feature extract is null");
+                log.error("Failed to get face feature");
+                throw new RuntimeException("Failed to get face feature");
             }
             FaceAttribute faceAttribute = pictureData.getFeature();
             if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, update t_dispatch failed");
-                throw new RuntimeException("Face feature extract failed, update t_dispatch failed");
+                log.error("Failed to get face feature, update t_dispatch failed");
+                throw new RuntimeException("Failed to get face feature, update t_dispatch failed");
             }
             dispatch.setFace(bytes);
             dispatch.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
@@ -297,11 +296,13 @@ public class DispatchService {
         dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
         dispatchRecognizeVO.setDeviceName(getDeviceName(dispatchRecognize.getDeviceId()));
         dispatchRecognizeVO.setType(dispatchRecognize.getType());
-        dispatchRecognizeVO.setName(dispatch.getName());
-        dispatchRecognizeVO.setIdCard(dispatch.getIdcard());
-        dispatchRecognizeVO.setCar(dispatch.getCar());
-        dispatchRecognizeVO.setMac(dispatch.getMac());
-        dispatchRecognizeVO.setNotes(dispatch.getNotes());
+        if (null != dispatch) {
+            dispatchRecognizeVO.setName(dispatch.getName());
+            dispatchRecognizeVO.setIdCard(dispatch.getIdcard());
+            dispatchRecognizeVO.setCar(dispatch.getCar());
+            dispatchRecognizeVO.setMac(dispatch.getMac());
+            dispatchRecognizeVO.setNotes(dispatch.getNotes());
+        }
         return dispatchRecognizeVO;
     }
 

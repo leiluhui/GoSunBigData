@@ -46,7 +46,10 @@ public class BigDataPath {
     public static final String PEOPLE_INSERT="/people_insert";
     public static final String PEOPLE_UPDATE="/people_update";
     public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
-    public static final String PEOPLE_SEARCH_PICTURE_BY_IDCARD="/select_idcard";
+    public static final String PEOPLE_SEARCH_BY_IDCARD="/select_idcard";
+    public static final String PEOPLE_INSTERT_PICTURE="/insert_picture";
+    public static final String PEOPLE_UPDATE_PICTURE="/update_picture";
+    public static final String PEOPLE_DELETE_PICTURE="/delete_picture";
     public static final String PEOPLE_SEARCH_PICTURE_BY_PICID="/search_picture_picid";
     public static final String PEOPLE_SEARCH_PICTURE_BY_PEOPLEID="/search_picture_peopleid";
     public static final String PEOPLE_SELECT_PEOPLE="/search_people";

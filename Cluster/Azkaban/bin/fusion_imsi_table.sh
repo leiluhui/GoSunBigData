@@ -1,7 +1,7 @@
 #!/bin/bash
-IP=172.18.18.202
-PORT=4000
- mysql -u root -h ${IP} -P ${PORT} << EOF
+IP=${IP}
+PORT=${PORT}
+ mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 INSERT INTO t_imsi (peopleid,imsi)
 SELECT peopleid,imsi
@@ -17,3 +17,8 @@ FROM(
     GROUP BY peopleid
 )AS final;
 EOF
+if [ $? != 0 ];then
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec fusion sql failed" >> /var/log/mysql.log 2>&1 &
+else
+ echo "`date "+%Y-%m-%d %H:%M:%S"`: exec fusion sql success" >> /var/log/mysql.log 2>&1 &
+fi

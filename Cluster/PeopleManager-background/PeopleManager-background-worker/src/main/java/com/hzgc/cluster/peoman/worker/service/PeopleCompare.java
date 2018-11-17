@@ -2,14 +2,18 @@ package com.hzgc.cluster.peoman.worker.service;
 
 import com.hzgc.cluster.peoman.worker.dao.FlagMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
-import com.hzgc.cluster.peoman.worker.dao.PeopleRecognizeMapper;
+import com.hzgc.cluster.peoman.worker.dao.RecognizeRecordMapper;
+import com.hzgc.cluster.peoman.worker.model.Car;
+import com.hzgc.cluster.peoman.worker.model.IMSI;
 import com.hzgc.cluster.peoman.worker.model.People;
-import com.hzgc.cluster.peoman.worker.model.PeopleRecognize;
+import com.hzgc.cluster.peoman.worker.model.RecognizeRecord;
+import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.CameraQueryDTO;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
+import com.hzgc.common.service.imsi.ImsiInfo;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.CompareResult;
 import com.hzgc.jniface.FaceFeatureInfo;
@@ -49,7 +53,7 @@ public class PeopleCompare {
 
     @Autowired
     @SuppressWarnings("unused")
-    private PeopleRecognizeMapper peopleRecognizeMapper;
+    private RecognizeRecordMapper recognizeRecordMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -153,50 +157,7 @@ public class PeopleCompare {
             addPeopleRecognize(faceObject, comparePicture, communityId);
             //重点人口推送
             if (comparePicture.getFlagId() != null && comparePicture.getFlagId() != 7) {
-                List<People> peopleList = peopleMapper.selectByPrimaryKey(comparePicture.getPeopleId());
-                if (peopleList != null) {
-                    MessageMq mesg = new MessageMq();
-                    mesg.setFlag(1);
-                    mesg.setDevId(faceObject.getIpcId());
-                    mesg.setTime(faceObject.getTimeStamp());
-                    mesg.setName(peopleList.get(0).getName());
-                    mesg.setAge(peopleList.get(0).getAge());
-                    mesg.setSex(peopleList.get(0).getSex());
-                    mesg.setBirthplace(peopleList.get(0).getBirthplace());
-                    mesg.setIdcard(peopleList.get(0).getIdcard());
-                    mesg.setAddress(peopleList.get(0).getAddress());
-
-                    HashSet<String>  phones= new HashSet<>();
-                    HashSet<String>  cars= new HashSet<>();
-                    HashSet<String>  imsis= new HashSet<>();
-                    HashSet<Long>  pictureids= new HashSet<>();
-                    for (People people : peopleList) {
-                        if (people.getPhone() != null)
-                            phones.add(people.getPhone());
-                        if (people.getCar() != null)
-                            cars.add(people.getCar());
-                        if (people.getImsi() != null && people.getImsi().length() == 15) {
-                            String s = Long.toString(Long.valueOf(people.getImsi()), 32).toUpperCase();
-                            if (s !=null && s.length() == 10) {
-                                String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
-                                imsis.add(mac);
-                            }
-                        }
-                        if (people.getPictureid() != null)
-                            pictureids.add(people.getPictureid());
-                    }
-                    mesg.setPhone(new ArrayList<>(phones));
-                    mesg.setCar(new ArrayList<>(cars));
-                    mesg.setMac(new ArrayList<>(imsis));
-                    mesg.setPictureid(new ArrayList<>(pictureids));
-                    mesg.setCommuntidy(communityId);
-                    mesg.setSurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath())).getHttp_ip());
-                    mesg.setBurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath())).getHttp_ip());
-
-                    ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
-                    Future<RecordMetadata> send = producer.send(record);
-                    producer.flush();
-                }
+                sendFaceFocalRecord(faceObject, comparePicture, communityId);
             }
             //数据融合推送
             ProducerRecord<String, String> record = new ProducerRecord<>(fusionTopic, faceObject.getId(), JacksonUtil.toJson(faceObject));
@@ -219,7 +180,8 @@ public class PeopleCompare {
         people.setLasttime(date);
         peopleMapper.updateByPrimaryKeySelective(people);
 
-        PeopleRecognize peopleRecognize = new PeopleRecognize();
+        RecognizeRecord peopleRecognize = new RecognizeRecord();
+        peopleRecognize.setType(1);
         peopleRecognize.setId(faceObject.getId());
         peopleRecognize.setPeopleid(comparePicture.getPeopleId());
         peopleRecognize.setPictureid(comparePicture.getId());
@@ -233,7 +195,7 @@ public class PeopleCompare {
         peopleRecognize.setFilterTime(filterTime);
         log.info("insert people recognize value=" + JacksonUtil.toJson(peopleRecognize));
         try {
-            peopleRecognizeMapper.insertUpdate(peopleRecognize);
+            recognizeRecordMapper.insertUpdate(peopleRecognize);
         } catch (Exception e) {
             log.info("PeopelCompare insertUpdate people recognize failed !!!");
             log.error(e.getMessage());
@@ -249,7 +211,7 @@ public class PeopleCompare {
      */
     public void addNewPeopleRecognize(FaceObject faceObject, Long communityId) {
         CompareRes compareRes = compareNewPeople(faceObject);
-        PeopleRecognize peopleRecognize = new PeopleRecognize();
+        RecognizeRecord peopleRecognize = new RecognizeRecord();
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(faceObject.getTimeStamp());
@@ -257,6 +219,7 @@ public class PeopleCompare {
             e.printStackTrace();
         }
         if (compareRes != null) {
+            peopleRecognize.setType(1);
             peopleRecognize.setId(faceObject.getId());
             peopleRecognize.setPeopleid(indexUUID.get(compareRes.getIndex()));
             peopleRecognize.setDeviceid(faceObject.getIpcId());
@@ -271,7 +234,7 @@ public class PeopleCompare {
             log.info("insert new add people recognize value=" + JacksonUtil.toJson(peopleRecognize));
             if(compareRes.getFlag() == 10) {
                 try {
-                    peopleRecognizeMapper.insert(peopleRecognize);
+                    recognizeRecordMapper.insert(peopleRecognize);
                 } catch (Exception e) {
                     bitFeatureList.removeLast();
                     floatFeatureList.removeLast();
@@ -281,7 +244,7 @@ public class PeopleCompare {
                 }
             } else {
                 try {
-                    peopleRecognizeMapper.insert(peopleRecognize);
+                    recognizeRecordMapper.insert(peopleRecognize);
                 } catch (Exception e) {
                     log.info("PeopelCompare flag=2 insert new add people recognize failed !!!");
                     log.error(e.getMessage());
@@ -400,4 +363,148 @@ public class PeopleCompare {
             return null;
         }
     }
+
+    public void sendFaceFocalRecord(FaceObject faceObject, ComparePicture comparePicture, Long communityId) {
+        List<People> peopleList = peopleMapper.selectByPrimaryKey(comparePicture.getPeopleId());
+        if (peopleList != null && peopleList.size() > 0) {
+            MessageMq mesg = new MessageMq();
+            mesg.setFlag(1);
+            mesg.setDevId(faceObject.getIpcId());
+            mesg.setTime(faceObject.getTimeStamp());
+            mesg.setName(peopleList.get(0).getName());
+            mesg.setAge(peopleList.get(0).getAge());
+            mesg.setSex(peopleList.get(0).getSex());
+            mesg.setBirthplace(peopleList.get(0).getBirthplace());
+            mesg.setIdcard(peopleList.get(0).getIdcard());
+            mesg.setAddress(peopleList.get(0).getAddress());
+
+            HashSet<String>  phones= new HashSet<>();
+            HashSet<String>  cars= new HashSet<>();
+            HashSet<String>  imsis= new HashSet<>();
+            HashSet<Long>  pictureids= new HashSet<>();
+            for (People people : peopleList) {
+                if (people.getPhone() != null)
+                    phones.add(people.getPhone());
+                if (people.getCar() != null)
+                    cars.add(people.getCar());
+                if (people.getImsi() != null && people.getImsi().length() == 15) {
+                    String s = Long.toString(Long.valueOf(people.getImsi()), 32).toUpperCase();
+                    if (s !=null && s.length() == 10) {
+                        String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
+                        imsis.add(mac);
+                    }
+                }
+                if (people.getPictureid() != null)
+                    pictureids.add(people.getPictureid());
+            }
+            mesg.setPhone(new ArrayList<>(phones));
+            mesg.setCar(new ArrayList<>(cars));
+            mesg.setMac(new ArrayList<>(imsis));
+            mesg.setPictureid(new ArrayList<>(pictureids));
+            mesg.setCommuntidy(communityId);
+            mesg.setSurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath())).getHttp_ip());
+            mesg.setBurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath())).getHttp_ip());
+
+            ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
+            Future<RecordMetadata> send = producer.send(record);
+            producer.flush();
+        }
+    }
+
+    public void sendCarFocalRecord(CarObject carObject, Car car) {
+        List<People> peopleList = peopleMapper.selectByPrimaryKey(car.getPeopleid());
+        if (peopleList != null && peopleList.size() > 0) {
+            MessageMq mesg = new MessageMq();
+            mesg.setFlag(2);
+            mesg.setDevId(carObject.getIpcId());
+            mesg.setTime(carObject.getTimeStamp());
+            mesg.setName(peopleList.get(0).getName());
+            mesg.setAge(peopleList.get(0).getAge());
+            mesg.setSex(peopleList.get(0).getSex());
+            mesg.setBirthplace(peopleList.get(0).getBirthplace());
+            mesg.setIdcard(peopleList.get(0).getIdcard());
+            mesg.setAddress(peopleList.get(0).getAddress());
+
+            HashSet<String> phones= new HashSet<>();
+            HashSet<String>  cars= new HashSet<>();
+            HashSet<String>  imsis= new HashSet<>();
+            HashSet<Long>  pictureids= new HashSet<>();
+            cars.add(car.getCar());
+            for (People people : peopleList) {
+                if (people.getPhone() != null)
+                    phones.add(people.getPhone());
+                if (people.getImsi() != null && people.getImsi().length() == 15) {
+                    String s = Long.toString(Long.valueOf(people.getImsi()), 32).toUpperCase();
+                    if (s !=null && s.length() == 10) {
+                        String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
+                        imsis.add(mac);
+                    }
+                }
+                if (people.getPictureid() != null)
+                    pictureids.add(people.getPictureid());
+            }
+            mesg.setPhone(new ArrayList<>(phones));
+            mesg.setCar(new ArrayList<>(cars));
+            mesg.setMac(new ArrayList<>(imsis));
+            mesg.setPictureid(new ArrayList<>(pictureids));
+            CameraQueryDTO cameraQueryDTO = getCameraQueryDTO(carObject.getIpcId());
+            if (cameraQueryDTO != null) {
+                mesg.setCommuntidy(cameraQueryDTO.getCommunityId());
+            } else {
+                log.info("getCameraQueryDTO data no community !!!, devId="+carObject.getIpcId());
+            }
+            mesg.setSurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath())).getHttp_ip());
+            mesg.setBurl(innerService.httpHostNameToIp(CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath())).getHttp_ip());
+
+            ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
+            Future<RecordMetadata> send = producer.send(record);
+            producer.flush();
+        }
+    }
+
+    public void sendIMSIFocalRecord(ImsiInfo imsiInfo, IMSI imsiData) {
+        List<People> peopleList = peopleMapper.selectByPrimaryKey(imsiData.getPeopleid());
+        if (peopleList != null && peopleList.size() > 0) {
+            MessageMq mesg = new MessageMq();
+            mesg.setFlag(2);
+            mesg.setDevId(imsiInfo.getControlsn());
+            mesg.setTime(imsiInfo.getTime());
+            mesg.setName(peopleList.get(0).getName());
+            mesg.setAge(peopleList.get(0).getAge());
+            mesg.setSex(peopleList.get(0).getSex());
+            mesg.setBirthplace(peopleList.get(0).getBirthplace());
+            mesg.setIdcard(peopleList.get(0).getIdcard());
+            mesg.setAddress(peopleList.get(0).getAddress());
+
+            HashSet<String>  phones= new HashSet<>();
+            HashSet<String>  cars= new HashSet<>();
+            HashSet<String>  imsis= new HashSet<>();
+            HashSet<Long>  pictureids= new HashSet<>();
+            if (imsiData.getImsi() != null && imsiData.getImsi().length() == 15) {
+                String s = Long.toString(Long.valueOf(imsiData.getImsi()), 32).toUpperCase();
+                if (s !=null && s.length() == 10) {
+                    String mac = "IM-" + s.substring(0, 2) + "-" + s.substring(2, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + "-" + s.substring(8, 10);
+                    imsis.add(mac);
+                }
+            }
+            for (People people : peopleList) {
+                if (people.getPhone() != null)
+                    phones.add(people.getPhone());
+                if (people.getCar() != null)
+                    cars.add(people.getCar());
+                if (people.getPictureid() != null)
+                    pictureids.add(people.getPictureid());
+            }
+            mesg.setPhone(new ArrayList<>(phones));
+            mesg.setCar(new ArrayList<>(cars));
+            mesg.setMac(new ArrayList<>(imsis));
+            mesg.setPictureid(new ArrayList<>(pictureids));
+            mesg.setCommuntidy(Long.valueOf(imsiInfo.getCellid()));
+
+            ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
+            Future<RecordMetadata> send = producer.send(record);
+            producer.flush();
+        }
+    }
+
 }

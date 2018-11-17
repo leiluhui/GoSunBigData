@@ -51,3 +51,10 @@ echo "开始安装docker-compose"
 cp -pf ${DOCKER_RPM_DIR}/docker-compose /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 echo "docker-compose安装完成"
+
+echo "开始配置docker"
+echo '{
+    "registry-mirrors": ["https://7bezldxe.mirror.aliyuncs.com/"],
+    "insecure-registries": ["cq.xuduan.tech:60419"]
+}' > /etc/docker/daemon.json
+echo "配置docker完成"

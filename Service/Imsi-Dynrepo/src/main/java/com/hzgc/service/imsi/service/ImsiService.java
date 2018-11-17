@@ -1,8 +1,7 @@
 package com.hzgc.service.imsi.service;
 
-import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.service.imsi.ImsiInfo;
 import com.hzgc.service.imsi.dao.ImsiDao;
-import com.hzgc.service.imsi.model.ImsiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

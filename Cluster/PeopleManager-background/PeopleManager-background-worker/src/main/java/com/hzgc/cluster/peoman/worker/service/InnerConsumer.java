@@ -63,6 +63,9 @@ public class InnerConsumer implements Runnable {
         consumer.subscribe(Collections.singletonList(innerTopic));
     }
 
+    /**
+     * type 类型（2：添加人员， 3：修改人员， 4：删除人员）
+     */
     @Override
     public void run() {
         while (true) {
@@ -77,6 +80,9 @@ public class InnerConsumer implements Runnable {
                         managers.add(message);
                         break;
                     case "3":
+                        managers.add(message);
+                        break;
+                    case "4":
                         managers.add(message);
                         break;
                 }
@@ -112,4 +118,5 @@ public class InnerConsumer implements Runnable {
             memeoryCache.putData(newComparePicture);
         }
     }
+
 }

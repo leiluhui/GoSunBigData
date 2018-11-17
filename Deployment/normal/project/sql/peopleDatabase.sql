@@ -161,9 +161,9 @@ CREATE TABLE IF NOT EXISTS  `t_imsi_all` (
   `freq` varchar(20) DEFAULT NULL COMMENT '频点',
   `biscorpci` varchar(20) DEFAULT NULL COMMENT '小区识别',
   `attach` varchar(20) DEFAULT NULL COMMENT '通道编号',
-  `savetime` bigint(20) DEFAULT NULL COMMENT '时间',
+  `savetime` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `standard` varchar(10) DEFAULT NULL COMMENT '运营商',
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` varchar(32) NOT NULL COMMENT 'uuid',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=74 COMMENT='IMSI码总表';
 
@@ -224,8 +224,8 @@ CREATE TABLE IF NOT EXISTS  t_dispatch_recognize (
   dispatch_id VARCHAR(32) NOT NULL COMMENT '布控ID',
   record_time TIMESTAMP NOT NULL COMMENT '识别时间',
   device_id VARCHAR(50) NOT NULL COMMENT '设备ID',
-  burl VARCHAR(100) COMMENT '识别大图（人脸大图、车辆大图）',
-  surl VARCHAR(100) COMMENT '识别小图（人脸小图、车辆小图）',
+  burl VARCHAR(255) COMMENT '识别大图（人脸大图、车辆大图）',
+  surl VARCHAR(255) COMMENT '识别小图（人脸小图、车辆小图）',
   similarity FLOAT COMMENT '相似度',
   type INT(2) NOT NULL COMMENT '识别类型（0：人脸识别，1：车辆识别，2：MAC识别）',
   create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

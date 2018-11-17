@@ -12,7 +12,7 @@ public class ImsiProducer {
     @Autowired
     private KafkaTemplate <String, String> kafkaTemplate;
 
-    public void sendMessage(String key, String value) {
-        kafkaTemplate.send("imsi", key, value);
+    public void sendMessage(String topic, String key, String value) {
+        kafkaTemplate.send(topic, key, value);
     }
 }
