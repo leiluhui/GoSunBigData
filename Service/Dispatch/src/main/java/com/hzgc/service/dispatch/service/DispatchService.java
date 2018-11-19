@@ -2,6 +2,8 @@ package com.hzgc.service.dispatch.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hzgc.common.collect.util.CollectUrlUtil;
+import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.github.pagehelper.PageInfo;
@@ -313,8 +315,11 @@ public class DispatchService {
         dispatchRecognizeVO.setId(dispatchRecognize.getId());
         dispatchRecognizeVO.setDispatchId(dispatchRecognize.getDispatchId());
         dispatchRecognizeVO.setDeviceId(dispatchRecognize.getDeviceId());
+        UrlInfo urlInfo_small = innerService.httpHostNameToIp(dispatchRecognize.getSurl());
+        UrlInfo urlInfo1_big = innerService.httpHostNameToIp(dispatchRecognize.getBurl());
         dispatchRecognizeVO.setBurl(dispatchRecognize.getBurl());
-        dispatchRecognizeVO.setSurl(dispatchRecognize.getSurl());
+        dispatchRecognizeVO.setSurl(urlInfo_small.getHttp_ip());
+        dispatchRecognizeVO.setBurl(urlInfo1_big.getHttp_ip());
         dispatchRecognizeVO.setSimilarity(dispatchRecognize.getSimilarity());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
