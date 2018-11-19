@@ -157,6 +157,11 @@ public class DispatchService {
             dispatchVO.setStatus(dispatch.getStatus());
             dispatchVO.setCreateTime(sdf.format(dispatch.getCreateTime()));
             dispatchVO.setUpdateTime(sdf.format(dispatch.getCreateTime()));
+            if (dispatch.getFace() != null){
+                dispatchVO.setPicYesOrNo(1);
+            } else {
+                dispatchVO.setPicYesOrNo(0);
+            }
             list.add(dispatchVO);
         }
         vo.setPeopleVOList(list);
