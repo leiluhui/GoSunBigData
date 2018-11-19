@@ -200,7 +200,7 @@ public class PeopleService {
         log.info("Insert people info successfully");
         boolean b1 = peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0;
         boolean b2 = peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0;
-        if (b1 || b2){
+        if (b1 || b2) {
             SyncPeopleManager manager = new SyncPeopleManager();
             manager.setType("2");
             manager.setPersonid(people.getId());
@@ -397,7 +397,7 @@ public class PeopleService {
                 picture.setCapturepic(bytes);
             }
             PictureData pictureData = innerService.faceFeautreCheck(photo);
-            if (pictureData == null){
+            if (pictureData == null) {
                 log.error("Face feature extract is null");
                 throw new RuntimeException("Face feature extract is null");
             }
@@ -490,7 +490,7 @@ public class PeopleService {
             picture.setCapturepic(bytes);
         }
         PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
-        if (pictureData == null){
+        if (pictureData == null) {
             log.error("Face feature extract is null");
             return 0;
         }
@@ -531,7 +531,7 @@ public class PeopleService {
             picture.setCapturepic(bytes);
         }
         PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
-        if (pictureData == null){
+        if (pictureData == null) {
             log.error("Face feature extract is null");
             return 0;
         }
@@ -562,7 +562,7 @@ public class PeopleService {
      */
     public int deletePicture(PictureDTO dto) {
         int status = pictureMapper.deleteByPrimaryKey(dto.getPictureId());
-        if (status != 1){
+        if (status != 1) {
             log.info("Delete picture to t_picture failed, picture id:" + dto.getPictureId());
             return 0;
         }
@@ -640,7 +640,7 @@ public class PeopleService {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
-            if (people.getCommunity() != null){
+            if (people.getCommunity() != null) {
                 peopleVO.setCommunity(people.getCommunity());
                 peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
             }
@@ -653,7 +653,7 @@ public class PeopleService {
             if (people.getUpdatetime() != null) {
                 peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
             }
-            if (people.getFlag() != null && people.getFlag().size() > 0){
+            if (people.getFlag() != null && people.getFlag().size() > 0) {
                 List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
                 List<Integer> flagIdList = new ArrayList<>();
                 for (com.hzgc.service.people.model.Flag flag : flags) {
@@ -661,7 +661,7 @@ public class PeopleService {
                 }
                 peopleVO.setFlag(flagIdList);
             }
-            if (people.getImsi() != null && people.getImsi().size() > 0){
+            if (people.getImsi() != null && people.getImsi().size() > 0) {
                 List<Imsi> imsis = people.getImsi();
                 List<String> imsiList = new ArrayList<>();
                 for (Imsi imsi : imsis) {
@@ -669,7 +669,7 @@ public class PeopleService {
                 }
                 peopleVO.setImsi(imsiList);
             }
-            if (people.getPhone() != null && people.getPhone().size() > 0){
+            if (people.getPhone() != null && people.getPhone().size() > 0) {
                 List<Phone> phones = people.getPhone();
                 List<String> phoneList = new ArrayList<>();
                 for (Phone phone : phones) {
@@ -677,7 +677,7 @@ public class PeopleService {
                 }
                 peopleVO.setPhone(phoneList);
             }
-            if (people.getHouse() != null && people.getHouse().size() > 0){
+            if (people.getHouse() != null && people.getHouse().size() > 0) {
                 List<House> houses = people.getHouse();
                 List<String> houseList = new ArrayList<>();
                 for (House house : houses) {
@@ -685,7 +685,7 @@ public class PeopleService {
                 }
                 peopleVO.setHouse(houseList);
             }
-            if (people.getCar() != null && people.getCar().size() > 0){
+            if (people.getCar() != null && people.getCar().size() > 0) {
                 List<Car> cars = people.getCar();
                 List<String> carList = new ArrayList<>();
                 for (Car car : cars) {
@@ -745,7 +745,7 @@ public class PeopleService {
                     peopleVO.setEduLevel(people.getEdulevel());
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
-                    if (people.getCommunity() != null){
+                    if (people.getCommunity() != null) {
                         peopleVO.setCommunity(people.getCommunity());
                         peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
                     }
@@ -758,7 +758,7 @@ public class PeopleService {
                     if (people.getUpdatetime() != null) {
                         peopleVO.setUpdateTime(sdf.format(people.getUpdatetime()));
                     }
-                    if (people.getFlag() != null && people.getFlag().size() > 0){
+                    if (people.getFlag() != null && people.getFlag().size() > 0) {
                         List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
                         List<Integer> flagIdList = new ArrayList<>();
                         for (com.hzgc.service.people.model.Flag flag : flags) {
@@ -781,7 +781,11 @@ public class PeopleService {
     public List<Long> searchCommunityIdsById(Long id) {
         List<Long> communityIds = platformService.getCommunityIdsById(id);
         log.info("Search platform service, community id list:" + JacksonUtil.toJson(communityIds));
-        return peopleMapper.getCommunityIdsById(communityIds);
+        List<Long> list = new ArrayList<>();
+        if (communityIds != null && communityIds.size() > 0) {
+            list = peopleMapper.getCommunityIdsById(communityIds);
+        }
+        return list;
     }
 
     public PeopleVO searchPeopleByIdCard(String idCard) {
@@ -801,7 +805,7 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             peopleVO.setCommunity(people.getCommunity());
-            if (people.getPhone() != null && people.getPhone().size() > 0){
+            if (people.getPhone() != null && people.getPhone().size() > 0) {
                 List<String> phoneList = new ArrayList<>();
                 for (Phone phone : people.getPhone()) {
                     phoneList.add(phone.getPhone());
@@ -849,16 +853,16 @@ public class PeopleService {
                 return 0;
             }
             if (map.get(2) != null && !"".equals(map.get(2))
-                    && regionNames.contains(String.valueOf(map.get(2)))){
+                    && regionNames.contains(String.valueOf(map.get(2)))) {
                 peopleDTO.setRegion(regionMap.get(String.valueOf(map.get(2))));
             } else {
                 log.error("Import excel data failed, because region is error, please check line: " + i);
                 return 0;
             }
-            if (map.get(3) != null && !"".equals(map.get(3))){
-                if (communityNames.contains(String.valueOf(map.get(3)))){
+            if (map.get(3) != null && !"".equals(map.get(3))) {
+                if (communityNames.contains(String.valueOf(map.get(3)))) {
                     peopleDTO.setCommunity(communityMap.get(String.valueOf(map.get(3))));
-                }else {
+                } else {
                     log.error("Import excel data failed, because community is error, please check line: " + i);
                     return 0;
                 }
