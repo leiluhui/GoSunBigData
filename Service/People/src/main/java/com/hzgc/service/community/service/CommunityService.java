@@ -859,6 +859,7 @@ public class CommunityService {
                 importantPeopleRecognize.setPictureId(picId);
             }
             if (recognize.getType() == 1 || recognize.getType() == 3) {
+                importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
                 importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
             } else if (recognize.getType() == 2) {
                 importantPeopleRecognize.setDeviceId(platformService.getImsiDeviceId(recognize.getDeviceId()));
