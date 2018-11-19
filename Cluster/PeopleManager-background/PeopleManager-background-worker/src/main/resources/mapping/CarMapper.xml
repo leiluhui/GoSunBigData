@@ -13,6 +13,6 @@
   <select id="selectByCar" resultMap="BaseResultMap" parameterType="java.lang.String">
     select
     <include refid="Base_Column_List" />
-    from t_car where t_car.car = #{car,jdbcType=VARCHAR}
+    from t_car where t_car.car = #{car,jdbcType=VARCHAR} limit 1
   </select>
 </mapper>

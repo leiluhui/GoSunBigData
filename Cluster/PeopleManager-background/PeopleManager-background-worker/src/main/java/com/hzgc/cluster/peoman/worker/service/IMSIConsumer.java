@@ -89,16 +89,11 @@ public class IMSIConsumer implements Runnable{
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-                               /* CameraQueryDTO cameraQueryDTO = peopleCompare.getCameraQueryDTO(carObject.getIpcId());
-                                if (cameraQueryDTO != null) {
-                                    carRecognize.setCommunity(cameraQueryDTO.getCommunityId());
-                                } else {
-                                    log.info("getCameraQueryDTO data no community !!!, devId="+carObject.getIpcId());
-                                }*/
+
                                imsiRecognize.setType(2);
                                imsiRecognize.setId(imsiInfo.getId());
                                imsiRecognize.setPeopleid(imsiData.getPeopleid());
-                               imsiRecognize.setCommunity(Long.valueOf(imsiInfo.getCellid()));
+                               imsiRecognize.setCommunity(imsiInfo.getCommunityId());
                                imsiRecognize.setDeviceid(imsiInfo.getControlsn());
                                imsiRecognize.setCapturetime(date);
                                imsiRecognize.setImsi(imsiInfo.getImsi());

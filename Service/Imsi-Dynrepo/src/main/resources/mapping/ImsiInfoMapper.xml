@@ -28,27 +28,27 @@
     where savetime between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
   </select>
 
-  <select id="searchIMSI" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.searchImsiDTO">
+  <select id="searchIMSI" resultMap="BaseResultMap" parameterType="com.hzgc.service.imsi.model.SearchImsiParam">
     select
     <include refid="Base_Column_List" />
     from t_imsi_all
     <where>
-      <if test="searchType == 0 ">
+      <if test="searchType == '0'.toString() and searchVal != null and searchVal != ''">
         controlsn like "%" #{searchVal,jdbcType=VARCHAR} "%"
       </if>
-      <if test="searchType == 1 ">
+      <if test="searchType == '1'.toString() and searchVal != null and searchVal != ''">
         imsi like "%" #{searchVal,jdbcType=VARCHAR} "%"
       </if>
-      <if test="cellid != null and cellid.length() > 0" >
-        and
-        cellid = #{cellid,jdbcType=VARCHAR}
-      </if>
-      <if test="lac != null and lac.length() > 0" >
-        and
-        lac = #{lac,jdbcType=VARCHAR}
+      <if test="communityIds != null and communityIds.size() > 0">
+        and communityId in
+        <foreach collection="communityIds" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
       </if>
     </where>
+    order by savetime desc
   </select>
+
   <insert id="insertSelective" parameterType="com.hzgc.common.service.imsi.ImsiInfo">
     insert into t_imsi_all
     <trim prefix="(" suffix=")" suffixOverrides=",">

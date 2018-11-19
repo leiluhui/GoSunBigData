@@ -368,26 +368,24 @@ public class CommunityService {
         List<CaptureHourCount> hourCountList = new ArrayList<>();
         List<Count24Hour> count24Hours = count24HourMapper.countCommunityNewPeopleCapture(param);
         List<String> hourList = new ArrayList<>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
-        long longTime = System.currentTimeMillis();
-        for (int i = 0; i < 24; i++) {
-            longTime = longTime - 3600000;
-            String time = dateFormat.format(new Date(longTime));
-            hourList.add(time);
-        }
+        hourList.add("00");hourList.add("01");hourList.add("02");hourList.add("03");hourList.add("04");hourList.add("05");
+        hourList.add("06");hourList.add("07");hourList.add("08");hourList.add("09");hourList.add("10");hourList.add("11");
+        hourList.add("12");hourList.add("13");hourList.add("14");hourList.add("15");hourList.add("16");hourList.add("17");
+        hourList.add("18");hourList.add("19");hourList.add("20");hourList.add("21");hourList.add("22");hourList.add("23");
         for (String hour : hourList) {
             CaptureHourCount count = new CaptureHourCount();
-            count.setHour(hour.substring(8, 10));
+            count.setHour(hour);
             if (count24Hours != null && count24Hours.size() > 0) {
                 for (Count24Hour count24Hour : count24Hours) {
                     if (hour.equals(count24Hour.getHour())) {
-                        count.setCount(count.getCount() + count24Hour.getCount());
+                        count.setCount(count24Hour.getCount());
                     }
                 }
                 hourCountList.add(count);
             }
         }
         vo.setHourCountList(hourCountList);
+        log.info("hourCountList:" + JacksonUtil.toJson(hourCountList));
         // 小区迁入人口抓拍详情:人员抓拍列表
         Page page = PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<RecognizeRecord> records = recognizeRecordMapper.searchCommunityNewPeopleCaptureData(param);
@@ -642,11 +640,11 @@ public class CommunityService {
         Page page = PageHelper.offsetPage(param.getStart(), param.getLimit(), true);
         List<RecognizeRecord> records = recognizeRecordMapper.searchCapture1Month(param);
         PageInfo info = new PageInfo(page.getResult());
-        if (records != null && records.size() > 0){
-            for (RecognizeRecord record : records){
-                if (record != null){
+        if (records != null && records.size() > 0) {
+            for (RecognizeRecord record : records) {
+                if (record != null) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
-                    switch (record.getType()){
+                    switch (record.getType()) {
                         case 1:
                             // 人脸抓拍识别记录
                             vo.setCaptureType(0);
@@ -686,9 +684,9 @@ public class CommunityService {
 
     @Transactional(rollbackFor = Exception.class)
     public Integer deleteRecognizeRecord(List<String> idList) {
-        for (String id : idList){
+        for (String id : idList) {
             int status = recognizeRecordMapper.deleteByPrimaryKey(id);
-            if (status != 1){
+            if (status != 1) {
                 throw new RuntimeException("删除抓拍识别记录失败！");
             }
         }
@@ -698,11 +696,11 @@ public class CommunityService {
     public List<PeopleCaptureVO> searchPeopleTrack1Month(String peopleId) {
         List<PeopleCaptureVO> voList = new ArrayList<>();
         List<RecognizeRecord> records = recognizeRecordMapper.searchPeopleTrack1Month(peopleId);
-        if (records != null && records.size() > 0){
-            for (RecognizeRecord record : records){
-                if (record != null){
+        if (records != null && records.size() > 0) {
+            for (RecognizeRecord record : records) {
+                if (record != null) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
-                    switch (record.getType()){
+                    switch (record.getType()) {
                         case 1:
                             // 人脸抓拍识别记录
                             vo.setCaptureType(0);
@@ -860,8 +858,12 @@ public class CommunityService {
                 importantPeopleRecognize.setPeoplePictureId(picId);
                 importantPeopleRecognize.setPictureId(picId);
             }
-            importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
-            importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
+            if (recognize.getType() == 1 || recognize.getType() == 3) {
+                importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
+            } else if (recognize.getType() == 2) {
+                importantPeopleRecognize.setDeviceId(platformService.getImsiDeviceId(recognize.getDeviceId()));
+                importantPeopleRecognize.setDeviceName(platformService.getImsiDeviceName(recognize.getDeviceId()));
+            }
             importantPeopleRecognize.setCaptureTime(sdf.format(recognize.getCaptureTime()));
             List<Car> cars = recognize.getCar();
             List<String> carList = new ArrayList<>();
@@ -875,8 +877,10 @@ public class CommunityService {
                 flagList.add(flag.getFlagid());
             }
             importantPeopleRecognize.setFlag(flagList);
-            importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
-            importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+            if (recognize.getType() == 1 || recognize.getType() == 3) {
+                importantPeopleRecognize.setBurl(innerService.httpHostNameToIp(recognize.getBurl()).getHttp_ip());
+                importantPeopleRecognize.setSurl(innerService.httpHostNameToIp(recognize.getSurl()).getHttp_ip());
+            }
             importantPeopleRecognize.setSimilarity(recognize.getSimilarity());
             importantPeopleRecognize.setImsi(recognize.getImsi());
             importantPeopleRecognize.setMac(recognize.getMac());

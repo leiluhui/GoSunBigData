@@ -14,30 +14,31 @@ import java.util.Map;
 public class RPCRegistry implements Runnable{
     private static Logger log = Logger.getLogger(RPCRegistry.class);
     private ServiceRegistry registry;
+    private String workerPathOnZk;
 
-    RPCRegistry(String workerId, String nodeGroup, String port, String taskId){
-        Constant constant = new Constant(Config.JOB_PATH, workerId, CreateMode.EPHEMERAL);
+    RPCRegistry(String workerId, String port){
+        this.workerPathOnZk = workerId;
+        Constant constant = new Constant(Config.JOB_PATH, workerPathOnZk, CreateMode.EPHEMERAL);
         Map<String, String> param = new HashMap<>();
         param.put("workerId", workerId);
-        param.put("nodeGroup", nodeGroup);
         param.put("port", port);
-        param.put("taskId", taskId);
         constant.setParam(param);
         constant.setExitIfFaild(true);
         registry = new ServiceRegistry(Config.ZOOKEEPER_ADDRESS, constant);
+        log.info("To Create node on zookeeper , node name " + workerPathOnZk + " , port " + port);
     }
 
     @Override
     public void run() {
         log.info("Registry the service.");
-        log.info("The adddress of this node is " + Config.WORKER_ADDRESS);
         if(Config.WORKER_ADDRESS == null){
-            log.error("Get local address faild .");
+            log.error("Get local ip address faild .");
             System.exit(1);
         }
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);
         rpcServer.start();
+        System.out.println("To create zookeeper node : " + workerPathOnZk);
     }
 
     /**

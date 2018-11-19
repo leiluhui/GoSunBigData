@@ -178,6 +178,23 @@ public class PlatformService {
         return null;
     }
 
+    public String getImsiDeviceId(String deviceId) {
+        if (deviceId != null) {
+            log.debug("Method:getImsiDeviceId, deviceId:" + deviceId);
+            List<String> ids = new ArrayList<>();
+            ids.add(deviceId);
+            Map<String, DetectorQueryDTO> map = getImsiDeviceInfoByBatchId(ids);
+            if (map != null && map.size() > 0 && map.get(deviceId) != null) {
+                return map.get(deviceId).getId().toString();
+            } else {
+                log.info("Get imsi id info failed, because result is null");
+            }
+        } else {
+            log.error("Method:getImsiDeviceId, id is null");
+        }
+        return null;
+    }
+
     public Map<String, DetectorQueryDTO> getImsiDeviceInfoByBatchId(List<String> idList) {
         if (idList != null) {
             log.debug("Method:getImsiDeviceInfoByBatchId, id list is:" + Arrays.toString(idList.toArray()));

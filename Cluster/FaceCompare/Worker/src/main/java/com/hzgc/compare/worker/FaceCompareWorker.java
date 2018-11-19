@@ -10,6 +10,9 @@ import com.hzgc.jniface.FaceFunction;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.Random;
 
 
 /**
@@ -76,18 +79,31 @@ public class FaceCompareWorker {
         }
     }
 
-    public static void main(String args[]){
-        if(args.length != 4){
-            return;
+    private static String getPort(){
+        int start = 13000;
+        int end = 13500;
+        Random ran = new Random();
+        boolean flag = true;
+        int port = start;
+        while(flag){
+            port = ran.nextInt(end - start) + start;
+            try {
+                InetAddress address = InetAddress.getByName("localhost");
+                new Socket(address, port);
+                flag = true;
+            } catch (IOException e) {
+                flag = false;
+            }
         }
+        return port + "";
+    }
 
-        String workerId = args[0];
-        String nodeGroup = args[1];
-        String port = args[2];
-        String taskId = args[3];
+    public static void main(String args[]){
+        String workerId = System.getProperty("worker.id", "worker");
+        String port = getPort();
         FaceCompareWorker worker = new FaceCompareWorker();
         worker.init(workerId, port);
-        RPCRegistry rpcRegistry = new RPCRegistry(workerId, nodeGroup, port, taskId);
+        RPCRegistry rpcRegistry = new RPCRegistry(workerId, port);
         Thread thread = new Thread(rpcRegistry);
         thread.start();
 
@@ -106,7 +122,5 @@ public class FaceCompareWorker {
             }
         }
         worker.start();
-//        Thread thread = new Thread(new ZookeeperRegistry(workerId, nodeGroup, port, taskId));
-//        thread.start();
     }
 }

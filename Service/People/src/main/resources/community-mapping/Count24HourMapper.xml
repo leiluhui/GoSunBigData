@@ -19,11 +19,14 @@
   </select>
   <!--小区迁入人口抓拍详情:24小时统计-->
   <select id="countCommunityNewPeopleCapture" resultMap="BaseResultMap" parameterType="com.hzgc.service.community.param.CaptureDetailsDTO" >
-    select hour, count
+    SELECT DATE_FORMAT(t1,'%H') AS hour,SUM(count) AS count  FROM
+    (select STR_TO_DATE(hour,"%Y%m%d%H") t1, count
     from t_24hour_count
     where community = #{communityId,jdbcType=BIGINT}
     and peopleid = #{peopleId,jdbcType=VARCHAR}
-    and hour >= DATE_FORMAT(NOW() - INTERVAL 720 HOUR, '%Y%m%d%H')
+    and `hour` >= DATE_FORMAT(NOW() - INTERVAL 720 HOUR, '%Y%m%d%H')
+    ) AS a1
+    GROUP BY DATE_FORMAT(t1,'%H');
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_24hour_count
