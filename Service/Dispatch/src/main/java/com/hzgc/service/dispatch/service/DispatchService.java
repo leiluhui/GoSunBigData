@@ -87,42 +87,48 @@ public class DispatchService {
 
     //布控告警历史查询
     public ResponseResult<WarnHistoryVO> searchDeployRecognize(DispatchRecognizeDTO dispatchRecognizeDTO) {
-        List<DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
-        ArrayList<DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList<>();
-        if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
-            for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
-                DispatchDTO dispatchDTO = new DispatchDTO();
-                String dispatchId = dispatchRecognize.getDispatchId();
-                dispatchDTO.setId(dispatchId);
-                dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
-                if (4 == dispatchRecognizeDTO.getSearchType()) {  //活体检测
-                    Alive alive = aliveMapper.selectByPrimaryKey(dispatchId);
-                    if (null != alive) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
-                        dispatchRecognizeVO.setName(alive.getName());
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }else if (3 == dispatchRecognizeDTO.getSearchType()) {  //白名单
-                    White white = whiteMapper.selectByPrimaryKey(dispatchId);
-                    if (white != null) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
-                        dispatchRecognizeVO.setName(white.getName());
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }else {
-                    Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
-                    if (null != dispatch) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }
-            }
+        Page page = PageHelper.offsetPage(dispatchRecognizeDTO.getStart(), dispatchRecognizeDTO.getLimit(), true);
+        List<DispatchRecognizeVO> dispatchRecognizeVOS = dispatchRecognizeMapper.selectDispatchRecognize(dispatchRecognizeDTO);
+        PageInfo info = new PageInfo(page.getResult());
+        int total = (int) info.getTotal();
+        for (DispatchRecognizeVO dispatchRecognizeVO:dispatchRecognizeVOS) {
+            dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognizeVO.getRecordTime()));
         }
+//        List<DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
+//        ArrayList<DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList<>();
+//        if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
+//            for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
+//                DispatchDTO dispatchDTO = new DispatchDTO();
+//                String dispatchId = dispatchRecognize.getDispatchId();
+//                dispatchDTO.setId(dispatchId);
+//                dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
+//                if (4 == dispatchRecognizeDTO.getSearchType()) {  //活体检测
+//                    Alive alive = aliveMapper.selectByPrimaryKey(dispatchId);
+//                    if (null != alive) {
+//                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
+//                        dispatchRecognizeVO.setName(alive.getName());
+//                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+//                    }
+//                }else if (3 == dispatchRecognizeDTO.getSearchType()) {  //白名单
+//                    White white = whiteMapper.selectByPrimaryKey(dispatchId);
+//                    if (white != null) {
+//                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
+//                        dispatchRecognizeVO.setName(white.getName());
+//                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+//                    }
+//                }else {
+//                    Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
+//                    if (null != dispatch) {
+//                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
+//                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
+//                    }
+//                }
+//            }
+//        }
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
-        warnHistoryVO.setTotal(dispatchRecognizeVOS.size());
-        warnHistoryVO.setDispatchRecognizeVOS(ListUtil.pageSplit(dispatchRecognizeVOS,
-                dispatchRecognizeDTO.getStart(), dispatchRecognizeDTO.getLimit()));
-        return ResponseResult.init(warnHistoryVO);
+        warnHistoryVO.setTotal(total);
+        warnHistoryVO.setDispatchRecognizeVOS(dispatchRecognizeVOS);
+        return ResponseResult.init(warnHistoryVO, total);
     }
 
     /**

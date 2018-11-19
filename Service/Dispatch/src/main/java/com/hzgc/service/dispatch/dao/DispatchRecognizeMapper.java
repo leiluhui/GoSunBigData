@@ -2,6 +2,7 @@ package com.hzgc.service.dispatch.dao;
 
 import com.hzgc.service.dispatch.model.DispatchRecognize;
 import com.hzgc.service.dispatch.param.DispatchRecognizeDTO;
+import com.hzgc.service.dispatch.param.DispatchRecognizeVO;
 import org.apache.ibatis.annotations.CacheNamespace;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public interface DispatchRecognizeMapper {
     DispatchRecognize selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(DispatchRecognize record);
+
+    List<DispatchRecognizeVO> selectDispatchRecognize(DispatchRecognizeDTO dispatchRecognizeDTO);
 
     int updateByPrimaryKey(DispatchRecognize record);
 }
