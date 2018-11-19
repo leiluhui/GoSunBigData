@@ -2,7 +2,6 @@ package com.hzgc.service.dispatch.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
