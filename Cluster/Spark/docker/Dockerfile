@@ -1,4 +1,4 @@
-FROM cq.xuduan.tech:60419/hzgc/spark:2.2.0-hadoop-2.7
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/spark:2.2.0-hadoop-2.7
 
 COPY spark.jar /
 COPY start-kafka-to-parquet.sh /

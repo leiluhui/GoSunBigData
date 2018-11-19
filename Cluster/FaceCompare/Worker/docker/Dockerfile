@@ -1,5 +1,5 @@
 #指定镜像
-FROM 172.18.18.123/hzgc/java-all:8
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/java-all:8
 
 #设置环境变量
 ENV LD_LIBRARY_PATH=/opt/GsFaceLib/face_libs
