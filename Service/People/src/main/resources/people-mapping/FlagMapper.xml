@@ -31,6 +31,9 @@
         delete from t_flag
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_flag where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Flag" >
         insert into t_flag (id, peopleid, flagid, flag)
         values (#{id,jdbcType=BIGINT}, #{peopleid,jdbcType=VARCHAR}, #{flagid,jdbcType=INTEGER},

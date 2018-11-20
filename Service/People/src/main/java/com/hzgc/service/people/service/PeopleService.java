@@ -11,6 +11,9 @@ import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
+import com.hzgc.service.community.dao.NewPeopleMapper;
+import com.hzgc.service.community.dao.OutPeopleMapper;
+import com.hzgc.service.community.dao.RecognizeRecordMapper;
 import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
@@ -69,6 +72,17 @@ public class PeopleService {
     @Autowired
     @SuppressWarnings("unused")
     private InnerService innerService;
+
+    @Autowired
+    private NewPeopleMapper newPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private OutPeopleMapper outPeopleMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private RecognizeRecordMapper recognizeRecordMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -914,6 +928,24 @@ public class PeopleService {
                 throw new RuntimeException("Insert into t_people table failed");
             }
         }
+        return 1;
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deletePeople(String id) {
+        int status = peopleMapper.deleteByPrimaryKey(id);
+        if (status != 1){
+            log.error("Delete info from t_people failed");
+            throw new RuntimeException("删除人员信息失败");
+        }
+        phoneMapper.delete(id);
+        carMapper.delete(id);
+        houseMapper.delete(id);
+        imsiMapper.delete(id);
+        flagMapper.delete(id);
+        pictureMapper.delete(id);
+        newPeopleMapper.delete(id);
+        outPeopleMapper.delete(id);
+        recognizeRecordMapper.delete(id);
         return 1;
     }
 }

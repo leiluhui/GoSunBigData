@@ -30,6 +30,9 @@
         delete from t_imsi
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_imsi where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Imsi">
         insert into t_imsi (id, peopleid, imsi
         )
