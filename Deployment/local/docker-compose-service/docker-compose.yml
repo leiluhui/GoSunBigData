@@ -221,7 +221,6 @@ services:
     container_name: collect-ftp
     restart: always
     runtime: nvidia
-    hostname: collect-ftp
     environment:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - HOST_IP=${DOCKER_HOST_IP}
@@ -237,6 +236,7 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
+    - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/collect-ftp/log:/log
     - /opt/GsFaceLib:/opt/GsFaceLib
