@@ -22,4 +22,6 @@ public interface FlagMapper {
     List<Flag> selectByPeopleId(String peopleid);
 
     List<Long> selectIdByPeopleId(String peopleid);
+
+    int delete(String peopleid);
 }

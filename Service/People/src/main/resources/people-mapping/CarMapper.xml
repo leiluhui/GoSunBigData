@@ -30,6 +30,9 @@
         delete from t_car
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_car where peopleid =#{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Car">
         insert into t_car (id, peopleid, car
         )

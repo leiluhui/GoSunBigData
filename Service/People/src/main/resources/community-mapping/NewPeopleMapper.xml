@@ -105,6 +105,9 @@
     delete from t_people_new
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from t_people_new where peopleid = #{peopleid,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" parameterType="com.hzgc.service.community.model.NewPeople" >
     insert into t_people_new (id, peopleid, community, 
       month, deviceid, isconfirm, 
