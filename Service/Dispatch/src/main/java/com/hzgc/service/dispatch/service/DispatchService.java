@@ -2,18 +2,17 @@ package com.hzgc.service.dispatch.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hzgc.common.service.api.bean.UrlInfo;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
-import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.alive.dao.AliveMapper;
-import com.hzgc.service.alive.model.Alive;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.param.*;
@@ -21,7 +20,6 @@ import com.hzgc.service.util.DispatchExcelUtils;
 import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
 import com.hzgc.service.white.dao.WhiteMapper;
-import com.hzgc.service.white.model.White;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,14 +50,6 @@ public class DispatchService {
 
     @Autowired
     @SuppressWarnings("unused")
-    private WhiteMapper whiteMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private AliveMapper aliveMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
     private PlatformService platformService;
 
     @Autowired
@@ -86,42 +76,17 @@ public class DispatchService {
 
     //布控告警历史查询
     public ResponseResult<WarnHistoryVO> searchDeployRecognize(DispatchRecognizeDTO dispatchRecognizeDTO) {
-        List<DispatchRecognize> dispatchRecognizeList = dispatchRecognizeMapper.selectSelective(dispatchRecognizeDTO);
-        ArrayList<DispatchRecognizeVO> dispatchRecognizeVOS = new ArrayList<>();
-        if (null != dispatchRecognizeList && dispatchRecognizeList.size() > 0) {
-            for (DispatchRecognize dispatchRecognize : dispatchRecognizeList) {
-                DispatchDTO dispatchDTO = new DispatchDTO();
-                String dispatchId = dispatchRecognize.getDispatchId();
-                dispatchDTO.setId(dispatchId);
-                dispatchDTO.setRegionId(dispatchRecognizeDTO.getRegionId());
-                if (4 == dispatchRecognizeDTO.getSearchType()) {  //活体检测
-                    Alive alive = aliveMapper.selectByPrimaryKey(dispatchId);
-                    if (null != alive) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
-                        dispatchRecognizeVO.setName(alive.getName());
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }else if (3 == dispatchRecognizeDTO.getSearchType()) {  //白名单
-                    White white = whiteMapper.selectByPrimaryKey(dispatchId);
-                    if (white != null) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(null, dispatchRecognize);
-                        dispatchRecognizeVO.setName(white.getName());
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }else {
-                    Dispatch dispatch = dispatchMapper.selectSelective(dispatchDTO);
-                    if (null != dispatch) {
-                        DispatchRecognizeVO dispatchRecognizeVO = getDispatchRecognizeVO(dispatch, dispatchRecognize);
-                        dispatchRecognizeVOS.add(dispatchRecognizeVO);
-                    }
-                }
-            }
+        Page page = PageHelper.offsetPage(dispatchRecognizeDTO.getStart(), dispatchRecognizeDTO.getLimit(), true);
+        List<DispatchRecognizeVO> dispatchRecognizeVOS = dispatchRecognizeMapper.selectDispatchRecognize(dispatchRecognizeDTO);
+        PageInfo info = new PageInfo(page.getResult());
+        int total = (int) info.getTotal();
+        for (DispatchRecognizeVO dispatchRecognizeVO:dispatchRecognizeVOS) {
+            dispatchRecognizeVO.setRecordTime(dispatchRecognizeVO.getRecordTime().split("\\.")[0]);
         }
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
-        warnHistoryVO.setTotal(dispatchRecognizeVOS.size());
-        warnHistoryVO.setDispatchRecognizeVOS(ListUtil.pageSplit(dispatchRecognizeVOS,
-                dispatchRecognizeDTO.getStart(), dispatchRecognizeDTO.getLimit()));
-        return ResponseResult.init(warnHistoryVO);
+        warnHistoryVO.setTotal(total);
+        warnHistoryVO.setDispatchRecognizeVOS(dispatchRecognizeVOS);
+        return ResponseResult.init(warnHistoryVO, total);
     }
 
     /**
@@ -313,8 +278,11 @@ public class DispatchService {
         dispatchRecognizeVO.setId(dispatchRecognize.getId());
         dispatchRecognizeVO.setDispatchId(dispatchRecognize.getDispatchId());
         dispatchRecognizeVO.setDeviceId(dispatchRecognize.getDeviceId());
+        UrlInfo urlInfo_small = innerService.httpHostNameToIp(dispatchRecognize.getSurl());
+        UrlInfo urlInfo1_big = innerService.httpHostNameToIp(dispatchRecognize.getBurl());
         dispatchRecognizeVO.setBurl(dispatchRecognize.getBurl());
-        dispatchRecognizeVO.setSurl(dispatchRecognize.getSurl());
+        dispatchRecognizeVO.setSurl(urlInfo_small.getHttp_ip());
+        dispatchRecognizeVO.setBurl(urlInfo1_big.getHttp_ip());
         dispatchRecognizeVO.setSimilarity(dispatchRecognize.getSimilarity());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dispatchRecognizeVO.setRecordTime(sdf.format(dispatchRecognize.getRecordTime()));
