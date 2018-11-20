@@ -6,7 +6,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 
 @ApiModel(value = "布控告警历史记录返回封装")
 @Data
