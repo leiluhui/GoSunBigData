@@ -74,11 +74,15 @@ services:
     command: /start-kafka-to-parquet.sh
     restart: always
     network_mode: "host"
+    environment:
+    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_NODE=${ES_HOST}
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
-    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
+#    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
 
   kafka-tidb:
@@ -94,8 +98,11 @@ services:
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
-    volumes:
-    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
+    environment:
+    - JDBC_IP=${MYSQL_HOST}
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
+    - JDBC_PORT=${MYSQL_PORT}
 
   face-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
