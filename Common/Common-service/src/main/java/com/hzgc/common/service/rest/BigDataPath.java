@@ -199,4 +199,5 @@ public class BigDataPath {
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
     public static final String MAC_SEARCH_BY_SNS = "/query_by_sns";
     public static final String SEARCH_IMSI = "/search_imsi";
+    public static final String SEARCH_MAC = "/search_mac";
 }

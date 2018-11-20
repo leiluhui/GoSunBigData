@@ -895,6 +895,9 @@ public class CommunityService {
             case 1:
                 vo.setImportantPeopleRecognizeList(voList);
                 break;
+            case 2:
+                vo.setImportantPeopleRecordList(voList);
+                break;
             default:
                 log.error("param search type error");
                 return null;
