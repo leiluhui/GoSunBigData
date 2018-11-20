@@ -11,4 +11,4 @@ COPY worker /worker
 RUN chmod +x /worker/bin/* &&  /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 
 #初始化参数并启动应用
-ENTRYPOINT ["/bin/sh","-c","/worker/bin/start-worker.sh 1 aaa 9999 bbb"]
+ENTRYPOINT ["/bin/sh","-c","/worker/bin/start-worker.sh"]

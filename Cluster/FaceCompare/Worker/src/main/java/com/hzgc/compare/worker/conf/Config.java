@@ -59,15 +59,24 @@ public class Config {
         WORKER_EXECUTORS_TO_LOADFILE = Integer.parseInt(prop.getProperty("worker.executors.to.loadfile", 10 + ""));
         KAFKA_TOPIC = prop.getProperty("kafka.topic");
         KAFKA_BOOTSTRAP_SERVERS = prop.getProperty("kafka.bootstrap.servers");
-//        KAFKA_BOOTSTRAP_SERVERS = System.getProperty("kafka.servers", KAFKA_BOOTSTRAP_SERVERS);
+        String sysVar  = System.getProperty("kafka.servers");
+        if(sysVar != null && sysVar.length() != 0){
+            KAFKA_BOOTSTRAP_SERVERS = sysVar;
+        }
         KAFKA_MAXIMUM_TIME = Integer.parseInt(prop.getProperty("kafka.maximum.time"));
         ZOOKEEPER_ADDRESS = prop.getProperty("zookeeper.address");
-//        ZOOKEEPER_ADDRESS = System.getProperty("zookeeper.address", ZOOKEEPER_ADDRESS);
+        sysVar = System.getProperty("zookeeper.address");
+        if(sysVar != null && sysVar.length() != 0){
+            ZOOKEEPER_ADDRESS = sysVar;
+        }
         WORKER_ADDRESS = getLocalIpAddress();
         DELETE_OPEN = Integer.parseInt(prop.getProperty("delete.open"));
         ES_CLUSTER_NAME = prop.getProperty("es.cluster.name");
         ES_HOST = prop.getProperty("es.hosts");
-//        ES_HOST = System.getProperty("es.hosts", ES_HOST);
+        sysVar = System.getProperty("es.hosts");
+        if(sysVar != null && sysVar.length() != 0){
+            ES_HOST = sysVar;
+        }
         ES_CLUSTER_PORT = Integer.parseInt(prop.getProperty("es.cluster.port"));
         DAYS_PER_THREAD = Integer.parseInt(prop.getProperty("days.per.thread", 5 + ""));
         DAYS_WITHOUT_MULTITHREAD = Integer.parseInt(prop.getProperty("days.without.multithread", 10 + ""));
