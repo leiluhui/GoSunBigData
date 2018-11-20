@@ -859,6 +859,7 @@ public class CommunityService {
                 importantPeopleRecognize.setPictureId(picId);
             }
             if (recognize.getType() == 1 || recognize.getType() == 3) {
+                importantPeopleRecognize.setDeviceId(recognize.getDeviceId());
                 importantPeopleRecognize.setDeviceName(platformService.getCameraDeviceName(recognize.getDeviceId()));
             } else if (recognize.getType() == 2) {
                 importantPeopleRecognize.setDeviceId(platformService.getImsiDeviceId(recognize.getDeviceId()));
@@ -893,6 +894,9 @@ public class CommunityService {
                 break;
             case 1:
                 vo.setImportantPeopleRecognizeList(voList);
+                break;
+            case 2:
+                vo.setImportantPeopleRecordList(voList);
                 break;
             default:
                 log.error("param search type error");

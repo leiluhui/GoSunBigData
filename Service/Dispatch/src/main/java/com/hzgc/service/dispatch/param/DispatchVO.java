@@ -34,6 +34,8 @@ public class DispatchVO implements Serializable {
     @ApiModelProperty(value = "布控状态")
     @NotNull
     private Integer status;
+    @ApiModelProperty(value = "是否有照片 0:没有, 1:有")
+    private int picYesOrNo;
     @ApiModelProperty(value = "创建时间")
     private String createTime;
     @ApiModelProperty(value = "更新时间")

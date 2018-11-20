@@ -31,4 +31,6 @@ public interface PictureMapper {
     List<Long> selectIdByPeopleId(String peopleid);
 
     Long getPictureIdByPeopleId(String peopleid);
+
+    int delete(String peopleid);
 }

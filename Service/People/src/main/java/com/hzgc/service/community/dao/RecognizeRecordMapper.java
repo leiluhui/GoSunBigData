@@ -29,4 +29,6 @@ public interface RecognizeRecordMapper {
     List<ImportantPeopleRecognize> getImportantRecognizeRecord(ImportantRecognizeSearchParam param);
 
     String getSurlByPeopleId(String peopleid);
+
+    int delete(String peopleid);
 }

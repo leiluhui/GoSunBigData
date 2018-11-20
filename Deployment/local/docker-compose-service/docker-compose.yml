@@ -1,112 +1,8 @@
 version: '2.3'
 
 services:
-  eureka:
-    image: registry.cn-hangzhou.aliyuncs.com/gosun/registry
-    container_name: eureka
-    restart: always
-    hostname: eureka
-    #network_mode: "host"
-    ports:
-    - "9000:9000"
-
-  mysql:
-    image: ${DOCKER_REPOSITOR}/hzgc/mysql:5.7.19
-    container_name: mysql
-    restart: always
-    environment:
-    - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-    hostname: mysql
-    ports:
-    - "3306:3306"
-    volumes:
-    - ${DOCKER_HOME}/mysql/data:/var/lib/mysql
-    - ${DOCKER_HOME}/mysql/sql/peopleDatabase.sql:/docker-entrypoint-initdb.d/peopleDatabase.sql
-
-  mysql-cron:
-    image: ${DOCKER_REPOSITOR}/hzgc/mysql-cron:5.7.19
-    container_name: mysql-cron
-    restart: always
-    links:
-    - mysql
-    environment:
-    - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-    volumes:
-    - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
-    - ${DOCKER_HOME}/mysql/crontab:/crontab
-    - ${DOCKER_HOME}/mysql/sql:/mysql
-
-  zookeeper:
-    image: ${DOCKER_REPOSITOR}/hzgc/zookeeper:3.4.10
-    container_name: zookeeper
-    restart: always
-    hostname: zookeeper
-    ports:
-    - "2181:2181"
-    - "2888:2888"
-    - "3888:3888"
-    volumes:
-    - ${DOCKER_HOME}/zookeeper/data:/data
-    - ${DOCKER_HOME}/zookeeper/datalog:/datalog
-
-  kafka:
-    image: ${DOCKER_REPOSITOR}/hzgc/kafka:1.0.0
-    container_name: kafka
-    restart: always
-    #network_mode: "host"
-    depends_on:
-    - zookeeper
-    environment:
-    - KAFKA_ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
-    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${DOCKER_HOST_IP}:${KAFKA_PORT}
-    - KAFKA_CREATE_TOPICS=face:1:1,car:1:1,person:1:1
-    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-    hostname: kafka
-    ports:
-    - "9092:9092"
-    volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - ${DOCKER_HOME}/kafka/kafka-logs-kafka/:/kafka/kafka-logs-kafka/
-    - ${DOCKER_HOME}/kafka/logs:/opt/kafka/logs
-
-  esearch:
-    image: ${DOCKER_REPOSITOR}/hzgc/elasticsearch-ik:5.5.0
-    container_name: esearch
-    restart: always
-    environment:
-    - discovery.type=single-node
-    - cluster.name=hbase2es-cluster
-    - node.name=172.18.18.201
-    - network.host=172.18.18.201
-    - cluster.name=docker-cluster
-    - bootstrap.memory_lock=true
-    hostname: esearch
-    privileged: true
-    network_mode: "host"
-    ports:
-    - "9200:9200"
-    - "9300:9300"
-    volumes:
-    - ${DOCKER_HOME}/es/data:/usr/share/elasticsearch/data
-
-  kibana:
-    image: ${DOCKER_REPOSITOR}/hzgc/kibana:5.5.0
-    depends_on:
-    - esearch
-    container_name: kibana
-    restart: always
-    environment:
-    - SERVER_NAME=$DOCKER_HOST_IP
-    - ELASTICSEARCH_URL=http://${ES_HOST}:${ES_PORT}
-    ports:
-    - "5601:5601"
-
   collect:
     image: ${DOCKER_REPOSITOR}/hzgc/collect:${VERSION}
-    depends_on:
-    - zookeeper
-    - eureka
-    - mysql
     container_name: collect
     restart: always
     environment:
@@ -121,10 +17,6 @@ services:
 
   peoman-worker:
     image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${VERSION}
-    depends_on:
-    - zookeeper
-    - eureka
-    - mysql
     container_name: peoman-worker
     environment:
     - EUREKA_IP=${EUREKA_HOST_IP}
@@ -145,10 +37,6 @@ services:
 
   dispatch-background:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch-background:${VERSION}
-    depends_on:
-    - kafka
-    - mysql
-    - eureka
     container_name: dispatch-background
     environment:
     - EUREKA_IP=${EUREKA_HOST_IP}
@@ -166,27 +54,23 @@ services:
 
   kafka-parquet:
     image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
-    depends_on:
-    - zookeeper
-    - kafka
-    - esearch
     container_name: kafka-parquet
     command: /start-kafka-to-parquet.sh
     restart: always
     network_mode: "host"
+    environment:
+    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_NODE=${ES_HOST}
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
-    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
+#    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
 
   kafka-tidb:
     image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
-    depends_on:
-    - zookeeper
-    - kafka
-    - esearch
     container_name: kafka-tidb
     command: /start-kafka-to-tidb.sh
     restart: always
@@ -194,15 +78,15 @@ services:
     extra_hosts:
     - platform:${PLATFORM_HOST}
     - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
-    volumes:
-    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
+    environment:
+    - JDBC_IP=${MYSQL_HOST}
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
+    - JDBC_PORT=${MYSQL_PORT}
 
   face-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
     depends_on:
-    - zookeeper
-    - esearch
-    - eureka
     - collect
     container_name: face-dynrepo
     restart: always
@@ -220,9 +104,6 @@ services:
   person-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${VERSION}
     depends_on:
-    - zookeeper
-    - esearch
-    - eureka
     - collect
     container_name: person-dynrepo
     restart: always
@@ -240,9 +121,6 @@ services:
   vehicle-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VERSION}
     depends_on:
-    - zookeeper
-    - esearch
-    - eureka
     - collect
     container_name: vehicle-dynrepo
     restart: always
@@ -260,8 +138,6 @@ services:
   people:
     image: ${DOCKER_REPOSITOR}/hzgc/people:${VERSION}
     depends_on:
-    - mysql
-    - eureka
     - collect
     container_name: people
     restart: always
@@ -281,8 +157,6 @@ services:
   dispatch:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${VERSION}
     depends_on:
-    - mysql
-    - eureka
     - collect
     container_name: dispatch
     network_mode: "host"
@@ -301,8 +175,6 @@ services:
   imsi-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/imsi-dynrepo:${VERSION}
     depends_on:
-    - mysql
-    - eureka
     - collect
     container_name: imsi-dynrepo
     network_mode: "host"
@@ -323,8 +195,6 @@ services:
   fusion:
     image: ${DOCKER_REPOSITOR}/hzgc/fusion:${VERSION}
     depends_on:
-    - mysql
-    - eureka
     - collect
     container_name: fusion
     restart: always
@@ -342,13 +212,10 @@ services:
     - ${DOCKER_HOME}/fusion/log:/log
 
   collect-ftp:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:1.0
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
     container_name: collect-ftp
     restart: always
     runtime: nvidia
-    depends_on:
-    - kafka
-    - zookeeper
     hostname: collect-ftp
     environment:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
@@ -362,7 +229,6 @@ services:
     - EUREKA_IP=${EUREKA_HOST_IP}
     - EUREKA_PORT=${EUREKA_HOST_PORT}
     - LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/GsFaceLib/face_libs
-    - TZ=Asia/Shanghai
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
@@ -370,19 +236,13 @@ services:
     - ${DOCKER_HOME}/collect-ftp/log:/log
     - /opt/GsFaceLib:/opt/GsFaceLib
     - /lib64:/lib64
-    - /usr/lib64/ld-linux-x86-64.so.2:/lib/ld-linux-x86-64.so.2
     - /opt/ftpdata:/opt/ftpdata
     - /home/ftpdata:/home/ftpdata
-    - /etc/localtime:/etc/localtime:ro
 
   facecompare:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}
     container_name: facecompare
     restart: always
-    depends_on:
-    - zookeeper
-    - kafka
-    - esearch
     environment:
     - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}

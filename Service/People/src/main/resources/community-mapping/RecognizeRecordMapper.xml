@@ -138,6 +138,9 @@
     delete from t_recognize_record
     where id = #{id,jdbcType=VARCHAR}
   </delete>
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from t_recognize_record where peopleid = #{peopleid,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" parameterType="com.hzgc.service.community.model.RecognizeRecord" >
     insert into t_recognize_record (id, peopleid, community, 
       pictureid, deviceid, capturetime, 

@@ -22,4 +22,6 @@ public interface HouseMapper {
     List<House> selectByPeopleId(String peopleid);
 
     List<Long> selectIdByPeopleId(String peopleid);
+
+    int delete(String peopleid);
 }

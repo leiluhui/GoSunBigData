@@ -60,6 +60,9 @@
         delete from t_picture
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_picture where peopleid = #{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.PictureWithBLOBs">
         insert into t_picture (id, peopleid, feature,
         bitfeature, idcardpic, capturepic

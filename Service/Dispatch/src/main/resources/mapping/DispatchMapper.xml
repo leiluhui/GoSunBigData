@@ -30,6 +30,8 @@
     <select id="searchDispatch" resultMap="BaseResultMap" parameterType="com.hzgc.service.dispatch.param.SearchDispatchDTO">
         select
         <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
         from t_dispatch
         <where>
             <if test="searchType == 0 ">

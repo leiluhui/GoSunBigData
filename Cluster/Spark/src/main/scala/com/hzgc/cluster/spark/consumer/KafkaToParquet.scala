@@ -2,9 +2,8 @@ package com.hzgc.cluster.spark.consumer
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.{Base64, Properties}
+import java.util.Base64
 
-import com.hzgc.cluster.spark.util.PropertiesUtil
 import com.hzgc.common.collect.bean.{CarObject, FaceObject, PersonObject}
 import com.hzgc.common.service.facedynrepo.{FaceTable, PersonTable, VehicleTable}
 import com.hzgc.common.util.json.JacksonUtil
@@ -72,21 +71,20 @@ object KafkaToParquet {
 
   def main(args: Array[String]): Unit = {
 
-    val properties: Properties = PropertiesUtil.getProperties
-    val appName = properties.getProperty("job.faceObjectConsumer.appName")
-    val brokers = properties.getProperty("job.faceObjectConsumer.broker.list")
-    val kafkaGroupId = properties.getProperty("job.faceObjectConsumer.group.id")
-    val timeInterval = properties.getProperty("job.faceObjectConsumer.timeInterval")
-    val storeAddress = properties.getProperty("job.storeAddress")
-    val zkHosts = properties.getProperty("job.zkDirAndPort")
-    val faceTopic = Set(properties.getProperty("job.faceObjectConsumer.faceTopic"))
-    val personTopic = Set(properties.getProperty("job.faceObjectConsumer.personTopic"))
-    val carTopic = Set(properties.getProperty("job.faceObjectConsumer.carTopic"))
-    val zkFacePath = properties.getProperty("job.kafkaToParquet.zkFacePath")
-    val zkPersonPath = properties.getProperty("job.kafkaToParquet.zkPersonPath")
-    val zkCarPath = properties.getProperty("job.kafkaToParquet.zkCarPath")
-    val esNodes = properties.getProperty("job.kafkaToParquet.esNodes")
-    val esPort = properties.getProperty("job.kafkaToParquet.esPort")
+    val appName = System.getProperty("app_name")
+    val brokers = System.getProperty("kafka_broker")
+    val kafkaGroupId = System.getProperty("kafka_group")
+    val timeInterval = System.getProperty("time_interval")
+    val storeAddress= System.getProperty("store_address")
+    val zkHosts = System.getProperty("zk_address")
+    val faceTopic = Set(System.getProperty("face_topic"))
+    val personTopic = Set(System.getProperty("person_topic"))
+    val carTopic= Set(System.getProperty("car_topic"))
+    val zkFacePath = System.getProperty("zk_face_path")
+    val zkPersonPath = System.getProperty("zk_person_path")
+    val zkCarPath = System.getProperty("zk_car_path")
+    val esNodes = System.getProperty("es_node")
+    val esPort= System.getProperty("es_port")
 
     val zkClient = new ZkClient(zkHosts)
     val conf = new SparkConf().setAppName(appName)
