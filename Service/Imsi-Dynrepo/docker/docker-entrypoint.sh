@@ -8,5 +8,6 @@ exec java -jar app.jar \
 --eureka.port=${EUREKA_PORT} \
 --mysql.host=${MYSQL_HOST} \
 --query.time=${QUERY_TIME} \
+--tag=${TAG} \
 --kafka.host=${KAFKA_HOST}
 
