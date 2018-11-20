@@ -79,6 +79,30 @@ public class PeopleController {
     }
 
     /**
+     * 删除人口库信息
+     * @param peopleDTO 人员id
+     * @return 成功状态 1:删除成功, 0:删除失败
+     */
+    @ApiOperation(value = "删除人口库信息", response =Integer.class)
+    @RequestMapping(value = BigDataPath.PEOPLE_DELETE, method = RequestMethod.DELETE)
+    public ResponseResult<Integer> deletePeople(@RequestBody PeopleDTO peopleDTO){
+        if (peopleDTO == null) {
+            log.error("Start delete people info, but people is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除人口信息为空，请检查！");
+        }
+        if (StringUtils.isBlank(peopleDTO.getId())){
+            log.error("Start delete people info,but id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"删除id为空,请检查!");
+        }
+        log.info("Start delete people info, id is:"+ peopleDTO.getId());
+        Integer status = peopleService.deletePeople(peopleDTO.getId());
+        if (status == 1) {
+            log.info("Delete people info successfully");
+        }
+        return ResponseResult.init(status);
+    }
+
+    /**
      * 修改人口信息
      *
      * @param peopleDTO 人口信息
@@ -139,7 +163,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "根据身份证查询人员信息", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.PEOPLE_SEARCH_BY_IDCARD, method = RequestMethod.GET)
-    public PeopleVO searchPeopleByIdCard(@RequestParam @ApiParam(name = "身份证", required = true) String idCard) {
+    public PeopleVO searchPeopleByIdCard(@RequestParam @ApiParam(value = "身份证", required = true) String idCard) {
         if (StringUtils.isBlank(idCard)) {
             log.error("Start select people info, but idCard is null");
             return null;
@@ -212,28 +236,6 @@ public class PeopleController {
         return ResponseResult.init(status);
     }
 
-    /**
-     * 删除人口库信息
-     * @param id 人员id
-     * @return 成功状态 1:删除成功, 0:删除失败
-     */
-    @ApiOperation(value = "删除人口库信息", response =Integer.class)
-    @RequestMapping(value = BigDataPath.PEOPLE_DELETE, method = RequestMethod.DELETE)
-    public ResponseResult<Integer> deletePeople(String id){
-        if (StringUtils.isBlank(id)){
-            log.error("Start delete people info,but id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"删除id为空,请检查!");
-        }
-        log.info("Start delete people info, id is:"+ id);
-        Integer status = peopleService.deletePeople(id);
-        if (status == 1) {
-            log.info("Delete people info successfully");
-            return ResponseResult.init(1);
-        } else {
-            log.info("Delete people info failed");
-            return ResponseResult.init(0);
-        }
-    }
     /**
      * 删除人口库照片信息
      *
