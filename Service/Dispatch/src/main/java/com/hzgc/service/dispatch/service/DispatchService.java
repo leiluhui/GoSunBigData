@@ -7,14 +7,12 @@ import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
 import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
-import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
 import com.hzgc.service.alive.dao.AliveMapper;
-import com.hzgc.service.alive.model.Alive;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.param.*;
@@ -22,7 +20,6 @@ import com.hzgc.service.util.DispatchExcelUtils;
 import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
 import com.hzgc.service.white.dao.WhiteMapper;
-import com.hzgc.service.white.model.White;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +47,6 @@ public class DispatchService {
     @Autowired
     @SuppressWarnings("unused")
     private DispatchRecognizeMapper dispatchRecognizeMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private WhiteMapper whiteMapper;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private AliveMapper aliveMapper;
 
     @Autowired
     @SuppressWarnings("unused")
