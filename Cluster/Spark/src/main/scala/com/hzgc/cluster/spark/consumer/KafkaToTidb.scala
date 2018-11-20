@@ -2,9 +2,8 @@ package com.hzgc.cluster.spark.consumer
 
 import java.sql.{DriverManager, ResultSet}
 import java.text.SimpleDateFormat
-import java.util.{Date, Properties}
+import java.util.Date
 
-import com.hzgc.cluster.spark.util.PropertiesUtil
 import com.hzgc.common.service.imsi.ImsiInfo
 import com.hzgc.common.util.json.JacksonUtil
 import kafka.serializer.StringDecoder
@@ -17,17 +16,16 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 object KafkaToTidb {
   val log: Logger = Logger.getLogger(KafkaToTidb.getClass)
   def main(args: Array[String]): Unit = {
-    val properties: Properties = PropertiesUtil.getProperties
-    val jdbcIp = properties.getProperty("job.kafkaToTidb.jdbc.ip")
-    val driver = properties.getProperty("job.kafkaToTidb.driver")
-    val appName = properties.getProperty("job.kafkaToTidb.appName")
-    val checpoint = properties.getProperty("job.kafkaToTidb.checkPoint")
-    val zookeeper = properties.getProperty("job.kafkaToTidb.zookeeper")
-    val kafka = properties.getProperty("job.kafkaToTidb.kafka")
-    val gourpId = properties.getProperty("job.kafkaToTidb.group.id")
-    val timeOut = properties.getProperty("job.kafkaToTidb.timeout")
-    val topic = properties.getProperty("job.kafkaToTidb.topic")
-    val jdbcPort = properties.getProperty("job.kafkaToTidb.jdbc.port")
+    val jdbcIp = System.getProperty("jdbc_ip")
+    val driver = System.getProperty("driver")
+    val appName = System.getProperty("app_name")
+    val checpoint = System.getProperty("check_point")
+    val zookeeper = System.getProperty("zk_address")
+    val kafka = System.getProperty("kafka_broker")
+    val gourpId = System.getProperty("group_id")
+    val timeOut = System.getProperty("time_out")
+    val topic = System.getProperty("topic")
+    val jdbcPort = System.getProperty("jdbc_port")
     val jdbc = "jdbc:mysql://" + jdbcIp + ":" + jdbcPort + "/people?user=root&password=Hzgc@123"
     classOf[com.mysql.jdbc.Driver]
     Class.forName(driver)
