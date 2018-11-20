@@ -1,5 +1,5 @@
 #指定镜像
-FROM 172.18.18.123/hzgc/java-all:8
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/java-all:8
 
 #设置环境变量
 ENV LD_LIBRARY_PATH=/opt/GsFaceLib/face_libs
@@ -11,4 +11,4 @@ COPY worker /worker
 RUN chmod +x /worker/bin/* &&  /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 
 #初始化参数并启动应用
-ENTRYPOINT ["/bin/sh","-c","/worker/bin/start-worker.sh 1 aaa 9999 bbb"]
+ENTRYPOINT ["/bin/sh","-c","/worker/bin/start-worker.sh"]

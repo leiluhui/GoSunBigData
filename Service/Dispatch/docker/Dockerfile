@@ -1,5 +1,5 @@
 #指定镜像
-FROM cq.xuduan.tech:60419/hzgc/java-all:8
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/java-all:8
 
 #设置环境变量
 ENV PATH /usr/local/bin:$PATH

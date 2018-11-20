@@ -12,6 +12,22 @@
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <resultMap id="BaseResultMapExtend" type="com.hzgc.service.dispatch.param.DispatchRecognizeVO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="dispatch_id" property="dispatchId" jdbcType="VARCHAR"/>
+        <result column="record_time" property="recordTime" jdbcType="TIMESTAMP"/>
+        <result column="device_id" property="deviceId" jdbcType="VARCHAR"/>
+        <result column="burl" property="burl" jdbcType="VARCHAR"/>
+        <result column="surl" property="surl" jdbcType="VARCHAR"/>
+        <result column="similarity" property="similarity" jdbcType="REAL"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="idcard" property="idCard" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="car" property="car" jdbcType="VARCHAR" />
+        <result column="mac" property="mac" jdbcType="VARCHAR"/>
+        <result column="notes" property="notes" jdbcType="VARCHAR"/>
+    </resultMap>
     <sql id="Base_Column_List">
         id, dispatch_id, record_time, device_id, burl, surl, similarity, type, create_time
     </sql>
@@ -20,6 +36,30 @@
         <include refid="Base_Column_List"/>
         from t_dispatch_recognize
         where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectDispatchRecognize" resultMap="BaseResultMapExtend" parameterType="com.hzgc.service.dispatch.param.DispatchRecognizeDTO">
+        select
+        a.id, a.dispatch_id, a.record_time, a.device_id, a.burl, a.surl, a.similarity, a.type,
+        <if test="searchType == '0'.toString() or searchType == '1'.toString()">
+            b.idcard, b.name, b.car, b.mac, b.notes
+        </if>
+        <if test="searchType == '3'.toString() or searchType == '4'.toString()">
+            b.name
+        </if>
+        from t_dispatch_recognize a,
+        <if test="searchType == '0'.toString()">
+            t_dispatch b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
+        </if>
+        <if test="searchType == '1'.toString()">
+            t_dispatch b where a.type in(1,2) and a.dispatch_id = b.id
+        </if>
+        <if test="searchType == '3'.toString()">
+            t_dispatch_white b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
+        </if>
+        <if test="searchType == '4'.toString()">
+            t_dispatch_alive b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
+        </if>
+        and record_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP} order by record_time desc
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.hzgc.service.dispatch.param.DispatchRecognizeDTO">
         select
