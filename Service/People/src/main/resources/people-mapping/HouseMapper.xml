@@ -30,6 +30,9 @@
         delete from t_house
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_house where peopleid =#{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.House">
         insert into t_house (id, peopleid, house
         )

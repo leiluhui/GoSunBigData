@@ -14,6 +14,8 @@ public class ImportantRecognizeVO implements Serializable {
     private List<ImportantPeopleRecognizeVO> importantPeopleCaptureList;
     @ApiModelProperty(value = "重点人员识别记录")
     private List<ImportantPeopleRecognizeVO> importantPeopleRecognizeList;
+    @ApiModelProperty(value = "重点人员抓拍识别记录")
+    private List<ImportantPeopleRecognizeVO> importantPeopleRecordList;
     @ApiModelProperty(value = "记录总数")
     private int totalNum;
 }

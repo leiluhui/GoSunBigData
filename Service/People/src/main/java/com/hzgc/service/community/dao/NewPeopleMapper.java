@@ -32,4 +32,6 @@ public interface NewPeopleMapper {
     List<NewPeople> searchCommunityNewPeople(NewAndOutPeopleSearchDTO param);
 
     Integer updateIsconfirm(AffirmOperationDTO param);
+
+    int delete(String peopleid);
 }

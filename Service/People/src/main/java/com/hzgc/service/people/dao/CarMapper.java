@@ -22,4 +22,6 @@ public interface CarMapper {
     List<Car> selectByPeopleId(String peopleid);
 
     List<Long> selectIdByPeopleId(String peopleid);
+
+    int delete(String peopleid);
 }

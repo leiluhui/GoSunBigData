@@ -45,6 +45,7 @@ public class BigDataPath {
     public static final String PEOPLE_CITY = "/people_city";
     public static final String PEOPLE_INSERT="/people_insert";
     public static final String PEOPLE_UPDATE="/people_update";
+    public static final String PEOPLE_DELETE="/people_delete";
     public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
     public static final String PEOPLE_SEARCH_BY_IDCARD="/select_idcard";
     public static final String PEOPLE_INSTERT_PICTURE="/insert_picture";
@@ -198,4 +199,5 @@ public class BigDataPath {
     public static final String IMSI_SEARCH_BY_TIME = "/query_by_time" ;
     public static final String MAC_SEARCH_BY_SNS = "/query_by_sns";
     public static final String SEARCH_IMSI = "/search_imsi";
+    public static final String SEARCH_MAC = "/search_mac";
 }

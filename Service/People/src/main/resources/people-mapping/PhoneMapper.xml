@@ -30,6 +30,9 @@
         delete from t_phone
         where id = #{id,jdbcType=BIGINT}
     </delete>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from t_phone where peopleid =#{peopleid,jdbcType=VARCHAR}
+    </delete>
     <insert id="insert" parameterType="com.hzgc.service.people.model.Phone">
         insert into t_phone (id, peopleid, phone
         )
