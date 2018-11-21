@@ -63,6 +63,7 @@ public class FaceCompare implements Runnable{
             long start = System.currentTimeMillis();
             List<FaceObject> faceObjects = captureCache.getFace();
             if(faceObjects.size() == 0){
+                log.info("The size of face for black is 0");
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -84,79 +85,93 @@ public class FaceCompare implements Runnable{
                 continue;
             }
 
-            for(FaceObject faceObject : faceObjects){
-                Long region = (map.get(faceObject.getIpcId()).getDistrictId());
+            try {
+                for (FaceObject faceObject : faceObjects) {
+                    if(faceObject.getIpcId() == null){
+                        log.error("The ipcId of captch is null");
+                        continue;
+                    }
+                    if(map.get(faceObject.getIpcId()) == null){
+                        log.error("There is no region found by deviceId : " + faceObject.getIpcId());
+                        continue;
+                    }
+                    Long region = (map.get(faceObject.getIpcId()).getDistrictId());
 //                log.info("The region is : " + region);
 //                region = 4L;
-                byte[][] queryList = new byte[1][32];
-                queryList[0] = faceObject.getAttribute().getBitFeature();
-                byte[][] features = tableCache.getFeatures(region);
-                if(features == null){
-                    continue;
-                }
-//                log.info("Bit Compare.");
-                ArrayList<CompareResult> list;
-                try {
-                    list = FaceFunction.faceCompareBit(features, queryList, sizeFirstCompareResult);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    log.error(e.getMessage());
-                    continue;
-                }
-//                log.info("Get result of bit Compare");
-                List<String> ids = new ArrayList<>();
-                for(FaceFeatureInfo faceFeatureInfo : list.get(0).getPictureInfoArrayList()){
-                    String id = tableCache.getIdByIndex(region, faceFeatureInfo.getIndex());
-                    ids.add(id);
-                }
-                List<Dispatch> dispatures = dispatureMapper.selectByIds(ids);
-                float sim = 0.0f;
-                Dispatch disp = new Dispatch();
-                for(Dispatch dispature : dispatures){
-                    float[] fea = FaceUtil.base64Str2floatFeature(dispature.getFeature());
-                    float simTemp = FaceUtil.featureCompare(faceObject.getAttribute().getFeature(), fea);
-                    if(simTemp > sim && simTemp > dispature.getThreshold()){
-                        sim = simTemp;
-                        disp = dispature;
+                    byte[][] queryList = new byte[1][32];
+                    queryList[0] = faceObject.getAttribute().getBitFeature();
+                    byte[][] features = tableCache.getFeatures(region);
+                    if (features == null) {
+                        log.info("There are no captch rule for region " + region);
+                        continue;
                     }
-                }
-                if(sim == 0.0f){
-                    continue;
-                }
+//                log.info("Bit Compare.");
+                    ArrayList<CompareResult> list;
+                    try {
+                        list = FaceFunction.faceCompareBit(features, queryList, sizeFirstCompareResult);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error(e.getMessage());
+                        continue;
+                    }
+//                log.info("Get result of bit Compare");
+                    List<String> ids = new ArrayList<>();
+                    for (FaceFeatureInfo faceFeatureInfo : list.get(0).getPictureInfoArrayList()) {
+                        String id = tableCache.getIdByIndex(region, faceFeatureInfo.getIndex());
+                        ids.add(id);
+                    }
+                    List<Dispatch> dispatures = dispatureMapper.selectByIds(ids);
+                    float sim = 0.0f;
+                    Dispatch disp = new Dispatch();
+                    for (Dispatch dispature : dispatures) {
+                        float[] fea = FaceUtil.base64Str2floatFeature(dispature.getFeature());
+                        float simTemp = FaceUtil.featureCompare(faceObject.getAttribute().getFeature(), fea);
+                        if (simTemp > sim && simTemp > dispature.getThreshold()) {
+                            sim = simTemp;
+                            disp = dispature;
+                        }
+                    }
+                    if (sim == 0.0f) {
+                        continue;
+                    }
 
-                DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                dispatureRecognize.setDispatchId(disp.getId());
-                dispatureRecognize.setRecordTime(new Timestamp(System.currentTimeMillis()));
-                dispatureRecognize.setDeviceId(faceObject.getIpcId());
-                String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
-                String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
-                dispatureRecognize.setBurl(burl);
-                dispatureRecognize.setSurl(surl);
-                dispatureRecognize.setSimilarity(sim);
-                dispatureRecognize.setType(0);
+                    DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                    dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                    dispatureRecognize.setDispatchId(disp.getId());
+                    dispatureRecognize.setRecordTime(new Timestamp(System.currentTimeMillis()));
+                    dispatureRecognize.setDeviceId(faceObject.getIpcId());
+                    String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
+                    String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
+                    dispatureRecognize.setBurl(burl);
+                    dispatureRecognize.setSurl(surl);
+                    dispatureRecognize.setSimilarity(sim);
+                    dispatureRecognize.setType(0);
 //                dispatureRecognize.setCreateTime(faceObject.getTimeStamp());
-                try {
-                    dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    log.error(e.getMessage());
-                }
+                    try {
+                        dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error(e.getMessage());
+                    }
 
-                AlarmMessage alarmMessage = new AlarmMessage();
-                alarmMessage.setDeviceId(faceObject.getIpcId());
-                alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
-                alarmMessage.setType(0);
-                alarmMessage.setSim(sim);
-                alarmMessage.setName(disp.getName());
-                alarmMessage.setIdCard(disp.getIdcard());
-                String ip = faceObject.getIp();
-                alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
-                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
-                alarmMessage.setNotes(disp.getNotes());
-                alarmMessage.setId(disp.getId());
-                alarmMessage.setTime(faceObject.getTimeStamp());
-                producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                    AlarmMessage alarmMessage = new AlarmMessage();
+                    alarmMessage.setDeviceId(faceObject.getIpcId());
+                    alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
+                    alarmMessage.setType(0);
+                    alarmMessage.setSim(sim);
+                    alarmMessage.setName(disp.getName());
+                    alarmMessage.setIdCard(disp.getIdcard());
+                    String ip = faceObject.getIp();
+                    alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                    alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
+                    alarmMessage.setNotes(disp.getNotes());
+                    alarmMessage.setId(disp.getId());
+                    alarmMessage.setTime(faceObject.getTimeStamp());
+                    producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
             }
             log.info("The size of face compared is " + faceObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }

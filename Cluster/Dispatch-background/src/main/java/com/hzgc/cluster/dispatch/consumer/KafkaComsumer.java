@@ -131,7 +131,10 @@ public class KafkaComsumer {
         try {
             tableCache.deleteFaceDispature(messageObj.getId());
             tableCache.deleteDispature(messageObj.getId());
-        }finally {
+        }catch (Exception e){
+            tableCache.loadData();
+        }
+        finally {
             writeLock.unlock();
         }
     }
