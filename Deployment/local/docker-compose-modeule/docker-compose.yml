@@ -31,6 +31,8 @@ services:
     - mysql
     environment:
     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    - IP=mysql
+    - PORT=${MYSQL_PORT}
     volumes:
     - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
     - ${DOCKER_HOME}/mysql/crontab:/crontab
