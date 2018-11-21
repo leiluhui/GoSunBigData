@@ -227,6 +227,25 @@ public class PeopleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public Integer deletePeople(String id) {
+        int status = peopleMapper.deleteByPrimaryKey(id);
+        if (status != 1){
+            log.error("Delete info from t_people failed");
+            throw new RuntimeException("删除人员信息失败");
+        }
+        phoneMapper.delete(id);
+        carMapper.delete(id);
+        houseMapper.delete(id);
+        imsiMapper.delete(id);
+        flagMapper.delete(id);
+        pictureMapper.delete(id);
+        newPeopleMapper.delete(id);
+        outPeopleMapper.delete(id);
+        recognizeRecordMapper.delete(id);
+        return 1;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update t_people, param is:" + JacksonUtil.toJson(people));
@@ -928,24 +947,6 @@ public class PeopleService {
                 throw new RuntimeException("Insert into t_people table failed");
             }
         }
-        return 1;
-    }
-    @Transactional(rollbackFor = Exception.class)
-    public Integer deletePeople(String id) {
-        int status = peopleMapper.deleteByPrimaryKey(id);
-        if (status != 1){
-            log.error("Delete info from t_people failed");
-            throw new RuntimeException("删除人员信息失败");
-        }
-        phoneMapper.delete(id);
-        carMapper.delete(id);
-        houseMapper.delete(id);
-        imsiMapper.delete(id);
-        flagMapper.delete(id);
-        pictureMapper.delete(id);
-        newPeopleMapper.delete(id);
-        outPeopleMapper.delete(id);
-        recognizeRecordMapper.delete(id);
         return 1;
     }
 }
