@@ -31,6 +31,8 @@ services:
     - mysql
     environment:
     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    - IP=mysql
+    - PORT=${MYSQL_PORT}
     volumes:
     - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
     - ${DOCKER_HOME}/mysql/crontab:/crontab
@@ -75,9 +77,8 @@ services:
     restart: always
     environment:
     - discovery.type=single-node
-    - cluster.name=hbase2es-cluster
-    - node.name=172.18.18.201
-    - network.host=172.18.18.201
+    - node.name=${DOCKER_HOST_NAME}
+    - network.host=${DOCKER_HOST_IP}
     - cluster.name=docker-cluster
     - bootstrap.memory_lock=true
     hostname: esearch

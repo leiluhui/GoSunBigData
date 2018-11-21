@@ -27,8 +27,12 @@ services:
     - BIT_THRESHOLD=10
     - FLOAT_THRESHOLD=90
     - FLOAT_NEW_THRESHOLD=73
+    - FILTER_INTERVAL_TIME=10
     - FLOAT_COMPARE_OPEN=true
+    - SHARPNESS_OPEN=true
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
+    - MYSQL_USERNAME=${MYSQL_USERNAME}
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
@@ -187,6 +191,7 @@ services:
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - QUERY_TIME=30
+    - TAG=1
     extra_hosts:
     - platform:${PLATFORM_HOST}
     volumes:
@@ -216,7 +221,6 @@ services:
     container_name: collect-ftp
     restart: always
     runtime: nvidia
-    hostname: collect-ftp
     environment:
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - HOST_IP=${DOCKER_HOST_IP}
@@ -232,6 +236,7 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
+    - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
     - ${DOCKER_HOME}/collect-ftp/log:/log
     - /opt/GsFaceLib:/opt/GsFaceLib
