@@ -7,6 +7,7 @@ exec java -jar app.jar \
 --zookeeper.address=${ZOOKEEPER_HOST} \
 --compare.number=${COMPARE_NUMBER} \
 --filter.interval.time=${FILTER_INTERVAL_TIME} \
+--update.inner.feature.time=${UPDATE_INNER_FEATURE_TIME} \
 --bit.threshold=${BIT_THRESHOLD} \
 --float.threshold=${FLOAT_THRESHOLD} \
 --float.new.threshold=${FLOAT_NEW_THRESHOLD} \

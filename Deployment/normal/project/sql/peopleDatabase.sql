@@ -85,6 +85,13 @@ CREATE TABLE IF NOT EXISTS  `t_picture` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='照片信息库';
 
+CREATE TABLE IF NOT EXISTS  `t_inner_feature` (
+  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
+  `feature` varchar(8192) NOT NULL COMMENT '特征值',
+  `bitfeature` varchar(512) NOT NULL COMMENT 'bit特征值',
+  PRIMARY KEY (`peopleid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='内部人脸特征库';
+
 CREATE TABLE IF NOT EXISTS  `t_24hour_count` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',

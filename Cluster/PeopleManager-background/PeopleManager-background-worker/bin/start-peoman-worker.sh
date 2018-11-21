@@ -26,6 +26,7 @@ PEOMAN_WORKER_JAR=${LIB_DIR}/${PEOMAN_WORKER_JAR_NAME}                        ##
 KAFKA_HOST=172.18.18.100:9092
 COMPARE_NUMBER=3
 FILTER_INTERVAL_TIME=3600
+UPDATE_INNER_FEATURE_TIME=3600
 BIT_THRESHOLD=10
 FLOAT_THRESHOLD=90
 FLOAT_NEW_THRESHOLD=73
@@ -58,6 +59,7 @@ function start_springCloud()
       --zookeeper.address=${ZK_ADDRESS} \
       --compare.number=${COMPARE_NUMBER} \
       --filter.interval.time=${FILTER_INTERVAL_TIME} \
+      --update.inner.feature.time=${UPDATE_INNER_FEATURE_TIME} \
       --bit.threshold=${BIT_THRESHOLD} \
       --float.threshold=${FLOAT_THRESHOLD} \
       --float.new.threshold=${FLOAT_NEW_THRESHOLD} \
