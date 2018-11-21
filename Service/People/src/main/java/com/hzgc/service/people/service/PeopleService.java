@@ -242,6 +242,10 @@ public class PeopleService {
         newPeopleMapper.delete(id);
         outPeopleMapper.delete(id);
         recognizeRecordMapper.delete(id);
+        SyncPeopleManager manager = new SyncPeopleManager();
+        manager.setType("4");
+        manager.setPersonid(id);
+        this.sendKafka("DELETE", manager);
         return 1;
     }
 
