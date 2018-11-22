@@ -57,6 +57,7 @@ public class CarCompare implements Runnable{
             long start = System.currentTimeMillis();
             List<CarObject> carObjects = captureCache.getCar();
             if(carObjects.size() == 0){
+                log.info("The size of car for black is 0");
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -78,56 +79,79 @@ public class CarCompare implements Runnable{
                 continue;
             }
 
-            for(CarObject carObject : carObjects){
-                Long region = map.get(carObject.getIpcId()).getDistrictId();
-                List<DispachData> dispatureDataList = tableCache.getCarInfo(region);
-                DispachData disp = null;
-                for(DispachData dispatureData : dispatureDataList){
-                    if(dispatureData.getCar() != null && dispatureData.getCar().equals(carObject.getAttribute().getPlate_licence())){
-                        disp = dispatureData;
+            try {
+                for (CarObject carObject : carObjects) {
+                    if(carObject.getIpcId() == null){
+                        log.error("The ipcId of captch is null");
+                        continue;
                     }
+                    if(map.get(carObject.getIpcId()) == null){
+                        log.error("There os no region found by deviceId : " + carObject.getIpcId());
+                        continue;
+                    }
+                    Long region = map.get(carObject.getIpcId()).getDistrictId();
+                    List<DispachData> dispatureDataList = tableCache.getCarInfo(region);
+                    if(dispatureDataList == null){
+                        log.info("There are no captch rule for region " + region);
+                        continue;
+                    }
+                    DispachData disp = null;
+                    for (DispachData dispatureData : dispatureDataList) {
+                        if (dispatureData.getCar() != null && dispatureData.getCar().equals(carObject.getAttribute().getPlate_licence())) {
+                            disp = dispatureData;
+                        }
+                    }
+                    if (disp == null) {
+                        continue;
+                    }
+                    DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                    dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                    dispatureRecognize.setDispatchId(disp.getId());
+                    try {
+                        dispatureRecognize.setRecordTime(sdf.parse(carObject.getTimeStamp()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    dispatureRecognize.setCreateTime(new Date());
+                    dispatureRecognize.setDeviceId(carObject.getIpcId());
+                    String surl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath());
+                    String burl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath());
+                    dispatureRecognize.setBurl(burl);
+                    dispatureRecognize.setSurl(surl);
+                    dispatureRecognize.setType(1);
+                    try {
+                        dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error(e.getMessage());
+                    }
+                    Dispatch dispach = null;
+                    try {
+                        dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error(e.getMessage());
+                    }
+//                Dispatch dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
+                    AlarmMessage alarmMessage = new AlarmMessage();
+                    alarmMessage.setDeviceId(carObject.getIpcId());
+                    alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
+                    alarmMessage.setPlate(disp.getCar());
+                    alarmMessage.setType(1);
+                    alarmMessage.setSim(100f);
+                    alarmMessage.setName(dispach.getName());
+                    alarmMessage.setIdCard(dispach.getIdcard());
+                    String ip = carObject.getIp();
+                    alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
+                    alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
+                    alarmMessage.setNotes(dispach.getNotes());
+                    alarmMessage.setId(disp.getId());
+                    alarmMessage.setTime(carObject.getTimeStamp());
+                    producer.send(topic, JacksonUtil.toJson(alarmMessage));
                 }
-                if(disp == null){
-                    continue;
-                }
-                DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                dispatureRecognize.setDispatchId(disp.getId());
-                try {
-                    dispatureRecognize.setRecordTime(sdf.parse(carObject.getTimeStamp()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                dispatureRecognize.setCreateTime(new Date());
-                dispatureRecognize.setDeviceId(carObject.getIpcId());
-                String surl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getsAbsolutePath());
-                String burl = CollectUrlUtil.toHttpPath(carObject.getHostname(), "2573", carObject.getbAbsolutePath());
-                dispatureRecognize.setBurl(burl);
-                dispatureRecognize.setSurl(surl);
-                dispatureRecognize.setType(1);
-                try {
-                    dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    log.error(e.getMessage());
-                }
-
-                Dispatch dispach = dispatureMapper.selectByPrimaryKey(disp.getId());
-                AlarmMessage alarmMessage = new AlarmMessage();
-                alarmMessage.setDeviceId(carObject.getIpcId());
-                alarmMessage.setDeviceName(map.get(carObject.getIpcId()).getCameraName());
-                alarmMessage.setPlate(disp.getCar());
-                alarmMessage.setType(1);
-                alarmMessage.setSim(100f);
-                alarmMessage.setName(dispach.getName());
-                alarmMessage.setIdCard(dispach.getIdcard());
-                String ip = carObject.getIp();
-                alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getbAbsolutePath()));
-                alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", carObject.getsAbsolutePath()));
-                alarmMessage.setNotes(dispach.getNotes());
-                alarmMessage.setId(disp.getId());
-                alarmMessage.setTime(carObject.getTimeStamp());
-                producer.send(topic, JacksonUtil.toJson(alarmMessage));
+            }catch (Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
             }
             log.info("The size of car compared is " + carObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }

@@ -74,7 +74,7 @@ public class ElasticSearchClient {
         SearchRequestBuilder requestBuilder = esClient.prepareSearch(FaceTable.DYNAMIC_INDEX)
                 .setTypes(FaceTable.PERSON_INDEX_TYPE);
         requestBuilder.setSize(500);
-        log.info("Ids : " + Arrays.toString(ids));
+        log.info("Ids : " + ids[0] + " ...");
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if(ipcIds != null && ipcIds.size() > 0) {
@@ -130,6 +130,7 @@ public class ElasticSearchClient {
             faceObject.setAttribute(attribute);
             res.add(faceObject);
         }
+        log.info("The size of response is " + res.size());
         return res;
     }
 }

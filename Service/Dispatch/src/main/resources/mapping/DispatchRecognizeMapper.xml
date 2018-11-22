@@ -48,10 +48,10 @@
         </if>
         from t_dispatch_recognize a,
         <if test="searchType == '0'.toString()">
-            t_dispatch b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
+            t_dispatch b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id and b.region = #{regionId,jdbcType=BIGINT}
         </if>
         <if test="searchType == '1'.toString()">
-            t_dispatch b where a.type in(1,2) and a.dispatch_id = b.id
+            t_dispatch b where a.type in(1,2) and a.dispatch_id = b.id and b.region = #{regionId,jdbcType=BIGINT}
         </if>
         <if test="searchType == '3'.toString()">
             t_dispatch_white b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
