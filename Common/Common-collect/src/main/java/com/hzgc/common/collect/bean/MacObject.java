@@ -3,18 +3,12 @@ package com.hzgc.common.collect.bean;
 import java.io.Serializable;
 
 public class MacObject implements Serializable{
-    private String id;                  //对象唯一ID
+//    private String id;                  //对象唯一ID
     private String sn; //设备Id
     private String mac;
-    private Long timestamp;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private Long time;
+    private String communityId;
+    private String wifisn;
 
     public String getSn() {
         return sn;
@@ -32,11 +26,27 @@ public class MacObject implements Serializable{
         this.mac = mac;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
+    public Long getTime() {
+        return time;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    public String getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(String communityId) {
+        this.communityId = communityId;
+    }
+
+    public String getWifisn() {
+        return wifisn;
+    }
+
+    public void setWifisn(String wifisn) {
+        this.wifisn = wifisn;
     }
 }

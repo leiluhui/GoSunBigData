@@ -55,6 +55,7 @@ public class FaceCompareForWhite implements Runnable{
             long start = System.currentTimeMillis();
             List<FaceObject> faceObjects = captureCache.getFaceObjectsForWhite();
             if(faceObjects.size() == 0){
+                log.info("The size of face for white is 0");
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -77,54 +78,75 @@ public class FaceCompareForWhite implements Runnable{
                 continue;
             }
 
-            for(FaceObject faceObject : faceObjects){
-                Set<float[]> features = tableCache.getFeatures(faceObject.getIpcId());
-                if(features == null){
-                    continue;
-                }
-                boolean isWhitePoeple = false;
-                for(float[] feature : features){
-                    float sim = FaceUtil.featureCompare(faceObject.getAttribute().getFeature(), feature);
-                    if(sim > 70){
-                        isWhitePoeple = true;
-                        break;
+            try {
+                for (FaceObject faceObject : faceObjects) {
+                    if(faceObject.getIpcId() == null){
+                        log.error("The ipcId of captch is null");
+                        continue;
                     }
-                }
-                if(!isWhitePoeple){
-                    DispatchRecognize dispatureRecognize = new DispatchRecognize();
-                    dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
-                    dispatureRecognize.setDispatchId(tableCache.getWhiteRuleId(faceObject.getIpcId()));
-                    dispatureRecognize.setDeviceId(faceObject.getIpcId());
-                    dispatureRecognize.setType(3);
-                    String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
-                    String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
-                    dispatureRecognize.setSurl(surl);
-                    dispatureRecognize.setBurl(burl);
-                    try {
-                        dispatureRecognize.setRecordTime(sdf.parse(faceObject.getTimeStamp()));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if(map.get(faceObject.getIpcId()) == null){
+                        log.error("There is no region found by deviceId : " + faceObject.getIpcId());
+                        continue;
                     }
-                    dispatureRecognize.setCreateTime(new Date());
-                    try {
-                        dispatureRecognizeMapper.insertSelective(dispatureRecognize);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        log.error(e.getMessage());
+                    Set<float[]> features = tableCache.getFeatures(faceObject.getIpcId());
+                    if (features == null) {
+                        continue;
                     }
+                    boolean isWhitePoeple = false;
+                    for (float[] feature : features) {
+                        float sim = FaceUtil.featureCompare(faceObject.getAttribute().getFeature(), feature);
+                        if (sim > 70) {
+                            isWhitePoeple = true;
+                            break;
+                        }
+                    }
+                    if (!isWhitePoeple) {
+                        if(tableCache.getWhiteRuleId(faceObject.getIpcId()) == null){
+                            log.info("There is no white rule for ipcId " + faceObject.getIpcId());
+                            continue;
+                        }
+                        DispatchRecognize dispatureRecognize = new DispatchRecognize();
+                        dispatureRecognize.setId(UuidUtil.getUuid().substring(0, 32));
+                        dispatureRecognize.setDispatchId(tableCache.getWhiteRuleId(faceObject.getIpcId()));
+                        dispatureRecognize.setDeviceId(faceObject.getIpcId());
+                        dispatureRecognize.setType(3);
+                        String surl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getsAbsolutePath());
+                        String burl = CollectUrlUtil.toHttpPath(faceObject.getHostname(), "2573", faceObject.getbAbsolutePath());
+                        dispatureRecognize.setSurl(surl);
+                        dispatureRecognize.setBurl(burl);
+                        try {
+                            dispatureRecognize.setRecordTime(sdf.parse(faceObject.getTimeStamp()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        dispatureRecognize.setCreateTime(new Date());
+                        try {
+                            dispatureRecognizeMapper.insertSelective(dispatureRecognize);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            log.error(e.getMessage());
+                        }
 
-                    DispatchWhite dispatchWhite = dispatchWhiteMapper.selectByPrimaryKey(faceObject.getIpcId());
-                    AlarmMessage alarmMessage = new AlarmMessage();
-                    String ip = faceObject.getIp();
-                    alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
-                    alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
-                    alarmMessage.setDeviceId(faceObject.getIpcId());
-                    alarmMessage.setName(dispatchWhite.getName());
-                    alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
-                    alarmMessage.setType(3);
-                    alarmMessage.setTime(faceObject.getTimeStamp());
-                    producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                        DispatchWhite dispatchWhite = dispatchWhiteMapper.selectByPrimaryKey(tableCache.getWhiteRuleId(faceObject.getIpcId()));
+                        if(dispatchWhite == null){
+                            log.error("There is no white rule for id " + tableCache.getWhiteRuleId(faceObject.getIpcId()));
+                            continue;
+                        }
+                        AlarmMessage alarmMessage = new AlarmMessage();
+                        String ip = faceObject.getIp();
+                        alarmMessage.setBCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getbAbsolutePath()));
+                        alarmMessage.setCaptureImage(CollectUrlUtil.toHttpPath(ip, "2573", faceObject.getsAbsolutePath()));
+                        alarmMessage.setDeviceId(faceObject.getIpcId());
+                        alarmMessage.setName(dispatchWhite.getName());
+                        alarmMessage.setDeviceName(map.get(faceObject.getIpcId()).getCameraName());
+                        alarmMessage.setType(3);
+                        alarmMessage.setTime(faceObject.getTimeStamp());
+                        producer.send(topic, JacksonUtil.toJson(alarmMessage));
+                    }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
+                log.error(e.getMessage());
             }
             log.info("The size of face compared for white is " + faceObjects.size() + " , the time is " + (System.currentTimeMillis() - start));
         }

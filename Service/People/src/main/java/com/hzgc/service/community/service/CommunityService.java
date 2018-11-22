@@ -644,38 +644,82 @@ public class CommunityService {
             for (RecognizeRecord record : records) {
                 if (record != null) {
                     PeopleCaptureVO vo = new PeopleCaptureVO();
-                    switch (record.getType()) {
+                    switch (param.getSearchType()) {
+                        case 0:
+                            // 返回:人脸抓拍、IMSI码、车辆全部抓拍识别记录
+                            switch (record.getType()) {
+                                case 1:
+                                    // 人脸抓拍识别记录
+                                    vo.setCaptureType(0);
+                                    vo.setRecordId(record.getId());
+                                    vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                    vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                                    vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                                    vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                                    break;
+                                case 2:
+                                    // IMSI码识别记录
+                                    vo.setCaptureType(1);
+                                    vo.setRecordId(record.getId());
+                                    vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                    vo.setImsiDeviceId(platformService.getImsiDeviceName(record.getDeviceid()));
+                                    vo.setImsi(record.getImsi());
+                                    break;
+                                case 3:
+                                    // 车辆抓拍识别记录
+                                    vo.setCaptureType(2);
+                                    vo.setRecordId(record.getId());
+                                    vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                    vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                                    vo.setPlate(record.getPlate());
+                                    vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                                    vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                                    break;
+                                default:
+                                    break;
+                            }
+                            voList.add(vo);
+                            break;
                         case 1:
-                            // 人脸抓拍识别记录
-                            vo.setCaptureType(0);
-                            vo.setRecordId(record.getId());
-                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
-                            vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
-                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
-                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            // 返回:人脸抓拍识别记录
+                            if (record.getType() == 1){
+                                // 人脸抓拍识别记录
+                                vo.setCaptureType(0);
+                                vo.setRecordId(record.getId());
+                                vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                                vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                                vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                                voList.add(vo);
+                            }
                             break;
                         case 2:
-                            // IMSI码识别记录
-                            vo.setCaptureType(1);
-                            vo.setRecordId(record.getId());
-                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
-                            vo.setImsiDeviceId(platformService.getImsiDeviceName(record.getDeviceid()));
-                            vo.setImsi(record.getImsi());
+                            // 返回:IMSI码识别记录
+                            if (record.getType() == 2){
+                                vo.setCaptureType(1);
+                                vo.setRecordId(record.getId());
+                                vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                vo.setImsiDeviceId(platformService.getImsiDeviceName(record.getDeviceid()));
+                                vo.setImsi(record.getImsi());
+                                voList.add(vo);
+                            }
                             break;
                         case 3:
-                            // 车辆抓拍识别记录
-                            vo.setCaptureType(2);
-                            vo.setRecordId(record.getId());
-                            vo.setCaptureTime(sdf.format(record.getCapturetime()));
-                            vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
-                            vo.setPlate(record.getPlate());
-                            vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
-                            vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                            // 返回:车辆抓拍识别记录
+                            if (record.getType() == 3){
+                                vo.setCaptureType(2);
+                                vo.setRecordId(record.getId());
+                                vo.setCaptureTime(sdf.format(record.getCapturetime()));
+                                vo.setCameraDeviceId(platformService.getCameraDeviceName(record.getDeviceid()));
+                                vo.setPlate(record.getPlate());
+                                vo.setBurl(innerService.httpHostNameToIp(record.getBurl()).getHttp_ip());
+                                vo.setSurl(innerService.httpHostNameToIp(record.getSurl()).getHttp_ip());
+                                voList.add(vo);
+                            }
                             break;
                         default:
                             break;
                     }
-                    voList.add(vo);
                 }
             }
         }
