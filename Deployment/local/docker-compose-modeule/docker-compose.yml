@@ -21,7 +21,6 @@ services:
     - "3306:3306"
     volumes:
     - ${DOCKER_HOME}/mysql/data:/var/lib/mysql
-    - ${DOCKER_HOME}/mysql/sql/peopleDatabase.sql:/docker-entrypoint-initdb.d/peopleDatabase.sql
 
   mysql-cron:
     image: ${DOCKER_REPOSITOR}/hzgc/mysql-cron:5.7.19

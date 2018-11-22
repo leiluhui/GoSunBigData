@@ -240,7 +240,6 @@ services:
     volumes:
     - ${DOCKER_HOME}/collect-ftp/log:/log
     - /opt/GsFaceLib:/opt/GsFaceLib
-    - /lib64:/lib64
     - /opt/ftpdata:/opt/ftpdata
     - /home/ftpdata:/home/ftpdata
 
