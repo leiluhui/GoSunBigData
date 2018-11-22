@@ -12,14 +12,12 @@ import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
 import com.hzgc.jniface.FaceUtil;
 import com.hzgc.jniface.PictureData;
-import com.hzgc.service.alive.dao.AliveMapper;
 import com.hzgc.service.dispatch.dao.DispatchMapper;
 import com.hzgc.service.dispatch.dao.DispatchRecognizeMapper;
 import com.hzgc.service.dispatch.param.*;
 import com.hzgc.service.util.DispatchExcelUtils;
 import com.hzgc.service.dispatch.model.Dispatch;
 import com.hzgc.service.dispatch.model.DispatchRecognize;
-import com.hzgc.service.white.dao.WhiteMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +80,13 @@ public class DispatchService {
         int total = (int) info.getTotal();
         for (DispatchRecognizeVO dispatchRecognizeVO:dispatchRecognizeVOS) {
             dispatchRecognizeVO.setRecordTime(dispatchRecognizeVO.getRecordTime().split("\\.")[0]);
+            dispatchRecognizeVO.setDeviceName(getDeviceName(dispatchRecognizeVO.getDeviceId()));
+            if ( 1 != dispatchRecognizeDTO.getSearchType()) {
+                UrlInfo urlInfo_small = innerService.httpHostNameToIp(dispatchRecognizeVO.getSurl());
+                UrlInfo urlInfo1_big = innerService.httpHostNameToIp(dispatchRecognizeVO.getBurl());
+                dispatchRecognizeVO.setSurl(urlInfo_small.getHttp_ip());
+                dispatchRecognizeVO.setBurl(urlInfo1_big.getHttp_ip());
+            }
         }
         WarnHistoryVO warnHistoryVO = new WarnHistoryVO();
         warnHistoryVO.setTotal(total);
