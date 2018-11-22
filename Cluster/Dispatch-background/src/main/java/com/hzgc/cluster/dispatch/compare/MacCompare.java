@@ -54,6 +54,7 @@ public class MacCompare implements Runnable{
             long start = System.currentTimeMillis();
             List<MacObject> macObjects = captureCache.getMac();
             if(macObjects.size() == 0){
+                log.info("The size of mac for black is 0");
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -74,8 +75,20 @@ public class MacCompare implements Runnable{
                 continue;
             }
             for(MacObject macObject : macObjects){
+                if(macObject.getSn() == null){
+                    log.error("The deviceId of captch is null");
+                    continue;
+                }
+                if(map.get(macObject.getSn()) == null){
+                    log.error("There os no region found by deviceId : " + macObject.getSn());
+                    continue;
+                }
                 Long region = map.get(macObject.getSn()).getDistrictId();
                 List<DispachData> dispatureDataList = tableCache.getMacInfo(region);
+                if(dispatureDataList == null){
+                    log.info("There are no captch rule for region " + region);
+                    continue;
+                }
                 DispachData disp = null;
                 for(DispachData dispatureData : dispatureDataList){
                     if(dispatureData.getMac() != null && dispatureData.getMac().equals(macObject.getMac())){
@@ -91,7 +104,7 @@ public class MacCompare implements Runnable{
                 dispatureRecognize.setRecordTime(new Timestamp(System.currentTimeMillis()));
                 dispatureRecognize.setDeviceId(macObject.getSn());
                 dispatureRecognize.setType(2);
-                dispatureRecognize.setCreateTime(new Timestamp(macObject.getTimestamp()));
+                dispatureRecognize.setCreateTime(new Timestamp(macObject.getTime()));
                 try {
                     dispatureRecognizeMapper.insertSelective(dispatureRecognize);
                 }catch (Exception e){
@@ -109,7 +122,7 @@ public class MacCompare implements Runnable{
                 alarmMessage.setName(dispach.getName());
                 alarmMessage.setIdCard(dispach.getIdcard());
                 alarmMessage.setNotes(dispach.getNotes());
-                alarmMessage.setTime(sdf.format(new Date(macObject.getTimestamp())));
+                alarmMessage.setTime(sdf.format(new Date(macObject.getTime())));
                 producer.send(topic, JacksonUtil.toJson(alarmMessage));
             }
             log.info("The size of mac compared is " + macObjects.size() + " , the time is " + (System.currentTimeMillis() -start));
