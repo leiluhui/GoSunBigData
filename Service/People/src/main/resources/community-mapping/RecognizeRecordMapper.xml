@@ -38,21 +38,34 @@
     <collection property="car" ofType="com.hzgc.service.people.model.Car" column="peopleid"
                 select="com.hzgc.service.people.dao.CarMapper.selectByPeopleId"/>
   </resultMap>
+  <sql id="Base_Column_List" >
+    id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag, similarity,
+    plate, type, imsi, mac
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_recognize_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <!--重点人员识别记录查询-->
   <select id="getImportantRecognizeRecord" resultMap="ImportantPeopleRecognizeMap"
           parameterType="com.hzgc.service.community.param.ImportantRecognizeSearchParam">
     SELECT b.name, b.idcard, b.lasttime, a.id, a.peopleid, a.pictureid, a.deviceid, a.capturetime, a.surl,
     a.burl, a.similarity, a.imsi, a.mac, a.plate, a.type
     FROM t_recognize_record a
     LEFT JOIN t_people b ON a.peopleid = b.id
+    LEFT JOIN t_flag f ON f.peopleid = b.id
     <if test="searchType == '0'.toString()">
       LEFT JOIN t_picture c ON a.pictureid = c.id
     </if>
     <where>
+      f.flagid in(0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
       <if test="searchType == '0'.toString()">
-        a.type = 1 AND a.pictureid > 0
+        AND a.type = 1 AND a.pictureid > 0
       </if>
       <if test="searchType == '1'.toString()">
-        a.type in (2, 3)
+        AND a.type in (2, 3)
       </if>
       <if test="communityIds != null and communityIds.size() > 0">
         AND a.community in
@@ -69,12 +82,6 @@
     </where>
     ORDER BY a.capturetime DESC
   </select>
-
-  <sql id="Base_Column_List" >
-    id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag, similarity,
-    plate, type, imsi, mac
-  </sql>
-
   <!--小区迁入人口查询（疑似与确认：新增人员小图）:人员抓拍列表-->
   <select id="getSurlByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
     select surl from t_recognize_record
@@ -127,12 +134,6 @@
     where type = 1
     and peopleid = #{peopleid,jdbcType=VARCHAR}
     order by capturetime desc limit 1
-  </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_recognize_record
-    where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_recognize_record
