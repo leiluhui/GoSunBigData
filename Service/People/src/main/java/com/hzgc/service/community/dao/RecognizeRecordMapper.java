@@ -28,6 +28,8 @@ public interface RecognizeRecordMapper {
 
     List<ImportantPeopleRecognize> getImportantRecognizeRecord(ImportantRecognizeSearchParam param);
 
+    List<ImportantPeopleRecognizeHistory> getImportantPeopleRecognizeHistory(List<Long> communityIds);
+
     String getSurlByPeopleId(String peopleid);
 
     int delete(String peopleid);

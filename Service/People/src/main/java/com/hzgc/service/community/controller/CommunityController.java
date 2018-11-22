@@ -477,7 +477,7 @@ public class CommunityController {
         return ResponseResult.init(voList);
     }
 
-    @ApiOperation(value = "重点人员识别记录查询", response = PeopleCaptureCountVO.class)
+    @ApiOperation(value = "重点人员识别记录查询", response = ImportantRecognizeVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE, method = RequestMethod.POST)
     public ResponseResult<ImportantRecognizeVO> importantPeopleRecognize(
             @RequestBody ImportantRecognizeDTO param) {
@@ -509,5 +509,18 @@ public class CommunityController {
         ImportantRecognizeVO vo = communityService.importantPeopleRecognize(param);
         log.info("Search important people recognize successfully");
         return ResponseResult.init(vo);
+    }
+
+    @ApiOperation(value = "重点人员告警展示(大数据可视化首页左下角)", response = ImportantPeopleRecognizeHistoryVO.class)
+    @RequestMapping(value = BigDataPath.COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE_HISTORY, method = RequestMethod.GET)
+    public ResponseResult<List<ImportantPeopleRecognizeHistoryVO>> importantPeopleRecognizeHistory(Long regionId) {
+        if (regionId == null) {
+            log.error("Start search important people recognize history, but region id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询区域不能为空,请检查！");
+        }
+        log.info("Start search important people recognize history, region id is:" + regionId);
+        List<ImportantPeopleRecognizeHistoryVO> voList = communityService.importantPeopleRecognizeHistory(regionId);
+        log.info("Search important people recognize successfully");
+        return ResponseResult.init(voList);
     }
 }
