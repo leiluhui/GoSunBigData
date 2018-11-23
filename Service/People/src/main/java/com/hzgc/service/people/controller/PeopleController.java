@@ -351,7 +351,7 @@ public class PeopleController {
         Integer status = peopleService.excelImport(file);
         if (status != 1) {
             log.error("Import excel data failed");
-            return ResponseResult.error(0, "导入表格失败！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "导入表格失败！");
         }
         log.info("Import excel data successfully");
         return ResponseResult.init(1);
