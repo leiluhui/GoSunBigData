@@ -44,56 +44,49 @@ public class PeopleController {
     public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start insert people info, but people is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口信息为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空，请检查！");
         }
         if (StringUtils.isBlank(peopleDTO.getName())) {
             log.error("Start insert people info, but name is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口姓名为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加姓名为空，请检查！");
         }
         if (StringUtils.isBlank(peopleDTO.getIdCard())) {
             log.error("Start insert people info, but idCard is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口身份证为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加身份证为空，请检查！");
         }
         boolean boo = peopleService.CheckIdCard(peopleDTO.getIdCard());
-        if (boo){
+        if (boo) {
             log.error("Start insert people info, but idCard is exist");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口身份证已存在，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加身份证已存在，请检查！");
         }
         if (peopleDTO.getRegion() == null) {
             log.error("Start insert people info, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加人口区域为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加区域为空，请检查！");
         }
 
         log.info("Start insert people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
-        ReturnMessage message = peopleService.insertPeople(peopleDTO);
-        if (message != null) {
-            if (message.getStatus() == 0) {
-                return ResponseResult.error(message.getStatus(), message.getMessage());
-            }
-            if (message.getStatus() == 1) {
-                return ResponseResult.init(1);
-            }
-        }
-        return ResponseResult.error(0, "添加人口失败！");
+        Integer status = peopleService.insertPeople(peopleDTO);
+        return ResponseResult.init(status);
     }
 
     /**
      * 删除人口库信息
+     *
      * @param peopleDTO 人员id
      * @return 成功状态 1:删除成功, 0:删除失败
      */
-    @ApiOperation(value = "删除人口库信息", response =Integer.class)
+    @ApiOperation(value = "删除人口库信息", response = Integer.class)
     @RequestMapping(value = BigDataPath.PEOPLE_DELETE, method = RequestMethod.DELETE)
-    public ResponseResult<Integer> deletePeople(@RequestBody PeopleDTO peopleDTO){
+    public ResponseResult<Integer> deletePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start delete people info, but people is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除人口信息为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除信息为空，请检查！");
         }
-        if (StringUtils.isBlank(peopleDTO.getId())){
+        if (StringUtils.isBlank(peopleDTO.getId())) {
             log.error("Start delete people info,but id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"删除id为空,请检查!");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除id为空,请检查!");
         }
-        log.info("Start delete people info, id is:"+ peopleDTO.getId());
+        log.info("Start delete people info, id is:" + peopleDTO.getId());
         Integer status = peopleService.deletePeople(peopleDTO.getId());
         if (status == 1) {
             log.info("Delete people info successfully");
@@ -112,27 +105,19 @@ public class PeopleController {
     public ResponseResult<Integer> updatePeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start update people info, but people is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口信息为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改信息为空，请检查！");
         }
         if (peopleDTO.getId() == null) {
             log.error("Start update people info, but people id is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口ID为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改ID为空，请检查！");
         }
         if (peopleDTO.getRegion() == null) {
             log.error("Start update people info, but region is null");
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改人口区域为空，请检查！");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改区域为空，请检查！");
         }
         log.info("Start update people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
-        ReturnMessage message = peopleService.updatePeople(peopleDTO);
-        if (message != null) {
-            if (message.getStatus() == 0) {
-                return ResponseResult.error(message.getStatus(), message.getMessage());
-            }
-            if (message.getStatus() == 1) {
-                return ResponseResult.init(1);
-            }
-        }
-        return ResponseResult.error(0, "修改人口失败！");
+        Integer status = peopleService.updatePeople(peopleDTO);
+        return ResponseResult.init(status);
     }
 
     /**
@@ -184,15 +169,15 @@ public class PeopleController {
             log.error("Start insert picture, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空，请检查！");
         }
-        if (pictureDTO.getType() != 0 && pictureDTO.getType() != 1){
+        if (pictureDTO.getType() != 0 && pictureDTO.getType() != 1) {
             log.error("Start insert picture, but type is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "类型选择有误，请检查！");
         }
-        if (StringUtils.isBlank(pictureDTO.getPeopleId())){
+        if (StringUtils.isBlank(pictureDTO.getPeopleId())) {
             log.error("Start insert picture, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人口ID为空，请检查！");
         }
-        if (StringUtils.isBlank(pictureDTO.getPicture())){
+        if (StringUtils.isBlank(pictureDTO.getPicture())) {
             log.error("Start insert picture, but picture data id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "照片数据为空，请检查！");
         }
@@ -214,19 +199,19 @@ public class PeopleController {
             log.error("Start update picture, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改信息为空，请检查！");
         }
-        if (pictureDTO.getType() != 0 && pictureDTO.getType() != 1){
+        if (pictureDTO.getType() != 0 && pictureDTO.getType() != 1) {
             log.error("Start update picture, but type is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "类型选择有误，请检查！");
         }
-        if (pictureDTO.getPictureId() == null){
+        if (pictureDTO.getPictureId() == null) {
             log.error("Start update picture, but picture id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "照片ID为空，请检查！");
         }
-        if (StringUtils.isBlank(pictureDTO.getPeopleId())){
+        if (StringUtils.isBlank(pictureDTO.getPeopleId())) {
             log.error("Start update picture, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人口ID为空，请检查！");
         }
-        if (StringUtils.isBlank(pictureDTO.getPicture())){
+        if (StringUtils.isBlank(pictureDTO.getPicture())) {
             log.error("Start update picture, but picture data id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "照片数据为空，请检查！");
         }
@@ -248,11 +233,11 @@ public class PeopleController {
             log.error("Start delete picture, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "删除信息为空，请检查！");
         }
-        if (StringUtils.isBlank(pictureDTO.getPeopleId())){
+        if (StringUtils.isBlank(pictureDTO.getPeopleId())) {
             log.error("Start delete picture, but people id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "人口ID为空，请检查！");
         }
-        if (pictureDTO.getPictureId() == null){
+        if (pictureDTO.getPictureId() == null) {
             log.error("Start delete picture, but picture id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "照片ID为空，请检查！");
         }
@@ -351,13 +336,14 @@ public class PeopleController {
 
     /**
      * excel表格导入
+     *
      * @param file 文件路径
      * @return 状态 1 ：修改成功 0 ：修改失败
      */
     @ApiOperation(value = "人口库excel表格导入")
     @RequestMapping(value = BigDataPath.PEOPLE_EXCEL_IMPORT, method = RequestMethod.POST)
-    public ResponseResult <Integer> excelImport(MultipartFile file){
-        if (file == null){
+    public ResponseResult<Integer> excelImport(MultipartFile file) {
+        if (file == null) {
             log.error("Start import excel data, but file is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "导入表格为空，请检查！");
         }
@@ -372,7 +358,7 @@ public class PeopleController {
     }
 
     /**
-     *  excel表格模板下载
+     * excel表格模板下载
      */
     @GetMapping("/excel")
     @ApiOperation("下载模板")

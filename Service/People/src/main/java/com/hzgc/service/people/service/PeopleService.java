@@ -109,107 +109,130 @@ public class PeopleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ReturnMessage insertPeople(PeopleDTO peopleDTO) {
+    public Integer insertPeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
-        log.info("Start Insert people info, param is:" + JacksonUtil.toJson(people));
-        Integer status = people_insert(people);
-        if (status != 1) {
-            log.info("Insert people to t_people failed");
-            ReturnMessage message = new ReturnMessage();
-            message.setStatus(0);
-            message.setMessage("添加人口信息失败");
-            return message;
+        log.info("Start insert people info, param is:" + JacksonUtil.toJson(people));
+        int insertStatus = peopleMapper.insertSelective(people);
+        if (insertStatus != 1) {
+            log.error("Insert people to t_people failed");
+            throw new RuntimeException("添加人口信息失败");
         }
         log.info("Insert people to t_people successfully");
-        if (peopleDTO.getFlagId() != null || peopleDTO.getIdCardPic() != null || peopleDTO.getCapturePic() != null ||
-                peopleDTO.getImsi() != null || peopleDTO.getPhone() != null || peopleDTO.getHouse() != null ||
-                peopleDTO.getCar() != null) {
-            if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
-                Integer insertStatus = people_flag_insert(people.getId(), peopleDTO.getFlagId());
-                if (insertStatus == 1) {
-                    log.info("Insert flag to t_flag successfully");
-                } else {
-                    log.info("Insert flag to t_flag failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口标签表失败");
-                    return message;
+        if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
+            for (String photo : peopleDTO.getIdCardPic()) {
+                PictureWithBLOBs picture = new PictureWithBLOBs();
+                picture.setPeopleid(people.getId());
+                picture.setIdcardpic(FaceUtil.base64Str2BitFeature(photo));
+                PictureData pictureData = innerService.faceFeautreCheck(photo);
+                if (pictureData == null) {
+                    log.error("Face feature extract is null");
+                    throw new RuntimeException("照片特征提取失败");
+                }
+                FaceAttribute faceAttribute = pictureData.getFeature();
+                if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                    log.error("Face feature extract failed");
+                    throw new RuntimeException("照片特征提取失败");
+                }
+                picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+                picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+                int status = pictureMapper.insertSelective(picture);
+                if (status != 1) {
+                    log.error("Insert idCard picture to t_picture failed");
+                    throw new RuntimeException("添加证件照片失败");
                 }
             }
-            if (peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0) {
-                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.IDCARD_PIC,
-                        peopleDTO.getIdCardPic());
-                if (insertStatus == 1) {
-                    log.info("Insert idCard pic to t_picture successfully");
-                } else {
-                    log.info("Insert idCard pic to t_picture failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口证件照片表失败");
-                    return message;
+            log.info("Insert idCard picture to t_picture successfully");
+        }
+        if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
+            for (String photo : peopleDTO.getCapturePic()) {
+                PictureWithBLOBs picture = new PictureWithBLOBs();
+                picture.setPeopleid(people.getId());
+                picture.setCapturepic(FaceUtil.base64Str2BitFeature(photo));
+                PictureData pictureData = innerService.faceFeautreCheck(photo);
+                if (pictureData == null) {
+                    log.error("Face feature extract is null");
+                    throw new RuntimeException("照片特征提取失败");
+                }
+                FaceAttribute faceAttribute = pictureData.getFeature();
+                if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
+                    log.error("Face feature extract failed");
+                    throw new RuntimeException("照片特征提取失败");
+                }
+                picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
+                picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
+                int status = pictureMapper.insertSelective(picture);
+                if (status != 1) {
+                    log.info("Insert capture picture to t_picture failed");
+                    throw new RuntimeException("添加实采照片失败");
                 }
             }
-            if (peopleDTO.getCapturePic() != null && peopleDTO.getCapturePic().size() > 0) {
-                Integer insertStatus = people_picture_insert(people.getId(), PeopleService.CAPTURE_PIC,
-                        peopleDTO.getCapturePic());
-                if (insertStatus == 1) {
-                    log.info("Insert capture pic to t_picture successfully");
-                } else {
-                    log.info("Insert capture pic to t_picture failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口实采照片表失败");
-                    return message;
+            log.info("Insert capture picture to t_picture successfully");
+        }
+        if (peopleDTO.getFlagId() != null && peopleDTO.getFlagId().size() > 0) {
+            for (Integer integer : peopleDTO.getFlagId()) {
+                com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
+                flag.setPeopleid(people.getId());
+                flag.setFlagid(integer);
+                flag.setFlag(Flag.getFlag(integer));
+                int status = flagMapper.insertSelective(flag);
+                if (status != 1) {
+                    log.error("Insert flag to t_flag failed");
+                    throw new RuntimeException("添加标签信息失败");
                 }
             }
-            if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
-                Integer insertStatus = people_imsi_insert(people.getId(), peopleDTO.getImsi());
-                if (insertStatus == 1) {
-                    log.info("Insert imsi to t_imsi successfully");
-                } else {
+            log.info("Insert flag to t_flag successfully");
+        }
+        if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
+            for (String s : peopleDTO.getImsi()) {
+                Imsi imsi = new Imsi();
+                imsi.setPeopleid(people.getId());
+                imsi.setImsi(s);
+                int status = imsiMapper.insertSelective(imsi);
+                if (status != 1) {
                     log.info("Insert imsi to t_imsi failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口imsi表失败");
-                    return message;
+                    throw new RuntimeException("添加IMSI信息失败");
                 }
             }
-            if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
-                Integer insertStatus = people_phone_insert(people.getId(), peopleDTO.getPhone());
-                if (insertStatus == 1) {
-                    log.info("Insert phone to t_phone successfully");
-                } else {
+            log.info("Insert imsi to t_imsi successfully");
+        }
+        if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
+            for (String s : peopleDTO.getPhone()) {
+                Phone phone = new Phone();
+                phone.setPeopleid(people.getId());
+                phone.setPhone(s);
+                int status = phoneMapper.insertSelective(phone);
+                if (status != 1) {
                     log.info("Insert phone to t_phone failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口联系方式表失败");
-                    return message;
+                    throw new RuntimeException("添加联系方式失败");
                 }
             }
-            if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
-                Integer insertStatus = people_house_insert(people.getId(), peopleDTO.getHouse());
-                if (insertStatus == 1) {
-                    log.info("Insert house to t_house successfully");
-                } else {
+            log.info("Insert phone to t_phone successfully");
+        }
+        if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
+            for (String s : peopleDTO.getHouse()) {
+                House house = new House();
+                house.setPeopleid(people.getId());
+                house.setHouse(s);
+                int status = houseMapper.insertSelective(house);
+                if (status != 1) {
                     log.info("Insert house to t_house failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口房产信息表失败");
-                    return message;
+                    throw new RuntimeException("添加房产信息失败");
                 }
             }
-            if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
-                Integer insertStatus = people_car_insert(people.getId(), peopleDTO.getCar());
-                if (insertStatus == 1) {
-                    log.info("Insert car to t_car successfully");
-                } else {
+            log.info("Insert house to t_house successfully");
+        }
+        if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
+            for (String s : peopleDTO.getCar()) {
+                Car car = new Car();
+                car.setPeopleid(people.getId());
+                car.setCar(s);
+                int status = carMapper.insertSelective(car);
+                if (status != 1) {
                     log.info("Insert car to t_car failed");
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("添加人口车辆信息表失败");
-                    return message;
+                    throw new RuntimeException("添加车辆信息失败");
                 }
             }
+            log.info("Insert car to t_car successfully");
         }
         log.info("Insert people info successfully");
         boolean b1 = peopleDTO.getIdCardPic() != null && peopleDTO.getIdCardPic().size() > 0;
@@ -220,16 +243,13 @@ public class PeopleService {
             manager.setPersonid(people.getId());
             this.sendKafka("ADD", manager);
         }
-        ReturnMessage message = new ReturnMessage();
-        message.setStatus(1);
-        message.setMessage("添加成功");
-        return message;
+        return 1;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Integer deletePeople(String id) {
         int status = peopleMapper.deleteByPrimaryKey(id);
-        if (status != 1){
+        if (status != 1) {
             log.error("Delete info from t_people failed");
             throw new RuntimeException("删除人员信息失败");
         }
@@ -250,16 +270,13 @@ public class PeopleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ReturnMessage updatePeople(PeopleDTO peopleDTO) {
+    public Integer updatePeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_update(peopleDTO);
         log.info("Start update t_people, param is:" + JacksonUtil.toJson(people));
         int status_people_update = peopleMapper.updateByPrimaryKeySelective(people);
         if (status_people_update != 1) {
-            log.info("Update t_people failed");
-            ReturnMessage message = new ReturnMessage();
-            message.setStatus(0);
-            message.setMessage("修改人口失败");
-            return message;
+            log.error("Update people to t_people failed");
+            throw new RuntimeException("修改人口信息失败");
         }
         log.info("Update people to t_people successfully");
         List<Long> t_flag_ids = flagMapper.selectIdByPeopleId(people.getId());
@@ -268,10 +285,7 @@ public class PeopleService {
                 int status = flagMapper.deleteByPrimaryKey(id);
                 if (status != 1) {
                     log.error("Update people, but delete flag from t_flag failed, t_flag.id: " + id);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口标签表失败");
-                    return message;
+                    throw new RuntimeException("修改标签信息失败");
                 }
             }
         }
@@ -284,10 +298,7 @@ public class PeopleService {
                 int status = flagMapper.insertSelective(flag);
                 if (status != 1) {
                     log.error("Update people, but insert flag to t_flag failed, flag:" + integer);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口照片表失败");
-                    return message;
+                    throw new RuntimeException("修改标签信息失败");
                 }
             }
         }
@@ -296,10 +307,7 @@ public class PeopleService {
             int status = imsiMapper.deleteByPrimaryKey(id);
             if (status != 1) {
                 log.error("Update people, but delete imsi from t_imsi failed, t_imsi.id: " + id);
-                ReturnMessage message = new ReturnMessage();
-                message.setStatus(0);
-                message.setMessage("修改人口标签表失败");
-                return message;
+                throw new RuntimeException("修改IMIS信息失败");
             }
         }
         if (peopleDTO.getImsi() != null && peopleDTO.getImsi().size() > 0) {
@@ -310,23 +318,16 @@ public class PeopleService {
                 int insertStatus = imsiMapper.insertSelective(imsi);
                 if (insertStatus != 1) {
                     log.error("Update people, but insert imsi to t_imsi failed, imsi: " + s);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口标签表失败");
-                    return message;
+                    throw new RuntimeException("修改IMIS信息失败");
                 }
             }
-
         }
         List<Long> t_phone_ids = phoneMapper.selectIdByPeopleId(people.getId());
         for (Long id : t_phone_ids) {
             int status = phoneMapper.deleteByPrimaryKey(id);
             if (status != 1) {
                 log.error("Update people, but delete phone from t_phone failed, t_phone.id: " + id);
-                ReturnMessage message = new ReturnMessage();
-                message.setStatus(0);
-                message.setMessage("修改人口联系方式表失败");
-                return message;
+                throw new RuntimeException("修改联系方式失败");
             }
         }
         if (peopleDTO.getPhone() != null && peopleDTO.getPhone().size() > 0) {
@@ -337,10 +338,7 @@ public class PeopleService {
                 int insertStatus = phoneMapper.insertSelective(phone);
                 if (insertStatus != 1) {
                     log.info("Update people, but insert phone to t_phone failed, phone: " + s);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口联系方式表失败");
-                    return message;
+                    throw new RuntimeException("修改联系方式失败");
                 }
             }
         }
@@ -349,10 +347,7 @@ public class PeopleService {
             int status = houseMapper.deleteByPrimaryKey(id);
             if (status != 1) {
                 log.info("Update people, but delete house from t_house failed, t_house.id: " + id);
-                ReturnMessage message = new ReturnMessage();
-                message.setStatus(0);
-                message.setMessage("修改人口房产信息表失败");
-                return message;
+                throw new RuntimeException("修改房产信息失败");
             }
         }
         if (peopleDTO.getHouse() != null && peopleDTO.getHouse().size() > 0) {
@@ -363,10 +358,7 @@ public class PeopleService {
                 int insertStatus = houseMapper.insertSelective(house);
                 if (insertStatus != 1) {
                     log.error("Update people, but insert house to t_house failed, house: " + s);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口房产信息表失败");
-                    return message;
+                    throw new RuntimeException("修改房产信息失败");
                 }
             }
         }
@@ -375,10 +367,7 @@ public class PeopleService {
             int status = carMapper.deleteByPrimaryKey(id);
             if (status != 1) {
                 log.error("Update people, but delete car from t_car failed, t_car.id: " + id);
-                ReturnMessage message = new ReturnMessage();
-                message.setStatus(0);
-                message.setMessage("修改人口车辆信息表失败");
-                return message;
+                throw new RuntimeException("修改车辆信息失败");
             }
         }
         if (peopleDTO.getCar() != null && peopleDTO.getCar().size() > 0) {
@@ -389,124 +378,11 @@ public class PeopleService {
                 int insertStatus = carMapper.insertSelective(car);
                 if (insertStatus != 1) {
                     log.info("Update people, but insert car to t_car failed, car: " + s);
-                    ReturnMessage message = new ReturnMessage();
-                    message.setStatus(0);
-                    message.setMessage("修改人口车辆信息表失败");
-                    return message;
+                    throw new RuntimeException("修改车辆信息失败");
                 }
             }
         }
         log.info("Update people info successfully");
-        ReturnMessage message = new ReturnMessage();
-        message.setStatus(1);
-        message.setMessage("修改成功");
-        return message;
-    }
-
-    private Integer people_insert(People people) {
-        return peopleMapper.insertSelective(people);
-    }
-
-    private Integer people_flag_insert(String peopleId, List<Integer> flags) {
-        for (Integer integer : flags) {
-            com.hzgc.service.people.model.Flag flag = new com.hzgc.service.people.model.Flag();
-            flag.setPeopleid(peopleId);
-            flag.setFlagid(integer);
-            flag.setFlag(Flag.getFlag(integer));
-            int status = flagMapper.insertSelective(flag);
-            if (status != 1) {
-                log.info("Insert people, but insert t_flag failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_picture_insert(String peopleId, String picType, List<String> pics) {
-        for (String photo : pics) {
-            PictureWithBLOBs picture = new PictureWithBLOBs();
-            picture.setPeopleid(peopleId);
-            byte[] bytes = FaceUtil.base64Str2BitFeature(photo);
-            if (IDCARD_PIC.equals(picType)) {
-                picture.setIdcardpic(bytes);
-            }
-            if (CAPTURE_PIC.equals(picType)) {
-                picture.setCapturepic(bytes);
-            }
-            PictureData pictureData = innerService.faceFeautreCheck(photo);
-            if (pictureData == null) {
-                log.error("Face feature extract is null");
-                throw new RuntimeException("Face feature extract is null");
-            }
-            FaceAttribute faceAttribute = pictureData.getFeature();
-            if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-                log.error("Face feature extract failed, insert picture to t_picture failed");
-                throw new RuntimeException("Face feature extract failed, insert picture to t_picture failed");
-            }
-            picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-            picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-            int insertStatus = pictureMapper.insertSelective(picture);
-            if (insertStatus != 1) {
-                log.info("Insert people, but insert picture to t_picture failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_imsi_insert(String peopleId, List<String> imsis) {
-        for (String s : imsis) {
-            Imsi imsi = new Imsi();
-            imsi.setPeopleid(peopleId);
-            imsi.setImsi(s);
-            int status = imsiMapper.insertSelective(imsi);
-            if (status != 1) {
-                log.info("Insert people, but insert imsi to t_imsi failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_phone_insert(String peopleId, List<String> phones) {
-        for (String s : phones) {
-            Phone phone = new Phone();
-            phone.setPeopleid(peopleId);
-            phone.setPhone(s);
-            int status = phoneMapper.insertSelective(phone);
-            if (status != 1) {
-                log.info("Insert people, but insert phone to t_phone failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_house_insert(String peopleId, List<String> houses) {
-        for (String s : houses) {
-            House house = new House();
-            house.setPeopleid(peopleId);
-            house.setHouse(s);
-            int status = houseMapper.insertSelective(house);
-            if (status != 1) {
-                log.info("Insert people, but insert house to t_house failed");
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private Integer people_car_insert(String peopleId, List<String> cars) {
-        for (String s : cars) {
-            Car car = new Car();
-            car.setPeopleid(peopleId);
-            car.setCar(s);
-            int status = carMapper.insertSelective(car);
-            if (status != 1) {
-                log.info("Insert people, but insert car to t_car failed");
-                return 0;
-            }
-        }
         return 1;
     }
 
@@ -908,29 +784,24 @@ public class PeopleService {
                 peopleDTO.setSex(String.valueOf(map.get(4)));
             }
             if (map.get(5) != null && !"".equals(map.get(5))) {
-                peopleDTO.setAge(Float.valueOf(String.valueOf(map.get(5))).intValue());
+                peopleDTO.setJob(String.valueOf(map.get(5)));
             }
             if (map.get(6) != null && !"".equals(map.get(6))) {
-                peopleDTO.setJob(String.valueOf(map.get(6)));
+                peopleDTO.setBirthday(String.valueOf(map.get(6)));
             }
             if (map.get(7) != null && !"".equals(map.get(7))) {
-                peopleDTO.setBirthday(String.valueOf(map.get(7)));
+                peopleDTO.setAddress(String.valueOf(map.get(7)));
             }
             if (map.get(8) != null && !"".equals(map.get(8))) {
-                peopleDTO.setAddress(String.valueOf(map.get(8)));
+                peopleDTO.setBirthplace(String.valueOf(map.get(8)));
             }
             if (map.get(9) != null && !"".equals(map.get(9))) {
-                peopleDTO.setHousehold(String.valueOf(map.get(9)));
+                peopleDTO.setPolitic(String.valueOf(map.get(9)));
             }
             if (map.get(10) != null && !"".equals(map.get(10))) {
-                peopleDTO.setBirthplace(String.valueOf(map.get(10)));
+                peopleDTO.setEduLevel(String.valueOf(10));
             }
-            if (map.get(11) != null && !"".equals(map.get(11))) {
-                peopleDTO.setPolitic(String.valueOf(map.get(11)));
-            }
-            if (map.get(12) != null && !"".equals(map.get(12))) {
-                peopleDTO.setEduLevel(String.valueOf(12));
-            }
+
             peopleDTOList.add(peopleDTO);
         }
         log.info("Excel data conversion is completed, start insert into t_people table");
@@ -946,8 +817,8 @@ public class PeopleService {
     private Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
             peopleDTO.setId(UuidUtil.getUuid());
-            ReturnMessage message = this.insertPeople(peopleDTO);
-            if (message == null || message.getStatus() != 1) {
+            int status = this.insertPeople(peopleDTO);
+            if (status != 1) {
                 throw new RuntimeException("Insert into t_people table failed");
             }
         }
