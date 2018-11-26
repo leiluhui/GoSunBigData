@@ -104,7 +104,7 @@ public class PlatformService {
         AreaSDTO areaSDTO = restTemplate.postForObject("http://platform:8888/api/v1/region/internal/region/all/query_region_info", areaCriteria, AreaSDTO.class);
         List<AreaDTO> areaDTOs = areaSDTO.getAreaDTOs();
         for (AreaDTO areaDTO : areaDTOs){
-            String mergerName = areaDTO.getMergerName();
+            String mergerName = areaDTO.getName();
             Long id = areaDTO.getId();
             map.put(mergerName, id);
         }

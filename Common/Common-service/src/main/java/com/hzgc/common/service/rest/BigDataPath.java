@@ -78,6 +78,7 @@ public class BigDataPath {
     public static final String COMMUNITY_PEOPLE_DEVICE_CAPTURE_1MONTH = "/device_capture";
     public static final String COMMUNITY_PEOPLE_CAPTURE_3MONTH = "/count_capture";
     public static final String COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE = "/important_recognize";
+    public static final String COMMUNITY_IMPORTANT_PEOPLE_RECOGNIZE_HISTORY = "/important_recognize_history";
 
     /**
      * Clustering模块请求路径

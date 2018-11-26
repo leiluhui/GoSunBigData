@@ -24,9 +24,7 @@ public class ImportantPeopleRecognize implements Serializable {
     private List<Flag> flag;
     // 最后抓拍时间
     private Timestamp lastTime;
-    // 人员照片ID
-    private Long peoplePictureId;
-    // 被设别照片ID
+    // 被识别照片ID
     private Long pictureId;
     // 抓拍大图
     private String burl;

@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hzgc.common.service.api.service.InnerService;
 import com.hzgc.common.service.api.service.PlatformService;
 import com.hzgc.common.service.response.ResponseResult;
+import com.hzgc.common.util.basic.ImsiUtil;
 import com.hzgc.common.util.basic.ListUtil;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.jniface.FaceAttribute;
@@ -948,5 +949,80 @@ public class CommunityService {
         }
         vo.setTotalNum((int) info.getTotal());
         return vo;
+    }
+
+    public List<ImportantPeopleRecognizeHistoryVO> importantPeopleRecognizeHistory(Long regionId) {
+        List<ImportantPeopleRecognizeHistoryVO> voList = new ArrayList<>();
+        List<Long> communityIds = platformService.getCommunityIdsById(regionId);
+        if (communityIds == null || communityIds.size() == 0) {
+            log.info("Search community ids by region id is null, so return null");
+            return null;
+        }
+        log.info("Search community ids by region id is:" + JacksonUtil.toJson(communityIds));
+        List<ImportantPeopleRecognizeHistory> histories = recognizeRecordMapper.getImportantPeopleRecognizeHistory(communityIds);
+        if (histories == null || histories.size() == 0) {
+            log.info("Search community important people recognize history is null, so return null");
+            return null;
+        }
+        for (ImportantPeopleRecognizeHistory history : histories){
+            ImportantPeopleRecognizeHistoryVO vo = new ImportantPeopleRecognizeHistoryVO();
+            vo.setPeopleId(history.getPeopleId());
+            vo.setName(history.getName());
+            vo.setIdcard(history.getIdcard());
+            vo.setAge(history.getAge());
+            vo.setSex(history.getSex());
+            vo.setBirthplace(history.getBirthplace());
+            vo.setAddress(history.getAddress());
+            List<Phone> phones = history.getPhones();
+            if (phones != null && phones.size() > 0){
+                List<String> phoneList = new ArrayList<>();
+                for (Phone phone : phones) {
+                    phoneList.add(phone.getPhone());
+                }
+                vo.setPhone(phoneList);
+            }
+            List<Car> cars = history.getCars();
+            if (cars != null && cars.size() > 0){
+                List<String> carList = new ArrayList<>();
+                for (Car car : cars) {
+                    carList.add(car.getCar());
+                }
+                vo.setCar(carList);
+            }
+            List<Imsi> imsis = history.getImsis();
+            if (imsis != null && imsis.size() > 0){
+                List<String> imsiList = new ArrayList<>();
+                for (Imsi imsi : imsis) {
+                    imsiList.add(ImsiUtil.toMac(imsi.getImsi()));
+                }
+                vo.setMac(imsiList);
+            }
+            vo.setFlag(history.getType());
+            //当type等于1的时候：为人脸识别类型；不等于1的时候，数据库pictureid为空,所以需要手动查询一张图片出来
+            if (history.getType() == 1) {
+                vo.setPictureId(history.getPictureId());
+            } else {
+                Long picId = pictureMapper.getPictureIdByPeopleId(history.getPeopleId());
+                vo.setPictureId(picId);
+            }
+            vo.setImsi(history.getImsi());
+            vo.setPlate(history.getPlate());
+            vo.setBurl(innerService.httpHostNameToIp(history.getBurl()).getHttp_ip());
+            vo.setSurl(innerService.httpHostNameToIp(history.getSurl()).getHttp_ip());
+            vo.setTime(sdf.format(history.getCaptureTime()));
+            vo.setCommunityId(history.getCommunity());
+            vo.setCommunity(platformService.getCommunityName(history.getCommunity()));
+            vo.setDeviceId(history.getDeviceId());
+            if (history.getType() == 1 || history.getType() == 3){
+                vo.setDeviceId(history.getDeviceId());
+                vo.setDeviceName(platformService.getCameraDeviceName(history.getDeviceId()));
+            }
+            if (history.getType() == 2){
+                vo.setDeviceId(platformService.getImsiDeviceId(history.getDeviceId()));
+                vo.setDeviceName(platformService.getImsiDeviceName(history.getDeviceId()));
+            }
+            voList.add(vo);
+        }
+        return voList;
     }
 }

@@ -103,8 +103,11 @@
         <include refid="Base_Column_List"/>
         from t_people
         <where>
-            <if test="regionId != null ">
-                region = #{regionId,jdbcType=BIGINT}
+            <if test="communityId == null and regionIds != null and regionIds.size() > 0">
+                region in
+                <foreach collection="regionIds" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
             </if>
             <if test="communityId != null ">
                 and community = #{communityId,jdbcType=BIGINT}

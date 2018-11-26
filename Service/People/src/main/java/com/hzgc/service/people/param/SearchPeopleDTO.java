@@ -5,16 +5,17 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @ApiModel(value = "人口库模糊查询入参")
 @Data
 public class SearchPeopleDTO implements Serializable {
-    @ApiModelProperty(value = "查询类型")
-    private Long searchType;                       // 0 :姓名 1：身份证 2 ： IMSI 3 : 手机号
+    @ApiModelProperty(value = "查询类型(0:姓名,1：身份证,2：IMSI,3:手机号)")
+    private Long searchType;
     @ApiModelProperty(value = "用户输入内容")
     private String searchVal;
     @ApiModelProperty(value = "区域ID")
-    private Long regionId;
+    private List<Long> regionIds;
     @ApiModelProperty(value = "小区ID")
     private Long communityId;
     @ApiModelProperty(value = "起始行数")
