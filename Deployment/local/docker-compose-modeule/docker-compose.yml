@@ -32,10 +32,6 @@ services:
     - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
     - IP=mysql
     - PORT=${MYSQL_PORT}
-    volumes:
-    - ${DOCKER_HOME}/mysql/crontab/cronfile:/cronfile
-    - ${DOCKER_HOME}/mysql/crontab:/crontab
-    - ${DOCKER_HOME}/mysql/sql:/mysql
 
   zookeeper:
     image: ${DOCKER_REPOSITOR}/hzgc/zookeeper:3.4.10
