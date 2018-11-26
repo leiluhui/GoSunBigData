@@ -74,7 +74,7 @@
   <!--重点人员识别记录查询-->
   <select id="getImportantRecognizeRecord" resultMap="ImportantPeopleRecognizeMap"
           parameterType="com.hzgc.service.community.param.ImportantRecognizeSearchParam">
-    SELECT a.peopleid, a.type, b.name, b.idcard, b.lasttime, a.pictureid, a.surl, a.burl,
+    SELECT DISTINCT a.peopleid, a.type, b.name, b.idcard, b.lasttime, a.pictureid, a.surl, a.burl,
     a.similarity, a.capturetime, a.deviceid, a.imsi, a.mac, a.plate
     FROM t_recognize_record a
     LEFT JOIN t_people b ON a.peopleid = b.id
@@ -108,7 +108,7 @@
   <!--重点人员告警展示(大数据可视化首页左下角)-->
   <select id="getImportantPeopleRecognizeHistory" resultMap="ImportantPeopleRecognizeHistoryMap"
           parameterType="java.lang.Long">
-    select a.peopleid, b.name, b.idcard, b.sex, b.age, b.address, b.birthplace,
+    select DISTINCT a.peopleid, b.name, b.idcard, b.sex, b.age, b.address, b.birthplace,
     a.type, a.pictureid, a.imsi, a.plate, a.surl, a.burl, a.capturetime, a.community, a.deviceid
     from t_recognize_record a
     left join t_people b on a.peopleid = b.id
