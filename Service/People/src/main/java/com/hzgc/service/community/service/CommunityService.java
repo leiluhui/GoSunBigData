@@ -1007,8 +1007,8 @@ public class CommunityService {
             }
             vo.setImsi(history.getImsi());
             vo.setPlate(history.getPlate());
-            vo.setBurl(history.getBurl());
-            vo.setSurl(history.getSurl());
+            vo.setBurl(innerService.httpHostNameToIp(history.getBurl()).getHttp_ip());
+            vo.setSurl(innerService.httpHostNameToIp(history.getSurl()).getHttp_ip());
             vo.setTime(sdf.format(history.getCaptureTime()));
             vo.setCommunityId(history.getCommunity());
             vo.setCommunity(platformService.getCommunityName(history.getCommunity()));
