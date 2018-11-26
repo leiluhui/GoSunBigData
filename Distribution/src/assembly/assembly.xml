@@ -366,19 +366,5 @@
             </includes>
             <outputDirectory>./local/es/</outputDirectory>
         </fileSet>
-        <fileSet>
-            <directory>../Deployment/normal/project/sql/</directory>
-            <includes>
-                <include>peopleDatabase.sql</include>
-            </includes>
-            <outputDirectory>./local/mysql/sql/</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../Cluster/Spark/target/spark/conf</directory>
-            <includes>
-                <include>sparkJob.properties</include>
-            </includes>
-            <outputDirectory>./local/spark/</outputDirectory>
-        </fileSet>
     </fileSets>
 </assembly>
