@@ -75,7 +75,6 @@ object KafkaToParquet {
     val brokers = System.getProperty("kafka_broker")
     val kafkaGroupId = System.getProperty("kafka_group")
     val timeInterval = System.getProperty("time_interval")
-    val storeAddress= System.getProperty("store_address")
     val zkHosts = System.getProperty("zk_address")
     val faceTopic = Set(System.getProperty("face_topic"))
     val personTopic = Set(System.getProperty("person_topic"))
@@ -98,7 +97,7 @@ object KafkaToParquet {
       "metadata.broker.list" -> brokers,
       "group.id" -> kafkaGroupId)
 
-    face2es(spark, ssc, zkClient, kafkaParams, faceTopic, zkHosts, zkFacePath, storeAddress)
+    face2es(spark, ssc, zkClient, kafkaParams, faceTopic, zkHosts, zkFacePath)
     person2es(ssc, zkClient, kafkaParams, personTopic, zkHosts, zkPersonPath)
     car2es(ssc, zkClient, kafkaParams, carTopic, zkHosts, zkCarPath)
 
@@ -108,7 +107,7 @@ object KafkaToParquet {
 
 
   def face2es(spark: SparkSession, ssc: StreamingContext, zkClient: ZkClient, kafkaParams: Map[String, String],
-              topics: Set[String], zkHosts: String, zkPath: String, storeAddress: String): Unit = {
+              topics: Set[String], zkHosts: String, zkPath: String): Unit = {
     import org.elasticsearch.spark.streaming._
     val messages = createCustomDirectKafkaStream(ssc, kafkaParams, zkHosts, zkPath, topics)
     val kafkaDF = messages.map(data => (data._1, JacksonUtil.toObject(data._2, classOf[FaceObject])))
@@ -121,10 +120,6 @@ object KafkaToParquet {
           faceobject._2.getAttribute.getHuzi, faceobject._2.getAttribute.getSharpness, faceobject._2.getAttribute.getFeature,
           Base64.getEncoder.encodeToString(faceobject._2.getAttribute.getBitFeature))
       })
-    kafkaDF.foreachRDD(rdd => {
-      import spark.implicits._
-      rdd.map(rdd => rdd).repartition(1).toDF().write.mode(SaveMode.Append).parquet(storeAddress)
-    })
     kafkaDF.map(data => data.toEsMap).saveToEs(FaceTable.DYNAMIC_INDEX + "/" + FaceTable.PERSON_INDEX_TYPE,
       Map("es.mapping.id" -> "id"))
     messages.foreachRDD(rdd => saveOffsets(zkClient, zkHosts, zkPath, rdd))

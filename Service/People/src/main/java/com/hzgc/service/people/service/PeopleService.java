@@ -568,11 +568,14 @@ public class PeopleService {
             }
             if (people.getFlag() != null && people.getFlag().size() > 0) {
                 List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-                List<Integer> flagIdList = new ArrayList<>();
+                List<com.hzgc.service.people.param.Flag> flagList = new ArrayList<>();
                 for (com.hzgc.service.people.model.Flag flag : flags) {
-                    flagIdList.add(flag.getFlagid());
+                    com.hzgc.service.people.param.Flag flagVO = new com.hzgc.service.people.param.Flag();
+                    flagVO.setId(flag.getFlagid());
+                    flagVO.setFlag(flag.getFlag());
+                    flagList.add(flagVO);
                 }
-                peopleVO.setFlag(flagIdList);
+                peopleVO.setFlag(flagList);
             }
             if (people.getImsi() != null && people.getImsi().size() > 0) {
                 List<Imsi> imsis = people.getImsi();
@@ -673,11 +676,14 @@ public class PeopleService {
                     }
                     if (people.getFlag() != null && people.getFlag().size() > 0) {
                         List<com.hzgc.service.people.model.Flag> flags = people.getFlag();
-                        List<Integer> flagIdList = new ArrayList<>();
+                        List<com.hzgc.service.people.param.Flag> flagList = new ArrayList<>();
                         for (com.hzgc.service.people.model.Flag flag : flags) {
-                            flagIdList.add(flag.getFlagid());
+                            com.hzgc.service.people.param.Flag flagVO = new com.hzgc.service.people.param.Flag();
+                            flagVO.setId(flag.getFlagid());
+                            flagVO.setFlag(flag.getFlag());
+                            flagList.add(flagVO);
                         }
-                        peopleVO.setFlag(flagIdList);
+                        peopleVO.setFlag(flagList);
                     }
                     if (people.getPicture() != null && people.getPicture().size() > 0) {
                         PictureWithBLOBs picture = people.getPicture().get(0);

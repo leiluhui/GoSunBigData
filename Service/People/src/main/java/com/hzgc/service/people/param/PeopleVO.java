@@ -49,7 +49,7 @@ public class PeopleVO implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private String updateTime;
     @ApiModelProperty(value = "标签列表")
-    private List<Integer> flag;
+    private List<Flag> flag;
     @ApiModelProperty(value = "IMSI码列表")
     private List<String> imsi;
     @ApiModelProperty(value = "电话列表")

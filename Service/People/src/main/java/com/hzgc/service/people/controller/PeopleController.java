@@ -299,7 +299,8 @@ public class PeopleController {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
-        if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 && param.getSearchType() != 3) {
+        if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 &&
+                param.getSearchType() != 3 && param.getSearchType() != 4){
             log.error("Start search people, but SearchType is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
         }
