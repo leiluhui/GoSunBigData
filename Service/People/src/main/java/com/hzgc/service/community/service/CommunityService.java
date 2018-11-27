@@ -918,9 +918,12 @@ public class CommunityService {
             }
             importantPeopleRecognize.setCar(carList);
             List<Flag> flags = recognize.getFlag();
-            List<Integer> flagList = new ArrayList<>();
+            List<com.hzgc.service.people.param.Flag> flagList = new ArrayList<>();
             for (Flag flag : flags) {
-                flagList.add(flag.getFlagid());
+                com.hzgc.service.people.param.Flag ff = new com.hzgc.service.people.param.Flag();
+                ff.setId(flag.getFlagid());
+                ff.setFlag(flag.getFlag());
+                flagList.add(ff);
             }
             importantPeopleRecognize.setFlag(flagList);
             if (recognize.getType() == 1 || recognize.getType() == 3) {
