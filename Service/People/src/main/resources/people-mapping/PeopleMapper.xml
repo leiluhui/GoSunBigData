@@ -124,6 +124,9 @@
             <if test="searchType == 3 ">
                 and id in (select peopleid from t_phone where phone like "%" #{searchVal,jdbcType=VARCHAR} "%")
             </if>
+            <if test="searchType == 4 ">
+                and id in (select peopleid from t_flag where flagid = #{searchVal,jdbcType=VARCHAR})
+            </if>
         </where>
     </select>
     <!--小区实有人口数量统计-->

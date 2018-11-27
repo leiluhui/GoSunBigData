@@ -1,5 +1,6 @@
 package com.hzgc.service.community.param;
 
+import com.hzgc.service.people.param.Flag;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class ImportantPeopleRecognizeVO implements Serializable {
     @ApiModelProperty(value = "车辆列表")
     private List<String> car;
     @ApiModelProperty(value = "标签列表")
-    private List<Integer> flag;
+    private List<Flag> flag;
     @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
     @ApiModelProperty(value = "人员照片ID")

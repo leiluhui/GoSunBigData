@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS  `t_people` (
   `politic` varchar(10) DEFAULT NULL COMMENT '政治面貌',
   `edulevel` varchar(10) DEFAULT NULL COMMENT '文化程度',
   `job` varchar(32) DEFAULT NULL COMMENT '职业',
-  `birthplace` varchar(10) DEFAULT NULL COMMENT '籍贯',
+  `birthplace` varchar(20) DEFAULT NULL COMMENT '籍贯',
   `community` bigint(20) DEFAULT NULL COMMENT '小区ID',
   `lasttime` timestamp NULL DEFAULT NULL COMMENT '最后出现时间',
   `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
