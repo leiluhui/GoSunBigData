@@ -1,24 +1,28 @@
 package com.hzgc.collect.config;
 
-import com.hzgc.collect.service.ftp.ftplet.FtpHomeDir;
+import com.hzgc.collect.ActiveProfiles;
+import com.hzgc.collect.service.ftp.ConnectionConfigFactory;
+import com.hzgc.collect.service.ftp.FtpServer;
+import com.hzgc.collect.service.ftp.FtpServerFactory;
+import com.hzgc.collect.service.ftp.command.CommandFactoryFactory;
+import com.hzgc.collect.service.ftp.ftplet.FtpException;
+import com.hzgc.collect.service.ftp.listener.ListenerFactory;
+import com.hzgc.collect.service.ftp.nativefs.filesystem.NativeFileSystemFactory;
+import com.hzgc.collect.service.ftp.usermanager.PropertiesUserManagerFactory;
 import com.hzgc.collect.service.ftp.util.BaseProperties;
 import com.hzgc.collect.service.parser.FtpPathBootStrap;
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
 import com.hzgc.common.collect.facedis.FtpRegisterInfo;
-import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.jniface.FaceFunction;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Arrays;
 
 @Component
 @Data
@@ -29,83 +33,37 @@ public class CollectContext implements Serializable {
     @Autowired
     private PlateCheck plateCheck;
 
-    @Value("${receive.queue.capacity}")
-    @NotNull
-    private Integer receiveQueueCapacity;
+    private String profiles_active;
 
-    @Value("${receive.number}")
-    @NotNull
-    private Integer receiveNumber;
-
-    @Value("${face.detector.number}")
-    @NotNull
     private Integer faceDetectorNumber;
 
-    @Value("${ftp.ip}")
-    @NotNull
+    private Integer receiveQueueCapacity;
+
+    private Integer receiveNumber;
+
     private String ftpIp;
 
-    @Value("${ftp.port}")
-    @NotNull
     private Integer ftpPort;
 
-    @Value("${zookeeper.address}")
-    @NotNull
     private String zookeeperAddress;
 
-    @Value("${kafka.faceobject.topic}")
-    @NotNull
     private String kafkaFaceObjectTopic;
 
-    @Value("${kafka.personobject.topic}")
-    @NotNull
     private String kafkaPersonObjectTopic;
 
-    @Value("${kafka.carobject.topic}")
-    @NotNull
     private String kafkaCarObjectTopic;
 
-    @NotNull
-    private String hostname = InetAddress.getLocalHost().getHostName();
+    private String hostname;
 
-    @Value("${ftp.version}")
-    @NotNull
     private String ftpVersion;
 
-    @Value("${ftp.pathRule}")
-    @NotNull
-    private String ftpPathRule;
-
-    @Value("${ftp.account}")
-    @NotNull
     private String ftpAccount;
 
-    @Value("${ftp.password}")
-    @NotNull
     private String ftpPassword;
 
-    @Value("${homeDirs}")
-    @NotNull
-    private String homeDirs;
-
-    @Value("${seemmo.url}")
-    @NotNull
     private String seemmoUrl;
 
-    @Value("${diskUsageRate}")
-    @NotNull
-    private float diskUsageRate;
-
-    @Value("${period}")
-    @NotNull
-    private long period;
-
-    @Value("${face.detector.enable}")
     private Boolean faceDetectorOpen;
-
-    // 初始化 ftp 当前已满磁盘、未满磁盘、RootDir
-    @Autowired
-    private FtpHomeDir ftpHomeDir;
 
     @Autowired
     //Spring-kafka-templage
@@ -113,25 +71,121 @@ public class CollectContext implements Serializable {
 
     private FtpRegisterClient ftpRegisterClient;
 
-    private FtpSubscribeClient ftpSubscribeClient;
-
     private FtpPathBootStrap ftpPathBootStrap;
 
-
-    public CollectContext() throws UnknownHostException {
+    public CollectContext() {
     }
 
     /*
      * 加载有顺序
      */
     public void initAll() {
+        initProperties();
         if (faceDetectorOpen) {
             initDetector();
         }
-        initFtpPathBoostrap();
-        initFtpHomeDirCheck();
-        initFtpRegisterClient();
-        initFtpSubscribeClient();
+        switch (profiles_active) {
+            case ActiveProfiles.FTP:
+                initFtpPathBoostrap();
+                initFtpServer();
+                log.info("Active profiles is:{}, start ftpserver", profiles_active);
+                break;
+            case ActiveProfiles.PROXY:
+                initFtpRegisterClient();
+                log.info("Active profiles is:{}, start ftp proxy server", profiles_active);
+                break;
+            case ActiveProfiles.LOCAL:
+                if (faceDetectorOpen) {
+                    initDetector();
+                }
+                initFtpPathBoostrap();
+                initFtpRegisterClient();
+                initFtpServer();
+                log.info("Active profiles is:{}, start ftp proxy server", profiles_active);
+                break;
+            default:
+                log.error("Active profile is error, start ftpserver failed");
+                System.exit(0);
+                break;
+        }
+    }
+
+    private void initProperties() {
+        profiles_active = environment.getProperty("spring.profiles.active");
+
+        String faceDetecStr = environment.getProperty("face.detector.number");
+        faceDetectorNumber = faceDetecStr != null ? Integer.parseInt(faceDetecStr) : null;
+
+        String receiveQueue = environment.getProperty("receive.queue.capacity");
+        receiveQueueCapacity = receiveQueue != null ? Integer.parseInt(receiveQueue) : null;
+
+        String receiveStr = environment.getProperty("receive.number");
+        receiveNumber = receiveStr != null ? Integer.parseInt(receiveStr) : null;
+
+        ftpIp = environment.getProperty("ftp.ip");
+
+        ftpPort = Integer.parseInt(environment.getProperty("ftp.port"));
+
+        zookeeperAddress = environment.getProperty("zookeeper.address");
+
+        kafkaFaceObjectTopic = environment.getProperty("kafka.faceobject.topic");
+
+        kafkaPersonObjectTopic = environment.getProperty("kafka.personobject.topic");
+
+        kafkaCarObjectTopic = environment.getProperty("kafka.carobject.topic");
+
+        hostname = environment.getProperty("ftp.hostname");
+
+        ftpVersion = environment.getProperty("ftp.version");
+
+        ftpAccount = environment.getProperty("ftp.account");
+
+        ftpPassword = environment.getProperty("ftp.password");
+
+        seemmoUrl = environment.getProperty("seemmo.url");
+
+        String detectorOpenStr = environment.getProperty("face.detector.enable");
+        faceDetectorOpen = detectorOpenStr != null ? Boolean.parseBoolean(detectorOpenStr) : null;
+
+    }
+
+    private void initFtpServer() {
+        FtpServerFactory ftpServerFactory = new FtpServerFactory();
+
+        ListenerFactory listenerFactory = new ListenerFactory();
+
+        PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory(getUserMangerProperties());
+
+        CommandFactoryFactory commandFactoryFactory = new CommandFactoryFactory();
+
+        NativeFileSystemFactory nativeFileSystemFactory = new NativeFileSystemFactory();
+
+        ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
+
+        ftpServerFactory.createCustomContext(this);
+
+        //set the port of the listener
+        listenerFactory.setPort(getFtpPort());
+        // replace the default listener
+        ftpServerFactory.addListener("default", listenerFactory.createListener());
+        // set customer user manager
+        ftpServerFactory.setUserManager(userManagerFactory.createUserManager());
+        //set customer cmd factory
+        ftpServerFactory.setCommandFactory(commandFactoryFactory.createCommandFactory());
+        //set local file system
+        ftpServerFactory.setFileSystem(nativeFileSystemFactory);
+        //set connection manager
+        ftpServerFactory.setConnectionConfig(connectionConfigFactory.createUDConnectionConfig());
+
+        //create ftp server
+        FtpServer server = ftpServerFactory.createServer();
+        try {
+            server.start();
+        } catch (FtpException e) {
+            e.printStackTrace();
+        }
+        //print ftp log
+        log.info("\n" + getLogo());
     }
 
     private void initFtpPathBoostrap() {
@@ -149,21 +203,13 @@ public class CollectContext implements Serializable {
         }
     }
 
-    private void initFtpHomeDirCheck() {
-        ftpHomeDir.periodicallyCheckCurrentRootDir();
-    }
-
-    private void initFtpSubscribeClient() {
-        ftpSubscribeClient = new FtpSubscribeClient(zookeeperAddress);
-    }
-
     private void initFtpRegisterClient() {
         ftpRegisterClient = new FtpRegisterClient(zookeeperAddress);
-        ftpRegisterClient.createNode(new FtpRegisterInfo(null, null, ftpPathRule,
+        ftpRegisterClient.createNode(new FtpRegisterInfo(null, null, null,
                 ftpAccount, ftpPassword, ftpIp, hostname, ftpPort + "", "face,car,person"));
     }
 
-    public BaseProperties getUserMangerProperties() {
+    private BaseProperties getUserMangerProperties() {
         BaseProperties properties = new BaseProperties();
         properties.setProperty("com.hzgc.ftpserver.user.admin.userpassword",
                 environment.getProperty("com.hzgc.ftpserver.user.admin.userpassword"));
@@ -238,7 +284,7 @@ public class CollectContext implements Serializable {
         return Integer.parseInt(environment.getProperty("com.hzgc.ftpserver.user.maxThreads"));
     }
 
-    public String getLogo() {
+    private String getLogo() {
         return " _____  _             ____                                 \n" +
                 "|  ___|| |_  _ __    / ___|   ___  _ __ __   __  ___  _ __ \n" +
                 "| |_   | __|| '_ \\   \\___ \\  / _ \\| '__|\\ \\ / / / _ \\| '__|\n" +

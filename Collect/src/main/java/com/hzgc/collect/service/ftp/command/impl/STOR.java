@@ -99,18 +99,21 @@ public class STOR extends AbstractCommand {
             // transfer data
             boolean failure = false;
             OutputStream outStream = null;
+            byte[] out_buffer = null;
             long transSz = 0L;
             try {
                 fileName = file.getAbsolutePath();
                 parser = context.getCollectContext().getFtpPathBootStrap().getParser(fileName);
                 if (parser == null) {
-                    LOG.warn("No parser for this fileName {" + file.getFileAbsolutePa() + "}");
+                    LOG.debug("No parser for this fileName {" + file.getFileAbsolutePa() + "}");
                     outStream = new ByteArrayOutputStream();
                 } else {
-                    LOG.info("Get parser for this fileName {" + fileName + "}");
+                    LOG.debug("Get parser for this fileName {" + fileName + "}");
                     outStream = file.createOutputStream(skipLen);
                 }
-                transSz = dataConnection.transferFromClient(session.getFtpletSession(), outStream);
+                out_buffer = dataConnection.transferFromClient(
+                        session.getFtpletSession(), outStream, new ByteArrayOutputStream());
+                transSz = out_buffer.length;
 
                 // notify the statistics component
                 ServerFtpStatistics ftpStat = (ServerFtpStatistics) context
@@ -154,7 +157,8 @@ public class STOR extends AbstractCommand {
                                 .setbAbsolutePath(file.getFileAbsolutePa())
                                 .setHostname(context.getCollectContext().getHostname())
                                 .setParser(parser)
-                                .setbRelativePath(fileName);
+                                .setbRelativePath(fileName)
+                                .setPicBuffer(out_buffer);
                         context.getScheduler().putData(event);
                     }
                 }

@@ -40,10 +40,10 @@ public class ReceiverScheduler implements Serializable {
      * @param event 封装的数据对象
      */
     public void putData(final Event event) {
-        synchronized (container) {
+//        synchronized (container) {
             log.debug("Thread name [" + Thread.currentThread() + "] process event " + JacksonUtil.toJson(event));
             getReceiver().putData(event);
-        }
+//        }
     }
 
     /**
@@ -80,7 +80,7 @@ public class ReceiverScheduler implements Serializable {
                 ExecutorService pool = Executors.newFixedThreadPool(receiveNumber);
                 ReceiverImpl receiver = new ReceiverImpl(i + "", collectContext);
                 register(receiver);
-                pool.execute(new ProcessThread(receiver.getQueue(), collectContext));
+                pool.execute(new ProcessThread(receiver, collectContext));
             }
         }
 

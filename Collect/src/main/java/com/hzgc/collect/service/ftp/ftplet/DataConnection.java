@@ -19,6 +19,7 @@
 
 package com.hzgc.collect.service.ftp.ftplet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +41,8 @@ public interface DataConnection {
      */
     long transferFromClient(FtpSession session, OutputStream out)
             throws IOException;
+
+    byte[] transferFromClient(FtpSession session, OutputStream out, ByteArrayOutputStream out_buffer) throws IOException;
 
     /**
      * Transfer data to the client (e.g. RETR).

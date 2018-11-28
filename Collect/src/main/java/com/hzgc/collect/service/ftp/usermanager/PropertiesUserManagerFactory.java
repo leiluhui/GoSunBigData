@@ -19,13 +19,8 @@
 
 package com.hzgc.collect.service.ftp.usermanager;
 
-import com.hzgc.collect.config.CollectContext;
 import com.hzgc.collect.service.ftp.ftplet.UserManager;
 import com.hzgc.collect.service.ftp.usermanager.impl.PropertiesUserManager;
-import com.hzgc.collect.service.ftp.util.BaseProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.net.URL;
@@ -36,7 +31,6 @@ import java.util.Properties;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-@Component
 public class PropertiesUserManagerFactory implements UserManagerFactory {
 
     private String adminName = "admin";
@@ -47,8 +41,12 @@ public class PropertiesUserManagerFactory implements UserManagerFactory {
 
     private PasswordEncryptor passwordEncryptor = new Md5PasswordEncryptor();
 
-    @Autowired
-    private CollectContext collectContext;
+    private Properties userManagerProperties;
+
+
+    public PropertiesUserManagerFactory(Properties propertiesUserManager) {
+        this.userManagerProperties = propertiesUserManager;
+    }
 
 
     /**
@@ -62,7 +60,7 @@ public class PropertiesUserManagerFactory implements UserManagerFactory {
             return new PropertiesUserManager(passwordEncryptor, userDataFile,
                     adminName);
         } else {
-            return new PropertiesUserManager(passwordEncryptor, collectContext.getUserMangerProperties(), adminName);
+            return new PropertiesUserManager(passwordEncryptor, userManagerProperties, adminName);
         }
     }
 
