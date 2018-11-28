@@ -258,7 +258,7 @@ public class ProcessThread implements Runnable {
     }
 
     private void sendKafka(Event event, Vehicle vehicle) {
-        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(), vehicle.getPlate_licence())) {
+//        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(), vehicle.getPlate_licence())) {
             vehicle.setVehicle_data(null);
             String carId = UuidUtil.getUuid();
             CarObject carObject = CarObject.builder()
@@ -289,4 +289,4 @@ public class ProcessThread implements Runnable {
             }
         }
     }
-}
+//}

@@ -1,7 +1,9 @@
 package com.hzgc.cluster.peoman.worker.service;
 
 import com.google.common.base.Stopwatch;
+import com.hzgc.cluster.peoman.worker.dao.InnerFeatureMapper;
 import com.hzgc.cluster.peoman.worker.dao.PictureMapper;
+import com.hzgc.cluster.peoman.worker.model.InnerFeature;
 import com.hzgc.cluster.peoman.worker.model.Picture;
 import com.hzgc.jniface.FaceUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +20,11 @@ class LoadDataFromTiDB {
     @Autowired
     private PictureMapper pictureMapper;
     @Autowired
+    private InnerFeatureMapper innerFeatureMapper;
+    @Autowired
     private MemeoryCache memeoryCache;
+    @Autowired
+    private PeopleCompare peopleCompare;
 
     void load(int offset, int limit) {
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -33,6 +39,9 @@ class LoadDataFromTiDB {
         } else {
             log.error("Load data failed, offset {}, limit {}, time {}", offset, limit, stopwatch.elapsed(TimeUnit.MILLISECONDS));
         }
+
+        List<InnerFeature> featureList = innerFeatureMapper.select();
+        peopleCompare.putData(featureList);
     }
 
     private void cacheToMemeory(List<Picture> pictures) {

@@ -1,11 +1,9 @@
 package com.hzgc.cluster.peoman.worker.service;
 
+import com.hzgc.cluster.peoman.worker.dao.InnerFeatureMapper;
 import com.hzgc.cluster.peoman.worker.dao.PeopleMapper;
 import com.hzgc.cluster.peoman.worker.dao.RecognizeRecordMapper;
-import com.hzgc.cluster.peoman.worker.model.Car;
-import com.hzgc.cluster.peoman.worker.model.IMSI;
-import com.hzgc.cluster.peoman.worker.model.People;
-import com.hzgc.cluster.peoman.worker.model.RecognizeRecord;
+import com.hzgc.cluster.peoman.worker.model.*;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.util.CollectUrlUtil;
@@ -30,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 @Slf4j
@@ -54,6 +53,10 @@ public class PeopleCompare {
     @SuppressWarnings("unused")
     private RecognizeRecordMapper recognizeRecordMapper;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    private InnerFeatureMapper innerFeatureMapper;
+
     @Value("${kafka.fusion.topic}")
     @SuppressWarnings("unused")
     private String fusionTopic;
@@ -74,6 +77,10 @@ public class PeopleCompare {
     @SuppressWarnings("unused")
     private int filterTime;
 
+    @Value("${update.inner.feature.time}")
+    @SuppressWarnings("unused")
+    private int updateInnerTime;
+
     @Value("${face.float.compare.open}")
     @SuppressWarnings("unused")
     private boolean isOpen;
@@ -82,11 +89,14 @@ public class PeopleCompare {
     @SuppressWarnings("unused")
     private int compareNumber;
 
-    private String yearMonth = "";
+    private String yearMonth = "197001";
+    private long timeFlag = 0;
+    private int innerFeatureNum=0;
     private Map<Integer, String> indexUUID = new HashMap<>();
     private Map<String, CameraQueryDTO> cameraInfos = new HashMap<>();
     private LinkedList<byte[]> bitFeatureList = new LinkedList<>();
     private LinkedList<float[]> floatFeatureList = new LinkedList<>();
+    private ReentrantLock lock = new ReentrantLock();
     private KafkaProducer<String, String> producer;
 
     public PeopleCompare(@Value("${kafka.bootstrap.servers}") String kafkaHost) {
@@ -104,13 +114,37 @@ public class PeopleCompare {
 
     public void comparePeople(FaceObject faceObject) {
         String currentYearMonth = new SimpleDateFormat("yyyyMM").format(System.currentTimeMillis());
-        if (!currentYearMonth.equals(yearMonth)) {
+        if (yearMonth.equals("197001")) {
             log.info("PeopleComare init, currentYearMonth=" + currentYearMonth + ", yearMonth=" + yearMonth);
+            yearMonth = currentYearMonth;
+        } else if (!currentYearMonth.equals(yearMonth)) {
+            log.info("PeopleComare clear, currentYearMonth=" + currentYearMonth + ", yearMonth=" + yearMonth);
             bitFeatureList.clear();
             floatFeatureList.clear();
             indexUUID.clear();
+            innerFeatureMapper.deleteAll();
+            innerFeatureNum = 0;
             yearMonth = currentYearMonth;
         }
+        if ((System.currentTimeMillis()/1000 - timeFlag > updateInnerTime) && (indexUUID.size() > innerFeatureNum)) {
+            log.info("current={}, timeFlag={}",System.currentTimeMillis()/1000, timeFlag);
+            for (int i=innerFeatureNum; i<indexUUID.size(); i++) {
+                InnerFeature innerFeature = new InnerFeature();
+                innerFeature.setPeopleid(indexUUID.get(i));
+                innerFeature.setFeature(FaceUtil.floatFeature2Base64Str(floatFeatureList.get(i)));
+                innerFeature.setBitfeature(FaceUtil.bitFeautre2Base64Str(bitFeatureList.get(i)));
+                log.info("----------------insert t_inner_feature, peopleid={}", innerFeature.getPeopleid());
+                try {
+                    innerFeatureMapper.insert(innerFeature);
+                } catch (Exception e) {
+                    log.info("insert t_inner_feature failed !!!");
+                    e.printStackTrace();
+                }
+            }
+            innerFeatureNum = indexUUID.size();
+            timeFlag = System.currentTimeMillis()/1000;
+        }
+
         if(cameraInfos.size() <= 0) {
             Map<String, CameraQueryDTO> cameraInfoByBatchIpc = platformService.getCameraInfoByBatchIpc(new ArrayList<>());
             if (cameraInfoByBatchIpc != null && cameraInfoByBatchIpc.size() > 0) {
@@ -494,11 +528,30 @@ public class PeopleCompare {
             mesg.setCar(new ArrayList<>(cars));
             mesg.setMac(new ArrayList<>(imsis));
             mesg.setPictureid(new ArrayList<>(pictureids));
-            mesg.setCommuntidy(Long.valueOf(imsiInfo.getCellid()));
+            mesg.setCommuntidy(imsiInfo.getCommunityId());
 
             ProducerRecord<String, String> record = new ProducerRecord<>(focalTopic, JacksonUtil.toJson(mesg));
             Future<RecordMetadata> send = producer.send(record);
             producer.flush();
+        }
+    }
+
+    void putData(List<InnerFeature> featureList) {
+        try {
+            lock.lock();
+            for (InnerFeature innerFeature : featureList) {
+                if (innerFeature.getPeopleid() != null && innerFeature.getFeature() != null && innerFeature.getBitfeature() != null) {
+                    byte[] bitFeature = FaceUtil.base64Str2BitFeature(innerFeature.getBitfeature());
+                    float[] feature = FaceUtil.base64Str2floatFeature(innerFeature.getFeature());
+                    bitFeatureList.addLast(bitFeature);
+                    floatFeatureList.addLast(feature);
+                    indexUUID.put(indexUUID.size(), innerFeature.getPeopleid());
+                    innerFeatureNum ++;
+                    log.info("**********{}, {}", innerFeatureNum, innerFeature.getPeopleid());
+                }
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
