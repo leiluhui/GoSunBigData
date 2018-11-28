@@ -71,7 +71,7 @@ function modify_version(){
     for version in `find $1 | grep /.env`
     do
        sed -i "s#VERSION=.*#VERSION=${PROJECT_VERSION}#g" $version
-       printf "\033[32m To modify the $version is successfully \033[0m\n"
+       print_info "Modify version successfully, file:$version, version:${PROJECT_VERSION}"
     done
 }
 
