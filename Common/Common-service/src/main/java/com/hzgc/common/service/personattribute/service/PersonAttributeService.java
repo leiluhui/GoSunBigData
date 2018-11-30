@@ -131,7 +131,7 @@ public class PersonAttributeService {
         personAttributes.add(personHair);
 
         //背包类型
-        Map<Integer, String> knapsackMap = personMap.get("knapsack_code");
+/*        Map<Integer, String> knapsackMap = personMap.get("knapsack_code");
         PersonAttribute personKnapsack = new PersonAttribute();
         personKnapsack.setIdentify("knapsack");
         personKnapsack.setDesc("背包类型");
@@ -144,7 +144,7 @@ public class PersonAttributeService {
             personKnapsackValues.add(personAttributeValue);
         }
         personKnapsack.setValues(personKnapsackValues);
-        personAttributes.add(personKnapsack);
+        personAttributes.add(personKnapsack);*/
 
         //背包方式
         Map<Integer, String> messengerBag = personMap.get("messengerbag_code");
@@ -195,7 +195,7 @@ public class PersonAttributeService {
         personAttributes.add(personSex);
 
         //肩上的包
-        Map<Integer, String> shoudlerBag = personMap.get("shoulderbag_code");
+/*        Map<Integer, String> shoudlerBag = personMap.get("shoulderbag_code");
         PersonAttribute personShoudlerBag = new PersonAttribute();
         personShoudlerBag.setIdentify("shoulderbag");
         personShoudlerBag.setDesc("肩上的包");
@@ -208,10 +208,10 @@ public class PersonAttributeService {
             personShoudlerBagValues.add(personAttributeValue);
         }
         personShoudlerBag.setValues(personShoudlerBagValues);
-        personAttributes.add(personShoudlerBag);
+        personAttributes.add(personShoudlerBag);*/
 
         //雨伞
-        Map<Integer, String> umbrella = personMap.get("umbrella_code");
+/*        Map<Integer, String> umbrella = personMap.get("umbrella_code");
         PersonAttribute personUmbrella = new PersonAttribute();
         personUmbrella.setIdentify("umbrella");
         personUmbrella.setDesc("雨伞");
@@ -224,7 +224,7 @@ public class PersonAttributeService {
             personUmbrellaValues.add(personAttributeValue);
         }
         personUmbrella.setValues(personUmbrellaValues);
-        personAttributes.add(personUmbrella);
+        personAttributes.add(personUmbrella);*/
 
         //上衣颜色
         Map<Integer, String> upperColor = personMap.get("uppercolor_code");

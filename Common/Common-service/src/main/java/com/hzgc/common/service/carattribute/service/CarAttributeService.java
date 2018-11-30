@@ -25,7 +25,7 @@ public class CarAttributeService {
         Map<String, Map<Integer, String>> vehicleMap = new ReadCarInfo().getVehicleMap();
 
         // 车辆特征
-        CarAttribute plateTypeCode = new CarAttribute();
+/*        CarAttribute plateTypeCode = new CarAttribute();
         plateTypeCode.setDesc("车辆特征");
         plateTypeCode.setLogistic(CarLogistic.AND);
         plateTypeCode.setIdentify(CarData.PLATE_TYPE_CODE);
@@ -39,10 +39,10 @@ public class CarAttributeService {
             plateTypeCodeValueList.add(plateTypeCodeValue);
         }
         plateTypeCode.setValues(plateTypeCodeValueList);
-        carAttributeList.add(plateTypeCode);
+        carAttributeList.add(plateTypeCode);*/
 
         //车牌颜色
-        CarAttribute plateColorCode = new CarAttribute();
+/*        CarAttribute plateColorCode = new CarAttribute();
         plateColorCode.setDesc("车牌颜色");
         plateColorCode.setIdentify(CarData.PLATE_COLER_CODE);
         plateColorCode.setLogistic(CarLogistic.AND);
@@ -56,10 +56,10 @@ public class CarAttributeService {
             plateColorCodeValueList.add(plateColorCodeValue);
         }
         plateColorCode.setValues(plateColorCodeValueList);
-        carAttributeList.add(plateColorCode);
+        carAttributeList.add(plateColorCode);*/
 
         //车牌标识
-        CarAttribute plateFlagCode = new CarAttribute();
+/*        CarAttribute plateFlagCode = new CarAttribute();
         plateFlagCode.setDesc("车牌状况");
         plateFlagCode.setLogistic(CarLogistic.AND);
         plateFlagCode.setIdentify(CarData.PLATE_FLAG_CODE);
@@ -73,7 +73,7 @@ public class CarAttributeService {
             plateFlagCodeValueList.add(plateFlagCodeValue);
         }
         plateFlagCode.setValues(plateFlagCodeValueList);
-        carAttributeList.add(plateFlagCode);
+        carAttributeList.add(plateFlagCode);*/
 
         //车颜色
         CarAttribute vehicleColor = new CarAttribute();
@@ -110,7 +110,7 @@ public class CarAttributeService {
         carAttributeList.add(vehicleType);
 
         //主驾驶安全带
-        CarAttribute belt_maindriverCode = new CarAttribute();
+/*        CarAttribute belt_maindriverCode = new CarAttribute();
         belt_maindriverCode.setDesc("主驾驶安全带");
         belt_maindriverCode.setLogistic(CarLogistic.AND);
         belt_maindriverCode.setIdentify(CarData.BELT_MAINDRIVER);
@@ -124,10 +124,10 @@ public class CarAttributeService {
             belt_maindriverCodeValueList.add(belt_maindriverCodeValue);
         }
         belt_maindriverCode.setValues(belt_maindriverCodeValueList);
-        carAttributeList.add(belt_maindriverCode);
+        carAttributeList.add(belt_maindriverCode);*/
 
         //副驾驶安全带
-        CarAttribute belt_codriverCode = new CarAttribute();
+/*        CarAttribute belt_codriverCode = new CarAttribute();
         belt_codriverCode.setDesc("副驾驶安全带");
         belt_codriverCode.setLogistic(CarLogistic.AND);
         belt_codriverCode.setIdentify(CarData.BELT_CODRIVER);
@@ -141,10 +141,10 @@ public class CarAttributeService {
             belt_codriverValueList.add(belt_codriverCodeValue);
         }
         belt_codriverCode.setValues(belt_codriverValueList);
-        carAttributeList.add(belt_codriverCode);
+        carAttributeList.add(belt_codriverCode);*/
 
         //是否打电话
-        CarAttribute callCode = new CarAttribute();
+/*        CarAttribute callCode = new CarAttribute();
         callCode.setDesc("是否打电话");
         callCode.setLogistic(CarLogistic.AND);
         callCode.setIdentify(CarData.CALL_CODE);
@@ -158,10 +158,10 @@ public class CarAttributeService {
             callCodeValueList.add(callCodeValue);
         }
         callCode.setValues(callCodeValueList);
-        carAttributeList.add(callCode);
+        carAttributeList.add(callCode);*/
 
         //是否撞损
-        CarAttribute crashCode = new CarAttribute();
+/*        CarAttribute crashCode = new CarAttribute();
         crashCode.setDesc("是否撞损");
         crashCode.setLogistic(CarLogistic.AND);
         crashCode.setIdentify(CarData.CRASH_CODE);
@@ -175,10 +175,10 @@ public class CarAttributeService {
             crashCodeValueList.add(crashCodeValue);
         }
         crashCode.setValues(crashCodeValueList);
-        carAttributeList.add(crashCode);
+        carAttributeList.add(crashCode);*/
 
         //危化品车
-        CarAttribute dangerCode = new CarAttribute();
+/*        CarAttribute dangerCode = new CarAttribute();
         dangerCode.setDesc("危化品车");
         dangerCode.setLogistic(CarLogistic.AND);
         dangerCode.setIdentify(CarData.DANGER_CODE);
@@ -192,10 +192,10 @@ public class CarAttributeService {
             dangerCodeValueList.add(dangerCodeValue);
         }
         dangerCode.setValues(dangerCodeValueList);
-        carAttributeList.add(dangerCode);
+        carAttributeList.add(dangerCode);*/
 
         //车牌污损
-        CarAttribute plateSchelterCode = new CarAttribute();
+/*        CarAttribute plateSchelterCode = new CarAttribute();
         plateSchelterCode.setDesc("车牌污损");
         plateSchelterCode.setLogistic(CarLogistic.AND);
         plateSchelterCode.setIdentify(CarData.PLATE_SCHELTER_CODE);
@@ -209,7 +209,7 @@ public class CarAttributeService {
             plateSchelterCodeValueList.add(plateSchelterCodeValue);
         }
         plateSchelterCode.setValues(plateSchelterCodeValueList);
-        carAttributeList.add(plateSchelterCode);
+        carAttributeList.add(plateSchelterCode);*/
 
         //车牌遮挡
         CarAttribute plateDestainCode = new CarAttribute();

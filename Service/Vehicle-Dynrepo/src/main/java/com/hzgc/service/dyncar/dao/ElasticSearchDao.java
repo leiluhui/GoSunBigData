@@ -137,22 +137,25 @@ public class ElasticSearchDao {
         if (null != attributes && attributes.size() > 0) {
             for (VehicleAttribute attribute : attributes) {
                 String attributeName = attribute.getAttributeName();
-                if (attributeName.equals(CarData.VEHICLE_OBJECT_TYPE) || attributeName.equals(CarData.MISTAKE_CODE)
-                        || attributeName.equals(CarData.SUNROOF_CODE) || attributeName.equals(CarData.BRAND_NAME)
-                        || attributeName.equals(CarData.PLATE_LICENCE) || attributeName.equals(CarData.SPARETIRE_CODE)
-                        || attributeName.equals(CarData.MARKER_CODE)) {
-                    continue;
-                }
-                List <String> attributeValues = attribute.getAttributeCodes();
-                BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-                if (null != attributeValues && attributeValues.size() > 0) {
-                    for (String code : attributeValues) {
-                        if (null != code) {
-                            boolQueryBuilder.should(QueryBuilders.matchQuery(attributeName, code));
+                //                if (attributeName.equals(CarData.VEHICLE_OBJECT_TYPE) || attributeName.equals(CarData.MISTAKE_CODE)
+//                        || attributeName.equals(CarData.SUNROOF_CODE) || attributeName.equals(CarData.BRAND_NAME)
+//                        || attributeName.equals(CarData.PLATE_LICENCE) || attributeName.equals(CarData.SPARETIRE_CODE)
+//                        || attributeName.equals(CarData.MARKER_CODE)) {
+//                    continue;
+//                }
+                if (CarData.VEHICLE_COLOR.equals(attributeName) || CarData.VEHICLE_TYPE.equals(attributeName)
+                        || CarData.PLATE_DESTAIN_CODE.equals(attributeName) || CarData.RACK_CODE.equals(attributeName)) {
+                    List <String> attributeValues = attribute.getAttributeCodes();
+                    BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+                    if (null != attributeValues && attributeValues.size() > 0) {
+                        for (String code : attributeValues) {
+                            if (null != code) {
+                                boolQueryBuilder.should(QueryBuilders.matchQuery(attributeName, code));
+                            }
                         }
                     }
+                    totalBQ.must(boolQueryBuilder);
                 }
-                totalBQ.must(boolQueryBuilder);
             }
         }
     }
