@@ -59,9 +59,6 @@
         <if test="searchType == '4'.toString()">
             t_dispatch_alive b where a.type = #{searchType,jdbcType=INTEGER} and a.dispatch_id = b.id
         </if>
-        <if test="searchType == '5'.toString()">
-            t_dis
-        </if>
         and a.record_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP} order by a.record_time desc
     </select>
     <select id="selectSelective" resultMap="BaseResultMap" parameterType="com.hzgc.service.dispatch.param.DispatchRecognizeDTO">
