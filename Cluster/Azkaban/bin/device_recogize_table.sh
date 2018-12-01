@@ -4,25 +4,11 @@ PORT=${PORT}
  mysql -u root -h ${IP} -P ${PORT} -pHzgc@123 << EOF
 use people;
 
-#抓拍设备
 INSERT INTO t_device_recognize (peopleid,deviceid,currenttime,count,flag,community)
-SELECT peopleid,deviceid,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d') as time,COUNT(peopleid),1,community
-FROM t_people_recognize
+SELECT peopleid,deviceid,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d') as time,COUNT(peopleid),type,community
+FROM t_recognize_record
 WHERE DATE_FORMAT(capturetime,'%Y%m%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d')
-GROUP BY peopleid,deviceid;
-#侦码设备
-INSERT INTO t_device_recognize (peopleid,deviceid,currenttime,count,flag,community)
-SELECT peopleid,deviceid,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d') as time,COUNT(peopleid),2,community
-FROM t_fusion_imsi
-WHERE DATE_FORMAT(receivetime,'%Y%m%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d')
-GROUP BY peopleid,deviceid;
-#车辆设备
-INSERT INTO t_device_recognize (peopleid,deviceid,currenttime,count,flag,community)
-SELECT peopleid,deviceid,DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d') as time,COUNT(peopleid),3,community
-FROM t_car_recognize
-WHERE DATE_FORMAT(capturetime,'%Y%m%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y%m%d')
-GROUP BY peopleid,deviceid;
-
+GROUP BY peopleid,deviceid,type;
 EOF
 if [ $? != 0 ];then
  echo "`date "+%Y-%m-%d %H:%M:%S"`: exec device sql failed" >> /var/log/mysql.log 2>&1 &
