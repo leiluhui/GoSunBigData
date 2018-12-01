@@ -23,6 +23,8 @@
                     select="com.hzgc.service.people.dao.FlagMapper.selectByPeopleId"/>
         <collection property="imsi" ofType="com.hzgc.service.people.model.Imsi" column="id"
                     select="com.hzgc.service.people.dao.ImsiMapper.selectByPeopleId"/>
+        <collection property="imei" ofType="com.hzgc.service.people.model.Imei" column="id"
+                    select="com.hzgc.service.people.dao.ImeiMapper.selectByPeopleId"/>
         <collection property="phone" ofType="com.hzgc.service.people.model.Phone" column="id"
                     select="com.hzgc.service.people.dao.PhoneMapper.selectByPeopleId"/>
         <collection property="house" ofType="com.hzgc.service.people.model.House" column="id"
@@ -54,6 +56,8 @@
                     select="com.hzgc.service.people.dao.FlagMapper.selectByPeopleId"/>
         <collection property="picture" ofType="com.hzgc.service.people.model.PictureWithBLOBs" column="id"
                     select="com.hzgc.service.people.dao.PictureMapper.selectByPeopleId"/>
+        <collection property="imei" ofType="com.hzgc.service.people.model.Imei" column="id"
+                    select="com.hzgc.service.people.dao.ImeiMapper.selectByPeopleId"/>
     </resultMap>
     <resultMap id="CommunityPeopleMap" type="com.hzgc.service.people.model.People">
         <id column="id" property="id" jdbcType="VARCHAR"/>
@@ -126,6 +130,9 @@
             </if>
             <if test="searchType == 4 ">
                 and id in (select peopleid from t_flag where flagid = #{searchVal,jdbcType=VARCHAR})
+            </if>
+            <if test="searchType == 5 ">
+                and id in (select peopleid from t_imei where imei = #{searchVal,jdbcType=VARCHAR})
             </if>
         </where>
     </select>

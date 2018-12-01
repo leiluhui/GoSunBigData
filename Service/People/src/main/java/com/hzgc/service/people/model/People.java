@@ -1,5 +1,7 @@
 package com.hzgc.service.people.model;
 
+import com.hzgc.service.people.param.ImeiVO;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +38,8 @@ public class People implements Serializable {
     private Integer important;
 
     private Integer care;
+
+    private Imei imei;
 
     private Date lasttime;
 
@@ -185,6 +189,14 @@ public class People implements Serializable {
         this.care = care;
     }
 
+    public Imei getImei() {
+        return imei;
+    }
+
+    public void setImei(Imei imei) {
+        this.imei = imei;
+    }
+
     public Date getLasttime() {
         return lasttime;
     }
@@ -263,5 +275,19 @@ public class People implements Serializable {
 
     public void setPicture(List<PictureWithBLOBs> picture) {
         this.picture = picture;
+    }
+
+    public ImeiVO imeiToImeiVO(People people) {
+        ImeiVO imeiVO = new ImeiVO();
+        imeiVO.setId(people.imei.getId());
+        imeiVO.setPeopleId(people.imei.getPeopleid());
+        imeiVO.setImei(people.imei.getImei());
+        imeiVO.setGuardianName(people.imei.getGuardianname());
+        imeiVO.setGuardianPhone(people.imei.getGuardianphone());
+        imeiVO.setCadresName(people.imei.getCadresname());
+        imeiVO.setCadresPhone(people.imei.getCadresphone());
+        imeiVO.setPoliceName(people.imei.getPolicename());
+        imeiVO.setPolicePhone(people.imei.getPolicephone());
+        return imeiVO;
     }
 }

@@ -44,6 +44,8 @@ public class PeopleVO implements Serializable {
     private Long community;
     @ApiModelProperty(value = "最后抓拍时间")
     private String lastTime;
+    @ApiModelProperty(value = "IMEI码")
+    private ImeiVO imeiVO;
     @ApiModelProperty(value = "创建时间")
     private String createTime;
     @ApiModelProperty(value = "更新时间")
