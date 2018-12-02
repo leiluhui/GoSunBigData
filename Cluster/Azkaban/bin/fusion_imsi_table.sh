@@ -17,7 +17,7 @@ SELECT DISTINCT final.peopleid,final.imsi FROM
     )AS t1
     GROUP BY imsi
 ) AS final ,t_imsi
-WHERE (final.imsi != t_imsi.imsi AND final.peopleid != t_imsi.peopleid) OR (final.imsi != t_imsi.imsi AND final.peopleid = t_imsi.peopleid);
+WHERE final.imsi != t_imsi.imsi;
 EOF
 if [ $? != 0 ];then
  echo "`date "+%Y-%m-%d %H:%M:%S"`: exec fusion sql failed" >> /var/log/mysql.log 2>&1 &
