@@ -11,7 +11,7 @@ SELECT DISTINCT final.peopleid,final.imsi FROM
     (
         SELECT imsi,peopleid,receivetime,COUNT(DISTINCT peopleid,imsi,receivetime) AS counted
         FROM t_fusion_imsi
-        WHERE DATE_FORMAT(receivetime,'%Y%m') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 0 MONTH),'%Y%m')
+        WHERE DATE_FORMAT(receivetime,'%Y%m') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y%m')
         GROUP BY imsi,peopleid
         HAVING counted > ${COUNT}
     )AS t1
