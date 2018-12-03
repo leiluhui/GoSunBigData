@@ -42,6 +42,10 @@ public class DynpersonController {
             log.info("CaptrueOption is null,please check");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
         }
+        if (!(captureOption.getDevices() != null && captureOption.getDevices().size() > 0)) {
+            log.info("Device id is null,please set device id");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT,"当前小区没有订阅摄相机");
+        }
         Map <String, Device> ipcMapping = DeviceToIpcs.getIpcMapping(captureOption.getDevices());
         captureOption.setIpcMapping(ipcMapping);
         log.info("Start capture history, search option is:" + JacksonUtil.toJson(captureOption));

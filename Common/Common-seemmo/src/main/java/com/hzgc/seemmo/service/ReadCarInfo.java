@@ -10,17 +10,17 @@ public class ReadCarInfo {
     private final Map <String, Map <Integer, String>> vehicleMap = new HashMap <>();
 
     public ReadCarInfo() {
-        vehicleMap.put(CarData.BELT_MAINDRIVER, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.BELT_CODRIVER, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.CALL_CODE, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.BELT_MAINDRIVER, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.BELT_CODRIVER, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.CALL_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.VEHICLE_COLOR, ReadCarInfo.carColorInfo());
-        vehicleMap.put(CarData.CRASH_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.DANGER_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.PLATE_SCHELTER_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.PLATE_FLAG_CODE, ReadCarInfo.plateFlagInfo());
-        vehicleMap.put(CarData.PLATE_DESTAIN_CODE, ReadCarInfo.otherProperties());
-        vehicleMap.put(CarData.PLATE_COLER_CODE, ReadCarInfo.plateColorInfo());
-        vehicleMap.put(CarData.PLATE_TYPE_CODE, ReadCarInfo.plateTypeInfo());
+//        vehicleMap.put(CarData.CRASH_CODE, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.DANGER_CODE, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.PLATE_SCHELTER_CODE, ReadCarInfo.otherProperties());
+//        vehicleMap.put(CarData.PLATE_FLAG_CODE, ReadCarInfo.plateFlagInfo());
+        vehicleMap.put(CarData.PLATE_DESTAIN_CODE, ReadCarInfo.plateDestainInfo());
+//        vehicleMap.put(CarData.PLATE_COLER_CODE, ReadCarInfo.plateColorInfo());
+//        vehicleMap.put(CarData.PLATE_TYPE_CODE, ReadCarInfo.plateTypeInfo());
         vehicleMap.put(CarData.RACK_CODE, ReadCarInfo.otherProperties());
         vehicleMap.put(CarData.VEHICLE_TYPE, ReadCarInfo.carKindInfo());
     }
@@ -87,15 +87,15 @@ public class ReadCarInfo {
         carColor.put(2, "蓝色");
         carColor.put(3, "棕色");
         carColor.put(4, "绿色");
-        carColor.put(5, "灰色");
+//        carColor.put(5, "灰色");
         carColor.put(6, "白色");
         carColor.put(7, "红色");
         carColor.put(8, "黄色");
-        carColor.put(9, "粉色");
-        carColor.put(10, "紫色");
-        carColor.put(11, "青色");
+//        carColor.put(9, "粉色");
+//        carColor.put(10, "紫色");
+//        carColor.put(11, "青色");
         carColor.put(12, "深灰色");
-        carColor.put(13, "金色");
+//        carColor.put(13, "金色");
         carColor.put(999, "不限");
         return carColor;
     }
@@ -143,6 +143,14 @@ public class ReadCarInfo {
         otherPropertis.put(2, "有");
         otherPropertis.put(999, "不限");
         return otherPropertis;
+    }
+
+    public static Map <Integer, String> plateDestainInfo() {
+        HashMap <Integer, String> plateDestain = new HashMap <>();
+//        plateDestain.put(1, "无");
+        plateDestain.put(2, "有");
+        plateDestain.put(999, "不限");
+        return plateDestain;
     }
 
     public Map <String, Map <Integer, String>> getVehicleMap() {

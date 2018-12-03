@@ -18,12 +18,12 @@ public class ReadPersonInfo {
         personMap.put("bottomtype_code", ReadPersonInfo.bottomTypeInfo());
         personMap.put("hat_code", ReadPersonInfo.hatInfo());
         personMap.put("hair_code", ReadPersonInfo.hairInfo());
-        personMap.put("knapsack_code", ReadPersonInfo.knapsackInfo());
+//        personMap.put("knapsack_code", ReadPersonInfo.knapsackInfo());
         personMap.put("messengerbag_code", ReadPersonInfo.messengerBagInfo());
         personMap.put("orientation_code", ReadPersonInfo.orientationInfo());
         personMap.put("sex_code", ReadPersonInfo.sexInfo());
-        personMap.put("shoulderbag_code", ReadPersonInfo.shoulderBagInfo());
-        personMap.put("umbrella_code", ReadPersonInfo.umbrellaInfo());
+//        personMap.put("shoulderbag_code", ReadPersonInfo.shoulderBagInfo());
+//        personMap.put("umbrella_code", ReadPersonInfo.umbrellaInfo());
         personMap.put("uppercolor_code", ReadPersonInfo.upperColorInfo());
         personMap.put("uppertype_code", ReadPersonInfo.upperTypeInfo());
         personMap.put("car_type", ReadPersonInfo.bikeInfo());
@@ -31,9 +31,9 @@ public class ReadPersonInfo {
 
     private static Map <Integer, String> ageInfo() {
         HashMap <Integer, String> ageMap = new HashMap <>();
-        ageMap.put(1, "儿童");
+//        ageMap.put(1, "儿童");
         ageMap.put(2, "青年");
-        ageMap.put(3, "中年");
+//        ageMap.put(3, "中年");
         ageMap.put(4, "老年");
         ageMap.put(5, "少年");
         ageMap.put(999, "不限");
@@ -43,15 +43,15 @@ public class ReadPersonInfo {
     private static Map <Integer, String> babyInfo() {
         HashMap <Integer, String> babyMap = new HashMap <>();
         babyMap.put(1, "抱小孩");
-        babyMap.put(2, "未抱小孩");
-        babyMap.put(3, "背小孩");
+//        babyMap.put(2, "未抱小孩");
+//        babyMap.put(3, "背小孩");
         babyMap.put(999, "不限");
         return babyMap;
     }
 
     private static Map <Integer, String> bagInfo() {
         HashMap <Integer, String> bagMap = new HashMap <>();
-        bagMap.put(1, "未拎东西");
+//        bagMap.put(1, "未拎东西");
         bagMap.put(2, "拎东西");
         bagMap.put(999, "不限");
         return bagMap;
@@ -62,12 +62,12 @@ public class ReadPersonInfo {
         bottomColorMap.put(1, "灰");
         bottomColorMap.put(2, "白");
         bottomColorMap.put(3, "红");
-        bottomColorMap.put(4, "绿");
+//        bottomColorMap.put(4, "绿");
         bottomColorMap.put(5, "蓝");
-        bottomColorMap.put(6, "黄");
+//        bottomColorMap.put(6, "黄");
         bottomColorMap.put(7, "黑");
         bottomColorMap.put(8, "紫");
-        bottomColorMap.put(9, "深灰");
+//        bottomColorMap.put(9, "深灰");
         bottomColorMap.put(999, "不限");
         return bottomColorMap;
     }
@@ -76,28 +76,28 @@ public class ReadPersonInfo {
         HashMap <Integer, String> bottomTypeMap = new HashMap <>();
         bottomTypeMap.put(1, "长裤");
         bottomTypeMap.put(2, "短裤");
-        bottomTypeMap.put(3, "七分裤");
-        bottomTypeMap.put(4, "裙子");
+//        bottomTypeMap.put(3, "七分裤");
+//        bottomTypeMap.put(4, "裙子");
         bottomTypeMap.put(999, "不限");
         return bottomTypeMap;
     }
 
     private static Map <Integer, String> hatInfo() {
         HashMap <Integer, String> hatMap = new HashMap <>();
-        hatMap.put(1, "未戴帽子");
+//        hatMap.put(1, "未戴帽子");
         hatMap.put(2, "戴帽子");
-        hatMap.put(3, "戴头盔");
+//        hatMap.put(3, "戴头盔");
         hatMap.put(999, "不限");
         return hatMap;
     }
 
     private static Map <Integer, String> hairInfo() {
         HashMap <Integer, String> hairMap = new HashMap <>();
-        hairMap.put(1, "长发");
+//        hairMap.put(1, "长发");
         hairMap.put(2, "短发");
         hairMap.put(3, "马尾");
-        hairMap.put(4, "头部被遮挡");
-        hairMap.put(5, "盘发");
+//        hairMap.put(4, "头部被遮挡");
+//        hairMap.put(5, "盘发");
         hairMap.put(999, "不限");
         return hairMap;
     }
@@ -113,7 +113,7 @@ public class ReadPersonInfo {
 
     private static Map <Integer, String> messengerBagInfo() {
         HashMap <Integer, String> messengerBagMap = new HashMap <>();
-        messengerBagMap.put(1, "非斜挎包");
+//        messengerBagMap.put(1, "非斜挎包");
         messengerBagMap.put(2, "斜挎包");
         messengerBagMap.put(999, "不限");
         return messengerBagMap;
@@ -123,7 +123,7 @@ public class ReadPersonInfo {
         HashMap <Integer, String> orientationMap = new HashMap <>();
         orientationMap.put(1, "前");
         orientationMap.put(2, "后");
-        orientationMap.put(3, "侧");
+//        orientationMap.put(3, "侧");
         orientationMap.put(999, "不限");
         return orientationMap;
     }
@@ -159,10 +159,10 @@ public class ReadPersonInfo {
         upperColorMap.put(3, "红");
         upperColorMap.put(4, "绿");
         upperColorMap.put(5, "蓝");
-        upperColorMap.put(6, "黄");
+//        upperColorMap.put(6, "黄");
         upperColorMap.put(7, "黑");
         upperColorMap.put(8, "紫");
-        upperColorMap.put(9, "深灰");
+//        upperColorMap.put(9, "深灰");
         upperColorMap.put(999, "不限");
         return upperColorMap;
     }
@@ -170,7 +170,7 @@ public class ReadPersonInfo {
     //1未骑车 2骑车
     private static Map <Integer, String> bikeInfo() {
         HashMap <Integer, String> bikeMap = new HashMap <>();
-        bikeMap.put(1, "未骑车");
+//        bikeMap.put(1, "未骑车");
         bikeMap.put(2, "骑车");
         bikeMap.put(999, "不限");
         return bikeMap;
@@ -179,10 +179,10 @@ public class ReadPersonInfo {
     private static Map <Integer, String> upperTypeInfo() {
         HashMap <Integer, String> upperTypeMap = new HashMap <>();
         upperTypeMap.put(1, "长袖");
-        upperTypeMap.put(2, "短袖");
-        upperTypeMap.put(3, "羽绒服");
-        upperTypeMap.put(4, "普通外套");
-        upperTypeMap.put(5, "无外套");
+//        upperTypeMap.put(2, "短袖");
+//        upperTypeMap.put(3, "羽绒服");
+//        upperTypeMap.put(4, "普通外套");
+//        upperTypeMap.put(5, "无外套");
         upperTypeMap.put(999, "不限");
         return upperTypeMap;
     }
