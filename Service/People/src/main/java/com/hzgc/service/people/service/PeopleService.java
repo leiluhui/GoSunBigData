@@ -569,6 +569,7 @@ public class PeopleService {
     public PeopleVO selectByPeopleId(String peopleId) {
         People people = peopleMapper.selectByPrimaryKey(peopleId);
         PeopleVO peopleVO = new PeopleVO();
+        ImeiVO imeiVO = new ImeiVO();
         if (people != null) {
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
@@ -585,7 +586,7 @@ public class PeopleService {
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
             if (people.getImei() != null){
-                peopleVO.setImeiVO(people.imeiToImeiVO(people));
+                peopleVO.setImeiVO(imeiVO.imeiToImeiVO(people));
             }
             if (people.getCommunity() != null) {
                 peopleVO.setCommunity(people.getCommunity());
@@ -680,6 +681,7 @@ public class PeopleService {
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = new PeopleVO();
+                ImeiVO imeiVO = new ImeiVO();
                 if (people != null) {
                     peopleVO.setId(people.getId());
                     peopleVO.setName(people.getName());
@@ -696,7 +698,7 @@ public class PeopleService {
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
                     if (people.getImei() != null){
-                        peopleVO.setImeiVO(people.imeiToImeiVO(people));
+                        peopleVO.setImeiVO(imeiVO.imeiToImeiVO(people));
                     }
                     if (people.getCommunity() != null) {
                         peopleVO.setCommunity(people.getCommunity());

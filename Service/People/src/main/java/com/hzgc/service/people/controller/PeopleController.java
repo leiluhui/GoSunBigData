@@ -124,29 +124,29 @@ public class PeopleController {
     /**
      * 添加精神病人手环信息
      *
-     * @param mentalPatientDTO 精神病人信息
+     * @param pram 精神病人信息
      * @return 成功状态 1：插入成功, 0：插入失败
      */
     @ApiOperation(value = "添加精神病人手环信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.MENTALPATIENT_INSERT, method = RequestMethod.POST)
-    public ResponseResult<Integer> insertMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO mentalPatientDTO) {
-        if (mentalPatientDTO == null) {
-            log.error("Start insert mentalPatient info, but people is null");
+    public ResponseResult<Integer> insertMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO pram) {
+        if (pram == null) {
+            log.error("Start insert mentalPatient info, but pram is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空，请检查！");
         }
-        if (StringUtils.isBlank(mentalPatientDTO.getGuardianName())) {
+        if (StringUtils.isBlank(pram.getGuardianName())) {
             log.error("Start insert mentalPatient info, but guardianName is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加监护人姓名为空，请检查！");
         }
-        if (StringUtils.isBlank(mentalPatientDTO.getImei())) {
+        if (StringUtils.isBlank(pram.getImei())) {
             log.error("Start insert mentalPatient info, but Imei is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加Imei为空，请检查！");
         }
-        log.info("Start insert mentalPatient info, param DTO:" + JacksonUtil.toJson(mentalPatientDTO));
-        Integer status = peopleService.insertMentalPatient(mentalPatientDTO);
+        log.info("Start insert mentalPatient info, param DTO:" + JacksonUtil.toJson(pram));
+        Integer status = peopleService.insertMentalPatient(pram);
         if (status != 1){
             log.error("Insert mentalPatient info failed");
-            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加精神病人手环信息失败");
+            return ResponseResult.init(0);
         }
         log.info("Insert mentalPatient info successfully");
         return ResponseResult.init(status);
@@ -155,22 +155,22 @@ public class PeopleController {
     /**
      * 修改精神病人手环信息
      *
-     * @param mentalPatientDTO 精神病人信息
+     * @param param 精神病人信息
      * @return 成功状态 1：插入成功, 0：插入失败
      */
     @ApiOperation(value = "修改精神病人手环信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.MENTALPATIENT_UPDATE, method = RequestMethod.PUT)
-    public ResponseResult<Integer> updateMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO mentalPatientDTO) {
-        if (mentalPatientDTO == null) {
-            log.error("Start update mentalPatient info, but people is null");
+    public ResponseResult<Integer> updateMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO param) {
+        if (param == null) {
+            log.error("Start update mentalPatient info, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改信息为空，请检查！");
         }
-        if (mentalPatientDTO.getId() == null) {
+        if (param.getId() == null) {
             log.error("Start update mentalPatient info, but imei id is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改ID为空，请检查！");
         }
-        log.info("Start update mentalPatient info, param DTO:" + JacksonUtil.toJson(mentalPatientDTO));
-        Integer status = peopleService.updateMentalPatient(mentalPatientDTO);
+        log.info("Start update mentalPatient info, param DTO:" + JacksonUtil.toJson(param));
+        Integer status = peopleService.updateMentalPatient(param);
         if (status != 1){
             log.error("Update mentalPatient info failed");
             ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改精神病人手环信息失败");
@@ -184,7 +184,7 @@ public class PeopleController {
      * @param peopleId 人员全局ID
      * @return Imei
      */
-    @ApiOperation(value = "根据ID查询精神病人手环信息", response = Imei.class)
+    @ApiOperation(value = "根据ID查询精神病人手环信息", response = ImeiVO.class)
     @RequestMapping(value = BigDataPath.MENTALPATIENT_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
     public ResponseResult<ImeiVO> selectMentalPatientByPeopleId(String peopleId) {
         if (StringUtils.isBlank(peopleId)) {

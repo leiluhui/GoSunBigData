@@ -276,18 +276,4 @@ public class People implements Serializable {
     public void setPicture(List<PictureWithBLOBs> picture) {
         this.picture = picture;
     }
-
-    public ImeiVO imeiToImeiVO(People people) {
-        ImeiVO imeiVO = new ImeiVO();
-        imeiVO.setId(people.imei.getId());
-        imeiVO.setPeopleId(people.imei.getPeopleid());
-        imeiVO.setImei(people.imei.getImei());
-        imeiVO.setGuardianName(people.imei.getGuardianname());
-        imeiVO.setGuardianPhone(people.imei.getGuardianphone());
-        imeiVO.setCadresName(people.imei.getCadresname());
-        imeiVO.setCadresPhone(people.imei.getCadresphone());
-        imeiVO.setPoliceName(people.imei.getPolicename());
-        imeiVO.setPolicePhone(people.imei.getPolicephone());
-        return imeiVO;
-    }
 }

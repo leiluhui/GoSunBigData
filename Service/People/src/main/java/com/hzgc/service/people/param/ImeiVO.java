@@ -1,5 +1,6 @@
 package com.hzgc.service.people.param;
 
+import com.hzgc.service.people.model.People;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,4 +28,18 @@ public class ImeiVO implements Serializable {
     private String policeName;
     @ApiModelProperty(value = "负责干警联系方式")
     private String policePhone;
+
+    public ImeiVO imeiToImeiVO(People people) {
+        ImeiVO imeiVO = new ImeiVO();
+        imeiVO.setId(people.getImei().getId());
+        imeiVO.setPeopleId(people.getImei().getPeopleid());
+        imeiVO.setImei(people.getImei().getImei());
+        imeiVO.setGuardianName(people.getImei().getGuardianname());
+        imeiVO.setGuardianPhone(people.getImei().getGuardianphone());
+        imeiVO.setCadresName(people.getImei().getCadresname());
+        imeiVO.setCadresPhone(people.getImei().getCadresphone());
+        imeiVO.setPoliceName(people.getImei().getPolicename());
+        imeiVO.setPolicePhone(people.getImei().getPolicephone());
+        return imeiVO;
+    }
 }

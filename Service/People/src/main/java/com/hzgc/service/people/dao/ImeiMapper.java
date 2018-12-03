@@ -7,7 +7,7 @@ public interface ImeiMapper {
 
     int insert(Imei imei);
 
-    int insertSelective(Imei record);
+    int insertSelective(Imei imei);
 
     Imei selectByPrimaryKey(Long id);
 
