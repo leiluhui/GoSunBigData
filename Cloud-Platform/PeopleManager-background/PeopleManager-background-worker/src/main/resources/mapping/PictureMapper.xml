@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cloud.peoman.worker.dao.PictureMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.cloud.peoman.worker.model.Picture">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="peopleid" property="peopleId" jdbcType="VARCHAR"/>
+        <result column="bitfeature" property="bitFeature" jdbcType="VARCHAR"/>
+        <result column="community" property="community" jdbcType="BIGINT"/>
+        <result column="flagid" property="flagId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t_picture.id, t_picture.peopleid, t_picture.bitfeature, t_flag.flagid, t_people.name
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_picture join t_people on t_picture.peopleid=t_people.id left join t_flag on t_picture.peopleid=t_flag.peopleid limit #{offset},#{limit}
+    </select>
+    <select id="selectByPictureId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select feature from t_picture where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByPeopleId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_picture join t_people on t_picture.peopleid=t_people.id and t_picture.peopleid=#{peopleid, jdbcType=VARCHAR} left join t_flag on t_picture.peopleid=t_flag.peopleid
+    </select>
+</mapper>
