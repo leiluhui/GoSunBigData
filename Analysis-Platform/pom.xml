@@ -20,7 +20,6 @@
         <module>FaceCompare</module>
         <module>Person-Dynrepo</module>
         <module>Spark</module>
-        <module>Spark-udf</module>
         <module>Vehicle-Dynrepo</module>
     </modules>
 

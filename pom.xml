@@ -15,7 +15,7 @@
     <modules>
         <module>Distribution</module>
         <module>Common</module>
-        <module>Cloud</module>
+        <module>Cloud-Platform</module>
         <module>Analysis-Platform</module>
     </modules>
 
