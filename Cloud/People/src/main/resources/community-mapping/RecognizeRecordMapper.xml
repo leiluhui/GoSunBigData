@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cloud.community.dao.RecognizeRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cloud.community.model.RecognizeRecord" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+    <result column="community" property="community" jdbcType="BIGINT" />
+    <result column="pictureid" property="pictureid" jdbcType="BIGINT" />
+    <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
+    <result column="capturetime" property="capturetime" jdbcType="TIMESTAMP" />
+    <result column="surl" property="surl" jdbcType="VARCHAR" />
+    <result column="burl" property="burl" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="similarity" property="similarity" jdbcType="REAL" />
+    <result column="plate" property="plate" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ImportantPeopleRecognizeMap" type="com.hzgc.cloud.community.param.ImportantPeopleRecognize">
+    <id column="peopleid" property="peopleId" jdbcType="VARCHAR"/>
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="idcard" property="idCard" jdbcType="VARCHAR"/>
+    <result column="lasttime" property="lastTime" jdbcType="TIMESTAMP"/>
+    <result column="pictureid" property="pictureId" jdbcType="BIGINT"/>
+    <result column="burl" property="burl" jdbcType="VARCHAR"/>
+    <result column="surl" property="surl" jdbcType="VARCHAR"/>
+    <result column="similarity" property="similarity" jdbcType="VARCHAR"/>
+    <result column="capturetime" property="captureTime" jdbcType="TIMESTAMP"/>
+    <result column="deviceid" property="deviceId" jdbcType="VARCHAR"/>
+    <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
+    <result column="mac" property="mac" jdbcType="VARCHAR"/>
+    <result column="plate" property="plate" jdbcType="VARCHAR"/>
+    <collection property="flag" ofType="com.hzgc.cloud.people.model.Flag" column="peopleid"
+                select="com.hzgc.cloud.people.dao.FlagMapper.selectByPeopleId"/>
+    <collection property="car" ofType="com.hzgc.cloud.people.model.Car" column="peopleid"
+                select="com.hzgc.cloud.people.dao.CarMapper.selectByPeopleId"/>
+  </resultMap>
+  <resultMap id="ImportantPeopleRecognizeHistoryMap" type="com.hzgc.cloud.community.param.ImportantPeopleRecognizeHistory">
+    <id column="peopleid" property="peopleId" jdbcType="VARCHAR"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
+    <result column="sex" property="sex" jdbcType="VARCHAR"/>
+    <result column="age" property="age" jdbcType="INTEGER"/>
+    <result column="address" property="address" jdbcType="VARCHAR"/>
+    <result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="pictureid" property="pictureId" jdbcType="BIGINT"/>
+    <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
+    <result column="plate" property="plate" jdbcType="VARCHAR"/>
+    <result column="burl" property="burl" jdbcType="VARCHAR"/>
+    <result column="surl" property="surl" jdbcType="VARCHAR"/>
+    <result column="capturetime" property="captureTime" jdbcType="TIMESTAMP"/>
+    <result column="community" property="community" jdbcType="BIGINT"/>
+    <result column="deviceid" property="deviceId" jdbcType="VARCHAR"/>
+    <collection property="imsis" ofType="com.hzgc.cloud.people.model.Imsi" column="peopleid"
+                select="com.hzgc.cloud.people.dao.ImsiMapper.selectByPeopleId"/>
+    <collection property="phones" ofType="com.hzgc.cloud.people.model.Phone" column="peopleid"
+                select="com.hzgc.cloud.people.dao.PhoneMapper.selectByPeopleId"/>
+    <collection property="cars" ofType="com.hzgc.cloud.people.model.Car" column="peopleid"
+                select="com.hzgc.cloud.people.dao.CarMapper.selectByPeopleId"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag, similarity,
+    plate, type, imsi, mac
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_recognize_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <!--重点人员识别记录查询-->
+  <select id="getImportantRecognizeRecord" resultMap="ImportantPeopleRecognizeMap"
+          parameterType="com.hzgc.cloud.community.param.ImportantRecognizeSearchParam">
+    SELECT DISTINCT a.peopleid, a.type, b.name, b.idcard, b.lasttime, a.pictureid, a.surl, a.burl,
+    a.similarity, a.capturetime, a.deviceid, a.imsi, a.mac, a.plate
+    FROM t_recognize_record a
+    LEFT JOIN t_people b ON a.peopleid = b.id
+    LEFT JOIN t_flag f ON f.peopleid = b.id
+    <if test="searchType == '0'.toString()">
+      LEFT JOIN t_picture c ON a.pictureid = c.id
+    </if>
+    <where>
+      f.flagid in(0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
+      <if test="searchType == '0'.toString()">
+        AND a.type = 1 AND a.pictureid > 0
+      </if>
+      <if test="searchType == '1'.toString()">
+        AND a.type in (2, 3)
+      </if>
+      <if test="communityIds != null and communityIds.size() > 0">
+        AND a.community in
+        <foreach collection="communityIds" item="model" open="(" close=")" separator=",">
+          #{model}
+        </foreach>
+      </if>
+      <if test="startTime != null">
+        AND a.capturetime >= #{startTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endTime != null">
+        AND a.capturetime &lt;= #{endTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    ORDER BY a.capturetime DESC
+  </select>
+  <!--重点人员告警展示(大数据可视化首页左下角)-->
+  <select id="getImportantPeopleRecognizeHistory" resultMap="ImportantPeopleRecognizeHistoryMap"
+          parameterType="java.lang.Long">
+    select DISTINCT a.peopleid, b.name, b.idcard, b.sex, b.age, b.address, b.birthplace,
+    a.type, a.pictureid, a.imsi, a.plate, a.surl, a.burl, a.capturetime, a.community, a.deviceid
+    from t_recognize_record a
+    left join t_people b on a.peopleid = b.id
+    left join t_flag f on f.peopleid = b.id
+    <where>
+      f.flagid in(0, 1, 2, 3, 4, 5, 6, 8, 9, 10)
+      and a.community in
+      <foreach collection="list" item="model" open="(" close=")" separator=",">
+        #{model}
+      </foreach>
+    </where>
+    order by a.capturetime desc
+    limit 10
+  </select>
+  <!--小区迁入人口查询（疑似与确认：新增人员小图）:人员抓拍列表-->
+  <select id="getSurlByPeopleId" resultType="java.lang.String" parameterType="java.lang.String">
+    select surl from t_recognize_record
+    where peopleid = #{peopleid,jdbcType=VARCHAR}
+    and flag = 10
+  </select>
+  <!--小区迁入人口抓拍详情:人员抓拍列表-->
+  <select id="searchCommunityNewPeopleCaptureData" resultMap="BaseResultMap" parameterType="com.hzgc.cloud.community.param.CaptureDetailsDTO" >
+    select capturetime, deviceid, surl, burl
+    from t_recognize_record
+    where type = 1
+    and peopleid = #{peopleId,jdbcType=VARCHAR}
+    and community = #{communityId,jdbcType=BIGINT}
+    and DATE_FORMAT(capturetime, '%Y%m') = #{month,jdbcType=VARCHAR}
+    order by capturetime desc
+  </select>
+  <!--聚焦人员人脸、车辆、电围数据查询-->
+  <select id="searchCapture1Month" resultMap="BaseResultMap" parameterType="com.hzgc.cloud.community.param.PeopleCaptureDTO" >
+    select id, deviceid, capturetime, surl, burl, plate, type, imsi, mac
+    from t_recognize_record
+    <where>
+      <if test="searchType == '1'.toString()">
+        type = 1
+      </if>
+      <if test="searchType == '2'.toString()">
+        type = 2
+      </if>
+      <if test="searchType == '3'.toString()">
+        type = 3
+      </if>
+      and peopleid = #{peopleId,jdbcType=VARCHAR}
+      and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
+      and (flag in (1, 2) or flag is NULL)
+    </where>
+    order by capturetime desc
+  </select>
+  <!--聚焦人员人脸、车辆、电围轨迹查询-->
+  <select id="searchPeopleTrack1Month" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, deviceid, capturetime, surl, burl, plate, type, imsi, mac
+    from t_recognize_record
+    where peopleid = #{peopleid,jdbcType=VARCHAR}
+    and capturetime >= DATE_SUB(now(),INTERVAL 30 DAY)
+    and (flag in (1, 2) or flag is NULL)
+    order by capturetime
+  </select>
+  <!--查询小区迁出人口最后抓拍信息-->
+  <select id="searchCommunityOutPeopleLastCapture" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select capturetime, deviceid, surl
+    from t_recognize_record
+    where type = 1
+    and peopleid = #{peopleid,jdbcType=VARCHAR}
+    order by capturetime desc limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_recognize_record
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from t_recognize_record where peopleid = #{peopleid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.cloud.community.model.RecognizeRecord" >
+    insert into t_recognize_record (id, peopleid, community, 
+      pictureid, deviceid, capturetime, 
+      surl, burl, flag, similarity, 
+      plate, type, imsi, 
+      mac)
+    values (#{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT}, 
+      #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP}, 
+      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=REAL}, 
+      #{plate,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{imsi,jdbcType=VARCHAR}, 
+      #{mac,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.cloud.community.model.RecognizeRecord" >
+    insert into t_recognize_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="peopleid != null" >
+        peopleid,
+      </if>
+      <if test="community != null" >
+        community,
+      </if>
+      <if test="pictureid != null" >
+        pictureid,
+      </if>
+      <if test="deviceid != null" >
+        deviceid,
+      </if>
+      <if test="capturetime != null" >
+        capturetime,
+      </if>
+      <if test="surl != null" >
+        surl,
+      </if>
+      <if test="burl != null" >
+        burl,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="similarity != null" >
+        similarity,
+      </if>
+      <if test="plate != null" >
+        plate,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="mac != null" >
+        mac,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null" >
+        #{community,jdbcType=BIGINT},
+      </if>
+      <if test="pictureid != null" >
+        #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="similarity != null" >
+        #{similarity,jdbcType=REAL},
+      </if>
+      <if test="plate != null" >
+        #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        #{mac,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cloud.community.model.RecognizeRecord" >
+    update t_recognize_record
+    <set >
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null" >
+        community = #{community,jdbcType=BIGINT},
+      </if>
+      <if test="pictureid != null" >
+        pictureid = #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        deviceid = #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        surl = #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        burl = #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="similarity != null" >
+        similarity = #{similarity,jdbcType=REAL},
+      </if>
+      <if test="plate != null" >
+        plate = #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        mac = #{mac,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cloud.community.model.RecognizeRecord" >
+    update t_recognize_record
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
+      community = #{community,jdbcType=BIGINT},
+      pictureid = #{pictureid,jdbcType=BIGINT},
+      deviceid = #{deviceid,jdbcType=VARCHAR},
+      capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      surl = #{surl,jdbcType=VARCHAR},
+      burl = #{burl,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      similarity = #{similarity,jdbcType=REAL},
+      plate = #{plate,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      mac = #{mac,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

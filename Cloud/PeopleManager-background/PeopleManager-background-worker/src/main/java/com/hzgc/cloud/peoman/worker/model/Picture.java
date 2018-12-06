@@ -1,0 +1,13 @@
+package com.hzgc.cloud.peoman.worker.model;
+
+import lombok.Data;
+
+@Data
+public class Picture {
+    private Long id;
+    private String peopleId;
+    private String bitFeature;
+    private String feature;
+    private Integer flagId;
+    private String name;
+}

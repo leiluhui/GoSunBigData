@@ -13,11 +13,10 @@
     <artifactId>hzgc</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>Cluster</module>
-        <module>Service</module>
-        <module>Collect</module>
         <module>Distribution</module>
         <module>Common</module>
+        <module>Cloud</module>
+        <module>Analysis-Platform</module>
     </modules>
 
     <properties>
@@ -103,6 +102,8 @@
         <hystrix-version>1.5.12</hystrix-version>
         <archaius-version>0.7.5</archaius-version>
         <spring.cloud.starter.eureka-version>1.4.4.RELEASE</spring.cloud.starter.eureka-version>
+        <spring.cloud.starter.hystrix-version>1.4.4.RELEASE</spring.cloud.starter.hystrix-version>
+        <spring.cloud.starter.config-version>1.4.3.RELEASE</spring.cloud.starter.config-version>
     </properties>
 
     <repositories>
@@ -589,6 +590,16 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-eureka</artifactId>
                 <version>${spring.cloud.starter.eureka-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-hystrix</artifactId>
+                <version>${spring.cloud.starter.hystrix-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-config</artifactId>
+                <version>${spring.cloud.starter.config-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cloud.peoman.worker.dao.PeopleMapper">
+    <resultMap id="BaseResultMap" type="com.hzgc.cloud.peoman.worker.model.People">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
+        <result column="region" property="region" jdbcType="BIGINT"/>
+        <result column="household" property="household" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER"/>
+        <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+        <result column="politic" property="politic" jdbcType="VARCHAR"/>
+        <result column="edulevel" property="edulevel" jdbcType="VARCHAR"/>
+        <result column="job" property="job" jdbcType="VARCHAR"/>
+        <result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
+        <result column="community" property="community" jdbcType="BIGINT"/>
+        <result column="lasttime" property="lasttime" jdbcType="TIMESTAMP"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="car" property="car" jdbcType="VARCHAR"/>
+        <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
+        <result column="pictureid" property="pictureid" jdbcType="BIGINT"/>
+    </resultMap>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+          t1.name, t1.age, t1.sex, t1.birthplace, t1.idcard, t1.address, t2.phone, t3.car, t4.imsi, t5.id as pictureid
+        from t_people as t1 left join t_phone as t2 on t1.id=t2.peopleid left join t_car as t3 on t1.id=t3.peopleid left join t_imsi as t4 on t1.id=t4.peopleid left join t_picture as t5 on t1.id=t5.peopleid where t1.id=#{id,jdbcType=VARCHAR}
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cloud.peoman.worker.model.People">
+        update t_people
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null">
+                idcard = #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                region = #{region,jdbcType=BIGINT},
+            </if>
+            <if test="household != null">
+                household = #{household,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="politic != null">
+                politic = #{politic,jdbcType=VARCHAR},
+            </if>
+            <if test="edulevel != null">
+                edulevel = #{edulevel,jdbcType=VARCHAR},
+            </if>
+            <if test="job != null">
+                job = #{job,jdbcType=VARCHAR},
+            </if>
+            <if test="birthplace != null">
+                birthplace = #{birthplace,jdbcType=VARCHAR},
+            </if>
+            <if test="community != null">
+                community = #{community,jdbcType=BIGINT},
+            </if>
+            <if test="lasttime != null">
+                lasttime = #{lasttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hzgc.cloud.peoman.worker.model.People">
+        update t_people
+        set name = #{name,jdbcType=VARCHAR},
+        idcard = #{idcard,jdbcType=VARCHAR},
+        region = #{region,jdbcType=BIGINT},
+        household = #{household,jdbcType=VARCHAR},
+        address = #{address,jdbcType=VARCHAR},
+        sex = #{sex,jdbcType=VARCHAR},
+        age = #{age,jdbcType=INTEGER},
+        birthday = #{birthday,jdbcType=VARCHAR},
+        politic = #{politic,jdbcType=VARCHAR},
+        edulevel = #{edulevel,jdbcType=VARCHAR},
+        job = #{job,jdbcType=VARCHAR},
+        birthplace = #{birthplace,jdbcType=VARCHAR},
+        community = #{community,jdbcType=BIGINT},
+        lasttime = #{lasttime,jdbcType=TIMESTAMP},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>

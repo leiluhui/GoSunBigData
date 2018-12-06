@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzgc.cloud.peoman.worker.dao.RecognizeRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="peopleid" property="peopleid" jdbcType="VARCHAR" />
+    <result column="community" property="community" jdbcType="BIGINT" />
+    <result column="pictureid" property="pictureid" jdbcType="BIGINT" />
+    <result column="deviceid" property="deviceid" jdbcType="VARCHAR" />
+    <result column="capturetime" property="capturetime" jdbcType="TIMESTAMP" />
+    <result column="surl" property="surl" jdbcType="VARCHAR" />
+    <result column="burl" property="burl" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="similarity" property="similarity" jdbcType="FLOAT" />
+    <result column="plate" property="plate" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="filterTime" property="filterTime" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, peopleid, community, pictureid, deviceid, capturetime, surl, burl, flag, similarity, plate, imsi, mac, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_recognize_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_recognize_record
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    insert into t_recognize_record (id, peopleid, community,
+      pictureid, deviceid, capturetime,
+      surl, burl, flag, similarity,type)
+    select #{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
+      #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP},
+      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER} from dual where not exists
+      (select 1 from t_recognize_record where peopleid=#{peopleid,jdbcType=VARCHAR} and type=#{type,jdbcType=INTEGER} and deviceid=#{deviceid,jdbcType=VARCHAR} and unix_timestamp(capturetime)>unix_timestamp(now())-#{filterTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertUpdate" parameterType="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    replace into t_recognize_record (id, peopleid, community,
+      pictureid, deviceid, capturetime,
+      surl, burl, flag, similarity,type)
+    select #{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
+      #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP},
+      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER} from dual where not exists
+      (select 1 from t_recognize_record where peopleid=#{peopleid,jdbcType=VARCHAR} and type=#{type,jdbcType=INTEGER} and deviceid=#{deviceid,jdbcType=VARCHAR} and unix_timestamp(capturetime)>unix_timestamp(now())-#{filterTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    insert into t_recognize_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="peopleid != null" >
+        peopleid,
+      </if>
+      <if test="community != null" >
+        community,
+      </if>
+      <if test="pictureid != null" >
+        pictureid,
+      </if>
+      <if test="deviceid != null" >
+        deviceid,
+      </if>
+      <if test="capturetime != null" >
+        capturetime,
+      </if>
+      <if test="surl != null" >
+        surl,
+      </if>
+      <if test="burl != null" >
+        burl,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="similarity != null" >
+        similarity,
+      </if>
+      <if test="plate != null" >
+        plate,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="mac != null" >
+        mac,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleid != null" >
+        #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null" >
+        #{community,jdbcType=BIGINT},
+      </if>
+      <if test="pictureid != null" >
+        #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="similarity != null" >
+        #{similarity,jdbcType=FLOAT},
+      </if>
+      <if test="plate != null" >
+        #{plate,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="mac != null" >
+        #{mac,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    update t_recognize_record
+    <set >
+      <if test="peopleid != null" >
+        peopleid = #{peopleid,jdbcType=VARCHAR},
+      </if>
+      <if test="community != null" >
+        community = #{community,jdbcType=BIGINT},
+      </if>
+      <if test="pictureid != null" >
+        pictureid = #{pictureid,jdbcType=BIGINT},
+      </if>
+      <if test="deviceid != null" >
+        deviceid = #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="capturetime != null" >
+        capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="surl != null" >
+        surl = #{surl,jdbcType=VARCHAR},
+      </if>
+      <if test="burl != null" >
+        burl = #{burl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="similarity != null" >
+        similarity = #{similarity,jdbcType=FLOAT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hzgc.cloud.peoman.worker.model.RecognizeRecord" >
+    update t_recognize_record
+    set peopleid = #{peopleid,jdbcType=VARCHAR},
+      community = #{community,jdbcType=BIGINT},
+      pictureid = #{pictureid,jdbcType=BIGINT},
+      deviceid = #{deviceid,jdbcType=VARCHAR},
+      capturetime = #{capturetime,jdbcType=TIMESTAMP},
+      surl = #{surl,jdbcType=VARCHAR},
+      burl = #{burl,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      similarity = #{similarity,jdbcType=FLOAT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
