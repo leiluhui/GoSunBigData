@@ -19,7 +19,6 @@
 
 package com.hzgc.collect.service.ftp.nativefs.filesystem;
 
-import com.hzgc.collect.config.CollectContext;
 import com.hzgc.collect.service.ftp.ftplet.FileSystemFactory;
 import com.hzgc.collect.service.ftp.ftplet.FileSystemView;
 import com.hzgc.collect.service.ftp.ftplet.FtpException;
@@ -27,8 +26,6 @@ import com.hzgc.collect.service.ftp.ftplet.User;
 import com.hzgc.collect.service.ftp.nativefs.filesystem.impl.NativeFileSystemView;
 import com.hzgc.common.util.json.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,7 +36,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
 @Slf4j
-@Component
 public class NativeFileSystemFactory implements FileSystemFactory {
 
     private boolean createHome;
@@ -47,9 +43,6 @@ public class NativeFileSystemFactory implements FileSystemFactory {
     private boolean caseInsensitive;
 
     private ReentrantLock lock = new ReentrantLock();
-
-    @Autowired
-    private CollectContext collectContext;
 
     /**
      * Should the home directories be created automatically
@@ -108,7 +101,7 @@ public class NativeFileSystemFactory implements FileSystemFactory {
             }
             log.debug("Create file system view, user info is: {}", JacksonUtil.toJson(user));
             return new NativeFileSystemView(user,
-                    caseInsensitive, collectContext);
+                    caseInsensitive);
         } finally {
             lock.unlock();
         }

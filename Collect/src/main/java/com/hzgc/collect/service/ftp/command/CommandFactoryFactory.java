@@ -31,7 +31,6 @@ import java.util.Map.Entry;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-@Component
 public class CommandFactoryFactory {
 
     private static final HashMap<String, Command> DEFAULT_COMMAND_MAP = new HashMap<String, Command>();

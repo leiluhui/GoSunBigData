@@ -19,7 +19,6 @@
 
 package com.hzgc.collect.service.ftp.nativefs.filesystem.impl;
 
-import com.hzgc.collect.config.CollectContext;
 import com.hzgc.collect.service.ftp.ftplet.FileSystemView;
 import com.hzgc.collect.service.ftp.ftplet.FtpFile;
 import com.hzgc.collect.service.ftp.ftplet.User;
@@ -27,7 +26,6 @@ import com.hzgc.collect.service.ftp.nativefs.filesystem.NativeFileSystemFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -40,8 +38,6 @@ import java.util.StringTokenizer;
  */
 @Slf4j
 public class NativeFileSystemView implements FileSystemView {
-    private CollectContext collectContext;
-
 
     // the root directory will always end with '/'.
     private volatile String rootDir;
@@ -59,7 +55,7 @@ public class NativeFileSystemView implements FileSystemView {
     /**
      * Constructor - internal do not use directly, use {@link NativeFileSystemFactory} instead
      */
-    private NativeFileSystemView(User user, boolean caseInsensitive) {
+    public NativeFileSystemView(User user, boolean caseInsensitive) {
         if (user == null) {
             throw new IllegalArgumentException("user can not be null");
         }
@@ -86,17 +82,11 @@ public class NativeFileSystemView implements FileSystemView {
         currDir = "/";
     }
 
-    public NativeFileSystemView(User user, boolean caseInsensitive, CollectContext collectContext) {
-        this(user, caseInsensitive);
-        this.collectContext = collectContext;
-    }
-
     /**
      * Get the user home directory. It would be the file system root for the
      * user.
      */
     public FtpFile getHomeDirectory() {
-        checkRootDir();
         return new NativeFtpFile("/", new File(rootDir), user);
     }
 
@@ -104,7 +94,6 @@ public class NativeFileSystemView implements FileSystemView {
      * Get the current directory.
      */
     public FtpFile getWorkingDirectory() {
-        checkRootDir();
         FtpFile fileObj;
         if (currDir.equals("/")) {
             fileObj = new NativeFtpFile("/", new File(rootDir), user);
@@ -120,7 +109,6 @@ public class NativeFileSystemView implements FileSystemView {
      * Get file object.
      */
     public FtpFile getFile(String file) {
-        checkRootDir();
         // get actual file object
         String physicalName = getPhysicalName(rootDir,
                 currDir, file, caseInsensitive);
@@ -137,45 +125,10 @@ public class NativeFileSystemView implements FileSystemView {
         return new NativeFtpFile(userFileName, fileObj, user);
     }
 
-    private void checkRootDir() {
-        if (!rootDir.equals(collectContext.getFtpHomeDir().getRootDir())) {
-            user.setHomeDirectory(collectContext.getFtpHomeDir().getRootDir());
-            this.rootDir = collectContext.getFtpHomeDir().getRootDir();
-        }
-    }
-
-    public FtpFile getFile_RETR(String file) {
-        checkRootDir();
-        String physicalName = getPhysicalName(rootDir,
-                currDir, file, caseInsensitive);
-        File fileObj = new File(physicalName);
-        String userFileName = physicalName.substring(rootDir.length() - 1);
-
-        if (fileObj.isFile()) {
-            return new NativeFtpFile(userFileName, fileObj, user);
-        } else {
-            List <String> ladenHomeDirs = collectContext.getFtpHomeDir().getLadenHomeDirs();
-            if (ladenHomeDirs != null && ladenHomeDirs.size() > 0) {
-                for (String otherRootDir : ladenHomeDirs) {
-                    String otherPhysicalName = getPhysicalName(otherRootDir,
-                            currDir, file, caseInsensitive);
-                    File otherFileObj = new File(otherPhysicalName);
-                    if (otherFileObj.isFile()) {
-                        return new NativeFtpFile(userFileName, otherFileObj, user);
-                    }
-                }
-            } else {
-                return new NativeFtpFile(userFileName, fileObj, user);
-            }
-            return new NativeFtpFile(userFileName, fileObj, user);
-        }
-    }
-
     /**
      * Change directory.
      */
     public boolean changeWorkingDirectory(String dir) {
-        checkRootDir();
         // not a directory - return false
         dir = getPhysicalName(rootDir, currDir, dir,
                 caseInsensitive);

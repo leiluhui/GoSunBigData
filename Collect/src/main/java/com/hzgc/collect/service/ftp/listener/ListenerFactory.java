@@ -39,7 +39,6 @@ import java.util.List;
  *
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
-@Component
 @Slf4j
 public class ListenerFactory {
     private String serverAddress;

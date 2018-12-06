@@ -28,6 +28,7 @@ services:
     - FLOAT_THRESHOLD=90
     - FLOAT_NEW_THRESHOLD=73
     - FILTER_INTERVAL_TIME=10
+    - UPDATE_INNER_FEATURE_TIME=3600
     - FLOAT_COMPARE_OPEN=true
     - SHARPNESS_OPEN=true
     - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
@@ -222,26 +223,18 @@ services:
     restart: always
     runtime: nvidia
     environment:
+    - PROFILES_ACTIVE=local
     - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
     - HOST_IP=${DOCKER_HOST_IP}
-    - DETECTOR_NUMBER=6
-    - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
-    - SEEMMO_URL=http://${SEEMO_URL}:7000/ImgProcService/Recognize
-    - HOME_DIR=/opt/ftpdata
-    - BACKUP_DIR=/home/ftpdata
-    - DETECTOR_ENABLE=true
+    - HOST_NAME=${DOCKER_HOST_NAME}
     - EUREKA_IP=${EUREKA_HOST_IP}
     - EUREKA_PORT=${EUREKA_HOST_PORT}
-    - LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/GsFaceLib/face_libs
+    - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
+    - SEEMMO_URL=http://${SEEMO_URL}:7000/ImgProcService/Recognize
+    - HOME_DIR=${FTP_HOME}
     network_mode: "host"
-    extra_hosts:
-    - platform:${PLATFORM_HOST}
-    - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
     volumes:
-    - ${DOCKER_HOME}/collect-ftp/log:/log
-    - /opt/GsFaceLib:/opt/GsFaceLib
-    - /opt/ftpdata:/opt/ftpdata
-    - /home/ftpdata:/home/ftpdata
+    - ${FTP_HOME}:${FTP_HOME}
 
   facecompare:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}

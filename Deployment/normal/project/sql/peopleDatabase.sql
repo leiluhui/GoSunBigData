@@ -85,6 +85,28 @@ CREATE TABLE IF NOT EXISTS  `t_picture` (
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='照片信息库';
 
+CREATE TABLE IF NOT EXISTS `t_imei` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
+  `imei` varchar(20) NOT NULL COMMENT 'IMEI码',
+  `guardianName` varchar(20) NOT NULL COMMENT '监护人名称',
+  `guardianPhone` varchar(11) COMMENT '监护人联系方式',
+  `cadresName` varchar(20) COMMENT '负责干部名称',
+  `cadresPhone` varchar(11) COMMENT '负责干部联系方式',
+  `policeName` varchar(20) COMMENT '负责干警名称',
+  `policePhone` varchar(11) COMMENT '负责干警联系方式',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `T_INDEX_PEOPLE_ID` (`peopleid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='IMEI码表';
+
+CREATE TABLE IF NOT EXISTS  `t_inner_feature` (
+  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',
+  `feature` varchar(8192) NOT NULL COMMENT '特征值',
+  `bitfeature` varchar(512) NOT NULL COMMENT 'bit特征值',
+  PRIMARY KEY (`peopleid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='内部人脸特征库';
+
 CREATE TABLE IF NOT EXISTS  `t_24hour_count` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',

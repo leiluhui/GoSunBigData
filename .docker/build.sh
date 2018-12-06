@@ -67,10 +67,20 @@ function print_info {
     printf "\033[32m$DATE_YMD_HMS $1 \033[0m\n"
 }
 
+function modify_version(){
+    for version in `find $1 | grep /.env`
+    do
+       sed -i "s#VERSION=.*#VERSION=${PROJECT_VERSION}#g" $version
+       print_info "Modify version successfully, file:$version, version:${PROJECT_VERSION}"
+    done
+}
+
+
 function main()
 {
     env_check
     find_make $PROJECT_HOME_DIR
     find_push
+    modify_version $PROJECT_HOME_DIR
 }
 main

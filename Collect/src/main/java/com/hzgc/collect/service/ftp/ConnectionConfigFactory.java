@@ -19,12 +19,8 @@
 
 package com.hzgc.collect.service.ftp;
 
-import com.hzgc.collect.config.CollectContext;
 import com.hzgc.collect.service.ftp.impl.DefaultConnectionConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 /**
  * Factory for creating connection configurations
@@ -32,7 +28,6 @@ import org.springframework.stereotype.Component;
  * @author <a href="http://mina.apache.org">Apache MINA Project</a>
  */
 @Slf4j
-@Component
 public class ConnectionConfigFactory {
 
     private int maxLogins = 10;
@@ -47,8 +42,6 @@ public class ConnectionConfigFactory {
 
     private int maxThreads = 0;
 
-    @Autowired
-    private CollectContext collectContext;
     /**
      * Create a connection configuration instances based on the configuration on this factory
      *
@@ -61,12 +54,18 @@ public class ConnectionConfigFactory {
     }
 
     public ConnectionConfig createUDConnectionConfig() {
-        int maxLogins = collectContext.getConnectionMaxLogins();
-        boolean anonymousLoginEnabled = collectContext.getConnectionAnonymousLoginEnable();
-        int maxAnonymousLogins = collectContext.getConnectionMaxAnonymousLogins();
-        int maxLoginFailures = collectContext.getConnectionMaxLoginFailures();
-        int loginFailureDelay = collectContext.getConnectionLoginFailureDelay();
-        int maxThreads = collectContext.getConnectionMaxThread();
+//        int maxLogins = collectContext.getConnectionMaxLogins();
+        int maxLogins = 400;
+//        boolean anonymousLoginEnabled = collectContext.getConnectionAnonymousLoginEnable();
+        boolean anonymousLoginEnabled = true;
+//        int maxAnonymousLogins = collectContext.getConnectionMaxAnonymousLogins();
+        int maxAnonymousLogins = 400;
+//        int maxLoginFailures = collectContext.getConnectionMaxLoginFailures();
+        int maxLoginFailures = 3;
+//        int loginFailureDelay = collectContext.getConnectionLoginFailureDelay();
+        int loginFailureDelay = 500;
+//        int maxThreads = collectContext.getConnectionMaxThread();
+        int maxThreads = 20;
         return new DefaultConnectionConfig(anonymousLoginEnabled, loginFailureDelay, maxLogins, maxAnonymousLogins,
                 maxLoginFailures, maxThreads);
     }

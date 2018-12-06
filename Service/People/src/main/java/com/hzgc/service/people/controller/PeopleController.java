@@ -4,6 +4,7 @@ import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.common.util.json.JacksonUtil;
+import com.hzgc.service.people.model.Imei;
 import com.hzgc.service.people.param.SearchPeopleDTO;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.service.PeopleService;
@@ -41,7 +42,7 @@ public class PeopleController {
      */
     @ApiOperation(value = "添加人口信息", response = ResponseResult.class)
     @RequestMapping(value = BigDataPath.PEOPLE_INSERT, method = RequestMethod.POST)
-    public ResponseResult<Integer> insertPeople(@RequestBody PeopleDTO peopleDTO) {
+    public ResponseResult<String> insertPeople(@RequestBody PeopleDTO peopleDTO) {
         if (peopleDTO == null) {
             log.error("Start insert people info, but people is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空，请检查！");
@@ -65,8 +66,8 @@ public class PeopleController {
         }
 
         log.info("Start insert people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
-        Integer status = peopleService.insertPeople(peopleDTO);
-        return ResponseResult.init(status);
+        String id = peopleService.insertPeople(peopleDTO);
+        return ResponseResult.init(id);
     }
 
     /**
@@ -118,6 +119,82 @@ public class PeopleController {
         log.info("Start update people info, param DTO:" + JacksonUtil.toJson(peopleDTO));
         Integer status = peopleService.updatePeople(peopleDTO);
         return ResponseResult.init(status);
+    }
+
+    /**
+     * 添加精神病人手环信息
+     *
+     * @param pram 精神病人信息
+     * @return 成功状态 1：插入成功, 0：插入失败
+     */
+    @ApiOperation(value = "添加精神病人手环信息", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.MENTALPATIENT_INSERT, method = RequestMethod.POST)
+    public ResponseResult<Integer> insertMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO pram) {
+        if (pram == null) {
+            log.error("Start insert mentalPatient info, but pram is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加信息为空，请检查！");
+        }
+        if (StringUtils.isBlank(pram.getGuardianName())) {
+            log.error("Start insert mentalPatient info, but guardianName is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加监护人姓名为空，请检查！");
+        }
+        if (StringUtils.isBlank(pram.getImei())) {
+            log.error("Start insert mentalPatient info, but Imei is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加Imei为空，请检查！");
+        }
+        log.info("Start insert mentalPatient info, param DTO:" + JacksonUtil.toJson(pram));
+        Integer status = peopleService.insertMentalPatient(pram);
+        if (status != 1){
+            log.error("Insert mentalPatient info failed");
+            return ResponseResult.init(0);
+        }
+        log.info("Insert mentalPatient info successfully");
+        return ResponseResult.init(status);
+    }
+
+    /**
+     * 修改精神病人手环信息
+     *
+     * @param param 精神病人信息
+     * @return 成功状态 1：插入成功, 0：插入失败
+     */
+    @ApiOperation(value = "修改精神病人手环信息", response = ResponseResult.class)
+    @RequestMapping(value = BigDataPath.MENTALPATIENT_UPDATE, method = RequestMethod.PUT)
+    public ResponseResult<Integer> updateMentalPatient(@RequestBody @ApiParam(name = "入参", value = "精神病人手环信息") MentalPatientDTO param) {
+        if (param == null) {
+            log.error("Start update mentalPatient info, but param is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改信息为空，请检查！");
+        }
+        if (param.getId() == null) {
+            log.error("Start update mentalPatient info, but imei id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改ID为空，请检查！");
+        }
+        log.info("Start update mentalPatient info, param DTO:" + JacksonUtil.toJson(param));
+        Integer status = peopleService.updateMentalPatient(param);
+        if (status != 1){
+            log.error("Update mentalPatient info failed");
+            ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改精神病人手环信息失败");
+        }
+        return ResponseResult.init(1);
+    }
+
+    /**
+     * 根据ID查询精神病人手环信息
+     *
+     * @param peopleId 人员全局ID
+     * @return Imei
+     */
+    @ApiOperation(value = "根据ID查询精神病人手环信息", response = ImeiVO.class)
+    @RequestMapping(value = BigDataPath.MENTALPATIENT_SELECT_BY_PEOPLEID, method = RequestMethod.GET)
+    public ResponseResult<ImeiVO> selectMentalPatientByPeopleId(String peopleId) {
+        if (StringUtils.isBlank(peopleId)) {
+            log.error("Start select mentalPatient info, but people id is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询ID为空，请检查！");
+        }
+        log.info("Start select mentalPatient info, people id is:" + peopleId);
+        ImeiVO vo = peopleService.selectMentalPatientByPeopleId(peopleId);
+        log.info("Select mentalPatient info successfully, result:" + JacksonUtil.toJson(vo));
+        return ResponseResult.init(vo);
     }
 
     /**
@@ -300,7 +377,7 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
         }
         if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 &&
-                param.getSearchType() != 3 && param.getSearchType() != 4){
+                param.getSearchType() != 3 && param.getSearchType() != 4 && param.getSearchType() != 5){
             log.error("Start search people, but SearchType is error");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询类型不正确,请检查!");
         }

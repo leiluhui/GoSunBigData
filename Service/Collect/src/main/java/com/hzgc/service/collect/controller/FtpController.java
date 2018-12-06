@@ -1,16 +1,10 @@
 package com.hzgc.service.collect.controller;
 
 import com.hzgc.common.service.api.bean.UrlInfo;
-import com.hzgc.common.service.error.RestErrorCode;
-import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
 import com.hzgc.service.collect.service.FtpService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,26 +22,6 @@ public class FtpController {
 
     @Autowired
     private FtpService ftpService;
-
-    @ApiOperation(value = "打开抓拍订阅")
-    @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_OPEN, method = RequestMethod.POST)
-    public ResponseResult <Boolean> openFtpSubscription(String userId, @RequestBody List <String> ipcIdList) {
-        if (StringUtils.isBlank(userId) || ipcIdList.isEmpty()) {
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-        }
-        boolean bb = ftpService.openFtpSubscription(userId, ipcIdList);
-        return ResponseResult.init(bb);
-    }
-
-    @ApiOperation(value = "关闭抓拍订阅")
-    @RequestMapping(value = BigDataPath.FTP_SUBSCRIPTION_CLOSE, method = RequestMethod.POST)
-    public ResponseResult <Boolean> closeFtpSubscription(String userId) {
-        if (StringUtils.isBlank(userId)) {
-            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT);
-        }
-        boolean bb = ftpService.closeFtpSubscription(userId);
-        return ResponseResult.init(bb);
-    }
 
     @ApiIgnore(value = "内部服务:批量hostname转ip")
     @RequestMapping(value = BigDataPath.HOSTNAME_TO_IP, method = RequestMethod.POST)

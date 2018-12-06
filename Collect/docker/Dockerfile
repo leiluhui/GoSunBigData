@@ -1,5 +1,5 @@
 #指定镜像
-FROM registry.cn-hangzhou.aliyuncs.com/hzgc/cuda8-java8:1.0
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/gsfacelib:1.0
 
 #操作文件
 COPY docker-entrypoint.sh /

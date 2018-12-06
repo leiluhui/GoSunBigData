@@ -14,6 +14,7 @@ public class Event {
     private String sRelativePath;       //小图存储绝对路径(不带ftp根目录)
     private String bRelativePath;       //大图存储绝对路径(不带ftp根目录)
     private String hostname;             // 图片保存主机:hostname
+    private byte[] picBuffer;           //缓存在内存中的图片
     @JsonIgnore
     private Parser parser;              //对应设备解析器
 
@@ -117,6 +118,15 @@ public class Event {
 
     public Event setbRelativePath(String bRelativePath) {
         this.bRelativePath = bRelativePath;
+        return this;
+    }
+
+    public byte[] getPicBuffer() {
+        return picBuffer;
+    }
+
+    public Event setPicBuffer(byte[] picBuffer) {
+        this.picBuffer = picBuffer;
         return this;
     }
 }

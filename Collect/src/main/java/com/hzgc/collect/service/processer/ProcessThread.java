@@ -3,10 +3,10 @@ package com.hzgc.collect.service.processer;
 import com.hzgc.collect.config.CollectContext;
 import com.hzgc.collect.service.parser.Parser;
 import com.hzgc.collect.service.receiver.Event;
+import com.hzgc.collect.service.receiver.ReceiverImpl;
 import com.hzgc.common.collect.bean.CarObject;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.common.collect.bean.PersonObject;
-import com.hzgc.common.util.basic.FileUtil;
 import com.hzgc.common.util.basic.ImageUtil;
 import com.hzgc.common.util.basic.UuidUtil;
 import com.hzgc.common.util.json.JacksonUtil;
@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class ProcessThread implements Runnable {
+    private ReceiverImpl receiver;
     private BlockingQueue <Event> queue;
     private CollectContext collectContext;
     private final static String FACE = "face";
@@ -42,9 +43,10 @@ public class ProcessThread implements Runnable {
     private final static Integer WIDTH = 500;
     private final static Integer HEIGHT = 500;
 
-    public ProcessThread(BlockingQueue <Event> queue, CollectContext collectContext) {
-        this.queue = queue;
+    public ProcessThread(ReceiverImpl receiver, CollectContext collectContext) {
+        this.queue = receiver.getQueue();
         this.collectContext = collectContext;
+        this.receiver = receiver;
     }
 
     @Override
@@ -52,7 +54,8 @@ public class ProcessThread implements Runnable {
         Event event;
         try {
             while ((event = queue.take()) != null) {
-                byte[] bytes = FileUtil.fileToByteArray(event.getbAbsolutePath());
+                long startTime = System.currentTimeMillis();
+                byte[] bytes = event.getPicBuffer();
                 if (bytes == null) {
                     continue;
                 }
@@ -68,27 +71,22 @@ public class ProcessThread implements Runnable {
                     log.error("Image size is not more than 500 * 500");
                 }
                 Parser parser = event.getParser();
-                //BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-                //取消分辨率判断
-                //if (image.getWidth() * image.getHeight() < 1920 * 1080) {
-                //log.error("Camera error, This is a small picture, fileName: " + event.getbAbsolutePath());
-                //continue;
-                //}
                 ArrayList <SmallImage> smallImageList = FaceFunction.faceCheck(bytes, PictureFormat.JPG, PictureFormat.LEVEL_WIDTH_1);
+                long faceCheckTime = System.currentTimeMillis();
                 if (smallImageList != null && smallImageList.size() > 0) {
                     int index = 1;
                     for (SmallImage smallImage : smallImageList) {
                         if (smallImage.getPictureStream() == null || smallImage.getPictureStream().length == 0) {
-                            log.info("Face small image are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            log.debug("Face small image are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         if (smallImage.getFaceAttribute() == null) {
-                            log.info("Face attribute are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            log.debug("Face attribute are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         if (smallImage.getFaceAttribute().getFeature() == null
                                 || smallImage.getFaceAttribute().getFeature().length == 0) {
-                            log.info("Face feature are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
+                            log.debug("Face feature are not extracted, index: " + index + " fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         //保存图片
@@ -104,12 +102,13 @@ public class ProcessThread implements Runnable {
                         index++;
                     }
                 } else {
-                    log.warn("Face check failed, fileName:" + event.getbAbsolutePath());
+                    log.debug("Face check failed, fileName:" + event.getbAbsolutePath());
                 }
-
+                long faceCheckEndTime = System.currentTimeMillis();
                 List <Person> personList = null;
                 List <Vehicle> vehicleList = null;
                 ImageResult result = ImageToData.getImageResult(collectContext.getSeemmoUrl(), bytes, null);
+                long semmonCheckStartTime = System.currentTimeMillis();
                 if (result != null) {
                     personList = result.getPersonList();
                     vehicleList = result.getVehicleList();
@@ -117,13 +116,13 @@ public class ProcessThread implements Runnable {
                     log.error("Person or Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
                 if (personList != null && personList.size() > 0) {
-                    log.info("Person check successfull ,file name is:{}", event.getbAbsolutePath());
+                    log.debug("Person check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Person person : personList) {
                         if (person.getCar_data() == null || person.getCar_data().length == 0
                                 //临时添加行人检测人脸,用来提高检测质量
                                 || !tem_person_check(person.getCar_data())) {
-                            log.info("Person small image are not extracted, fileName: " + event.getbAbsolutePath());
+                            log.debug("Person small image are not extracted, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         String smallImagePath = parser.path_b2s(event.getbAbsolutePath(), PERSON, index);
@@ -142,20 +141,20 @@ public class ProcessThread implements Runnable {
                 }
 
                 if (vehicleList != null && vehicleList.size() > 0) {
-                    log.info("Car check successfull ,file name is:{}", event.getbAbsolutePath());
+                    log.debug("Car check successfull ,file name is:{}", event.getbAbsolutePath());
                     int index = 1;
                     for (Vehicle vehicle : vehicleList) {
                         if (null == vehicle.getVehicle_type()) {
-                            log.info("Vehicle type is null, fileName: " + event.getbAbsolutePath());
+                            log.debug("Vehicle type is null, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         if (vehicle.getVehicle_data() == null || vehicle.getVehicle_data().length == 0) {
-                            log.info("Vehicle small image are not extracted, fileName: " + event.getbAbsolutePath());
+                            log.debug("Vehicle small image are not extracted, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         //临时添加过滤,用来提高图片质量,过滤掉没有车牌的图片
                         if (vehicle.getPlate_licence() == null || vehicle.getPlate_licence().length() == 0) {
-                            log.info("Vehicle small image is not plate_licence, fileName: " + event.getbAbsolutePath());
+                            log.debug("Vehicle small image is not plate_licence, fileName: " + event.getbAbsolutePath());
                             continue;
                         }
                         String smallImagePath = parser.path_b2s(event.getbAbsolutePath(), CAR, index);
@@ -170,8 +169,16 @@ public class ProcessThread implements Runnable {
                         index++;
                     }
                 } else {
-                    log.warn("Car check failed, file name is:{}", event.getbAbsolutePath());
+                    log.debug("Car check failed, file name is:{}", event.getbAbsolutePath());
                 }
+                long semmonCheckSaveResultTime = System.currentTimeMillis();
+                //统计每条数据所花费时间
+                log.info("Current queue is:{}, the size of waiting is:{}, last process time is:{}ms, " +
+                                "face check time:{}ms, save face result time:{}ms, semmon check time:{}ms, " +
+                                "save semmon result time:{}ms",
+                        receiver.getQueueID(), queue.size(), semmonCheckSaveResultTime - startTime,
+                        faceCheckTime - startTime, faceCheckEndTime - faceCheckTime,
+                        semmonCheckStartTime - faceCheckEndTime, semmonCheckSaveResultTime - semmonCheckStartTime);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -251,7 +258,7 @@ public class ProcessThread implements Runnable {
     }
 
     private void sendKafka(Event event, Vehicle vehicle) {
-        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(), vehicle.getPlate_licence())) {
+//        if (collectContext.getPlateCheck().plateCheck(event.getIpcId(), vehicle.getPlate_licence())) {
             vehicle.setVehicle_data(null);
             String carId = UuidUtil.getUuid();
             CarObject carObject = CarObject.builder()
@@ -282,4 +289,4 @@ public class ProcessThread implements Runnable {
             }
         }
     }
-}
+//}

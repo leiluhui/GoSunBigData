@@ -1,10 +1,8 @@
 package com.hzgc.service.collect.service;
 
 import com.hzgc.common.collect.facedis.FtpRegisterClient;
-import com.hzgc.common.collect.facesub.FtpSubscribeClient;
 import com.hzgc.common.collect.util.CollectUrlUtil;
 import com.hzgc.common.service.api.bean.UrlInfo;
-import com.hzgc.service.collect.model.FtpInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +18,8 @@ public class FtpService implements Serializable {
     @Autowired
     private FtpRegisterClient register;
 
-    @Autowired
-    private FtpSubscribeClient subscribe;
-//    @Autowired
-    private FtpInfo ftpInfo;
     private String getIPAddress(String hostname) {
         String ip = register.getFtpIpMapping().get(hostname);
-//        String ip = ftpInfo.getFtpHome();
             if (ip != null) {
                 return ip;
             } else {
@@ -44,22 +37,6 @@ public class FtpService implements Serializable {
             result.put(hostName, urlInfo);
         }
         return result;
-    }
-
-    public boolean openFtpSubscription(String sessionId, List<String> ipcIdList) {
-        if (!sessionId.equals("") && !ipcIdList.isEmpty()) {
-            subscribe.updateSessionPath(sessionId, ipcIdList);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean closeFtpSubscription(String sessionId) {
-        if (!sessionId.equals("")) {
-            subscribe.deleteSessionPath(sessionId);
-            return true;
-        }
-        return false;
     }
 
     public UrlInfo http_hostName2Ip(String hostNameUrl) {

@@ -46,6 +46,9 @@ public class BigDataPath {
     public static final String PEOPLE_INSERT="/people_insert";
     public static final String PEOPLE_UPDATE="/people_update";
     public static final String PEOPLE_DELETE="/people_delete";
+    public static final String MENTALPATIENT_INSERT="/mentalPatient_insert";
+    public static final String MENTALPATIENT_UPDATE="/mentalPatient_update";
+    public static final String MENTALPATIENT_SELECT_BY_PEOPLEID="/select_mentalPatient";
     public static final String PEOPLE_SELECT_BY_PEOPLEID="/select_peopleid";
     public static final String PEOPLE_SEARCH_BY_IDCARD="/select_idcard";
     public static final String PEOPLE_INSTERT_PICTURE="/insert_picture";

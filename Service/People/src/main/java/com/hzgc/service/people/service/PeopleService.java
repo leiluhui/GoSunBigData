@@ -20,6 +20,7 @@ import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
 import com.hzgc.service.people.util.PeopleExcelUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -56,6 +57,10 @@ public class PeopleService {
     @Autowired
     @SuppressWarnings("unused")
     private ImsiMapper imsiMapper;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private ImeiMapper imeiMapper;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -109,7 +114,7 @@ public class PeopleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Integer insertPeople(PeopleDTO peopleDTO) {
+    public String insertPeople(PeopleDTO peopleDTO) {
         People people = peopleDTO.peopleDTOShift_insert(peopleDTO);
         log.info("Start insert people info, param is:" + JacksonUtil.toJson(people));
         int insertStatus = peopleMapper.insertSelective(people);
@@ -243,7 +248,7 @@ public class PeopleService {
             manager.setPersonid(people.getId());
             this.sendKafka("ADD", manager);
         }
-        return 1;
+        return people.getId();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -262,6 +267,7 @@ public class PeopleService {
         newPeopleMapper.delete(id);
         outPeopleMapper.delete(id);
         recognizeRecordMapper.delete(id);
+        imeiMapper.delete(id);
         SyncPeopleManager manager = new SyncPeopleManager();
         manager.setType("4");
         manager.setPersonid(id);
@@ -384,6 +390,31 @@ public class PeopleService {
         }
         log.info("Update people info successfully");
         return 1;
+    }
+
+    public int insertMentalPatient(MentalPatientDTO mentalPatientDTO) {
+        Imei imei = mentalPatientDTO.mentalPatientDTOShift_insert(mentalPatientDTO);
+        return imeiMapper.insertSelective(imei);
+    }
+
+    public int updateMentalPatient(MentalPatientDTO mentalPatientDTO) {
+        Imei imei = mentalPatientDTO.mentalPatientDTOShift_insert(mentalPatientDTO);
+        return imeiMapper.updateByPrimaryKeySelective(imei);
+    }
+
+    public ImeiVO selectMentalPatientByPeopleId(String peopleId) {
+        ImeiVO vo = new ImeiVO();
+        Imei imei = imeiMapper.selectByPeopleId(peopleId);
+        vo.setId(imei.getId());
+        vo.setPeopleId(imei.getPeopleid());
+        vo.setImei(imei.getImei());
+        vo.setGuardianName(imei.getGuardianname());
+        vo.setGuardianPhone(imei.getGuardianphone());
+        vo.setCadresName(imei.getCadresname());
+        vo.setCadresPhone(imei.getCadresphone());
+        vo.setPoliceName(imei.getPolicename());
+        vo.setPolicePhone(imei.getPolicephone());
+        return vo;
     }
 
     /**
@@ -538,6 +569,7 @@ public class PeopleService {
     public PeopleVO selectByPeopleId(String peopleId) {
         People people = peopleMapper.selectByPrimaryKey(peopleId);
         PeopleVO peopleVO = new PeopleVO();
+        ImeiVO imeiVO = new ImeiVO();
         if (people != null) {
             peopleVO.setId(people.getId());
             peopleVO.setName(people.getName());
@@ -553,6 +585,9 @@ public class PeopleService {
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
             peopleVO.setBirthplace(people.getBirthplace());
+            if (people.getImei() != null){
+                peopleVO.setImeiVO(imeiVO.imeiToImeiVO(people));
+            }
             if (people.getCommunity() != null) {
                 peopleVO.setCommunity(people.getCommunity());
                 peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
@@ -646,6 +681,7 @@ public class PeopleService {
         if (peoples != null && peoples.size() > 0) {
             for (People people : peoples) {
                 PeopleVO peopleVO = new PeopleVO();
+                ImeiVO imeiVO = new ImeiVO();
                 if (people != null) {
                     peopleVO.setId(people.getId());
                     peopleVO.setName(people.getName());
@@ -661,6 +697,9 @@ public class PeopleService {
                     peopleVO.setEduLevel(people.getEdulevel());
                     peopleVO.setJob(people.getJob());
                     peopleVO.setBirthplace(people.getBirthplace());
+                    if (people.getImei() != null){
+                        peopleVO.setImeiVO(imeiVO.imeiToImeiVO(people));
+                    }
                     if (people.getCommunity() != null) {
                         peopleVO.setCommunity(people.getCommunity());
                         peopleVO.setCommunityName(platformService.getCommunityName(people.getCommunity()));
@@ -823,8 +862,8 @@ public class PeopleService {
     private Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
             peopleDTO.setId(UuidUtil.getUuid());
-            int status = this.insertPeople(peopleDTO);
-            if (status != 1) {
+            String id = this.insertPeople(peopleDTO);
+            if (StringUtils.isBlank(id)) {
                 throw new RuntimeException("Insert into t_people table failed");
             }
         }
