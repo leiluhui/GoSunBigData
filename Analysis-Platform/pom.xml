@@ -21,6 +21,7 @@
         <module>Person-Dynrepo</module>
         <module>Spark</module>
         <module>Vehicle-Dynrepo</module>
+        <module>FtpServer-Monitor</module>
     </modules>
 
     <dependencyManagement>
