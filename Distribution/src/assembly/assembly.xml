@@ -353,11 +353,32 @@
 
         <!--> Deployment模块 <-->
         <fileSet>
-            <directory>../Deployment/</directory>
+            <directory>../Deployment/local</directory>
             <includes>
                 <include>**</include>
             </includes>
-            <outputDirectory>./</outputDirectory>
+            <outputDirectory>local</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Deployment/normal/doc</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>normal/doc</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Deployment/normal/docker-compose</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>normal/docker-compose</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>../Deployment/normal</directory>
+            <includes>
+                <include>version.properties</include>
+            </includes>
+            <outputDirectory>normal</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>
