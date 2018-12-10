@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
   eureka:
-    image: registry.cn-hangzhou.aliyuncs.com/gosun/registry
+    image: ${DOCKER_REPOSITOR}/gosun/registry
     container_name: eureka
     restart: always
     hostname: eureka
