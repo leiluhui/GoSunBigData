@@ -30,10 +30,4 @@ public interface Dispatch_background_table{
             "  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '活体检测表';";
 
-    public String INDEX_RECOGNIZE = "alter table t_device_recognize add index idx_device_recognize(community,peopleid,currenttime,deviceid);";
-
-    public String INDEX_FLAG = "alter table t_dispatch_recognize add index flag(`peopleid`,`flag`);";
-
-    public String INDEX_IDX_RECOGNIZE = "alter table t_dispatch_recognize add index idx_recognize(type,record_time);";
-
 }

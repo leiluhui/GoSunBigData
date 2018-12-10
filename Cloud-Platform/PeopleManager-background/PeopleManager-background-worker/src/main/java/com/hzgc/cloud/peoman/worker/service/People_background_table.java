@@ -59,6 +59,8 @@ public interface People_background_table {
             "  PRIMARY KEY (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='疑似迁出记录表';";
 
+    public String INDEX_IDX_RECOGNIZE = "alter table t_recognize_record add index idx_recognize(type,community,capturetime);";
 
+    public String INDEX_IDX_RECOGNIZE_01 = "alter table t_recognize_record add index idx_recognize_01(community,capturetime);";
 
 }
