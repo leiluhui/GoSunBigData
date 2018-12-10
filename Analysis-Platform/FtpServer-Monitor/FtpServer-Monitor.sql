@@ -2,7 +2,8 @@
 SQLyog Ultimate v12.09 (64 bit)
 MySQL - 5.7.19 : Database - ftpsm
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -29,12 +30,11 @@ CREATE TABLE `ftp_machine` (
   `user_id_create` bigint(255) DEFAULT NULL COMMENT '创建用户id',
   `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
   `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  `cpu` varchar(50) DEFAULT NULL COMMENT 'cpu',
+  `cpu_number` varchar(50) DEFAULT NULL COMMENT 'cpu数量',
+  `broad_band` varchar(50) DEFAULT NULL COMMENT '带宽',
   PRIMARY KEY (`machine_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=utf8 COMMENT='物理机器';
-
-/*Data for the table `ftp_machine` */
-
-insert  into `ftp_machine`(`machine_id`,`machine_ip`,`machine_name`,`machine_memory`,`machine_nvidia`,`user_id_create`,`gmt_create`,`gmt_modified`) values (143,'172.18.18.119','s119','16G','15lala',1,'2018-12-07 20:56:40','2018-12-07 20:56:40'),(144,'172.18.18.120','s120','32G','啦啦',1,'2018-12-07 20:57:18','2018-12-07 20:57:18'),(145,'wwwwwwwwwwwwwww','eww','wwwwwwww','wwww',1,'2018-12-07 21:35:33','2018-12-07 21:35:33'),(146,'rrr','rt','wrth','rt',1,'2018-12-07 21:35:42','2018-12-07 21:35:42'),(147,'tey','yrdj','ytd','yrdj',1,'2018-12-07 21:35:50','2018-12-07 21:35:50'),(148,'tdd','tydj','ytjd','ytdj',1,'2018-12-07 21:35:57','2018-12-07 21:35:57'),(149,'tyj','tydj','ytjd','ytdj',1,'2018-12-07 21:36:05','2018-12-07 21:36:05'),(150,'6utfhj','tdumkj','dtmgj','tydhj',1,'2018-12-07 21:36:14','2018-12-07 21:36:14'),(151,'ryfk','tudk','ytdj','ydrtj',1,'2018-12-07 21:36:23','2018-12-07 21:36:23'),(152,'tufkj','tdyh','jdg','dtfh',1,'2018-12-07 21:36:30','2018-12-07 21:36:30'),(153,'tujg','hdyhfc','jxrfg','ryfggg',1,'2018-12-07 21:36:39','2018-12-07 21:36:39'),(154,'D','D','DH','D',1,'2018-12-07 22:14:37','2018-12-07 22:14:37');
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8 COMMENT='物理机器';
 
 /*Table structure for table `sys_dict` */
 
