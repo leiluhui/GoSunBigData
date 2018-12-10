@@ -50,8 +50,7 @@ public interface People_background_table {
             "  PRIMARY KEY (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='疑似迁入记录表';";
 
-    public String SQL_PEOPLE_OUT = "\n" +
-            "CREATE TABLE IF NOT EXISTS  `t_people_out` (\n" +
+    public String SQL_PEOPLE_OUT = "CREATE TABLE IF NOT EXISTS  `t_people_out` (\n" +
             "  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
             "  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',\n" +
             "  `community` bigint(20) NOT NULL COMMENT '小区ID',\n" +
@@ -59,5 +58,7 @@ public interface People_background_table {
             "  `isconfirm` int(2) NOT NULL COMMENT '是否确认迁出(1:未确认，2：已确认迁出，3：确认未迁出)',\n" +
             "  PRIMARY KEY (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='疑似迁出记录表';";
+
+
 
 }
