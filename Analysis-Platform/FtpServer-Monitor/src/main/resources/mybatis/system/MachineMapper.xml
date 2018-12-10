@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hzgc.system.dao.MachineDao">
+
+	<select id="get" resultType="com.hzgc.system.domain.MachineDO">
+		select `machine_id`,`machine_ip`,`machine_name`,`machine_memory`,`machine_nvidia`,`user_id_create`,`gmt_create`,`gmt_modified`,`cpu`,`cpu_number`,`broad_band` from ftp_machine where machine_id = #{value}
+	</select>
+	<select id="list" resultType="com.hzgc.system.domain.MachineDO">
+		select `machine_id`,`machine_ip`,`machine_name`,`machine_memory`,`machine_nvidia`,`user_id_create`,`gmt_create`,`gmt_modified`,`cpu`,`cpu_number`,
+		  `broad_band` from ftp_machine
+		<where>
+		  		  <if test="machineId != null and machineId != ''"> and machine_id = #{machineId} </if>
+		  		  <if test="machineIp != null and machineIp != ''"> and machine_ip = #{machineIp} </if>
+		  		  <if test="machineName != null and machineName != ''"> and machine_name like CONCAT('%',#{machineName},'%')  </if>
+		  		  <if test="machineMemory != null and machineMemory != ''"> and machine_memory = #{machineMemory} </if>
+		  		  <if test="machineNvidia != null and machineNvidia != ''"> and machine_nvidia = #{machineNvidia} </if>
+		  		  <if test="userIdCreate != null and userIdCreate != ''"> and user_id_create = #{userIdCreate} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+		  		  <if test="gmtModified != null and gmtModified != ''"> and gmt_modified = #{gmtModified} </if>
+				  <if test="cpu != null and cpu != ''"> and cpu = #{cpu} </if>
+				  <if test="cpuNumber != null and cpuNumber != ''"> and cpu_number = #{cpuNumber} </if>
+				  <if test="broadBand != null and broadBand != ''"> and broad_band = #{broadBand} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by machine_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from ftp_machine
+		<where>
+			<if test="machineId != null and machineId != ''"> and machine_id = #{machineId} </if>
+			<if test="machineIp != null and machineIp != ''"> and machine_ip = #{machineIp} </if>
+			<if test="machineName != null and machineName != ''"> and machine_name = #{machineName} </if>
+			<if test="machineMemory != null and machineMemory != ''"> and machine_memory = #{machineMemory} </if>
+			<if test="machineNvidia != null and machineNvidia != ''"> and machine_nvidia = #{machineNvidia} </if>
+			<if test="userIdCreate != null and userIdCreate != ''"> and user_id_create = #{userIdCreate} </if>
+			<if test="gmtCreate != null and gmtCreate != ''"> and gmt_create = #{gmtCreate} </if>
+			<if test="gmtModified != null and gmtModified != ''"> and gmt_modified = #{gmtModified} </if>
+			<if test="cpu != null and cpu != ''"> and cpu = #{cpu} </if>
+			<if test="cpuNumber != null and cpuNumber != ''"> and cpu_number = #{cpuNumber} </if>
+			<if test="broadBand != null and broadBand != ''"> and broad_band = #{broadBand} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.hzgc.system.domain.MachineDO" useGeneratedKeys="true" keyProperty="machineId">
+		insert into ftp_machine
+		(
+			`machine_ip`,
+			`machine_name`,
+			`machine_memory`,
+			`machine_nvidia`,
+			`user_id_create`,
+			`gmt_create`,
+			`gmt_modified`,
+			`cpu`,
+			`cpu_number`,
+			`broad_band`
+		)
+		values
+		(
+			#{machineIp},
+			#{machineName},
+			#{machineMemory},
+			#{machineNvidia},
+			#{userIdCreate},
+			#{gmtCreate},
+			#{gmtModified},
+			#{cpu},
+			#{cpuNumber},
+			#{broadBand}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.hzgc.system.domain.MachineDO">
+		update ftp_machine
+		<set>
+			<if test="machineIp != null">`machine_ip` = #{machineIp}, </if>
+			<if test="machineName != null">`machine_name` = #{machineName}, </if>
+			<if test="machineMemory != null">`machine_memory` = #{machineMemory}, </if>
+			<if test="machineNvidia != null">`machine_nvidia` = #{machineNvidia}, </if>
+			<if test="userIdCreate != null">`user_id_create` = #{userIdCreate}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="cpu != null">`cpu` = #{cpu}, </if>
+			<if test="cpuNumber != null">`cpu_number` = #{cpuNumber}, </if>
+			<if test="broadBand != null">`broad_band` = #{broadBand}</if>
+		</set>
+		where machine_id = #{machineId}
+	</update>
+
+	<delete id="remove">
+		delete from ftp_machine where machine_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from ftp_machine where machine_id in
+		<foreach item="machineId" collection="array" open="(" separator="," close=")">
+			#{machineId}
+		</foreach>
+	</delete>
+
+</mapper>
