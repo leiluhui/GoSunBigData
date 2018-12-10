@@ -55,3 +55,11 @@ spring:
       cluster-nodes: 172.18.18.119:9300
       repositories:
         enabled: true
+
+#============== zookeeper ===================
+zk:
+  server: 172.18.18.202:2181
+  sessionTimeoutMs: 6000
+  connectionTimeoutMs: 6000
+  maxRetries: 3
+  baseSleepTimeMs: 1000

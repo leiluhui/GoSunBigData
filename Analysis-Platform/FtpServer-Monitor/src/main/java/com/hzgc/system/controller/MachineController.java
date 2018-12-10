@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.hzgc.common.controller.BaseController;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.GetChildrenBuilder;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +40,8 @@ public class MachineController  extends BaseController {
 
 	@GetMapping("")
 	@RequiresPermissions("sys:machine:machine")
-	String Machine(){
+	String Machine() throws  Exception{
+
 	    return "system/machine/machine";
 	}
 	

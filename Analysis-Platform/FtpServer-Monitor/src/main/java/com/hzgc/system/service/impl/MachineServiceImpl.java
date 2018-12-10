@@ -1,5 +1,8 @@
 package com.hzgc.system.service.impl;
 
+import com.hzgc.system.config.ZKClient;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.GetChildrenBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ import com.hzgc.system.service.MachineService;
 public class MachineServiceImpl implements MachineService {
 	@Autowired
 	private MachineDao machineDao;
+
+	@Autowired
+	private ZKClient zkClient;
 	
 	@Override
 	public MachineDO get(Integer machineId){
@@ -24,6 +30,11 @@ public class MachineServiceImpl implements MachineService {
 	
 	@Override
 	public List<MachineDO> list(Map<String, Object> map){
+
+		boolean existNode = zkClient.isExistNode("/static_compare_service");
+		boolean existNode1 = zkClient.isExistNode("/liang");
+		System.err.println(existNode);
+		System.err.println(existNode1);
 		return machineDao.list(map);
 	}
 	
