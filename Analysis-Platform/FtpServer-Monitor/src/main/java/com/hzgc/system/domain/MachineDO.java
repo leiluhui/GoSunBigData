@@ -29,6 +29,36 @@ public class MachineDO implements Serializable {
 	private Date gmtCreate;
 	//修改时间
 	private Date gmtModified;
+	//cpu
+	private String cpu;
+	//cpu数量
+	private String cpuNumber;
+	//带宽
+	private String broadBand;
+
+	public String getCpu() {
+		return cpu;
+	}
+
+	public void setCpu(String cpu) {
+		this.cpu = cpu;
+	}
+
+	public String getCpuNumber() {
+		return cpuNumber;
+	}
+
+	public void setCpuNumber(String cpuNumber) {
+		this.cpuNumber = cpuNumber;
+	}
+
+	public String getBroadBand() {
+		return broadBand;
+	}
+
+	public void setBroadBand(String broadBand) {
+		this.broadBand = broadBand;
+	}
 
 	/**
 	 * 设置：主键Id

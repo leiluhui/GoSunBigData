@@ -36,14 +36,20 @@ function validateRule() {
 	var icon = "<i class='fa fa-times-circle'></i> ";
 	$("#signupForm").validate({
 		rules : {
-			name : {
+            machineIp : {
 				required : true
-			}
+			},
+            machineName : {
+                required : true
+            }
 		},
 		messages : {
-			name : {
-				required : icon + "请输入姓名"
-			}
+            machineIp : {
+				required : icon + "请输入IP地址"
+			},
+            machineName : {
+                required : icon + "请输入主机名"
+            }
 		}
 	})
 }
