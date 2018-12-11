@@ -1,21 +1,19 @@
-package com.hzgc.cloud.peoman.worker.service;
+package com.hzgc.common.service.sql;
 
-import com.hzgc.common.util.basic.SqlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
+import java.lang.reflect.ParameterizedType;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-@Component
 @Slf4j
-public class CreateTable implements CommandLineRunner {
+public class CreateTable<T extends Table> implements CommandLineRunner {
     @Autowired
     @Value(value = "${spring.datasource.url}")
     private String jdbcUrl;
@@ -34,8 +32,9 @@ public class CreateTable implements CommandLineRunner {
 
     @Override
     public void run(String... strings) {
-
-        Map<String, String> sql = SqlUtil.getSql(People_background_table.class);
+        ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
+        Class<T> actualTypeArguments = (Class<T>) superClass.getActualTypeArguments()[0];
+        Map<String, String> sql = SqlUtil.getSql(actualTypeArguments);
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
@@ -57,9 +56,9 @@ public class CreateTable implements CommandLineRunner {
                             result = statement.executeUpdate(sql.get(name));
                         }
                         if (result != -1) {
-                            System.out.println("Create table " + name + " successfully!!!");
+                            log.info("Create table " + name + " successfully!!!");
                         } else {
-                            System.out.println("Create table " + name + "  failed!!!");
+                            log.error("Create table " + name + "  failed!!!");
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();

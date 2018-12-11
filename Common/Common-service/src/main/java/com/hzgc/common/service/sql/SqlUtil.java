@@ -1,4 +1,4 @@
-package com.hzgc.common.util.basic;
+package com.hzgc.common.service.sql;
 
 import lombok.extern.slf4j.Slf4j;
 

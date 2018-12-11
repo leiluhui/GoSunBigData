@@ -1,6 +1,8 @@
 package com.hzgc.cluster.dispatch.service;
 
-public interface Dispatch_background_table{
+import com.hzgc.common.service.sql.Table;
+
+public interface Dispatch_background_table extends Table {
 
     public String SQL_DISPATCH_WHITE = "CREATE TABLE IF NOT EXISTS  t_dispatch_white(\n" +
             "  id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT '白名单ID',\n" +

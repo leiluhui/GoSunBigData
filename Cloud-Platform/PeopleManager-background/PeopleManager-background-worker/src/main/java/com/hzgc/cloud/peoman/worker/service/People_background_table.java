@@ -1,6 +1,8 @@
 package com.hzgc.cloud.peoman.worker.service;
 
-public interface People_background_table {
+import com.hzgc.common.service.sql.Table;
+
+public interface People_background_table extends Table {
 
     public String SQL_24HOUR_COUNT = "CREATE TABLE IF NOT EXISTS  `t_24hour_count` (\n" +
             "  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +

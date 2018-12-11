@@ -1,8 +1,10 @@
 package com.hzgc.cloud.fusion.service;
 
-public interface Fusion_table {
+import com.hzgc.common.service.sql.Table;
 
-    public String SQL_FUSION = "CREATE TABLE IF NOT EXISTS  `t_fusion_imsi` (\n" +
+public interface Fusion_table extends Table {
+
+    public String SQL_FUSION = "CREATE TABLE IF NOT EXISTS  `t_fusion_imsi1` (\n" +
             "  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
             "  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',\n" +
             "  `community` bigint(20) NOT NULL COMMENT '小区ID',\n" +

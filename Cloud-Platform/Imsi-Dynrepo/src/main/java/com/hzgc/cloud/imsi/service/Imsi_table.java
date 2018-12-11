@@ -1,6 +1,8 @@
 package com.hzgc.cloud.imsi.service;
 
-public interface Imsi_table {
+import com.hzgc.common.service.sql.Table;
+
+public interface Imsi_table extends Table {
 
     public String SQL_MAC = "CREATE TABLE IF NOT EXISTS  `t_mac_all` (\n" +
             "  `time` timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '存储时间',\n" +

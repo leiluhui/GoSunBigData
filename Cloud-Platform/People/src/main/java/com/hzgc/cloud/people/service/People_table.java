@@ -1,6 +1,8 @@
 package com.hzgc.cloud.people.service;
 
-public interface People_table {
+import com.hzgc.common.service.sql.Table;
+
+public interface People_table extends Table {
 
     public String SQL_PEOPLE = "CREATE TABLE IF NOT EXISTS  `t_people` (\n" +
             "  `id` varchar(32) NOT NULL COMMENT '人员全局ID',\n" +

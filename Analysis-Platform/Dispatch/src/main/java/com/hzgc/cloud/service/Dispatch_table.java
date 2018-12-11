@@ -1,6 +1,8 @@
 package com.hzgc.cloud.service;
 
-public interface Dispatch_table {
+import com.hzgc.common.service.sql.Table;
+
+public interface Dispatch_table extends Table {
 
     public String SQL_DISPATCH = "CREATE TABLE IF NOT EXISTS  t_dispatch(\n" +
             "  id VARCHAR(32) PRIMARY KEY NOT NULL COMMENT '布控ID',\n" +
