@@ -18,6 +18,7 @@
         <module>Dispatch-background</module>
         <module>Face-Dynrepo</module>
         <module>FaceCompare</module>
+        <module>FtpServer</module>
         <module>Person-Dynrepo</module>
         <module>Spark</module>
         <module>Vehicle-Dynrepo</module>

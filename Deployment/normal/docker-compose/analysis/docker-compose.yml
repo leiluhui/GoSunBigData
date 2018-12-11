@@ -133,25 +133,6 @@ services:
     volumes:
     - ${DOCKER_HOME}/dispatch/log:/log
 
-  collect-ftp:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
-    container_name: collect-ftp
-    restart: always
-    runtime: nvidia
-    environment:
-    - PROFILES_ACTIVE=local
-    - ZOOKEEPER_HOST=${ZK_HOST}:${ZK_PORT}
-    - HOST_IP=${DOCKER_HOST_IP}
-    - HOST_NAME=${DOCKER_HOST_NAME}
-    - EUREKA_IP=${EUREKA_HOST_IP}
-    - EUREKA_PORT=${EUREKA_HOST_PORT}
-    - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
-    - SEEMMO_URL=http://${SEEMO_URL}:7000/ImgProcService/Recognize
-    - HOME_DIR=${FTP_HOME}
-    network_mode: "host"
-    volumes:
-    - ${FTP_HOME}:${FTP_HOME}
-
   facecompare:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}
     container_name: facecompare

@@ -387,5 +387,12 @@
             </includes>
             <outputDirectory>normal/ansible</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>../Deployment/normal/envconf</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+            <outputDirectory>normal/envconf</outputDirectory>
+        </fileSet>
     </fileSets>
 </assembly>
