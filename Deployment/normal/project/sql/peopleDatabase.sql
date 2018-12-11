@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `t_imei` (
   `policePhone` varchar(11) COMMENT '负责干警联系方式',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
-  KEY `T_INDEX_PEOPLE_ID` (`peopleid`)
+  UNIQUE KEY `peopleid` (`peopleid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='IMEI码表';
 
 CREATE TABLE IF NOT EXISTS  `t_inner_feature` (
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS  `t_imsi_all` (
   `savetime` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '时间',
   `standard` varchar(10) DEFAULT NULL COMMENT '运营商',
   `id` varchar(32) NOT NULL COMMENT 'uuid',
-  `communityId ` bigint NOT NULL COMMENT '社区id',
+  `communityId` bigint NOT NULL COMMENT '社区id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=74 COMMENT='IMSI码总表';
 
