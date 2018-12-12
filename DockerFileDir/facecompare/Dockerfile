@@ -1,5 +1,5 @@
-#Ö¸¶¨¾µÏñ
+#指定镜像
 FROM registry.cn-hangzhou.aliyuncs.com/hzgc/java-all:8
 
-#²Ù×÷ÎÄ¼þ
+#操作文件
 COPY GsFaceCompare /opt/GsFaceCompare
