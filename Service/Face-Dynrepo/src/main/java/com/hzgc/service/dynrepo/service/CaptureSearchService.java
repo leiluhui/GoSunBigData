@@ -1,7 +1,5 @@
 package com.hzgc.service.dynrepo.service;
 
-import com.hzgc.common.service.error.RestErrorCode;
-import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.util.json.JacksonUtil;
 import com.hzgc.compare.CompareParam;
 import com.hzgc.compare.Feature;
