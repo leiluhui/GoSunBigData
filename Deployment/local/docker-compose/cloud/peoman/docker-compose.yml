@@ -5,6 +5,7 @@ services:
   peoman-worker:
     image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${VERSION}
     container_name: peoman-worker
+    network_mode: "host"
     environment:
     - EUREKA_IP=${EUREKA_HOST_IP}
     - EUREKA_PORT=${EUREKA_HOST_PORT}

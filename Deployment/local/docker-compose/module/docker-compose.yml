@@ -50,7 +50,7 @@ services:
     image: ${DOCKER_REPOSITOR}/hzgc/kafka:1.0.0
     container_name: kafka
     restart: always
-    #network_mode: "host"
+    network_mode: "host"
     depends_on:
     - zookeeper
     environment:
