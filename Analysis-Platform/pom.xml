@@ -20,9 +20,8 @@
         <module>FaceCompare</module>
         <module>FtpServer</module>
         <module>Person-Dynrepo</module>
-        <module>Spark</module>
         <module>Vehicle-Dynrepo</module>
-        <module>FtpServer-Monitor</module>
+        <!--<module>FtpServer-Monitor</module>-->
         <module>DataSyncerEs</module>
     </modules>
 

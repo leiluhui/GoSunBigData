@@ -10,7 +10,6 @@ import com.hzgc.datasyncer.bean.EsPersonObject;
 import com.hzgc.datasyncer.dao.CarRepository;
 import com.hzgc.datasyncer.dao.FaceRepository;
 import com.hzgc.datasyncer.dao.PersonRepository;
-import com.sun.istack.internal.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +23,12 @@ import java.util.List;
 @Slf4j
 public class DataConsumer {
     @Value("${kafka.topic.face}")
-    @NotNull
     private String faceTopic;
 
     @Value("${kafka.topic.person}")
-    @NotNull
     private String personTopic;
 
     @Value("${kafka.topic.car}")
-    @NotNull
     private String carTopic;
 
     @Autowired
