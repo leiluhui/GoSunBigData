@@ -13,7 +13,7 @@ services:
     - "2123:2123"
 
   ftp-proxy:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${COLLECT_FTP_VERSION}
     container_name: ftp-proxy
     restart: always
     runtime: nvidia
@@ -30,7 +30,7 @@ services:
     - ${FTP_HOME}:${FTP_HOME}
 
   ftp1:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${COLLECT_FTP_VERSION}
     container_name: ftp1
     restart: always
     runtime: nvidia
@@ -47,7 +47,7 @@ services:
     - ${FTP_HOME}:${FTP_HOME}
 
   ftp2:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${COLLECT_FTP_VERSION}
     container_name: ftp2
     restart: always
     runtime: nvidia
@@ -64,7 +64,7 @@ services:
     - ${FTP_HOME}:${FTP_HOME}
 
   ftp3:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${COLLECT_FTP_VERSION}
     container_name: ftp3
     restart: always
     runtime: nvidia
