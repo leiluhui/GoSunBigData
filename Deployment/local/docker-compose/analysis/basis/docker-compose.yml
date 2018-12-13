@@ -2,7 +2,7 @@ version: '2.3'
 
 services:
   collect:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect:${COLLECT_VERSION}
     container_name: collect
     restart: always
     environment:
@@ -16,7 +16,7 @@ services:
     - ${DOCKER_HOME}/collect/log:/log
 
   dispatch-background:
-    image: ${DOCKER_REPOSITOR}/hzgc/dispatch-background:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/dispatch-background:${DISPATCH_BACKGROUND_VERSION}
     container_name: dispatch-background
     environment:
     - EUREKA_IP=${EUREKA_HOST_IP}
@@ -33,7 +33,7 @@ services:
     - ${DOCKER_HOME}/dispatch-background/log:/log
 
   kafka-parquet:
-    image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/spark:${SPARK_VERSION}
     container_name: kafka-parquet
     command: /start-kafka-to-parquet.sh
     restart: always
@@ -49,23 +49,23 @@ services:
 #    - ${DOCKER_HOME}/spark/sparkJob.properties:/usr/spark-2.2.0/conf/sparkJob.properties
     - ${DOCKER_HOME}/spark/parquet:/parquet
 
-  kafka-tidb:
-    image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
-    container_name: kafka-tidb
-    command: /start-kafka-to-tidb.sh
-    restart: always
-    network_mode: "host"
-    extra_hosts:
-    - platform:${PLATFORM_HOST}
-    - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
-    environment:
-    - JDBC_IP=${MYSQL_HOST}
-    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
-    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
-    - JDBC_PORT=${MYSQL_PORT}
+#  kafka-tidb:
+#    image: ${DOCKER_REPOSITOR}/hzgc/spark:${VERSION}
+#    container_name: kafka-tidb
+#    command: /start-kafka-to-tidb.sh
+#    restart: always
+#    network_mode: "host"
+#    extra_hosts:
+#    - platform:${PLATFORM_HOST}
+#    - ${DOCKER_HOST_NAME}:${DOCKER_HOST_IP}
+#    environment:
+#    - JDBC_IP=${MYSQL_HOST}
+#    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+#    - KAFKA_BROKER=${KAFKA_HOST}:${KAFKA_PORT}
+#    - JDBC_PORT=${MYSQL_PORT}
 
   face-dynrepo:
-    image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${FACE_DYNREPO_VERSION}
     depends_on:
     - collect
     container_name: face-dynrepo
@@ -82,7 +82,7 @@ services:
     - ${DOCKER_HOME}/face-dynrepo/log:/log
 
   person-dynrepo:
-    image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${PERSON_DYNREPO_VERSION}
     depends_on:
     - collect
     container_name: person-dynrepo
@@ -99,7 +99,7 @@ services:
     - ${DOCKER_HOME}/person-dynrepo/log:/log
 
   vehicle-dynrepo:
-    image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VEHICLE_DYNREPO_VERSION}
     depends_on:
     - collect
     container_name: vehicle-dynrepo
@@ -116,7 +116,7 @@ services:
     - ${DOCKER_HOME}/vehicle-dynrepo/log:/log
 
   dispatch:
-    image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${DISPATCH_VERSION}
     depends_on:
     - collect
     container_name: dispatch
@@ -134,7 +134,7 @@ services:
     - ${DOCKER_HOME}/dispatch/log:/log
 
   collect-ftp:
-    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/collect-ftp:${COLLECT_FTP_VERSION}
     container_name: collect-ftp
     restart: always
     runtime: nvidia
@@ -153,7 +153,7 @@ services:
     - ${FTP_HOME}:${FTP_HOME}
 
   facecompare:
-    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare
     restart: always
     environment:

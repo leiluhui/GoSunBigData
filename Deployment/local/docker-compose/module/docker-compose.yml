@@ -1,15 +1,6 @@
 version: '2.3'
 
 services:
-  eureka:
-    image: ${DOCKER_REPOSITOR}/gosun/registry
-    container_name: eureka
-    restart: always
-    hostname: eureka
-    #network_mode: "host"
-    ports:
-    - "9000:9000"
-
   mysql:
     image: ${DOCKER_REPOSITOR}/hzgc/mysql:5.7.19
     container_name: mysql
@@ -57,7 +48,7 @@ services:
     - KAFKA_ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${DOCKER_HOST_IP}:${KAFKA_PORT}
     - KAFKA_CREATE_TOPICS=face:1:1,car:1:1,person:1:1
-    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - KAFKA_ZOOKEEPER_CONNECT=${DOCKER_HOST_IP}:2181
     hostname: kafka
     ports:
     - "9092:9092"

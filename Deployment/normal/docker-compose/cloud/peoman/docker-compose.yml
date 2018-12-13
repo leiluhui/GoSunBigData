@@ -3,7 +3,7 @@ version: '2.3'
 services:
 
   peoman-worker:
-    image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${VERSION}
+    image: ${DOCKER_REPOSITOR}/hzgc/peoman-worker:${PEOMAN_WORKER_VERSION}
     container_name: peoman-worker
     network_mode: "host"
     environment:
