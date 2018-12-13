@@ -1,5 +1,7 @@
 
 var prefix = "/sys/machine"
+
+document.write("<script type='text/javascript' src='/js/openTab.js'></script>");
 $(function() {
     load();
 });
@@ -102,15 +104,18 @@ function load() {
                             var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
                                 + row.machineId
                                 + '\')"><i class="fa fa-remove"></i></a> ';
-                            var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
-                                + row.machineId
-                                + '\')"><i class="fa fa-key"></i></a> ';
-                            return e + d ;
+                            var f = '<a class="btn btn-success btn-sm" href="#" title="设备列表"  mce_href="#" onclick="detail(\''
+                                + row.machineIp
+                                + '\')"><i class="fa  fa-th-list"></i></a> ';
+                            return e + d + f ;
                         }
                     } ]
             });
 }
+
+
 function reLoad() {
+
     $('#exampleTable').bootstrapTable('refresh');
 }
 function add() {
@@ -155,8 +160,11 @@ function remove(id) {
     })
 }
 
-function resetPwd(id) {
+function detail(machineIp) {
+    var url = prefix + '/detail/' + machineIp;
+    openPage(url, "设备管理");
 }
+
 function batchRemove() {
     var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
     if (rows.length == 0) {
@@ -191,3 +199,5 @@ function batchRemove() {
 
     });
 }
+
+

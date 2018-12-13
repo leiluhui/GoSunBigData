@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hzgc.system.dao.DeviceDao">
+
+	<select id="get" resultType="com.hzgc.system.domain.DeviceDO">
+		select `device_id`,`device_name`,`device_manufacturer`,`device_sn`,`device_type`,`client_ip`,`client_hostname`,`container`,`last_data_time` from ftp_device where device_id = #{value}
+	</select>
+
+	<select id="list" resultType="com.hzgc.system.domain.DeviceDO">
+		select `device_id`,`device_name`,`device_manufacturer`,`device_sn`,`device_type`,`client_ip`,`client_hostname`,`container`,`last_data_time` from ftp_device
+        <where>  
+		  		  <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId} </if>
+		  		  <if test="deviceName != null and deviceName != ''"> and device_name = #{deviceName} </if>
+		  		  <if test="deviceManufacturer != null and deviceManufacturer != ''"> and device_manufacturer = #{deviceManufacturer} </if>
+		  		  <if test="deviceSn != null and deviceSn != ''"> and device_sn = #{deviceSn} </if>
+		  		  <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType} </if>
+		  		  <if test="clientIp != null and clientIp != ''"> and client_ip = #{clientIp} </if>
+		  		  <if test="clientHostname != null and clientHostname != ''"> and client_hostname = #{clientHostname} </if>
+		  		  <if test="container != null and container != ''"> and container = #{container} </if>
+		  		  <if test="lastDataTime != null and lastDataTime != ''"> and last_data_time = #{lastDataTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by device_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from ftp_device
+		 <where>  
+		  		  <if test="deviceId != null and deviceId != ''"> and device_id = #{deviceId} </if>
+		  		  <if test="deviceName != null and deviceName != ''"> and device_name = #{deviceName} </if>
+		  		  <if test="deviceManufacturer != null and deviceManufacturer != ''"> and device_manufacturer = #{deviceManufacturer} </if>
+		  		  <if test="deviceSn != null and deviceSn != ''"> and device_sn = #{deviceSn} </if>
+		  		  <if test="deviceType != null and deviceType != ''"> and device_type = #{deviceType} </if>
+		  		  <if test="clientIp != null and clientIp != ''"> and client_ip = #{clientIp} </if>
+		  		  <if test="clientHostname != null and clientHostname != ''"> and client_hostname = #{clientHostname} </if>
+		  		  <if test="container != null and container != ''"> and container = #{container} </if>
+		  		  <if test="lastDataTime != null and lastDataTime != ''"> and last_data_time = #{lastDataTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.hzgc.system.domain.DeviceDO">
+		insert into ftp_device
+		(
+			`device_id`, 
+			`device_name`, 
+			`device_manufacturer`, 
+			`device_sn`, 
+			`device_type`, 
+			`client_ip`, 
+			`client_hostname`, 
+			`container`, 
+			`last_data_time`
+		)
+		values
+		(
+			#{deviceId}, 
+			#{deviceName}, 
+			#{deviceManufacturer}, 
+			#{deviceSn}, 
+			#{deviceType}, 
+			#{clientIp}, 
+			#{clientHostname}, 
+			#{container}, 
+			#{lastDataTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.hzgc.system.domain.DeviceDO">
+		update ftp_device 
+		<set>
+			<if test="deviceName != null">`device_name` = #{deviceName}, </if>
+			<if test="deviceManufacturer != null">`device_manufacturer` = #{deviceManufacturer}, </if>
+			<if test="deviceSn != null">`device_sn` = #{deviceSn}, </if>
+			<if test="deviceType != null">`device_type` = #{deviceType}, </if>
+			<if test="clientIp != null">`client_ip` = #{clientIp}, </if>
+			<if test="clientHostname != null">`client_hostname` = #{clientHostname}, </if>
+			<if test="container != null">`container` = #{container}, </if>
+			<if test="lastDataTime != null">`last_data_time` = #{lastDataTime}</if>
+		</set>
+		where device_id = #{deviceId}
+	</update>
+	
+	<delete id="remove">
+		delete from ftp_device where device_id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from ftp_device where device_id in 
+		<foreach item="deviceId" collection="array" open="(" separator="," close=")">
+			#{deviceId}
+		</foreach>
+	</delete>
+
+</mapper>
