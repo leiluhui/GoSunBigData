@@ -1,10 +1,18 @@
-#!/usr/bin/env bash
-#/bin/bash
+#!/bin/bash
+#set -x
+
+
 cd `dirname $0`
 HOME_DIR=`pwd`
-VERSION_INFO=${1}
+#镜像版本,由负责人自己填写
+VERSION_INFO=2.4.0
+#服务版本信息
+VERSION_NAME=FUSION_VERSION
 IMAGE_NAME=fusion
+#镜像仓库地址,使用外部传参指定
+ACTION=${1}
 DOCKER_REPO=${2}
+DOCKER_DEFULT=registry.cn-hangzhou.aliyuncs.com/hzgc
 DATE_YMD=`date +%Y-%m-%d`
 DATE_HMS=`date +%H:%m:%S`
 DATE_YMD_HMS="$DATE_YMD $DATE_HMS"
@@ -12,22 +20,40 @@ IMAGE_FINAL_NAME=$IMAGE_NAME:$VERSION_INFO
 
 function make()
 {
-    if [ -z "$DOCKER_REPO" ]; then
-        printf "\033[31m$DATE_YMD_HMS Docker repository is not specified  \033[0m\n"
-        exit 1
-    fi
+   if [ ! -n  "${ACTION}" ];then
+     echo "usage: "
+     echo "1, sh make.sh build  打成阿里云默认镜像."
+     echo "2, sh make.sh build XXXX/hzgc  打成自己想要的镜像. "
+     echo "3, sh make.sh push  将镜像推入阿里云默认仓库."
+     echo "4, sh make.sh push XXXX/hzgc 将镜像推入自己想要的镜像仓库."
+     exit 1;
+   elif [ "build" = $ACTION ];then
+     if [ ! -n "${DOCKER_REPO}" ]; then
+         exec docker build -t $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
+     else
+         exec docker build -t $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
+     fi
+   elif [ "push" = $ACTION ];then
+       if [ ! -n "${DOCKER_REPO}" ]; then
+           exec docker push $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO
+       else
+           exec docker push $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO
+       fi
+   else
+     echo "usage: "
+     echo "1, sh make.sh build  打成阿里云默认镜像."
+     echo "2, sh make.sh build XXXX/hzgc  打成自己想要的镜像. "
+     echo "3, sh make.sh push  将镜像推入阿里云默认仓库."
+     echo "4, sh make.sh push XXXX/hzgc 将镜像推入自己想要的镜像仓库."
+     exit 1;
 
-    if [ -z "VERSION_INFO" ]; then
-        printf "\033[31m$DATE_YMD_HMS Current image name is:$IMAGE_NAME, version:$VERSION_INFO \033[0m\n"
-        exit 1
-    fi
-
-    exec docker build -t $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
-    echo $IMAGE_FINAL_NAME
+   fi
 }
+
 
 function main()
 {
     make
 }
+
 main
