@@ -37,15 +37,19 @@ public class ElasticSearchClient {
      */
     public static List<FaceObject> readFromEs(List<String> ids, List<String> ipcIds){
         log.info("The size of ids is " + ids.size());
+        if(ids.size() == 0){
+            return new ArrayList<>();
+        }
         SearchRequestBuilder requestBuilder = esClient.prepareSearch(FaceTable.DYNAMIC_INDEX)
                 .setTypes(FaceTable.PERSON_INDEX_TYPE);
 //        requestBuilder.addStoredField("");
-        requestBuilder.setSize(500);
-        log.info("Ids : " + ids.toString());
+        requestBuilder.setSize(Config.FIRST_COMPARE_RESULT_COUNT);
+        log.info("Ids : " + ids.get(0) + " ...");
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if(ipcIds != null && ipcIds.size() > 0) {
-            log.info("IpcIds : " + ipcIds.toString());
+            log.info("IpcIds size : " + ipcIds.size());
+            log.info("IpcIds : " + ipcIds.get(0) + " ...");
             TermsQueryBuilder queryBuilder2 = QueryBuilders.termsQuery("ipcid", ipcIds.toArray(new String[ipcIds.size()]));
             boolQueryBuilder.must(queryBuilder2);
         }
@@ -126,7 +130,11 @@ public class ElasticSearchClient {
             attribute.setGender((Integer) hit.getSource().get(FaceTable.GENDER));
             attribute.setHuzi((Integer) hit.getSource().get(FaceTable.HUZI));
             attribute.setMask((Integer) hit.getSource().get(FaceTable.MASK));
-            attribute.setSharpness((Integer) hit.getSource().get(FaceTable.SHARPNESS));
+            Object sharpness = hit.getSource().get(FaceTable.SHARPNESS);
+            if(sharpness != null){
+                attribute.setSharpness((Integer) sharpness);
+            }
+
             faceObject.setAttribute(attribute);
             res.add(faceObject);
         }

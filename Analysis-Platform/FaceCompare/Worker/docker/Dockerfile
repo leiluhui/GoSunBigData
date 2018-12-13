@@ -1,8 +1,8 @@
 #指定镜像
-FROM registry.cn-hangzhou.aliyuncs.com/hzgc/java-all:8
+FROM registry.cn-hangzhou.aliyuncs.com/hzgc/gs-facecompare:1.0
 
 #设置环境变量
-ENV LD_LIBRARY_PATH=/opt/GsFaceLib/face_libs
+#ENV LD_LIBRARY_PATH=/opt/GsFaceLib/face_libs
 
 #操作文件
 COPY worker /worker

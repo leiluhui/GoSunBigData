@@ -8,7 +8,6 @@ import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
 import com.hzgc.compare.worker.util.FaceObjectUtil;
-import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -37,6 +36,8 @@ public class CompareOnePerson extends CompareTask {
 
     @Override
     public SearchResult compare() {
+        List<String> ipcIds = param.getIpcIds();
+        param.setIpcIds(null);
         log.info(FaceObjectUtil.objectToJson(param));
         byte[] feature1 = param.getFeatures().get(0).getFeature1();
         float[] feature2 = param.getFeatures().get(0).getFeature2();
@@ -46,42 +47,20 @@ public class CompareOnePerson extends CompareTask {
             resultCount = resultDefaultCount;
         }
         SearchResult result;
-//        HBaseClient client = new HBaseClient();
-//        ElasticSearchClient client = new ElasticSearchClient();
+
         Comparators comparators = new ComparatorsImpl();
-        // 根据条件过滤
-        log.info("To filter the records from memory.");
-        List<Pair<String, byte[]>> dataFilterd =  comparators.filter(dateStart, dateEnd);
-        if(dataFilterd.size() == 0){
-            return new SearchResult();
-        }
-        if(dataFilterd.size() > Config.FIRST_COMPARE_RESULT_COUNT){
-            // 若过滤结果太大，则需要第一次对比
-            log.info("The result of filter is too bigger , to compare it first.");
-            List<String> ids =  comparators.compareFirst(feature1, Config.FIRST_COMPARE_RESULT_COUNT, dataFilterd);
-            //根据对比结果从ES读取数据
-            log.info("Read records from ES with result of first compared.");
+        List<String> ids =  comparators.compareFirst(feature1, Config.FIRST_COMPARE_RESULT_COUNT, dateStart, dateEnd);
+        //根据对比结果从ES读取数据
+        log.info("Read records from ES with result of first compared.");
 //            List<FaceObject> objs =  client.readFromHBase(firstCompared);
-            List<FaceObject> objs = ElasticSearchClient.readFromEs(ids, param.getIpcIds());
-            // 第二次对比
-            log.info("Compare records second.");
-            result = comparators.compareSecond(feature2, sim, objs, param.getSort());
-            //取相似度最高的几个
-            log.info("Take the top " + resultCount);
-            result = result.take(resultCount);
-        }else {
-            //若过滤结果比较小，则直接进行第二次对比
-            log.info("Read records from ES with result of filter.");
-//            List<FaceObject> objs = client.readFromHBase2(dataFilterd);
-            List<FaceObject> objs = ElasticSearchClient.readFromEs2(dataFilterd, param.getIpcIds());
-//            System.out.println("过滤结果" + objs.size() + " , " + objs.get(0));
-            log.info("Compare records second directly.");
-            result = comparators.compareSecond(feature2, sim, objs, param.getSort());
-            //取相似度最高的几个
-            log.info("Take the top " + resultCount);
-            result = result.take(resultCount);
-        }
-//        System.out.println("对比结果2" + result.getRecords().length + " , " + result.getRecords()[0]);
+        List<FaceObject> objs = ElasticSearchClient.readFromEs(ids, ipcIds);
+        // 第二次对比
+        log.info("Compare records second.");
+        result = comparators.compareSecond(feature2, sim, objs, param.getSort());
+        //取相似度最高的几个
+        log.info("Take the top " + resultCount);
+        result = result.take(resultCount);
+
         return result;
     }
 }

@@ -65,12 +65,15 @@ public class Comsumer extends Thread{
             List<Triplet<String, String, byte[]>> list = new ArrayList<>();
 //            log.info("Consumer size : " + records.count());
             for(ConsumerRecord<String, String> record : records){
-                FaceObject obj = JacksonUtil.toObject(record.value(), FaceObject.class);
-                list.add(new Triplet<>(obj.getTimeStamp().split(" ")[0], obj.getId(), obj.getAttribute().getBitFeature()));
+                try {
+                    FaceObject obj = JacksonUtil.toObject(record.value(), FaceObject.class);
+                    list.add(new Triplet<>(obj.getTimeStamp().split(" ")[0], obj.getId(), obj.getAttribute().getBitFeature()));
 //                objList.add(obj);
-                log.debug(record.value());
+                    log.debug(record.value());
+                }catch (Exception e){
+                    log.error("ERROR : " + e.getMessage());
+                }
             }
-//            memoryCache.addFaceObjects(objList);
             if(list.size() > 0) {
                 memoryCache.addBuffer(list);
 //                log.info("Push records from kafka to memory , the size is : " + list.size());
