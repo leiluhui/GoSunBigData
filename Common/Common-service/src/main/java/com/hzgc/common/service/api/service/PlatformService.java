@@ -218,7 +218,7 @@ public class PlatformService {
      * @param ids 区域/社区 ID列表
      * @return 获取区域/社区信息
      */
-    private List<Region> getRegionByIds(List<Long> ids) {
+    public List<Region> getRegionByIds(List<Long> ids) {
         if (ids != null && ids.size() > 0) {
             log.debug("Method:getRegionByIds, ids:" + Arrays.toString(ids.toArray()));
             ParameterizedTypeReference<Region[]> parameterizedTypeReference =

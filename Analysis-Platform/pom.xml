@@ -22,6 +22,7 @@
         <module>Spark</module>
         <module>Vehicle-Dynrepo</module>
         <module>FtpServer-Monitor</module>
+        <module>DataSyncerEs</module>
     </modules>
 
     <dependencyManagement>
