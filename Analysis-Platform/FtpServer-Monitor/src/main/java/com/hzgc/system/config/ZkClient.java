@@ -1,6 +1,5 @@
 package com.hzgc.system.config;
 
-import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
 import org.apache.curator.framework.recipes.cache.*;
@@ -9,8 +8,11 @@ import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by wzj on 2018/5/4.
+ * Created by liang on 2018/12/11.
  * http://www.cnblogs.com/domi22/p/9748083.html
  * https://www.cnblogs.com/qingyunzong/p/8666288.html
  * https://blog.csdn.net/u010889616/article/details/80209629
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class ZKClient
+public class ZkClient
 {
     /**
      * 客户端
@@ -82,13 +84,13 @@ public class ZKClient
         try
         {
             client.delete().deletingChildrenIfNeeded().forPath(path);
+
         }
         catch (Exception e)
         {
             e.printStackTrace();
             return false;
         }
-
         return true;
     }
 
@@ -103,13 +105,11 @@ public class ZKClient
         try
         {
             Stat stat = client.checkExists().forPath(path);
-
             return stat != null ? true : false;
         }
         catch (Exception e)
         {
             e.printStackTrace();
-
             return false;
         }
     }
@@ -124,23 +124,18 @@ public class ZKClient
         try
         {
             Stat stat = client.checkExists().forPath(path);
-
             if (stat == null)
             {
                 return 2;
             }
-
             if (stat.getEphemeralOwner() > 0)
             {
                 return 1;
             }
-
             return 0;
         }
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
-
             return 2;
         }
     }
@@ -151,16 +146,12 @@ public class ZKClient
      * @param path 路径
      * @return 节点数据，如果出现异常，返回null
      */
-    public String getNodeData(String path)
-    {
-
-        try
-        {
+    public String getNodeData(String path){
+        try {
             byte[] bytes = client.getData().forPath(path);
             return new String(bytes);
         }
-        catch (Exception e)
-        {
+        catch (Exception e){
             e.printStackTrace();
             return null;
         }
@@ -187,7 +178,6 @@ public class ZKClient
             e.printStackTrace();
             return false;
         }
-
         return true;
     }
 
@@ -222,11 +212,31 @@ public class ZKClient
 
     /**
      * 开启事务
-     *
      * @return 返回当前事务
      */
     public CuratorTransaction startTransaction()
     {
         return client.inTransaction();
+    }
+
+    /**
+     * 获取所有的子节点
+     *
+     * @param path 路径
+     * @return 删除结果
+     */
+    public List<String> getChildrenNode(String path)
+    {
+        List<String> list = new ArrayList<>();
+        try
+        {
+            list = client.getChildren().forPath(path);
+            return  list;
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        }
     }
 }

@@ -51,8 +51,8 @@ spring:
         max-wait: -1
   data:
     elasticsearch:
-      cluster-name: docker-cluster
-      cluster-nodes: 172.18.18.119:9300
+      cluster-name: hbase2es-cluster
+      cluster-nodes: 172.18.18.201:9300
       repositories:
         enabled: true
 

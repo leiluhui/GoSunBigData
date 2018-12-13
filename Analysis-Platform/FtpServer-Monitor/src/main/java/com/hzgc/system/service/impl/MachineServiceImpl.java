@@ -1,8 +1,6 @@
 package com.hzgc.system.service.impl;
 
-import com.hzgc.system.config.ZKClient;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.GetChildrenBuilder;
+import com.hzgc.system.config.ZkClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ public class MachineServiceImpl implements MachineService {
 	private MachineDao machineDao;
 
 	@Autowired
-	private ZKClient zkClient;
+	private ZkClient zkClient;
 	
 	@Override
 	public MachineDO get(Integer machineId){

@@ -1,6 +1,7 @@
 package com.hzgc.system.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +27,8 @@ import com.hzgc.common.utils.R;
 
 /**
  * 物理机器
- * 
- * @author liang
- * @email 1992lcg@163.com
- * @date 2018-12-07 18:35:53
+ * created by liang on 2018/12/12
  */
- 
 @Controller
 @RequestMapping("/sys/machine")
 public class MachineController  extends BaseController {
@@ -124,5 +121,22 @@ public class MachineController  extends BaseController {
 		machineService.batchRemove(machineIds);
 		return R.ok();
 	}
-	
+
+	/**
+	 * 设备详情
+	 *
+	 */
+	@RequiresPermissions("sys:machine:machine")
+	@GetMapping("/detail/{machineIp}")
+	public String detail(@PathVariable("machineIp") String machineIp, Model model)
+	{
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("machineIp", machineIp);
+		model.addAttribute("machine", machineService.list(params).get(0));
+
+		Map<String, Object> map = new HashMap<>();
+		model.addAttribute("machineList", machineService.list(map));
+		return "system/device/device";
+	}
 }
