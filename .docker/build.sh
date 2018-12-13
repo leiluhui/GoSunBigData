@@ -25,8 +25,6 @@ function find_make()
         VERSION=$(grep 'VERSION_INFO' $make | cut -d '=' -f2 | grep [0-9].[0-9].[0-9])
         SERVICE_NAME=$(grep 'VERSION_NAME' $make | cut -d '=' -f2 )
         echo "${SERVICE_NAME}=${VERSION}" >> ${LOCAL_ENV_DIR}/.env
-        echo "${SERVICE_NAME}"
-        echo "${VERSION}"
         echo "${SERVICE_NAME}=${VERSION}" >> ${NORMAL_ENV_DIR}/.env
         echo $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP/$IMAGE_NAME:$VERSION >> ${MAKE_RESULT}
     done
