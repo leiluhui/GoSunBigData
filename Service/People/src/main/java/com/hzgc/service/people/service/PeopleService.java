@@ -18,6 +18,7 @@ import com.hzgc.service.people.dao.*;
 import com.hzgc.service.people.fields.Flag;
 import com.hzgc.service.people.model.*;
 import com.hzgc.service.people.param.*;
+import com.hzgc.service.people.util.IdCardUtil;
 import com.hzgc.service.people.util.PeopleExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -99,10 +100,6 @@ public class PeopleService {
     private String topic;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private final static String IDCARD_PIC = "idcardpic";
-
-    private final static String CAPTURE_PIC = "capturepic";
 
     private void sendKafka(String key, Object data) {
         kafkaTemplate.send(topic, key, JacksonUtil.toJson(data));
@@ -579,8 +576,8 @@ public class PeopleService {
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
-            peopleVO.setAge(people.getAge());
-            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setAge(IdCardUtil.getAge(people.getIdcard()));
+            peopleVO.setBirthday(IdCardUtil.getBirthday(people.getIdcard()));
             peopleVO.setPolitic(people.getPolitic());
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());
@@ -706,8 +703,8 @@ public class PeopleService {
                     peopleVO.setHousehold(people.getHousehold());
                     peopleVO.setAddress(people.getAddress());
                     peopleVO.setSex(people.getSex());
-                    peopleVO.setAge(people.getAge());
-                    peopleVO.setBirthday(people.getBirthday());
+                    peopleVO.setAge(IdCardUtil.getAge(people.getIdcard()));
+                    peopleVO.setBirthday(IdCardUtil.getBirthday(people.getIdcard()));
                     peopleVO.setPolitic(people.getPolitic());
                     peopleVO.setEduLevel(people.getEdulevel());
                     peopleVO.setJob(people.getJob());
@@ -771,8 +768,8 @@ public class PeopleService {
             peopleVO.setRegionId(people.getRegion());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
-            peopleVO.setAge(people.getAge());
-            peopleVO.setBirthday(people.getBirthday());
+            peopleVO.setAge(IdCardUtil.getAge(people.getIdcard()));
+            peopleVO.setBirthday(IdCardUtil.getBirthday(people.getIdcard()));
             peopleVO.setPolitic(people.getPolitic());
             peopleVO.setEduLevel(people.getEdulevel());
             peopleVO.setJob(people.getJob());

@@ -1,7 +1,5 @@
 package com.hzgc.service.people.model;
 
-import com.hzgc.service.people.param.ImeiVO;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
