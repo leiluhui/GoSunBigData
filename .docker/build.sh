@@ -19,21 +19,13 @@ function find_make()
 {
     for make in `find $1 | grep target/make.sh`
     do
-
-        sh $make build  $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
+        sh $make push  $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
         IMAGE_NAME=`cat $make | grep IMAGE_NAME=| awk -F= '{print $2}'`
         VERSION=$(grep 'VERSION_INFO' $make | cut -d '=' -f2 | grep [0-9].[0-9].[0-9])
         SERVICE_NAME=$(grep 'VERSION_NAME' $make | cut -d '=' -f2 )
         echo "${SERVICE_NAME}=${VERSION}" >> ${LOCAL_ENV_DIR}/.env
         echo "${SERVICE_NAME}=${VERSION}" >> ${NORMAL_ENV_DIR}/.env
         echo $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP/$IMAGE_NAME:$VERSION >> ${MAKE_RESULT}
-    done
-}
-
-function find_push() {
-    for make in `find $1 | grep target/make.sh`
-    do
-        sh $make push $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
     done
 }
 
@@ -75,6 +67,5 @@ function main()
 {
     env_check
     find_make $PROJECT_HOME_DIR
-    find_push
 }
 main

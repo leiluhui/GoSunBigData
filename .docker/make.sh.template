@@ -20,34 +20,31 @@ IMAGE_FINAL_NAME=$IMAGE_NAME:$VERSION_INFO
 
 function make()
 {
-   if [ ! -n  "${ACTION}" ];then
-     echo "usage: "
-     echo "1, sh make.sh build  打成阿里云默认镜像."
-     echo "2, sh make.sh build XXXX/hzgc  打成自己想要的镜像. "
-     echo "3, sh make.sh push  将镜像推入阿里云默认仓库."
-     echo "4, sh make.sh push XXXX/hzgc 将镜像推入自己想要的镜像仓库."
-     exit 1;
-   elif [ "build" = $ACTION ];then
+   if [ "build" = $ACTION ];then
      if [ ! -n "${DOCKER_REPO}" ]; then
          exec docker build -t $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
      else
          exec docker build -t $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
      fi
    elif [ "push" = $ACTION ];then
-       if [ ! -n "${DOCKER_REPO}" ]; then
-           exec docker push $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO
-       else
-           exec docker push $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO
-       fi
-   else
-     echo "usage: "
-     echo "1, sh make.sh build  打成阿里云默认镜像."
-     echo "2, sh make.sh build XXXX/hzgc  打成自己想要的镜像. "
-     echo "3, sh make.sh push  将镜像推入阿里云默认仓库."
-     echo "4, sh make.sh push XXXX/hzgc 将镜像推入自己想要的镜像仓库."
-     exit 1;
+          if [ ! -n "${DOCKER_REPO}" ]; then
+              exec docker build -t $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./ &
+              sleep 1s
+              exec docker push $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO
+          else
+              exec docker build -t $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./ &
+              sleep 1s
+              exec docker push $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO
+          fi
+      else
+        echo "usage: "
+        echo "1, sh make.sh build                    打成阿里云镜像仓库镜像."
+        echo "2, sh make.sh build 镜像仓库地址/hzgc  打成其他镜像仓库镜像. "
+        echo "3, sh make.sh push                     打成阿里云镜像仓库镜像，并将镜像推入阿里云镜像仓库."
+        echo "4, sh make.sh push 镜像仓库地址/hzgc   打成其他镜像仓库镜像，并将镜像推入对应镜像仓库."
+        exit 1;
 
-   fi
+      fi
 }
 
 
