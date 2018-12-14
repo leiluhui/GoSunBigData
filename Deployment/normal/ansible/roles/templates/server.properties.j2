@@ -1,0 +1,197 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# see kafka.server.KafkaConfig for additional details and defaults
+
+############################# Server Basics #############################
+
+# The id of the broker. This must be set to a unique integer for each broker.
+broker.id={{broker_id}}
+
+# Switch to enable topic deletion or not, default value is false
+#delete.topic.enable=true
+
+############################# Socket Server Settings #############################
+
+# The address the socket server listens on. It will get the value returned from 
+# java.net.InetAddress.getCanonicalHostName() if not configured.
+#   FORMAT:
+#     listeners = listener_name://host_name:port
+#   EXAMPLE:
+#     listeners = PLAINTEXT://your.host.name:9092
+listeners=PLAINTEXT://{{ansible_default_ipv4["address"]}}:9092
+
+# Hostname and port the broker will advertise to producers and consumers. If not set, 
+# it uses the value for "listeners" if configured.  Otherwise, it will use the value
+# returned from java.net.InetAddress.getCanonicalHostName().
+#advertised.listeners=PLAINTEXT://your.host.name:9092
+
+# Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
+#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+
+# The number of threads handling network requests
+num.network.threads=3
+
+# The number of threads doing disk I/O
+num.io.threads=8
+
+# The send buffer (SO_SNDBUF) used by the socket server
+socket.send.buffer.bytes=102400
+
+# The receive buffer (SO_RCVBUF) used by the socket server
+socket.receive.buffer.bytes=102400
+
+# The maximum size of a request that the socket server will accept (protection against OOM)
+socket.request.max.bytes=104857600
+
+
+############################# Log Basics #############################
+
+# A comma seperated list of directories under which to store log files
+log.dirs={{BigdataDir}}/kafka/logs
+
+# The default number of log partitions per topic. More partitions allow greater
+# parallelism for consumption, but this will also result in more files across
+# the brokers.
+num.partitions=6
+
+# The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.
+# This value is recommended to be increased for installations with data dirs located in RAID array.
+num.recovery.threads.per.data.dir=1
+
+############################# Log Flush Policy #############################
+
+# Messages are immediately written to the filesystem but by default we only fsync() to sync
+# the OS cache lazily. The following configurations control the flush of data to disk.
+# There are a few important trade-offs here:
+#    1. Durability: Unflushed data may be lost if you are not using replication.
+#    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.
+#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to exceessive seeks.
+# The settings below allow one to configure the flush policy to flush data after a period of time or
+# every N messages (or both). This can be done globally and overridden on a per-topic basis.
+
+# The number of messages to accept before forcing a flush of data to disk 
+# log.flush.interval.messages=10000
+
+# The maximum amount of time a message can sit in a log before we force a flush
+# log.flush.interval.ms=1000
+
+############################# Log Retention Policy #############################
+
+# The following configurations control the disposal of log segments. The policy can
+# be set to delete segments after a period of time, or after a given size has accumulated.
+# A segment will be deleted whenever *either* of these criteria are met. Deletion always happens
+# from the end of the log.
+
+# The minimum age of a log file to be eligible for deletion due to age
+# 当kafka server的被写入海量消息后，会生成很多数据文件，且占用大量磁盘空间，
+# 如果不及时清理，可能磁盘空间不够用，kafka默认是保留7天。 
+# E.x.log.retention.hours=72为保留三天
+log.retention.hours=24
+
+# A size-based retention policy for logs. Segments are pruned from the log as long as the remaining
+# segments don't drop below log.retention.bytes. Functions independently of log.retention.hours.
+#log.retention.bytes=1073741824
+
+# The maximum size of a log segment file. When this size is reached a new log segment will be created.
+# 段文件配置1GB，有利于快速回收磁盘空间，重启kafka加载也会加快
+# (如果文件过小，则文件数量比较多，kafka启动时是单线程扫描目录(log.dir)下所有数据文件)
+log.segment.bytes=1073741824
+
+# The interval at which log segments are checked to see if they can be deleted according
+# to the retention policies
+log.retention.check.interval.ms=300000
+
+############################# Zookeeper #############################
+
+# Zookeeper connection string (see zookeeper docs for details).
+# This is a comma separated host:port pairs, each corresponding to a zk
+# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+# You can also append an optional chroot string to the urls to specify the
+# root directory for all kafka znodes.
+zookeeper.connect={{zk_cluster}}
+
+# Timeout in ms for connecting to zookeeper
+zookeeper.connection.timeout.ms=6000
+
+############################# 调优相关参数 #############################
+
+# 指定用于缓存网络请求的队列的最大容量，这个队列达到上限之后将不再接收新请求。
+# 一般不会成为瓶颈点，除非I/O性能太差，这时需要配合num.io.threads等配置一同进行调整。
+queued.max.requests=500
+
+# replicas响应partition leader的最长等待时间，若是超过这个时间，
+# 就将replicas列入ISR(in-sync replicas)，并认为它是死的，不会再加入管理中
+replica.lag.time.max.ms=10000
+
+# 如果follower落后与leader太多，将会认为此follower[或者说partition relicas]已经失效
+# 通常，在follower与leader通讯时，因为网络延迟或者链接断开，总会导致replicas中消息同步滞后
+# 如果消息之后太多，leader将认为此follower网络延迟较大或者消息吞吐能力有限，
+# 将会把此replicas迁移到其他follower中。
+# 在broker数量较少，或者网络不足的环境中，建议提高此值。
+replica.lag.max.messages=4000
+
+# 在Replica上会启动若干Fetch线程把对应的数据同步到本地，而num.replica.fetchers这个参数是用来控制Fetch线程的数量。
+# 每个Partition启动的多个Fetcher，通过共享offset既保证了同一时间内Consumer和Partition之间的一对一关系，
+# 又允许我们通过增多Fetch线程来提高效率。
+num.replica.fetchers=3
+
+# 新创建一个topic时，默认的Replica数量
+# Replica过少会影响数据的可用性，太多则会白白浪费存储资源，一般建议在2~3为宜。
+default.replication.factor=3
+
+# fetch 请求清除时的清除间隔
+fetch.purgatory.purge.interval.requests=1000
+
+# producer请求清除时的清除间隔
+producer.purgatory.purge.interval.requests=1000
+
+# Message落地时是否采用以及采用何种压缩算法。一般都是把Producer发过来Message直接保存，不再改变压缩方式。正确的选项值是none、gzip、snappy。
+compression.codec=none
+# producer用于压缩数据的压缩类型。默认是无压缩。正确的选项值是uncompressed,snappy,lz4,gzip,producer
+# 压缩最好用于批量处理，批量处理消息越多，压缩性能越好
+compression.type=uncompressed
+
+# 在Producer端用来存放尚未发送出去的Message的缓冲区大小。
+# 缓冲区满了之后可以选择阻塞发送或抛出异常，由block.on.buffer.full的配置来决定。
+buffer.memory=33554432
+
+# Producer默认会把两次发送时间间隔内收集到的所有Requests进行一次聚合然后再发送，以此提高吞吐量，
+# 而linger.ms则更进一步，这个参数为每次发送增加一些delay，以此来聚合更多的Message。
+linger.ms=0
+
+# Producer会尝试去把发往同一个Partition的多个Requests进行合并，batch.size指明了一次Batch合并后Requests总大小的上限。
+# 如果这个值设置的太小，可能会导致所有的Request都不进行Batch。
+batch.size=16384
+
+# 这个配置可以设定发送消息后是否需要Broker端返回确认。
+# 0: 不需要进行确认，速度最快。存在丢失数据的风险。
+# 1: 仅需要Leader进行确认，不需要ISR进行确认。是一种效率和安全折中的方式。
+# all:需要ISR中所有的Replica给予接收确认，速度最慢，安全性最高，
+# 但是由于ISR可能会缩小到仅包含一个Replica，所以设置参数为all并不能一定避免数据丢失。
+request.required.acks=1
+
+# 这个参数只能在topic层级配置，指定每次Producer写操作至少要保证有多少个在ISR的Replica确认，
+# 一般配合request.required.acks使用。要注意，这个参数如果设置的过高可能会大幅降低吞吐量。
+min.insync.replicas=1
+
+# 启动Consumer的个数，适当增加可以提高并发度。
+num.consumer.fetchers=6
+
+# 每次Fetch Request至少要拿到多少字节的数据才可以返回。
+fetch.min.bytes=1
+
+# 在Fetch Request获取的数据至少达到fetch.min.bytes之前，允许等待的最大时长。purgatory中请求的超时时间。
+fetch.wait.max.ms=100

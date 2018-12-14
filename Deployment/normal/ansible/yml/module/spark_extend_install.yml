@@ -1,0 +1,35 @@
+- hosts: spark_extend_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: mkdir jdk directory
+     file: path={{BigdataDir}} state=directory mode=0755
+   - name: copy and unzip spark
+     unarchive: src=/opt/ansible/roles/files/spark.tar.gz dest={{BigdataDir}}
+   - name: install configuration file slaves for spark
+     template: src=/opt/ansible/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
+   - name: install configuration file spark-env for spark
+     template: src=/opt/ansible/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
+   - name: change sbin file
+     shell: chmod 755 {{BigdataDir}}/spark/sbin/*
+   - name: change bin file
+     shell: chmod 755 {{BigdataDir}}/spark/bin/*
+     tags:
+      - install spark
+
+
+
+- hosts: spark_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: install configuration file slaves for spark
+     template: src=/opt/ansible/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
+   - name: install configuration file spark-env for spark
+     template: src=/opt/ansible/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
+     tags:
+      - change spark conf

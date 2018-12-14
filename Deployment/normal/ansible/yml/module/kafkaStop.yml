@@ -1,0 +1,32 @@
+- hosts: kafka_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: chmod +x
+     shell: chmod +x {{BigdataDir}}/kafka/bin/*
+   - name: stop kafka
+     shell: sh {{BigdataDir}}/kafka/bin/kafka-server-stop.sh
+     tags:
+     - stop kafka
+
+
+
+- hosts: kafka_extend_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: chmod +x
+     shell: chmod +x {{BigdataDir}}/kafka/bin/*
+   - name: stop kafka
+     shell: sh {{BigdataDir}}/kafka/bin/kafka-server-stop.sh
+     tags:
+     - stop kafka extend
+

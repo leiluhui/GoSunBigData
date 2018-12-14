@@ -1,0 +1,32 @@
+- hosts: spark_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: chmod +x
+     shell: chmod +x {{BigdataDir}}/spark/sbin/stop-all.sh
+   - name: stop spark
+     shell: sh {{BigdataDir}}/spark/sbin/stop-all.sh
+     tags:
+     - stop spark
+
+
+
+- hosts: spark_extend_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: chmod +x
+     shell: chmod +x {{BigdataDir}}/spark/sbin/stop-all.sh
+   - name: stop spark
+     shell: sh {{BigdataDir}}/spark/sbin/stop-all.sh
+     tags:
+     - stop spark extend
+
