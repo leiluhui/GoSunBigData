@@ -35,19 +35,17 @@
     insert into t_recognize_record (id, peopleid, community,
       pictureid, deviceid, capturetime,
       surl, burl, flag, similarity,type)
-    select #{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
+    values (#{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
       #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP},
-      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER} from dual where not exists
-      (select 1 from t_recognize_record where peopleid=#{peopleid,jdbcType=VARCHAR} and type=#{type,jdbcType=INTEGER} and deviceid=#{deviceid,jdbcType=VARCHAR} and unix_timestamp(capturetime)>unix_timestamp(now())-#{filterTime,jdbcType=INTEGER})
+      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER})
   </insert>
   <insert id="insertUpdate" parameterType="com.hzgc.cluster.peoman.worker.model.RecognizeRecord" >
     replace into t_recognize_record (id, peopleid, community,
       pictureid, deviceid, capturetime,
       surl, burl, flag, similarity,type)
-    select #{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
+    values (#{id,jdbcType=VARCHAR}, #{peopleid,jdbcType=VARCHAR}, #{community,jdbcType=BIGINT},
       #{pictureid,jdbcType=BIGINT}, #{deviceid,jdbcType=VARCHAR}, #{capturetime,jdbcType=TIMESTAMP},
-      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER} from dual where not exists
-      (select 1 from t_recognize_record where peopleid=#{peopleid,jdbcType=VARCHAR} and type=#{type,jdbcType=INTEGER} and deviceid=#{deviceid,jdbcType=VARCHAR} and unix_timestamp(capturetime)>unix_timestamp(now())-#{filterTime,jdbcType=INTEGER})
+      #{surl,jdbcType=VARCHAR}, #{burl,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER}, #{similarity,jdbcType=FLOAT}, #{type,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hzgc.cluster.peoman.worker.model.RecognizeRecord" >
     insert into t_recognize_record
