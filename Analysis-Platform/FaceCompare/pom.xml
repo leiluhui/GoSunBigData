@@ -32,11 +32,6 @@
             </dependency>
             <dependency>
                 <groupId>face-compare</groupId>
-                <artifactId>master</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>face-compare</groupId>
                 <artifactId>worker</artifactId>
                 <version>1.0</version>
             </dependency>

@@ -30,6 +30,7 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-rpc</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -84,14 +85,17 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
+            <version>2.7.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mortbay.jetty</groupId>
@@ -150,11 +154,13 @@
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
+            <version>2.7.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet.jsp</groupId>
@@ -297,10 +303,12 @@
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-core</artifactId>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
+            <version>3.4.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.netty</groupId>
@@ -315,6 +323,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-buffer</artifactId>
+            <version>4.1.11.Final</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -324,10 +333,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>2.6.3</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -337,14 +348,17 @@
         <dependency>
             <groupId>com.github.ltsopensource</groupId>
             <artifactId>lts-tasktracker</artifactId>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.mapdb</groupId>
             <artifactId>mapdb</artifactId>
+            <version>2.0-beta10</version>
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-jni</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.xerial.snappy</groupId>
@@ -355,10 +369,12 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-util</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.hbase</groupId>
@@ -433,6 +449,7 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-collect</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.hzgc.common</groupId>
@@ -451,6 +468,7 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-service</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>mysql</groupId>
@@ -538,7 +556,7 @@
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>transport</artifactId>
-            <!--<version>5.5.0</version>-->
+            <version>5.5.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.elasticsearch</groupId>
@@ -559,25 +577,27 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <!--<version>3.1</version>-->
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
-            <!--<version>1.0.8</version>-->
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
-            <!--<version>1.0.8</version>-->
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
+            <version>2.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
+            <version>2.12.0</version>
         </dependency>
     </dependencies>
 

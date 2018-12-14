@@ -1,9 +1,8 @@
 package com.hzgc.compare.worker.persistence;
 
-import com.hzgc.compare.worker.common.collects.CustomizeArrayList;
+import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
-import com.hzgc.compare.worker.common.tuple.Pair;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -13,7 +12,6 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class LocalFileReader extends FileReader {
-    //    private static final Logger logger = LoggerFactory.getLogger(LocalFileReader.class);
     private static Logger log = Logger.getLogger(LocalFileReader.class);
     private int readFilesPerThread;
     private List<ReadFileForLocal> list = new ArrayList<>();
@@ -237,18 +235,21 @@ class ReadFileForLocal implements Runnable{
 //    }
 
     //解析数据，存入temp
-    private void addRecordToMap(String[] record, Map<String, List <Pair<String, byte[]>>> temp) throws IOException {
-        String key = record[0];
+    private void addRecordToMap(String[] record, List<Triplet<String, String, byte[]>> temp) throws IOException {
+        String date = record[0];
+        String id = record[1];
         byte[] bytes = Base64.getDecoder().decode(record[2]);
-        Pair<String, byte[]> value = new Pair <>(record[1], bytes);
-        List<Pair<String, byte[]>> list = temp.computeIfAbsent(key, k -> new CustomizeArrayList<>());
-        list.add(value);
+        temp.add(new Triplet<>(date, id, bytes));
+//        Pair<String, byte[]> value = new Pair <>(record[1], bytes);
+//        List<Pair<String, byte[]>> list = temp.computeIfAbsent(key, k -> new CustomizeArrayList<>());
+//        list.add(value);
     }
 
     @Override
     public void run(){
         long count = 0L;
-        Map<String, List <Pair <String, byte[]>>> temp = new HashMap<>();
+//        Map<String, List <Pair <String, byte[]>>> temp = new HashMap<>();
+        List<Triplet<String, String, byte[]>> temp = new ArrayList<>();
         for(File f : list){
             if(f.isFile()){
                 log.info("Read file : " + f.getAbsolutePath());
@@ -270,6 +271,7 @@ class ReadFileForLocal implements Runnable{
         }
         log.info("The num of Records Loaded is : " + count);
         memoryCacheImpl1.loadCacheRecords(temp);
+        log.info("Load success");
         end = true;
     }
 }

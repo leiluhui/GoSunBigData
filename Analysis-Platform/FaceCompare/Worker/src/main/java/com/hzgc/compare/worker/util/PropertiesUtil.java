@@ -1,6 +1,5 @@
 package com.hzgc.compare.worker.util;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
@@ -10,7 +9,7 @@ public class PropertiesUtil {
     //private static final Logger LOG = LoggerFactory.getLogger(PropertiesUtil.class);
 
     private static InputStream loadResourceInputStream(String resourceName) {
-        if (!StringUtils.isBlank(resourceName)) {
+        if (resourceName != null && resourceName.length() > 0) {
             InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resourceName);
             if (resourceStream != null) {
                 log.info("Load resource file:" + ClassLoader.getSystemResource(resourceName).getPath() + " successful!");

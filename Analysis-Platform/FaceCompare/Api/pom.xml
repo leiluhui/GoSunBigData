@@ -16,6 +16,7 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-rpc</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.netty</groupId>
@@ -62,6 +63,7 @@
         <dependency>
             <groupId>com.hzgc.common</groupId>
             <artifactId>common-collect</artifactId>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.hzgc.common</groupId>
