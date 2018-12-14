@@ -10,6 +10,7 @@ import com.hzgc.charts.domain.Person;
 import com.hzgc.charts.service.CarService;
 import com.hzgc.charts.service.FaceService;
 import com.hzgc.charts.service.PersonService;
+import com.hzgc.common.utils.DateUtils;
 import com.hzgc.common.utils.StringUtils;
 import com.hzgc.system.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,23 +74,23 @@ public class ChartServiceImpl implements ChartService {
 	public Map<String, Object> findTodayLineNum() {
 		HashMap<String, Object> map = new HashMap<>();
 
-		String  beforeHourDate0 = DateUtil.format(DateUtil.offsetHour(new Date(), 0), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate1 = DateUtil.format(DateUtil.offsetHour(new Date(), -1), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate2 = DateUtil.format(DateUtil.offsetHour(new Date(), -2), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate3 = DateUtil.format(DateUtil.offsetHour(new Date(), -3), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate4 = DateUtil.format(DateUtil.offsetHour(new Date(), -4), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate5 = DateUtil.format(DateUtil.offsetHour(new Date(), -5), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate6 = DateUtil.format(DateUtil.offsetHour(new Date(), -6), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate7 = DateUtil.format(DateUtil.offsetHour(new Date(), -7), "yyyy-MM-dd HH") +":00:00";
+		String  beforeHourDate0 = DateUtil.format(DateUtil.offsetHour(new Date(), 0), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate1 = DateUtil.format(DateUtil.offsetHour(new Date(), -1), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate2 = DateUtil.format(DateUtil.offsetHour(new Date(), -2), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate3 = DateUtil.format(DateUtil.offsetHour(new Date(), -3), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate4 = DateUtil.format(DateUtil.offsetHour(new Date(), -4), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate5 = DateUtil.format(DateUtil.offsetHour(new Date(), -5), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate6 = DateUtil.format(DateUtil.offsetHour(new Date(), -6), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate7 = DateUtil.format(DateUtil.offsetHour(new Date(), -7), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
 
 
-		String  beforeHour0 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), 0), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour1 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -1), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour2 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -2), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour3 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -3), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour4 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -4), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour5 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -5), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour6 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -6), "yyyy-MM-dd HH") +":00:00", 11, 20);
+		String  beforeHour0 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), 0), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour1 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -1), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour2 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -2), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour3 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -3), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour4 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -4), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour5 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -5), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour6 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -6), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
 
 
 		ArrayList<String> hourDateList = new ArrayList<>();
@@ -212,22 +213,22 @@ public class ChartServiceImpl implements ChartService {
 //		Date beforeHour6 = DateUtil.offsetHour(new Date(), -6);
 
 
-		String  beforeHourDate0 = DateUtil.format(DateUtil.offsetHour(new Date(), 0), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate1 = DateUtil.format(DateUtil.offsetHour(new Date(), -1), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate2 = DateUtil.format(DateUtil.offsetHour(new Date(), -2), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate3 = DateUtil.format(DateUtil.offsetHour(new Date(), -3), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate4 = DateUtil.format(DateUtil.offsetHour(new Date(), -4), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate5 = DateUtil.format(DateUtil.offsetHour(new Date(), -5), "yyyy-MM-dd HH") +":00:00";
-		String  beforeHourDate6 = DateUtil.format(DateUtil.offsetHour(new Date(), -6), "yyyy-MM-dd HH") +":00:00";
+		String  beforeHourDate0 = DateUtil.format(DateUtil.offsetHour(new Date(), 0), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate1 = DateUtil.format(DateUtil.offsetHour(new Date(), -1), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate2 = DateUtil.format(DateUtil.offsetHour(new Date(), -2), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate3 = DateUtil.format(DateUtil.offsetHour(new Date(), -3), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate4 = DateUtil.format(DateUtil.offsetHour(new Date(), -4), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate5 = DateUtil.format(DateUtil.offsetHour(new Date(), -5), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
+		String  beforeHourDate6 = DateUtil.format(DateUtil.offsetHour(new Date(), -6), DateUtils.DATE_HOUUR_PATTERN) +":00:00";
 
 
-		String  beforeHour0 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), 0), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour1 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -1), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour2 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -2), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour3 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -3), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour4 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -4), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour5 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -5), "yyyy-MM-dd HH") +":00:00", 11, 20);
-		String  beforeHour6 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -6), "yyyy-MM-dd HH") +":00:00", 11, 20);
+		String  beforeHour0 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), 0), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour1 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -1), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour2 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -2), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour3 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -3), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour4 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -4), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour5 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -5), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
+		String  beforeHour6 = StringUtils.substring(DateUtil.format(DateUtil.offsetHour(new Date(), -6), DateUtils.DATE_HOUUR_PATTERN) +":00:00", 11, 20);
 
 
 		System.err.println(beforeHourDate6);
