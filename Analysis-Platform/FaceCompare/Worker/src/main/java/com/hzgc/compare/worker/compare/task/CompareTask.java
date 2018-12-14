@@ -6,7 +6,6 @@ import com.hzgc.compare.worker.conf.Config;
 public abstract class CompareTask implements Runnable{
     boolean isEnd = false;
     SearchResult searchResult;
-    int hbaseReadMax = Config.FIRST_COMPARE_RESULT_COUNT;
     int resultDefaultCount = 20;
     protected Config conf;
 

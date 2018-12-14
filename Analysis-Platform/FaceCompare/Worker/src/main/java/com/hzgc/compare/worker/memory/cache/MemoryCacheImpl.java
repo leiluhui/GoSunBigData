@@ -1,17 +1,15 @@
 package com.hzgc.compare.worker.memory.cache;
 
-import com.hzgc.compare.worker.common.collects.CustomizeArrayList;
 import com.hzgc.compare.worker.common.collects.DoubleBufferQueue;
 import com.hzgc.compare.worker.common.taskhandle.FlushTask;
 import com.hzgc.compare.worker.common.taskhandle.TaskToHandleQueue;
 import com.hzgc.compare.worker.common.tuple.Triplet;
 import com.hzgc.compare.worker.conf.Config;
-import com.hzgc.compare.worker.common.tuple.Pair;
+import com.hzgc.compare.worker.util.FaceCompareUtil;
+import com.hzgc.jniface.FaceCompareFunction;
 import org.apache.log4j.Logger;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 内存缓存模块，单例模式，内部存储三种数据buffer和cacheRecords，以及recordToHBase
@@ -19,13 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * 当buffer数据量达到一定时，将buffer持久化，并加入cacheRecords，buffer清空
  */
 public class MemoryCacheImpl{
-    //    private static final Logger logger = LoggerFactory.getLogger(MemoryCacheImpl.class);
     private static Logger log = Logger.getLogger(MemoryCacheImpl.class);
     private static MemoryCacheImpl memoryCache;
     private int flushProgram; //flush 方案 0 定期flush  1 定量flush
     private Integer bufferSizeMax; // buffer存储上限，默认1000
     //    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
-    private Map<String, List<Pair<String, byte[]>>> cacheRecords;
+//    private Map<String, List<Pair<String, byte[]>>> cacheRecords;
     private DoubleBufferQueue<Triplet<String, String, byte[]>> buffer;
 
 
@@ -45,7 +42,7 @@ public class MemoryCacheImpl{
         bufferSizeMax = Config.WORKER_BUFFER_SIZE_MAX;
         flushProgram = Config.WORKER_FLUSH_PROGRAM;
 //        faceObjects = new BatchBufferQueue<>();
-        cacheRecords = new ConcurrentHashMap<>();//ConcurrentHashMap
+//        cacheRecords = new ConcurrentHashMap<>();//ConcurrentHashMap
         buffer = new DoubleBufferQueue<>();
     }
 
@@ -65,9 +62,9 @@ public class MemoryCacheImpl{
      * 返回cacheRecords
      * @return 用于对比的元数据
      */
-    public Map<String, List<Pair<String, byte[]>>> getCacheRecords() {
-        return cacheRecords;
-    }
+//    public Map<String, List<Pair<String, byte[]>>> getCacheRecords() {
+//        return cacheRecords;
+//    }
 
 //    public void setBufferSizeMax(int size) {
 //        this.bufferSizeMax = size;
@@ -86,17 +83,23 @@ public class MemoryCacheImpl{
      * 增加多条record
      * @param records 增加到内存的记录
      */
-    public void loadCacheRecords(Map<String, List<Pair<String, byte[]>>> records) {
-        for(Map.Entry<String, List<Pair<String, byte[]>>> entry : records.entrySet()){
-            String key = entry.getKey();
-            List<Pair<String, byte[]>> value = entry.getValue();
-            List<Pair<String, byte[]>> list = cacheRecords.get(key);
-            if(list == null || list.size() == 0){
-                cacheRecords.put(key, value);
-            }else {
-                list.addAll(value);
-            }
+    public void loadCacheRecords(List<Triplet<String, String, byte[]>> records) {
+        String[] keys = new String[records.size()];
+        byte[][] features = new byte[records.size()][32];
+        int index = 0;
+        for(Triplet<String, String, byte[]> record : records){
+            String date = record.getFirst();
+            String id = record.getSecond();
+            byte[] feature = record.getThird();
+            keys[index] = date + "_" + id;
+            features[index] = feature;
+            index ++;
+//            Pair<String, byte[]> value = new Pair<>(record.getSecond(), record.getThird());
+//            List<Pair<String, byte[]>> list = cacheRecords.computeIfAbsent(key, k -> new CustomizeArrayList<>());
+//            list.add(value);
         }
+        FaceCompareUtil.getInstanse().setBitFeatures(keys, features);
+//        FaceCompareFunction.setBitFeatures();
     }
 
     /**
@@ -137,11 +140,11 @@ public class MemoryCacheImpl{
     }
 
     public void showMemory(){
-        int cacheCount = 0;
-        for(Map.Entry<String, List<Pair<String, byte[]>>> entry : cacheRecords.entrySet()){
-            cacheCount += entry.getValue().size();
-        }
-        log.info("The size of cache used to compare is : " + cacheCount);
+//        int cacheCount = 0;
+//        for(Map.Entry<String, List<Pair<String, byte[]>>> entry : cacheRecords.entrySet()){
+//            cacheCount += entry.getValue().size();
+//        }
+//        log.info("The size of cache used to compare is : " + cacheCount);
 //        log.info("The size of faceObject used to write to HBase is : " + faceObjects.size());
         log.info("The size of buffer used to persistence is : " + buffer.getWriteListSize());
     }
@@ -151,11 +154,21 @@ public class MemoryCacheImpl{
      */
     private void moveToCacheRecords(List<Triplet<String, String, byte[]>> records) {
         log.info("Move records from buffer to cacheRecords.");
+//        Map<String, byte[]>
+        String[] keys = new String[records.size()];
+        byte[][] features = new byte[records.size()][32];
+        int index = 0;
         for(Triplet<String, String, byte[]> record : records){
-            String key = record.getFirst();
-            Pair<String, byte[]> value = new Pair<>(record.getSecond(), record.getThird());
-            List<Pair<String, byte[]>> list = cacheRecords.computeIfAbsent(key, k -> new CustomizeArrayList<>());
-            list.add(value);
+            String date = record.getFirst();
+            String id = record.getSecond();
+            byte[] feature = record.getThird();
+            keys[index] = date + "_" + id;
+            features[index] = feature;
+            index ++;
+//            Pair<String, byte[]> value = new Pair<>(record.getSecond(), record.getThird());
+//            List<Pair<String, byte[]>> list = cacheRecords.computeIfAbsent(key, k -> new CustomizeArrayList<>());
+//            list.add(value);
         }
+        FaceCompareFunction.setBitFeatures(keys, features);
     }
 }

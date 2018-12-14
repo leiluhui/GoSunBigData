@@ -14,39 +14,28 @@ import java.util.Map;
 public interface Comparators {
 
     /**
-     * 先对内存数据进行过滤，根据参数1和参数2
-     * @param dateStart
-     * @param dateEnd
-     * @return Record<rowkey, feature>
-     */
-     List<Pair<String, byte[]>> filter(String dateStart, String dateEnd);
-
-    /**
      * 若数据量过大则需要第一次对比
      * @param feature
      * @param num
-     * @param data
      * @return List<rowkey>
      */
-    List<String> compareFirst(byte[] feature, int num, List<Pair<String, byte[]>> data);
+    List<String> compareFirst(byte[] feature, int num, String dateStart, String dateEnd);
 
     /**
      * 若数据量过大则需要第一次对比(多图多人)
      * @param features
      * @param num
-     * @param data
      * @return List<rowkey>
      */
-    List<String> compareFirstNotSamePerson(List<Feature> features, int num, List<Pair<String, byte[]>> data);
+    List<String> compareFirstNotSamePerson(List<Feature> features, int num, String dateStart, String dateEnd);
 
     /**
      * 若数据量过大则需要第一次对比(多图单人)
      * @param features
      * @param num
-     * @param data
      * @return List<rowkey>
      */
-    List<String> compareFirstTheSamePerson(List<byte[]> features, int num, List<Pair<String, byte[]>> data);
+    List<String> compareFirstTheSamePerson(List<byte[]> features, int num, String dateStart, String dateEnd);
 
     /**
      * 把从HBase读取的数据，进行第二次对比
