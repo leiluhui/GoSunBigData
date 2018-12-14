@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class HDFSFileReader extends FileReader {
-//    private static final Logger logger = LoggerFactory.getLogger(HDFSFileReader.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(HDFSFileReader.class);
     private static Logger log = Logger.getLogger(HDFSFileReader.class);
     private HDFSStreamCache streamCache = HDFSStreamCache.getInstance();
     private int readFilesPerThread = 1;
@@ -128,7 +128,7 @@ public class HDFSFileReader extends FileReader {
 }
 
 class ReadFileForHDFS implements Runnable{
-//    private static final Logger logger = LoggerFactory.getLogger(ReadFileForHDFS.class);
+    //    private static final Logger logger = LoggerFactory.getLogger(ReadFileForHDFS.class);
     private static Logger log = Logger.getLogger(ReadFileForHDFS.class);
     private MemoryCacheImpl memoryCacheImpl1 = MemoryCacheImpl.getInstance();
     private HDFSStreamCache streamCache = HDFSStreamCache.getInstance();
@@ -206,7 +206,7 @@ class ReadFileForHDFS implements Runnable{
             }
         }
         log.info("The num of Records Loaded is : " + count);
-        memoryCacheImpl1.loadCacheRecords(temp);
+//        memoryCacheImpl1.loadCacheRecords(temp);
         end = true;
     }
 }

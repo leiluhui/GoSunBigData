@@ -3,92 +3,63 @@ package com.hzgc.compare.worker.compare;
 import com.hzgc.common.collect.bean.FaceObject;
 import com.hzgc.compare.Feature;
 import com.hzgc.compare.SearchResult;
-import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
-import com.hzgc.jniface.CompareResult;
-import com.hzgc.jniface.FaceFeatureInfo;
-import com.hzgc.jniface.FaceFunction;
-import com.hzgc.jniface.FaceUtil;
-import com.hzgc.compare.worker.common.tuple.Pair;
+import com.hzgc.compare.worker.util.FaceCompareUtil;
+import com.hzgc.jniface.*;
 import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public class ComparatorsImpl implements Comparators{
-    //    private static final Logger logger = LoggerFactory.getLogger(ComparatorsImpl.class);
     private static Logger log = Logger.getLogger(ComparatorsImpl.class);
 
-    public List<Pair<String, byte[]>> filter(String dateStart, String dateEnd) {
-        List<Pair<String, byte[]>> result = new ArrayList<>();
-        Map<String, List<Pair<String, byte[]>>> cacheRecords =
-                MemoryCacheImpl.getInstance().getCacheRecords();
-//        Set<Triplet<String, String, String>> temp = new HashSet<>();
-//        temp.addAll(cacheRecords.keySet());
-        Iterator<String> iterator =  cacheRecords.keySet().iterator();
-        Long start = System.currentTimeMillis();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            if (key.compareTo(dateStart) >= 0 &&
-                    key.compareTo(dateEnd) <= 0) {
-                result.addAll(cacheRecords.get(key));
-            }
-        }
-        log.info("The time used to filter is : " + (System.currentTimeMillis() - start));
-        log.info("The size of filtere result is : " + result.size());
-        return result;
-    }
-
     @Override
-    public List<String> compareFirst(byte[] feature, int num, List<Pair<String, byte[]>> data) {
-        Long start = System.currentTimeMillis();
-//        FeatureCompared.compareFirst(data, feature, num);
+    public List<String> compareFirst(byte[] feature, int num, String dateStart, String dateEnd) {
         List<String> rowkeys = new ArrayList<>();
-        byte[][] diku = new byte[data.size()][32];
-        int index = 0;
-        for(Pair<String, byte[]> pair : data){
-            diku[index] = pair.getValue();
-            index ++;
-        }
-
         byte[][] queryList = new byte[1][32];
         queryList[0] = feature;
-        long insertData = System.currentTimeMillis();
-        log.info("The time insert dataes when first compare used is : " + (insertData - start));
-        ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num);
-        log.info("The time call function used is : " + (System.currentTimeMillis() - insertData));
-        for(FaceFeatureInfo featureInfo : array.get(0).getPictureInfoArrayList()){
-            String rowkey = data.get(featureInfo.getIndex()).getKey();
-            rowkeys.add(rowkey);
+        long start = System.currentTimeMillis();
+        ArrayList<CompareRes> array = FaceCompareUtil.getInstanse().faceCompareBit(queryList, 1000);
+        log.info("The time call function used is : " + (System.currentTimeMillis() - start));
+        List<FeatureInfo> featureInfos = array.get(0).getFeatureInfoList();
+        featureInfos.sort((o1, o2) -> o2.getDist() - o1.getDist());
+        int count = 0;
+        for(FeatureInfo featureInfo : featureInfos){
+            String[] s = featureInfo.getKey().split("_");
+            if(s[0] .compareTo(dateStart) >= 0 && s[0].compareTo(dateEnd) <= 0){
+                rowkeys.add(s[1]);
+                count ++;
+            }
+            if(count >= num){
+                break;
+            }
         }
-        log.info("The time first compare used is : " + (System.currentTimeMillis() - insertData));
+        log.info("The time first compare used is : " + (System.currentTimeMillis() - start));
         return rowkeys;
     }
 
-    public List<String> compareFirstNotSamePerson(List<Feature> features, int num, List<Pair<String, byte[]>> data){
-        Long start = System.currentTimeMillis();
-        byte[][] diku = new byte[data.size()][32];
+    public List<String> compareFirstNotSamePerson(List<Feature> features, int num, String dateStart, String dateEnd){
         int index = 0;
-        for(Pair<String, byte[]> pair : data){
-            diku[index] = pair.getValue();
-            index ++;
-        }
-
         byte[][] queryList = new byte[features.size()][32];
-        index = 0;
         for (Feature feature : features){
             queryList[index] = feature.getFeature1();
             index ++;
         }
         long insertData = System.currentTimeMillis();
-        log.info("The time insert dataes when first compare used is : " + (insertData - start));
-//        FaceFunction.init();
-        ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num);
+        ArrayList<CompareRes> array = FaceCompareUtil.getInstanse().faceCompareBit(queryList, 1000);
         log.info("The time call function used is : " + (System.currentTimeMillis() - insertData));
         List<String> rowkeys = new ArrayList<>();
-        for(CompareResult compareResult : array){
-            for(FaceFeatureInfo faceFeatureInfo : compareResult.getPictureInfoArrayList()){
-                String rowkey = data.get(faceFeatureInfo.getIndex()).getKey();
-                if(!rowkeys.contains(rowkey)) {
-                    rowkeys.add(rowkey);
+        for(CompareRes compareResult : array){
+            List<FeatureInfo> featureInfos = compareResult.getFeatureInfoList();
+            featureInfos.sort((o1, o2) -> o2.getDist() - o1.getDist());
+            int count = 0;
+            for(FeatureInfo featureInfo : featureInfos){
+                String[] s = featureInfo.getKey().split("_");
+                if(s[0] .compareTo(dateStart) >= 0 && s[0].compareTo(dateEnd) <= 0){
+                    rowkeys.add(s[1]);
+                    count ++;
+                }
+                if(count >= num){
+                    break;
                 }
             }
         }
@@ -97,33 +68,34 @@ public class ComparatorsImpl implements Comparators{
     }
 
     @Override
-    public List<String> compareFirstTheSamePerson(List<byte[]> features, int num, List<Pair<String, byte[]>> data) {
+    public List<String> compareFirstTheSamePerson(List<byte[]> features, int num, String dateStart, String dateEnd) {
         Long start = System.currentTimeMillis();
         List<String> result = new ArrayList<>();
-        byte[][] diku = new byte[data.size()][32];
-        int index = 0;
-        for(Pair<String, byte[]> pair : data){
-            diku[index] = pair.getValue();
-            index ++;
-        }
 
+        int index = 0;
         byte[][] queryList = new byte[features.size()][32];
-        index = 0;
         for (byte[] feature : features){
             queryList[index] = feature;
             index ++;
         }
         Set<String> set = new HashSet<>();
         index = 0;
-        long insertData = System.currentTimeMillis();
-        log.info("The time insert dataes when first compare used is : " + (insertData - start));
-        ArrayList<CompareResult> array = FaceFunction.faceCompareBit(diku, queryList, num * 3);
-        log.info("The time call function used is : " + (System.currentTimeMillis() - insertData));
-        for(CompareResult compareResult : array){
+        ArrayList<CompareRes> array = FaceCompareUtil.getInstanse().faceCompareBit(queryList, 1000);
+        log.info("The time call function used is : " + (System.currentTimeMillis() - start));
+        for(CompareRes compareResult : array){
             List<String> rowkeys = new ArrayList<>();
-            for(FaceFeatureInfo faceFeatureInfo : compareResult.getPictureInfoArrayList()){
-                String rowkey = data.get(faceFeatureInfo.getIndex()).getKey();
-                rowkeys.add(rowkey);
+            int count = 0;
+            List<FeatureInfo> featureInfos = compareResult.getFeatureInfoList();
+            featureInfos.sort((o1, o2) -> o2.getDist() - o1.getDist());
+            for(FeatureInfo featureInfo : featureInfos){
+                String[] s = featureInfo.getKey().split("_");
+                if(s[0] .compareTo(dateStart) >= 0 && s[0].compareTo(dateEnd) <= 0){
+                    rowkeys.add(s[1]);
+                    count ++;
+                }
+                if(count >= num){
+                    break;
+                }
             }
             if(index == 0) {
                 set.addAll(rowkeys);
@@ -133,7 +105,7 @@ public class ComparatorsImpl implements Comparators{
             index ++;
         }
         result.addAll(set);
-        log.info("The time first compare used is : " + (System.currentTimeMillis() - insertData));
+        log.info("The time first compare used is : " + (System.currentTimeMillis() - start));
         return result;
     }
 
