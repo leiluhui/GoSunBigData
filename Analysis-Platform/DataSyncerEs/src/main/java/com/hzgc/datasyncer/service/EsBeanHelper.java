@@ -68,7 +68,7 @@ class EsBeanHelper {
                         esFaceObject.setHuzi(faceObject.getAttribute().getHuzi());
                         esFaceObject.setSharpness(faceObject.getAttribute().getSharpness());
                         esFaceObject.setFeature(FaceUtil.floatArray2string(faceObject.getAttribute().getFeature()));
-                        esFaceObject.setFeature(Base64.getEncoder()
+                        esFaceObject.setBitFeature(Base64.getEncoder()
                                 .encodeToString(faceObject.getAttribute().getBitFeature()));
                         return esFaceObject;
                     } else {
