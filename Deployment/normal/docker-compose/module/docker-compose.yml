@@ -1,19 +1,9 @@
 version: '2.3'
 
 services:
-  eureka:
-    image: ${DOCKER_REPOSITOR}/gosun/registry
-    container_name: eureka
-    restart: always
-    hostname: eureka
-    #network_mode: "host"
-    ports:
-    - "9000:9000"
 
   kibana:
     image: ${DOCKER_REPOSITOR}/hzgc/kibana:5.5.0
-    depends_on:
-    - esearch
     container_name: kibana
     restart: always
     environment:

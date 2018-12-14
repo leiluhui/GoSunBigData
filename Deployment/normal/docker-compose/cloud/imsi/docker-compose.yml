@@ -4,8 +4,6 @@ services:
 
   imsi-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/imsi-dynrepo:${IMSI_DYNREPO_VERSION}
-    depends_on:
-    - collect
     container_name: imsi-dynrepo
     network_mode: "host"
     environment:
