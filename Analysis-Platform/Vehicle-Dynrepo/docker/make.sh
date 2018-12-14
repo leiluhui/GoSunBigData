@@ -20,13 +20,13 @@ IMAGE_FINAL_NAME=$IMAGE_NAME:$VERSION_INFO
 
 function make()
 {
-   if [ "build" = $ACTION ];then
+   if [ "build" = "$ACTION"  ];then
      if [ ! -n "${DOCKER_REPO}" ]; then
          exec docker build -t $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
      else
          exec docker build -t $DOCKER_REPO/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./
      fi
-   elif [ "push" = $ACTION ];then
+   elif [ "push" = "$ACTION"  ];then
        if [ ! -n "${DOCKER_REPO}" ]; then
            exec docker build -t $DOCKER_DEFULT/$IMAGE_NAME:$VERSION_INFO -f Dockerfile ./ &
            sleep 1s
