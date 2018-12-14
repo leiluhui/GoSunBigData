@@ -14,7 +14,6 @@
      - stop spark
 
 
-
 - hosts: spark_extend_servers
   remote_user: root
   roles:
@@ -28,5 +27,5 @@
    - name: stop spark
      shell: sh {{BigdataDir}}/spark/sbin/stop-all.sh
      tags:
-     - stop spark extend
+     - stop spark
 

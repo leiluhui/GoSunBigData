@@ -14,7 +14,6 @@
      - stop kafka
 
 
-
 - hosts: kafka_extend_servers
   remote_user: root
   roles:
@@ -28,5 +27,5 @@
    - name: stop kafka
      shell: sh {{BigdataDir}}/kafka/bin/kafka-server-stop.sh
      tags:
-     - stop kafka extend
+     - stop kafka
 
