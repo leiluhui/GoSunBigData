@@ -1,0 +1,14 @@
+- hosts: hadoop_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: chmod +x
+     shell: chmod +x {{BigdataDir}}/hadoop/sbin/stop-all.sh
+   - name: stop hadoop
+     shell: sh {{BigdataDir}}/hadoop/sbin/stop-all.sh
+     tags:
+     - stop hadoop

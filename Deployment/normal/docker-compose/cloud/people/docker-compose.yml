@@ -4,8 +4,6 @@ services:
 
   people:
     image: ${DOCKER_REPOSITOR}/hzgc/people:${PEOPLE_VERSION}
-    depends_on:
-    - collect
     container_name: people
     restart: always
     environment:
