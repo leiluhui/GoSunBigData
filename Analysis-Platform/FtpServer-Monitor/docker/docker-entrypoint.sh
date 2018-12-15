@@ -2,6 +2,6 @@
 #/bin/bash
 
 exec java -jar app.jar \
---zookeeper.host=${ZOOKEEPER_HOST} \
+--zookeeper.host=${ZK_ADDRESS} \
 --es.host=${ES_HOST} \
 --mysql.host=${MYSQL_HOST}

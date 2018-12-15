@@ -8,7 +8,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.18.18.201:3306/ftpsm?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://${mysql.host}/ftpsm?useUnicode=true&characterEncoding=utf8
     username: root
     password: Hzgc@123
     initialSize: 1
@@ -52,13 +52,13 @@ spring:
   data:
     elasticsearch:
       cluster-name: hbase2es-cluster
-      cluster-nodes: 172.18.18.201:9300
+      cluster-nodes: ${es.host}:9300
       repositories:
         enabled: true
 
 #============== zookeeper ===================
 zk:
-  server: 172.18.18.202:2181
+  server: ${zookeeper.host}
   sessionTimeoutMs: 6000
   connectionTimeoutMs: 6000
   maxRetries: 3
