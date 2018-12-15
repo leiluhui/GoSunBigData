@@ -21,3 +21,4 @@ namenode1_hostname: 172.18.18.130
 namenode2_hostname: 172.18.18.131
 tidb_hostname: 172.18.18.130
 tidb_password: Hzgc@123
+AnsibleDir: 

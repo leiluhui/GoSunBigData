@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cd `dirname $0`
+BIN_DIR=`pwd`
+VARS_FILE=${BIN_DIR}/roles/vars/main.yml
+
+sed -i "s#AnsibleDir: .*#AnsibleDir: ${BIN_DIR}#g" ${VARS_FILE}
+
 ###### 配置文件路径 ######
 mainyml=./roles/vars/main.yml
 slave_spark_tem=./roles/templates/slaves.spark.j2

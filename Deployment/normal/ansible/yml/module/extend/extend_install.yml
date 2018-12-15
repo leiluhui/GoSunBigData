@@ -7,7 +7,7 @@
    - name: mkdir jdk directory
      file: path={{BigdataDir}} state=directory mode=0755
    - name: copy and unzip jdk
-     unarchive: src=/opt/ansible/roles/files/jdk.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/jdk.tar.gz dest={{BigdataDir}}
    - name: set env
      lineinfile: dest=/etc/profile insertafter="{{item.position}}" line="{{item.value}}" state=present
      with_items:
@@ -28,7 +28,7 @@
    - name: mkdir scala directory
      file: path={{BigdataDir}} state=directory mode=0755
    - name: copy and unzip scala
-     unarchive: src=/opt/ansible/roles/files/scala.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/scala.tar.gz dest={{BigdataDir}}
    - name: set env
      lineinfile: dest=/etc/profile insertafter="{{item.position}}" line="{{item.value}}" state=present
      with_items:
@@ -57,9 +57,9 @@
    - name: copy /etc/security/limits.conf
      template: src=/etc/security/limits.conf dest=/etc/security/limits.conf
    - name: install memory configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
    - name: install configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
      tags:
      - install elasticsearch
 
@@ -81,13 +81,13 @@
    - name: copy /etc/security/limits.conf
      template: src=/etc/security/limits.conf dest=/etc/security/limits.conf
    - name: copy and unzip es
-     unarchive: src=/opt/ansible/roles/files/elasticsearch.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/elasticsearch.tar.gz dest={{BigdataDir}}
    - name: mkdir ditectory for logs data
      file: dest={{BigdataDir}}/elastic/logs mode=0755 state=directory owner=elsearch group=elsearch
    - name: install memory configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
    - name: install configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
      tags:
      - install extend elasticsearch
 
@@ -99,11 +99,11 @@
 
   tasks:
    # - name: install configuration file for kafka-manager
-    #  template: src=/opt/ansible/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
+    #  template: src={{AnsibleDir}}/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
     - name: install configuration file for kafka
-      template: src=/opt/ansible/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
+      template: src={{AnsibleDir}}/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
     - name: install configuration file producer.properties for kafka
-      template: src=/opt/ansible/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
+      template: src={{AnsibleDir}}/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
       tags:
       - install kafka
 
@@ -115,15 +115,15 @@
 
   tasks:
     - name: copy and unzip kafka
-      unarchive: src=/opt/ansible/roles/files/kafka.tar.gz dest={{BigdataDir}}
+      unarchive: src={{AnsibleDir}}/roles/files/kafka.tar.gz dest={{BigdataDir}}
     - name: mkdir dir for kafka logs
       file: dest={{BigdataDir}}/kafka/logs mode=0755 state=directory
    # - name: install configuration file for kafka-manager
-   #   template: src=/opt/ansible/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
+   #   template: src={{AnsibleDir}}/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
     - name: install configuration file for kafka
-      template: src=/opt/ansible/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
+      template: src={{AnsibleDir}}/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
     - name: install configuration file producer.properties for kafka
-      template: src=/opt/ansible/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
+      template: src={{AnsibleDir}}/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
       tags:
       - install extend kafka
 
@@ -135,9 +135,9 @@
 
   tasks:
    - name: install configuration file slaves for spark
-     template: src=/opt/ansible/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
+     template: src={{AnsibleDir}}/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
    - name: install configuration file spark-env for spark
-     template: src=/opt/ansible/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
+     template: src={{AnsibleDir}}/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
    - name: change sbin file
      file: dest={{BigdataDir}}/spark/sbin mode=0755 recurse=yes
    - name: change bin file
@@ -154,11 +154,11 @@
 
   tasks:
    - name: copy and unzip spark
-     unarchive: src=/opt/ansible/roles/files/spark.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/spark.tar.gz dest={{BigdataDir}}
    - name: install configuration file slaves for spark
-     template: src=/opt/ansible/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
+     template: src={{AnsibleDir}}/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
    - name: install configuration file spark-env for spark
-     template: src=/opt/ansible/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
+     template: src={{AnsibleDir}}/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
    - name: change sbin file
      file: dest={{BigdataDir}}/spark/sbin mode=0755 recurse=yes
    - name: change bin file
