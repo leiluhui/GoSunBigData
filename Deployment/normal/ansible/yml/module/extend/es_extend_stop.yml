@@ -1,0 +1,28 @@
+- hosts: es_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: stop es
+     shell: pkill -f Elasticsearch
+     tags:
+     - stop es
+
+
+
+- hosts: es_extend_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: source env
+     shell: source /etc/profile
+   - name: stop es
+     shell: pkill -f Elasticsearch
+     tags:
+     - stop es extend
+
