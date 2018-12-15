@@ -1,0 +1,89 @@
+version: '2.3'
+
+services:
+  mysql:
+    image: ${DOCKER_REPOSITOR}/hzgc/mysql:5.7.19
+    container_name: mysql
+    restart: always
+    environment:
+    - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    hostname: mysql
+    ports:
+    - "3306:3306"
+    volumes:
+    - ${DOCKER_HOME}/mysql/data:/var/lib/mysql
+
+  mysql-cron:
+    image: ${DOCKER_REPOSITOR}/hzgc/mysql-cron:5.7.19
+    container_name: mysql-cron
+    restart: always
+    links:
+    - mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    - IP=mysql
+    - PORT=${MYSQL_PORT}
+
+  zookeeper:
+    image: ${DOCKER_REPOSITOR}/hzgc/zookeeper:3.4.10
+    container_name: zookeeper
+    restart: always
+    hostname: zookeeper
+    ports:
+    - "2181:2181"
+    - "2888:2888"
+    - "3888:3888"
+    volumes:
+    - ${DOCKER_HOME}/zookeeper/data:/data
+    - ${DOCKER_HOME}/zookeeper/datalog:/datalog
+
+  kafka:
+    image: ${DOCKER_REPOSITOR}/hzgc/kafka:1.0.0
+    container_name: kafka
+    restart: always
+    network_mode: "host"
+    depends_on:
+    - zookeeper
+    environment:
+    - KAFKA_ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${DOCKER_HOST_IP}:${KAFKA_PORT}
+    - KAFKA_CREATE_TOPICS=face:1:1,car:1:1,person:1:1
+    - KAFKA_ZOOKEEPER_CONNECT=${DOCKER_HOST_IP}:2181
+    hostname: kafka
+    ports:
+    - "9092:9092"
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ${DOCKER_HOME}/kafka/kafka-logs-kafka/:/kafka/kafka-logs-kafka/
+    - ${DOCKER_HOME}/kafka/logs:/opt/kafka/logs
+
+  esearch:
+    image: ${DOCKER_REPOSITOR}/hzgc/elasticsearch-ik:5.5.0
+    container_name: esearch
+    restart: always
+    environment:
+    - discovery.type=single-node
+    - node.name=${DOCKER_HOST_NAME}
+    - network.host=${DOCKER_HOST_IP}
+    - cluster.name=docker-cluster
+    - bootstrap.memory_lock=true
+    hostname: esearch
+    privileged: true
+    network_mode: "host"
+    ports:
+    - "9200:9200"
+    - "9300:9300"
+    volumes:
+    - ${DOCKER_HOME}/es/data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: ${DOCKER_REPOSITOR}/hzgc/kibana:5.5.0
+    depends_on:
+    - esearch
+    container_name: kibana
+    restart: always
+    environment:
+    - SERVER_NAME=$DOCKER_HOST_IP
+    - ELASTICSEARCH_URL=http://${ES_HOST}:${ES_PORT}
+    ports:
+    - "5601:5601"

@@ -1,0 +1,52 @@
+server:
+  port: 8112
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    serviceUrl:
+      defaultZone: http://${eureka.ip}:${eureka.port}/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    status-page-url-path: ${spring.cloud.client.ip-address:${server.port}}/info
+    health-check-url-path: ${spring.cloud.client.ip-address}:${server.port}/health
+    prefer-ip-address: true
+
+kafka:
+  autoCommitIntervalMs: 2000
+  autoOffsetReset: latest
+  bootstrap:
+    servers: ${kafka.host}
+  concurrency: 6
+  data:
+    group:
+      id: data-syncer
+  sessionTimeout: 30000
+  topic:
+    car: car
+    face: face
+    person: person
+
+spring:
+  application:
+    name: data-syncer
+  cloud:
+    config:
+      enabled: false
+  data:
+    elasticsearch:
+      cluster-name: hbase2es-cluster
+      cluster-nodes: ${es.host}
+  redis:
+    database: 0
+    host: ${redis.ip}
+    password:
+    port: ${redis.port}
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
