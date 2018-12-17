@@ -12,25 +12,20 @@ PROJECT_VERSION=`awk -v RS="</*version>" 'NR==2{print}' ${PROJECT_POM}`
 DEFAULT_DOCKER_REPOSTORY_ADDRESS=registry.cn-hangzhou.aliyuncs.com
 DOCKER_REPOSITORY_GOURP=hzgc
 MAKE_RESULT=$SCRIPT_HOME_DIR/make_result
-
+LOCAL_ENV_DIR=${PROJECT_HOME_DIR}/Distribution/target/GoSunBigDataDeploy/local/envconf
+NORMAL_ENV_DIR=${PROJECT_HOME_DIR}/Distribution/target/GoSunBigDataDeploy/normal/envconf
 
 function find_make()
 {
     for make in `find $1 | grep target/make.sh`
     do
-
-        sh $make $PROJECT_VERSION $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
+        sh $make push  $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP
         IMAGE_NAME=`cat $make | grep IMAGE_NAME=| awk -F= '{print $2}'`
-        echo $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP/$IMAGE_NAME:$PROJECT_VERSION >> ${MAKE_RESULT}
-    done
-}
-
-function find_push() {
-    for name in `cat $MAKE_RESULT`
-    do
-        if [ -n "$name" ]; then
-            docker push $name
-        fi
+        VERSION=$(grep 'VERSION_INFO' $make | cut -d '=' -f2 | grep [0-9].[0-9].[0-9])
+        SERVICE_NAME=$(grep 'VERSION_NAME' $make | cut -d '=' -f2 )
+        echo "${SERVICE_NAME}=${VERSION}" >> ${LOCAL_ENV_DIR}/.env
+        echo "${SERVICE_NAME}=${VERSION}" >> ${NORMAL_ENV_DIR}/.env
+        echo $DOCKER_REPOSITORY_ADDRESS/$DOCKER_REPOSITORY_GOURP/$IMAGE_NAME:$VERSION >> ${MAKE_RESULT}
     done
 }
 
@@ -67,20 +62,10 @@ function print_info {
     printf "\033[32m$DATE_YMD_HMS $1 \033[0m\n"
 }
 
-function modify_version(){
-    for version in `find $1 | grep /.env`
-    do
-       sed -i "s#VERSION=.*#VERSION=${PROJECT_VERSION}#g" $version
-       print_info "Modify version successfully, file:$version, version:${PROJECT_VERSION}"
-    done
-}
-
 
 function main()
 {
     env_check
     find_make $PROJECT_HOME_DIR
-    find_push
-    modify_version $PROJECT_HOME_DIR
 }
 main

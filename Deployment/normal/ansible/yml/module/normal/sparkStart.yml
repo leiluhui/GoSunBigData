@@ -1,0 +1,11 @@
+- hosts: spark_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: start spark cluster
+     shell: sh {{BigdataDir}}/spark/sbin/start-all.sh
+     tags:
+      - start spark
+
