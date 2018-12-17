@@ -6,6 +6,7 @@ import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.conf.Config;
+import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
 import com.hzgc.compare.worker.util.FaceObjectUtil;
 import org.apache.log4j.Logger;
@@ -47,6 +48,10 @@ public class CompareOnePerson extends CompareTask {
             resultCount = resultDefaultCount;
         }
         SearchResult result;
+        if(MemoryCacheImpl.getInstance().getMemorySize() == 0){
+            log.info("There are no data in memory");
+            return new SearchResult();
+        }
 
         Comparators comparators = new ComparatorsImpl();
         List<String> ids =  comparators.compareFirst(feature1, Config.FIRST_COMPARE_RESULT_COUNT, dateStart, dateEnd);

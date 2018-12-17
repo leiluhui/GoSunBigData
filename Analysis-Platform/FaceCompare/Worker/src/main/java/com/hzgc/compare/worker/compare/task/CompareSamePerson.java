@@ -7,6 +7,7 @@ import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.conf.Config;
+import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
@@ -47,6 +48,12 @@ public class CompareSamePerson extends CompareTask {
             feature1List.add(feature.getFeature1());
             feature2List.add(feature.getFeature2());
         }
+
+        if(MemoryCacheImpl.getInstance().getMemorySize() == 0){
+            log.info("There are no data in memory");
+            return new SearchResult();
+        }
+
         SearchResult result;
         Comparators comparators = new ComparatorsImpl();
         List<String> firstCompared = comparators.compareFirstTheSamePerson(feature1List, Config.FIRST_COMPARE_RESULT_COUNT, dateStart, dateEnd);
