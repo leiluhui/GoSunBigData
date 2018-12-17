@@ -1,4 +1,4 @@
-- hosts: jdk8
+- hosts: es_servers
   remote_user: root
   roles:
   - roles
@@ -21,7 +21,7 @@
 
 
 
-- hosts: scala
+- hosts: es_servers
   remote_user: root
   roles:
   - roles
@@ -75,8 +75,6 @@
       unarchive: src={{AnsibleDir}}/roles/files/kafka.tar.gz dest={{BigdataDir}}
     - name: mkdir dir for kafka logs
       file: dest={{BigdataDir}}/kafka/logs mode=0755 state=directory
-  #  - name: install configuration file for kafka-manager
-   #   template: src={{AnsibleDir}}/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
     - name: install configuration file for kafka
       template: src={{AnsibleDir}}/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
     - name: install configuration file producer.properties for kafka
