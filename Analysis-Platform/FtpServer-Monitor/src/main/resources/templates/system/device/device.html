@@ -9,21 +9,29 @@
 				<div class="ibox-body">
 					<div class="fixed-table-toolbar">
 						<div class="columns pull-left">
-							<button shiro:hasPermission="sys:machine:add" type="button" class="btn  btn-primary" onclick="add()">
-								<i class="fa fa-plus" aria-hidden="true"></i>添加
-							</button>
-							<button shiro:hasPermission="sys:machine:batchRemove" type="button" class="btn  btn-danger"
-								onclick="batchRemove()">
-								<i class="fa fa-trash" aria-hidden="true"></i>删除
-							</button>
+							<!--<button shiro:hasPermission="sys:machine:add" type="button" class="btn  btn-primary" onclick="add()">-->
+								<!--<i class="fa fa-plus" aria-hidden="true"></i>添加-->
+							<!--</button>-->
+							<!--<button shiro:hasPermission="sys:machine:batchRemove" type="button" class="btn  btn-danger"-->
+								<!--onclick="batchRemove()">-->
+								<!--<i class="fa fa-trash" aria-hidden="true"></i>删除-->
+							<!--</button>-->
 						</div>
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
 						</div>
 						<div class="columns pull-right col-md-2 nopadding">
-							<input id="machineName" type="text" class="form-control"
-								placeholder="主机名">
+							<input id="deviceSn" type="text" class="form-control"
+								placeholder="设备序列号">
 						</div>
+
+						<div class="columns pull-right col-md-2 nopadding">
+							<select id="machineIp" name="machineIp" style="width: 94%;height: 31px;">
+							<!--<option value="">&#45;&#45;&#45;&#45;&#45;&#45;请选择主机IP&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+							<option th:each="machine : ${machineList}" th:text="${machine['machineIp']}" th:value="${machine['machineIp']}" th:field="*{machine.machineIp}"></option>
+						</select>
+						</div>
+
 					</div>
 					<table id="exampleTable" data-mobile-responsive="true">
 					</table>
@@ -56,6 +64,6 @@
 		</div>
 	</div>
 	<div th:include="include :: footer"></div>
-	<script type="text/javascript" src="/js/appjs/sys/machine/machine.js"></script>
+	<script type="text/javascript" src="/js/appjs/sys/device/device.js"></script>
 </body>
 </html>
