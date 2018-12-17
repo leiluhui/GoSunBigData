@@ -133,3 +133,15 @@ services:
     volumes:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  ftpmonitor:
+    image: ${DOCKER_REPOSITOR}/hzgc/ftpmonitor:${VERSION}
+    container_name: ftpmonitor
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - MYSQL_HOST=${MYSQL_HOST}:${MYSQL_PORT}
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/ftpmonitor/log:/monitor/log
