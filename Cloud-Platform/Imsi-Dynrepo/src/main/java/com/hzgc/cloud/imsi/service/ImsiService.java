@@ -50,7 +50,7 @@ public class ImsiService {
                 List<Long> communityIds = platformService.getCommunityIdsById(Long.valueOf(searchImsiDTO.getLac()));
                 if (communityIds == null || communityIds.size() == 0){
                     log.info("Search community ids by region id is null, so return null, region id:" + searchImsiDTO.getLac());
-                    return null;
+                    return ResponseResult.error(3,"Search community ids by region id is null");
                 }
                 param.setCommunityIds(communityIds);
             }
