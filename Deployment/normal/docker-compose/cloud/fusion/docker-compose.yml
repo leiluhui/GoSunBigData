@@ -4,8 +4,6 @@ services:
 
   fusion:
     image: ${DOCKER_REPOSITOR}/hzgc/fusion:${FUSION_VERSION}
-    depends_on:
-    - collect
     container_name: fusion
     restart: always
     environment:

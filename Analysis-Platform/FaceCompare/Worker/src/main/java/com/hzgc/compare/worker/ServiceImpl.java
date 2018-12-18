@@ -34,7 +34,7 @@ public class ServiceImpl implements Service {
 
     @Override
     public AllReturn<SearchResult> retrievalOnePerson(CompareParam param) {
-        log.info("The param is : " + FaceObjectUtil.objectToJson(param));
+//        log.info("The param is : " + FaceObjectUtil.objectToJson(param));
         String dateStart = param.getDateStart();
         String dateEnd = param.getDateEnd();
         if(param.getResultCount() == 0){

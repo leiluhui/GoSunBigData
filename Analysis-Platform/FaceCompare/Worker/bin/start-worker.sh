@@ -22,8 +22,8 @@ CONF_DIR=${COMPARE_DIR}/conf                                ### conf目录
 LIB_DIR=${COMPARE_DIR}/lib                                  ### lib目录
 LIB_JARS=`ls $LIB_DIR|grep .jar|awk '{print "'$LIB_DIR'/"$0}'|tr "\n" ":"`
 
-WORK_ID=`cat /proc/sys/kernel/random/uuid`
-WORK_ID=${WORK_ID%%-*}
+#WORK_ID=`cat /proc/sys/kernel/random/uuid`
+#WORK_ID=${WORK_ID%%-*}
 
 LOG_FILE_STDERR=${LOG_DIR}/${WORK_ID}/stderr.log
 

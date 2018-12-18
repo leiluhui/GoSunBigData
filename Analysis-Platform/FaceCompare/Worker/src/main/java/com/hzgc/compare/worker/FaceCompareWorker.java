@@ -6,7 +6,7 @@ import com.hzgc.compare.worker.conf.Config;
 import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.memory.manager.MemoryManager;
 import com.hzgc.compare.worker.persistence.*;
-import com.hzgc.jniface.FaceFunction;
+import com.hzgc.compare.worker.util.FaceCompareUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -19,12 +19,10 @@ import java.util.Random;
  * 整合所有组件
  */
 public class FaceCompareWorker {
-//    private static final Logger logger = LoggerFactory.getLogger(FaceCompareWorker.class);
     private static Logger log = Logger.getLogger(FaceCompareWorker.class);
     private Comsumer comsumer;
     private MemoryManager memoryManager;
     private FileManager fileManager;
-//    private HBaseClient hBaseClient;
 
 
     public void init(String workerId, String port){
@@ -42,7 +40,6 @@ public class FaceCompareWorker {
         } else if(Config.SAVE_TO_HDFS == saveParam){
             fileManager = new HDFSFileManager();
         }
-//        hBaseClient = new HBaseClient();
         try {
             log.info("Load data from file System.");
             if(Config.SAVE_TO_LOCAL == saveParam){
@@ -66,17 +63,13 @@ public class FaceCompareWorker {
         ElasticSearchClient.connect();
         log.info("The Time connect to ES is " + (System.currentTimeMillis() - start));
         comsumer.start();
-        memoryManager.startToCheck();
-        memoryManager.toShowMemory();
         if(Config.WORKER_FLUSH_PROGRAM == 0){
             memoryManager.timeToCheckFlush();
         }
-        // FIXME: 18-9-21 
+        // FIXME: 18-9-21
         fileManager.checkTaskTodo();
-//        hBaseClient.timeToWrite();
-        for(int i = 0; i < Config.WORKER_EXECUTORS_TO_COMPARE ; i++){
-            FaceFunction.init();
-        }
+        FaceCompareUtil.getInstanse();
+        memoryManager.toShowMemory();
     }
 
     private static String getPort(){

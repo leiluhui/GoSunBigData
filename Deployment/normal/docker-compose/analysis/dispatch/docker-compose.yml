@@ -20,8 +20,6 @@ services:
 
   dispatch:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${DISPATCH_VERSION}
-    depends_on:
-    - collect
     container_name: dispatch
     network_mode: "host"
     environment:

@@ -1,0 +1,28 @@
+- hosts: master
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+    - name: create kafka topic feature
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic feature
+    - name: create kafka topic person
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic person
+    - name: create kafka topic car
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic car
+    - name: create kafka topic PeoMan-Fusion
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic PeoMan-Fusion
+    - name: create kafka topic PeoMan-Inner
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic PeoMan-Inner
+    - name: create kafka topic face
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 10 --topic face
+    - name: create kafka topic  imsi
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic imsi
+    - name: create kafka topic mac
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic mac
+    - name: create kafka topic dispatch
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic dispatch
+    - name: create kafka topic alarm_message
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic alarm_message
+    - name: create kafka topic PeoMan-IMSI
+      shell: sh {{BigdataDir}}/kafka/bin/kafka-topics.sh --create --zookeeper {{master_ip}}:2181 --replication-factor 3 --partitions 6 --topic PeoMan-IMSI

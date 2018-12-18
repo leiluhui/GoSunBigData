@@ -3,8 +3,6 @@ version: '2.3'
 services:
   face-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/face-dynrepo:${FACE_DYNREPO_VERSION}
-    depends_on:
-    - collect
     container_name: face-dynrepo
     restart: always
     environment:
@@ -20,8 +18,6 @@ services:
 
   person-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${PERSON_DYNREPO_VERSION}
-    depends_on:
-    - collect
     container_name: person-dynrepo
     restart: always
     environment:
@@ -37,8 +33,6 @@ services:
 
   vehicle-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VEHICLE_DYNREPO_VERSION}
-    depends_on:
-    - collect
     container_name: vehicle-dynrepo
     restart: always
     environment:

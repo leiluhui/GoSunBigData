@@ -4,8 +4,6 @@ services:
 
   people:
     image: ${DOCKER_REPOSITOR}/hzgc/people:${PEOPLE_VERSION}
-    depends_on:
-    - collect
     container_name: people
     restart: always
     environment:
@@ -23,8 +21,6 @@ services:
 
   imsi-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/imsi-dynrepo:${IMSI_DYNREPO_VERSION}
-    depends_on:
-    - collect
     container_name: imsi-dynrepo
     network_mode: "host"
     environment:
@@ -44,8 +40,6 @@ services:
 
   fusion:
     image: ${DOCKER_REPOSITOR}/hzgc/fusion:${FUSION_VERSION}
-    depends_on:
-    - collect
     container_name: fusion
     restart: always
     environment:
