@@ -1,8 +1,0 @@
-- hosts:
-  remote_user: root
-  roles: 
-  - roles
-
-  tasks:
-   - name: modify the configuration
-     shell: 

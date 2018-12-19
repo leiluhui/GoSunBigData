@@ -1,4 +1,4 @@
-- hosts: jdk8
+- hosts: es_servers
   remote_user: root
   roles:
   - roles
@@ -7,7 +7,7 @@
    - name: mkdir jdk directory
      file: path={{BigdataDir}} state=directory mode=0755
    - name: copy and unzip jdk
-     unarchive: src=/opt/ansible/roles/files/jdk.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/jdk.tar.gz dest={{BigdataDir}}
    - name: set env
      lineinfile: dest=/etc/profile insertafter="{{item.position}}" line="{{item.value}}" state=present
      with_items:
@@ -21,7 +21,7 @@
 
 
 
-- hosts: scala
+- hosts: es_servers
   remote_user: root
   roles:
   - roles
@@ -30,7 +30,7 @@
    - name: mkdir scala directory
      file: path={{BigdataDir}} state=directory mode=0755
    - name: copy and unzip scala
-     unarchive: src=/opt/ansible/roles/files/scala.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/scala.tar.gz dest={{BigdataDir}}
    - name: set env
      lineinfile: dest=/etc/profile insertafter="{{item.position}}" line="{{item.value}}" state=present
      with_items:
@@ -53,9 +53,9 @@
     - name: mkdir directory for bigdata data
       file: dest={{BigdataDir}} mode=0755 state=directory
     - name: install zookeeper
-      unarchive: src=/opt/ansible/roles/files/zookeeper-3.4.10.tar.gz dest={{BigdataDir}}
+      unarchive: src={{AnsibleDir}}/roles/files/zookeeper-3.4.10.tar.gz dest={{BigdataDir}}
     - name: install configuration file for zookeeper
-      template: src=/opt/ansible/roles/templates/zoo.cfg.j2 dest={{BigdataDir}}/zookeeper/conf/zoo.cfg
+      template: src={{AnsibleDir}}/roles/templates/zoo.cfg.j2 dest={{BigdataDir}}/zookeeper/conf/zoo.cfg
     - name: create log directory
       file: dest={{BigdataDir}}/zookeeper/dataLogDir mode=0755 state=directory
     - name: add myid file
@@ -72,15 +72,13 @@
 
   tasks:
     - name: copy and unzip kafka
-      unarchive: src=/opt/ansible/roles/files/kafka.tar.gz dest={{BigdataDir}}
+      unarchive: src={{AnsibleDir}}/roles/files/kafka.tar.gz dest={{BigdataDir}}
     - name: mkdir dir for kafka logs
       file: dest={{BigdataDir}}/kafka/logs mode=0755 state=directory
-  #  - name: install configuration file for kafka-manager
-   #   template: src=/opt/ansible/roles/templates/application.conf.j2 dest={{BigdataDir}}/kafka/kafka-manager/conf/application.conf
     - name: install configuration file for kafka
-      template: src=/opt/ansible/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
+      template: src={{AnsibleDir}}/roles/templates/server.properties.j2 dest={{BigdataDir}}/kafka/config/server.properties
     - name: install configuration file producer.properties for kafka
-      template: src=/opt/ansible/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
+      template: src={{AnsibleDir}}/roles/templates/producer.properties.j2 dest={{BigdataDir}}/kafka/config/producer.properties
       tags:
       - install kafka
 
@@ -102,13 +100,13 @@
    - name: copy /etc/security/limits.conf
      template: src=/etc/security/limits.conf dest=/etc/security/limits.conf
    - name: copy and unzip es
-     unarchive: src=/opt/ansible/roles/files/elasticsearch.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/elasticsearch.tar.gz dest={{BigdataDir}}
    - name: mkdir ditectory for logs data
      file: dest={{BigdataDir}}/elastic/logs mode=0755 state=directory owner=elsearch group=elsearch
    - name: install memory configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.in.sh.j2 dest={{BigdataDir}}/elastic/bin/elasticsearch.in.sh
    - name: install configuration file for es
-     template: src=/opt/ansible/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
+     template: src={{AnsibleDir}}/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
      tags:
      - install elasticsearch
 
@@ -120,11 +118,11 @@
 
   tasks:
    - name: copy and unzip spark
-     unarchive: src=/opt/ansible/roles/files/spark.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/spark.tar.gz dest={{BigdataDir}}
    - name: install configuration file slaves for spark
-     template: src=/opt/ansible/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
+     template: src={{AnsibleDir}}/roles/templates/slaves.spark.j2 dest={{BigdataDir}}/spark/conf/slaves
    - name: install configuration file spark-env for spark
-     template: src=/opt/ansible/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
+     template: src={{AnsibleDir}}/roles/templates/spark-env.sh.j2 dest={{BigdataDir}}/spark/conf/spark-env.sh
    - name: change sbin file
      file: dest={{BigdataDir}}/spark/sbin mode=0755 recurse=yes
    - name: change bin file
@@ -146,17 +144,17 @@
    - name: delete {{BigdataDir}}/hadoop
      file: path={{BigdataDir}}/hadoop/ state=absent
    - name: copy and unzip hadoop
-     unarchive: src=/opt/ansible/roles/files/hadoop.tar.gz dest={{BigdataDir}}
+     unarchive: src={{AnsibleDir}}/roles/files/hadoop.tar.gz dest={{BigdataDir}}
    - name: create hadoop logs directory
      file: dest={{BigdataDir}}/hadoop/logs mode=0775 state=directory
    - name: install configuration file hadoop-env.sh.j2 for hadoop
-     template: src=/opt/ansible/roles/templates/hadoop-env.sh.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/hadoop-env.sh
+     template: src={{AnsibleDir}}/roles/templates/hadoop-env.sh.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/hadoop-env.sh
    - name: install configuration file core-site.xml.j2 for hadoop
-     template: src=/opt/ansible/roles/templates/core-site.xml.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/core-site.xml
+     template: src={{AnsibleDir}}/roles/templates/core-site.xml.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/core-site.xml
    - name: install configuration file hdfs-site.xml.j2 for hadoop
-     template: src=/opt/ansible/roles/templates/hdfs-site.xml.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/hdfs-site.xml
+     template: src={{AnsibleDir}}/roles/templates/hdfs-site.xml.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/hdfs-site.xml
    - name: install configuration file slaves.j2 for hadoop
-     template: src=/opt/ansible/roles/templates/slaves.hadoop.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/slaves
+     template: src={{AnsibleDir}}/roles/templates/slaves.hadoop.j2 dest={{BigdataDir}}/hadoop/etc/hadoop/slaves
    - name: change shell sbin file
      file: dest={{BigdataDir}}/hadoop/sbin mode=0755 recurse=yes
    - name: change shell bin file
