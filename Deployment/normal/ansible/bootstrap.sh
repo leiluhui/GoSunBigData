@@ -15,13 +15,13 @@ es_tem=./roles/templates/elasticsearch.yml.j2
 sysctl_conf=/etc/sysctl.conf
 limits_conf=/etc/security/limits.conf
 ###### 节点行数  ######
-mline=$(grep -n master hosts.ini | tail -1 | cut -d : -f 1)
-fline=$(grep -n follower hosts.ini | tail -1 | cut -d : -f 1)
-master=`sed -n "${mline}, ${fline}p" hosts.ini| grep [0-9][0-9]`
-followers=`sed -n "${fline}, $(cat hosts.ini| wc -l)p" hosts.ini | grep [0-9][0-9]`
-zkline=$(grep -n zk_servers hosts.ini | tail -1 | cut -d : -f 1)
-esline=$(grep -n es_servers hosts.ini | tail -1 | cut -d : -f 1)
-zkli=`sed -n "${zkline}, ${esline}p" hosts.ini| grep [0-9][0-9] | awk '{print $1}'`
+mline=$(grep -n master hosts | tail -1 | cut -d : -f 1)
+fline=$(grep -n follower hosts | tail -1 | cut -d : -f 1)
+master=`sed -n "${mline}, ${fline}p" hosts| grep [0-9][0-9]`
+followers=`sed -n "${fline}, $(cat hosts| wc -l)p" hosts | grep [0-9][0-9]`
+zkline=$(grep -n zk_servers hosts | tail -1 | cut -d : -f 1)
+esline=$(grep -n es_servers hosts | tail -1 | cut -d : -f 1)
+zkli=`sed -n "${zkline}, ${esline}p" hosts| grep [0-9][0-9] | awk '{print $1}'`
 zklist=${master}:2181
 bootstraplist=${master}:9092
 
