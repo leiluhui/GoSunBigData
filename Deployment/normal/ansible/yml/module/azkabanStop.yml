@@ -1,0 +1,15 @@
+- hosts: azkaban_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: start webserver
+     shell: source /etc/profile; cd {{BigdataDir}}/azkaban/webserver/; nohup bin/azkaban-web-shutdown.sh &
+     run_once: true
+   - name: change executor dir
+     shell: source /etc/profile; cd {{BigdataDir}}/azkaban/executor/; nohup bin/azkaban-executor-shutdown.sh &
+     run_once: true
+     tags:
+       - stop azkaban
+
