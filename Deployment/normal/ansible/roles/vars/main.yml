@@ -18,4 +18,4 @@ namenode2_hostname: 172.18.18.100
 tidb_hostname: 172.18.18.203
 tidb_password: Hzgc@123
 AnsibleDir: /opt/ansible
-GosunBigDataDir: /opt/GosunBigDataDeploy/docker-compose
+GosunBigDataDir: /opt/GoSunBigDataDeploy/docker-compose
