@@ -9,7 +9,7 @@
    - name: chmod +x
      shell: chmod +x {{BigdataDir}}/kafka/bin/*
    - name: stop kafka
-     shell: sh {{BigdataDir}}/kafka/bin/kafka-server-stop.sh
+     shell: source /etc/profile; sh {{BigdataDir}}/kafka/bin/kafka-server-stop.sh
      tags:
      - stop kafka
 

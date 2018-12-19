@@ -59,9 +59,9 @@
     - name: create log directory
       file: dest={{BigdataDir}}/zookeeper/dataLogDir mode=0755 state=directory
     - name: add myid file
-      shell: echo {{ myid }} > {{BigdataDir}}/zookeeper/data/myid
+      shell: echo {{ myid }} > {{BigdataDir}}/zookeeper/dataDir/myid
     - name: start zookeeper
-      shell:  sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
+      shell: source /etc/profile; sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
       tags:
       - start zookeeper
 
@@ -109,6 +109,34 @@
      template: src={{AnsibleDir}}/roles/templates/elasticsearch.yml.j2 dest={{BigdataDir}}/elastic/config/elasticsearch.yml
      tags:
      - install elasticsearch
+
+
+- hosts: azkaban_servers
+  remote_user: root
+  roles:
+  - roles
+
+  tasks:
+   - name: copy and unzip azkaban
+     unarchive: src=/opt/ansible/roles/files/azkaban.tar.gz dest={{BigdataDir}}
+     run_once: true
+   - name: copy azkaban.webserver.properties
+     template: src=/opt/ansible/roles/templates/azkaban.webserver.properties dest={{BigdataDir}}/azkaban/webserver/conf/azkaban.properties
+     run_once: true
+   - name: copy azkaban.executor.properties
+     template: src=/opt/ansible/roles/templates/azkaban.executor.properties dest={{BigdataDir}}/azkaban/executor/conf/azkaban.properties
+     run_once: true
+   - name: create database
+     shell: /usr/bin/mysql -uroot -h {{tidb_hostname}} -P 4000 -p{{tidb_password}} -e "source {{BigdataDir}}/azkaban/sql/create-all-sql-2.5.0.sql"
+     run_once: true
+   - name: delete keystore
+     file: path={{BigdataDir}}/azkaban/webserver/keystore state=absent
+     run_once: true
+   - name: create ssl keystore
+     shell: cd {{BigdataDir}}/jdk/bin/; ./keytool -keystore {{BigdataDir}}/azkaban/webserver/keystore -alias jetty -genkey -keyalg RSA -dname "CN=, OU=, O=, L=, ST=, C=CN" -keypass {{tidb_password}} -storepass {{tidb_password}}
+     run_once: true
+     tags:
+     - install azkaban
 
 
 - hosts: spark_servers
@@ -160,11 +188,12 @@
    - name: change shell bin file
      file: dest={{BigdataDir}}/hadoop/bin mode=0755 recurse=yes
    - name: start journalnode
-     shell: sh {{BigdataDir}}/hadoop/sbin/hadoop-daemon.sh start journalnode
+     shell: source /etc/profile; sh {{BigdataDir}}/hadoop/sbin/hadoop-daemon.sh start journalnode
      become: true
      become_method: su
      become_user: root
      when: datanode == "true"
+   - wait_for: port=8485 state=started
    - name: format active namenode hdfs
      shell: sh {{BigdataDir}}/hadoop/bin/hdfs namenode -format -force
      become: true

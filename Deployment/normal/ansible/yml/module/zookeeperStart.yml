@@ -5,6 +5,6 @@
 
   tasks:
     - name: start zookeeper
-      shell:  sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
+      shell: source /etc/profile; sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
       tags:
       - start zookeeper
