@@ -37,6 +37,15 @@
 #docker的节点配置，配置对应的ip
 [docker_servers]
 
+#ftpserver的节点配置，配置对应的ip
+[ftpserver]
+
+#facecompare的节点配置，配置对应的ip
+[facecompare]
+
+#peoman的节点配置，配置对应的ip
+[peoman]
+
 #master的节点配置，配置主节点的ip
 [master]
 
