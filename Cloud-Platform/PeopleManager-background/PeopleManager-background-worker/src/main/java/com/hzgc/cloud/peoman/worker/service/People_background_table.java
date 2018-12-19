@@ -61,6 +61,13 @@ public interface People_background_table extends Table {
             "  PRIMARY KEY (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30001 COMMENT='疑似迁出记录表';";
 
+    public String SQL_INNER_FEATURE = "CREATE TABLE IF NOT EXISTS  `t_inner_feature` (\n" +
+            "  `peopleid` varchar(32) NOT NULL COMMENT '人员全局ID',\n" +
+            "  `feature` varchar(8192) NOT NULL COMMENT '特征值',\n" +
+            "  `bitfeature` varchar(512) NOT NULL COMMENT 'bit特征值',\n" +
+            "  PRIMARY KEY (`peopleid`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='内部人脸特征库';";
+
     public String INDEX_IDX_RECOGNIZE = "alter table t_recognize_record add index idx_recognize(type,community,capturetime);";
 
     public String INDEX_IDX_RECOGNIZE_01 = "alter table t_recognize_record add index idx_recognize_01(community,capturetime);";
