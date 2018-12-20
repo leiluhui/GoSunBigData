@@ -1,7 +1,7 @@
 version: '2.3'
 
 services:
-  facecompare:
+  facecompare0:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare0
     restart: always
@@ -15,7 +15,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare1:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare1
     restart: always
@@ -29,7 +29,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare2:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare2
     restart: always
@@ -43,7 +43,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare3:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare3
     restart: always
@@ -57,7 +57,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare4:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare4
     restart: always
@@ -71,7 +71,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare5:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare5
     restart: always
@@ -85,7 +85,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare6:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare6
     restart: always
@@ -99,7 +99,7 @@ services:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
-  facecompare:
+  facecompare7:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
     container_name: facecompare7
     restart: always
