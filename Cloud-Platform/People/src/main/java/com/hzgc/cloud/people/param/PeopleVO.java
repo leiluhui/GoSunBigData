@@ -20,6 +20,14 @@ public class PeopleVO implements Serializable {
     private Long regionId;
     @ApiModelProperty(value = "区域")
     private String region;
+    @ApiModelProperty(value = "街道ID")
+    private Long street;
+    @ApiModelProperty(value = "街道")
+    private String streetName;
+    @ApiModelProperty(value = "网格Id")
+    private Long gridCode;
+    @ApiModelProperty(value = "网格名称")
+    private String gridName;
     @ApiModelProperty(value = "户籍")
     private String household;
     @ApiModelProperty(value = "现住地")

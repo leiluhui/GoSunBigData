@@ -13,6 +13,10 @@ public class People implements Serializable {
 
     private Long region;
 
+    private Long street;
+
+    private Long gridcode;
+
     private String household;
 
     private String address;
@@ -257,6 +261,22 @@ public class People implements Serializable {
 
     public void setCar(List<Car> car) {
         this.car = car;
+    }
+
+    public Long getStreet() {
+        return street;
+    }
+
+    public void setStreet(Long street) {
+        this.street = street;
+    }
+
+    public Long getGridcode() {
+        return gridcode;
+    }
+
+    public void setGridcode(Long gridcode) {
+        this.gridcode = gridcode;
     }
 
     public Long getPictureId() {
