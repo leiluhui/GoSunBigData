@@ -6,6 +6,8 @@
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
         <result column="region" property="region" jdbcType="BIGINT"/>
+        <result column="street" property="street" jdbcType="BIGINT"/>
+        <result column="gridcode" property="gridcode" jdbcType="BIGINT"/>
         <result column="household" property="household" jdbcType="VARCHAR"/>
         <result column="address" property="address" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="VARCHAR"/>
@@ -37,6 +39,8 @@
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="idcard" property="idcard" jdbcType="VARCHAR"/>
         <result column="region" property="region" jdbcType="BIGINT"/>
+        <result column="street" property="street" jdbcType="BIGINT"/>
+        <result column="gridcode" property="gridcode" jdbcType="BIGINT"/>
         <result column="household" property="household" jdbcType="VARCHAR"/>
         <result column="address" property="address" jdbcType="VARCHAR"/>
         <result column="sex" property="sex" jdbcType="VARCHAR"/>
@@ -76,7 +80,7 @@
         <result column="pid" property="pictureId" jdbcType="BIGINT"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, name, idcard, region, household, address, sex, politic, edulevel,
+        id, name, idcard, region, street, gridcode, household, address, sex, politic, edulevel,
         job, birthplace, community, lasttime, createtime, updatetime
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -280,6 +284,12 @@
             <if test="region != null">
                 region,
             </if>
+            <if test="street != null">
+                street,
+            </if>
+            <if test="gridcode != null">
+                gridcode,
+            </if>
             <if test="household != null">
                 household,
             </if>
@@ -333,6 +343,12 @@
             <if test="region != null">
                 #{region,jdbcType=BIGINT},
             </if>
+            <if test="street != null">
+                #{street,jdbcType=BIGINT},
+            </if>
+            <if test="gridcode != null">
+                #{gridcode, jdbcType=BIGINT},
+            </if>
             <if test="household != null">
                 #{household,jdbcType=VARCHAR},
             </if>
@@ -385,6 +401,12 @@
             </if>
             <if test="region != null">
                 region = #{region,jdbcType=BIGINT},
+            </if>
+            <if test="street != null">
+                street = #{street,jdbcType=BIGINT},
+            </if>
+            <if test="gridcode != null">
+                gridcode = #{gridcode,jdbcType=BIGINT},
             </if>
             <if test="household != null">
                 household = #{household,jdbcType=VARCHAR},

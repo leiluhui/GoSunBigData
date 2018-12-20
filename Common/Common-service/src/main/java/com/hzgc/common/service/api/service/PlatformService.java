@@ -70,6 +70,52 @@ public class PlatformService {
     }
 
     /**
+     * 获取街道名称
+     *
+     * @param id 街道id
+     * @return 街道名称
+     */
+
+    public String getStreetNameById(Long id) {
+        if (id != null) {
+            log.debug("Method:getStreetNameById, id:" + id);
+            AreaCriteria criteria = new AreaCriteria();
+            criteria.setId(id);
+            criteria.setLevel("town");
+            AreaSDTO areaSDTO = restTemplate.postForObject(
+                    "http://platform:8888/api/v1/region/internal/region/all/query_region_info",
+                    criteria,AreaSDTO.class);
+            if (areaSDTO != null && areaSDTO.getAreaDTOs() != null) {
+                return areaSDTO.getAreaDTOs().get(0).getTownName();
+            } else {
+                log.info("Get streetName by id failed, because result is null");
+            }
+        } else {
+            log.error("Method:getStreetNameById, Id is null");
+        }
+        return null;
+    }
+
+    /**
+     * 获取网格名称
+     *
+     * @param gridcode 网格id
+     * @return 网格名称
+     */
+    public String getGridNameById(Long gridcode){
+        if (gridcode != null){
+            log.debug("Method:getGridNameById,id:"+ gridcode);
+            ResponseEntity<FeignGridDTO> responseEntity =
+                    restTemplate.getForEntity("http://platform:8888/api/v1/grid/internal/query_single_by_id?id="+ gridcode,FeignGridDTO.class);
+            FeignGridDTO  feignGridDTO = responseEntity.getBody();
+            String gridname= feignGridDTO.getGridName();
+            return gridname;
+        }else{
+            return null;
+        }
+    }
+
+    /**
      * 获取所有区域ID
      *
      * @return 区域ID集合

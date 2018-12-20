@@ -574,6 +574,10 @@ public class PeopleService {
             peopleVO.setIdCard(people.getIdcard());
             peopleVO.setRegionId(people.getRegion());
             peopleVO.setRegion(platformService.getRegionName(people.getRegion()));
+            peopleVO.setStreet(people.getStreet());
+            peopleVO.setStreetName(platformService.getStreetNameById(people.getStreet()));
+            peopleVO.setGridCode(people.getGridcode());
+            peopleVO.setGridName(platformService.getGridNameById(people.getGridcode()));
             peopleVO.setHousehold(people.getHousehold());
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
@@ -699,6 +703,10 @@ public class PeopleService {
                     peopleVO.setIdCard(people.getIdcard());
                     peopleVO.setRegionId(people.getRegion());
                     peopleVO.setRegion(platformService.getRegionName(people.getRegion()));
+                    peopleVO.setStreet(people.getStreet());
+                    peopleVO.setStreetName(platformService.getStreetNameById(people.getStreet()));
+                    peopleVO.setGridCode(people.getGridcode());
+                    peopleVO.setGridName(platformService.getGridNameById(people.getGridcode()));
                     peopleVO.setHousehold(people.getHousehold());
                     peopleVO.setAddress(people.getAddress());
                     peopleVO.setSex(people.getSex());
