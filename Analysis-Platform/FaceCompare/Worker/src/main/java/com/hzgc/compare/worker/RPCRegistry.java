@@ -35,6 +35,7 @@ public class RPCRegistry implements Runnable{
             log.error("Get local ip address faild .");
             System.exit(1);
         }
+        log.info("Local ip is " + Config.WORKER_ADDRESS);
         RpcServer rpcServer = new RpcServer(Config.WORKER_ADDRESS,
                 Config.WORKER_RPC_PORT, registry);
         rpcServer.start();

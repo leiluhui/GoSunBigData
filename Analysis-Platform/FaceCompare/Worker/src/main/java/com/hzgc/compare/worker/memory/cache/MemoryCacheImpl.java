@@ -21,6 +21,7 @@ public class MemoryCacheImpl{
     private static MemoryCacheImpl memoryCache;
     private int flushProgram; //flush 方案 0 定期flush  1 定量flush
     private Integer bufferSizeMax; // buffer存储上限，默认1000
+    private int memorySize;
     //    private BatchBufferQueue<FaceObject> faceObjects; //这里应该是一个类似阻塞队列的集合
 //    private Map<String, List<Pair<String, byte[]>>> cacheRecords;
     private DoubleBufferQueue<Triplet<String, String, byte[]>> buffer;
@@ -170,5 +171,13 @@ public class MemoryCacheImpl{
 //            list.add(value);
         }
         FaceCompareFunction.setBitFeatures(keys, features);
+    }
+
+    public void setMemorySize(int memorySize){
+        this.memorySize = memorySize;
+    }
+
+    public int getMemorySize(){
+        return memorySize;
     }
 }

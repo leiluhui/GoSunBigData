@@ -7,7 +7,7 @@
     - name: chmod permission
       shell: chmod +x {{BigdataDir}}/kafka/bin/*
     - name: start kafka
-      shell: sh {{BigdataDir}}/kafka/bin/kafka-server-start.sh -daemon {{BigdataDir}}/kafka/config/server.properties &
+      shell: source /etc/profile; sh {{BigdataDir}}/kafka/bin/kafka-server-start.sh -daemon {{BigdataDir}}/kafka/config/server.properties &
       tags:
       - start kafka
 

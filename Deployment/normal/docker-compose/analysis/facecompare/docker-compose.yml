@@ -1,0 +1,114 @@
+version: '2.3'
+
+services:
+  facecompare0:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare0
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=0
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare1:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare1
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=1
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare2:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare2
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=2
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare3:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare3
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=3
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare4:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare4
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=4
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare5:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare5
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=5
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare6:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare6
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=6
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata
+
+  facecompare7:
+    image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}
+    container_name: facecompare7
+    restart: always
+    environment:
+    - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
+    - ES_HOST=${ES_HOST}
+    - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=7
+    network_mode: "host"
+    volumes:
+    - ${DOCKER_HOME}/facecompare/log:/worker/log
+    - ${DOCKER_HOME}/facecompare/data:/worker/matedata

@@ -9,6 +9,6 @@
    - name: chmod +x
      shell: chmod +x {{BigdataDir}}/zookeeper/bin/zkServer.sh
    - name: stop zookeeper
-     shell: sh {{BigdataDir}}/zookeeper/bin/zkServer.sh stop
+     shell: source /etc/profile; sh {{BigdataDir}}/zookeeper/bin/zkServer.sh stop
      tags:
      - stop zookeeper

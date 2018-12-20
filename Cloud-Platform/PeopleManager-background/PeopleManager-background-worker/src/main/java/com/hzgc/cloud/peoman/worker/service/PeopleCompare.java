@@ -96,6 +96,7 @@ public class PeopleCompare {
     private Map<String, CameraQueryDTO> cameraInfos = new HashMap<>();
     private LinkedList<byte[]> bitFeatureList = new LinkedList<>();
     private LinkedList<float[]> floatFeatureList = new LinkedList<>();
+    private Map<String, Long> lastRecordTime = new HashMap<>();
     private ReentrantLock lock = new ReentrantLock();
     private KafkaProducer<String, String> producer;
 
@@ -183,6 +184,20 @@ public class PeopleCompare {
         }
         ComparePicture comparePicture = memeoryCache.comparePicture(faceObject.getAttribute());
         if (comparePicture != null) {
+            String lastTimeKey = comparePicture.getPeopleId()+"-"+faceObject.getIpcId();
+            long lastTime = lastRecordTime.getOrDefault(lastTimeKey, 0L).longValue();
+            long captureTime = 0;
+            try {
+                captureTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(faceObject.getTimeStamp()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (captureTime - lastTime < filterTime * 1000) {
+                return;
+            } else {
+                lastRecordTime.put(lastTimeKey, captureTime);
+            }
+
             addPeopleRecognize(faceObject, comparePicture, communityId);
             //重点人口推送
             if (comparePicture.getFlagId() != null && comparePicture.getFlagId() != 7) {
@@ -248,6 +263,15 @@ public class PeopleCompare {
             e.printStackTrace();
         }
         if (compareRes != null) {
+            long captureTime = date.getTime();
+            String lastTimeKey = indexUUID.get(compareRes.getIndex())+"-"+faceObject.getIpcId();
+            long lastTime = lastRecordTime.getOrDefault(lastTimeKey, 0L).longValue();
+            if (captureTime - lastTime < filterTime * 1000) {
+                return;
+            } else {
+                lastRecordTime.put(lastTimeKey, captureTime);
+            }
+
             peopleRecognize.setType(1);
             peopleRecognize.setId(faceObject.getId());
             peopleRecognize.setPeopleid(indexUUID.get(compareRes.getIndex()));

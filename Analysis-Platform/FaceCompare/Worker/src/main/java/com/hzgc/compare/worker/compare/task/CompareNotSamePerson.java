@@ -7,6 +7,7 @@ import com.hzgc.compare.SearchResult;
 import com.hzgc.compare.worker.compare.Comparators;
 import com.hzgc.compare.worker.compare.ComparatorsImpl;
 import com.hzgc.compare.worker.conf.Config;
+import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.persistence.ElasticSearchClient;
 import org.apache.log4j.Logger;
 
@@ -47,6 +48,10 @@ public class CompareNotSamePerson implements Runnable {
         int resultCount = param.getResultCount();
         if (resultCount <= 0 || resultCount > 50){
             resultCount = resultDefaultCount;
+        }
+        if(MemoryCacheImpl.getInstance().getMemorySize() == 0){
+            log.info("There are no data in memory");
+            return new HashMap<>();
         }
         // 根据条件过滤
         Comparators comparators = new ComparatorsImpl();
