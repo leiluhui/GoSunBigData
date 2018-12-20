@@ -5,7 +5,7 @@
 
   tasks:
    - name: start spark cluster
-     shell: sh {{BigdataDir}}/spark/sbin/start-all.sh
+     shell: source /etc/profile; sh {{BigdataDir}}/spark/sbin/start-all.sh
      tags:
       - start spark
 

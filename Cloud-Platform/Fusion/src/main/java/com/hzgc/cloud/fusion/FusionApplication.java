@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@MapperScan(value = "com.hzgc.service.fusion.dao")
+@MapperScan(value = "com.hzgc.cloud.fusion.dao")
 @EnableAutoConfiguration
 @EnableTransactionManagement
 @EnableKafka

@@ -5,7 +5,7 @@
 
   tasks:
     - name: start zookeeper
-      shell: sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
+      shell: source /etc/profile; sh {{BigdataDir}}/zookeeper/bin/zkServer.sh start
       tags:
       - start zookeeper
 
@@ -20,7 +20,7 @@
     - name: chmod permission
       shell: chmod +x {{BigdataDir}}/kafka/bin/*
     - name: start kafka
-      shell: sh {{BigdataDir}}/kafka/bin/kafka-server-start.sh -daemon {{BigdataDir}}/kafka/config/server.properties &
+      shell: source /etc/profile; sh {{BigdataDir}}/kafka/bin/kafka-server-start.sh -daemon {{BigdataDir}}/kafka/config/server.properties &
       tags:
       - start kafka
 
@@ -52,7 +52,7 @@
 
   tasks:
    - name: start spark cluster
-     shell: sh {{BigdataDir}}/spark/sbin/start-all.sh
+     shell: source /etc/profile; sh {{BigdataDir}}/spark/sbin/start-all.sh
      tags:
       - start spark
 
@@ -64,7 +64,7 @@
 
   tasks:
    - name: start namenode
-     shell: sh {{BigdataDir}}/hadoop/sbin/start-dfs.sh
+     shell: source /etc/profile; sh {{BigdataDir}}/hadoop/sbin/start-dfs.sh
      become: true
      become_method: su
      become_user: root
