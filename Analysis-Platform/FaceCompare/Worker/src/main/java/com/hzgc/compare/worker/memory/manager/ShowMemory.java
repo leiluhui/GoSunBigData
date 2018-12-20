@@ -1,5 +1,6 @@
 package com.hzgc.compare.worker.memory.manager;
 
+import com.hzgc.compare.worker.memory.cache.MemoryCacheImpl;
 import com.hzgc.compare.worker.util.FaceCompareUtil;
 import org.apache.log4j.Logger;
 
@@ -10,6 +11,8 @@ public class ShowMemory extends TimerTask {
 
     @Override
     public void run() {
-        log.info("The size used to compare is " + FaceCompareUtil.getInstanse().getMemSize());
+        int memSize = FaceCompareUtil.getInstanse().getMemSize();
+        MemoryCacheImpl.getInstance().setMemorySize(memSize);
+        log.info("The size used to compare is " + memSize);
     }
 }

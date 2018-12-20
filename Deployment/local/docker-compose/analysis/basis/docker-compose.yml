@@ -128,10 +128,10 @@ services:
     - ZK_ADDRESS=${ZK_HOST}:${ZK_PORT}
     - ES_HOST=${ES_HOST}
     - KAFKA_SERVERS=${KAFKA_HOST}:${KAFKA_PORT}
+    - WORK_ID=0
     network_mode: "host"
     volumes:
     - ${DOCKER_HOME}/facecompare/log:/worker/log
-    - /opt/GsFaceLib:/opt/GsFaceLib
     - ${DOCKER_HOME}/facecompare/data:/worker/matedata
 
   ftpmonitor:
