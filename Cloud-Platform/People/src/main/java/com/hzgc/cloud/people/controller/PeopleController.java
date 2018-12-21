@@ -143,7 +143,7 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "添加Imei为空，请检查！");
         }
         log.info("Start insert mentalPatient info, param DTO:" + JacksonUtil.toJson(pram));
-        Integer status = peopleService.insertMentalPatient(pram);
+        int status = peopleService.insertMentalPatient(pram);
         if (status != 1){
             log.error("Insert mentalPatient info failed");
             return ResponseResult.init(0);
@@ -170,7 +170,7 @@ public class PeopleController {
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改ID为空，请检查！");
         }
         log.info("Start update mentalPatient info, param DTO:" + JacksonUtil.toJson(param));
-        Integer status = peopleService.updateMentalPatient(param);
+        int status = peopleService.updateMentalPatient(param);
         if (status != 1){
             log.error("Update mentalPatient info failed");
             ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "修改精神病人手环信息失败");
@@ -400,6 +400,11 @@ public class PeopleController {
         if (param == null) {
             log.error("Start search people, but param is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "查询参数为空,请检查!");
+        }
+        if (param.getRegionIds() != null && param.getRegionIds().size() > 0 &&
+                param.getGridCodes() != null && param.getGridCodes().size() > 0) {
+            log.error("Start search people, but region and grid is not null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "不支持区域和网格合并查询,请检查!");
         }
         if (param.getSearchType() != 0 && param.getSearchType() != 1 && param.getSearchType() != 2 &&
                 param.getSearchType() != 3 && param.getSearchType() != 4 && param.getSearchType() != 5){

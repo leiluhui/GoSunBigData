@@ -115,6 +115,54 @@ public class CommunityService {
         return vo;
     }
 
+    public CountVO countGridPeople(Long gridCode) {
+        CountVO vo = new CountVO();
+        vo.setPeople(peopleMapper.countGridPeople(gridCode));
+        // 人员统计条件：1.当前网格；2.符合当前标签；3.此人员须有照片
+        List<Count> countList = peopleMapper.countFlagPeople(gridCode);
+        for (Count count : countList){
+            switch (count.getFlagid()){
+                case 0:
+                    vo.setRectification(count.getCount());
+                    break;
+                case 1:
+                    vo.setCriminal(count.getCount());
+                    break;
+                case 2:
+                    vo.setMental_patient(count.getCount());
+                    break;
+                case 3:
+                    vo.setDrug_addict(count.getCount());
+                    break;
+                case 4:
+                    vo.setOverseas(count.getCount());
+                    break;
+                case 5:
+                    vo.setHIV_infected(count.getCount());
+                    break;
+                case 6:
+                    vo.setImportant_adolescent(count.getCount());
+                    break;
+                case 7:
+                    vo.setRusu(count.getCount());
+                    break;
+                case 8:
+                    vo.setMilitary_related(count.getCount());
+                    break;
+                case 9:
+                    vo.setPetition_letter(count.getCount());
+                    break;
+                case 10:
+                    vo.setHeresy(count.getCount());
+                    break;
+                default:
+                    log.error("flag id error");
+                    return null;
+            }
+        }
+        return vo;
+    }
+
     public List<PeopleVO> searchCommunityPeople(PeopleDTO param) {
         PageHelper.offsetPage(param.getStart(), param.getLimit());
         List<People> peopleList = peopleMapper.searchCommunityPeople(param.getCommunityId());
