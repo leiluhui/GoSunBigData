@@ -773,6 +773,10 @@ public class PeopleService {
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
             peopleVO.setRegionId(people.getRegion());
+            peopleVO.setStreet(people.getStreet());
+            peopleVO.setStreetName(platformService.getStreetNameById(people.getStreet()));
+            peopleVO.setGridCode(people.getGridcode());
+            peopleVO.setGridName(platformService.getGridNameById(people.getGridcode()));
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
             peopleVO.setAge(IdCardUtil.getAge(people.getIdcard()));
