@@ -31,6 +31,6 @@ public class Region implements Serializable {
     private String zipCode;
     private String mergerName;
     private String pinYin;
-    private String longitude;
+    private Double longitude;
     private String latitude;
 }
