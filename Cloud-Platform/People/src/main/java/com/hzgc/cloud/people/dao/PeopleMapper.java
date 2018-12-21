@@ -1,5 +1,6 @@
 package com.hzgc.cloud.people.dao;
 
+import com.hzgc.cloud.community.model.Count;
 import com.hzgc.cloud.community.param.AffirmOperationDTO;
 import com.hzgc.cloud.community.param.ImportantRecognizeDTO;
 import com.hzgc.cloud.community.param.PeopleDTO;
@@ -56,4 +57,8 @@ public interface PeopleMapper {
     List<String> getImportantPeopleId(List<Long> communityIds);
 
     List<String> getImportantRecognizeRecord(ImportantRecognizeDTO param);
+
+    int countGridPeople(Long gridCode);
+
+    List<Count> countFlagPeople(Long gridCode);
 }

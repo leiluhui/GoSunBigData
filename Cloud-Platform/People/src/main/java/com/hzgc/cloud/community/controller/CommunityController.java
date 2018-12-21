@@ -38,6 +38,19 @@ public class CommunityController {
         return ResponseResult.init(peopleCountVO);
     }
 
+    @ApiOperation(value = "网格人口数量统计", response = CountVO.class)
+    @RequestMapping(value = BigDataPath.GRID_COUNT, method = RequestMethod.GET)
+    public ResponseResult<CountVO> countGridPeople(Long gridCode) {
+        if (gridCode == null) {
+            log.error("Start count grid people info, but gridCode is null");
+            return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "网格ID不能为空，请检查！");
+        }
+        log.info("Start count grid people info, gridCode is:" + gridCode);
+        CountVO countVO = communityService.countGridPeople(gridCode);
+        log.info("Count community people info successfully");
+        return ResponseResult.init(countVO);
+    }
+
     @ApiOperation(value = "小区实有人口查询", response = PeopleVO.class)
     @RequestMapping(value = BigDataPath.COMMUNITY_PEOPLE, method = RequestMethod.POST)
     public ResponseResult<List<PeopleVO>> searchCommunityPeople(@RequestBody PeopleDTO param) {

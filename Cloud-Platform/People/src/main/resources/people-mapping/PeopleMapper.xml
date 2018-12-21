@@ -79,10 +79,27 @@
         <result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
         <result column="pid" property="pictureId" jdbcType="BIGINT"/>
     </resultMap>
+    <resultMap id="CountMap" type="com.hzgc.cloud.community.model.Count" >
+        <result column="flagid" property="flagid" jdbcType="INTEGER"/>
+        <result column="count" property="count" jdbcType="INTEGER" />
+    </resultMap>
     <sql id="Base_Column_List">
         id, name, idcard, region, street, gridcode, household, address, sex, politic, edulevel,
         job, birthplace, community, lasttime, createtime, updatetime
     </sql>
+    <!--小区实有人口数量统计-->
+    <select id="countGridPeople" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        select count(*) from t_people where gridcode = #{gridCode,jdbcType=BIGINT}
+    </select>
+    <select id="countFlagPeople" resultMap="CountMap" parameterType="java.lang.Long">
+        select f.flagid, count(f.flagid) as count
+        from (
+        select p.id, p.gridcode from t_people p, t_picture i
+        where p.gridcode = #{gridCode,jdbcType=BIGINT} and p.id = i.peopleid group by p.id
+        ) pp, t_flag f
+        WHERE pp.id = f.peopleid
+        GROUP BY f.flagid;
+    </select>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
@@ -112,25 +129,31 @@
                     #{model}
                 </foreach>
             </if>
+            <if test="gridCodes != null and gridCodes.size() > 0">
+                gridcode in
+                <foreach collection="gridCodes" item="model" open="(" close=")" separator=",">
+                    #{model}
+                </foreach>
+            </if>
             <if test="communityId != null ">
                 and community = #{communityId,jdbcType=BIGINT}
             </if>
-            <if test="searchType == 0 ">
+            <if test="searchType == 0 and searchVal.length() > 0">
                 and name like "%" #{searchVal,jdbcType=VARCHAR} "%"
             </if>
-            <if test="searchType == 1 ">
+            <if test="searchType == 1 and searchVal.length() > 0">
                 and idcard like "%" #{searchVal,jdbcType=VARCHAR} "%"
             </if>
-            <if test="searchType == 2 ">
+            <if test="searchType == 2 and searchVal.length() > 0">
                 and id in (select peopleid from t_imsi where imsi like "%" #{searchVal,jdbcType=VARCHAR} "%")
             </if>
-            <if test="searchType == 3 ">
+            <if test="searchType == 3 and searchVal.length() > 0">
                 and id in (select peopleid from t_phone where phone like "%" #{searchVal,jdbcType=VARCHAR} "%")
             </if>
             <if test="searchType == 4 ">
                 and id in (select peopleid from t_flag where flagid = #{searchVal,jdbcType=VARCHAR})
             </if>
-            <if test="searchType == 5 ">
+            <if test="searchType == 5 and searchVal.length() > 0">
                 and id in (select peopleid from t_imei where imei = #{searchVal,jdbcType=VARCHAR})
             </if>
         </where>
