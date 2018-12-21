@@ -16,5 +16,3 @@ services:
     extra_hosts:
     - platform:${PLATFORM_HOST}
     network_mode: "host"
-    volumes:
-    - ${DOCKER_HOME}/people/log:/log

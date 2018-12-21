@@ -13,8 +13,6 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/face-dynrepo/log:/log
 
   person-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/person-dynrepo:${PERSON_DYNREPO_VERSION}
@@ -28,8 +26,6 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/person-dynrepo/log:/log
 
   vehicle-dynrepo:
     image: ${DOCKER_REPOSITOR}/hzgc/vehicle-dynrepo:${VEHICLE_DYNREPO_VERSION}
@@ -43,5 +39,3 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/vehicle-dynrepo/log:/log

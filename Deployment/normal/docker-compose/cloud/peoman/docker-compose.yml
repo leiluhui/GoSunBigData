@@ -26,4 +26,3 @@ services:
     - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
-    - ${DOCKER_HOME}/peoman-worker/log:/log

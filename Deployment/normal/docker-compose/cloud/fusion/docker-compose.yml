@@ -16,5 +16,3 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/fusion/log:/log
