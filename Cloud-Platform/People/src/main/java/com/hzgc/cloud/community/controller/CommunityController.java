@@ -1,5 +1,6 @@
 package com.hzgc.cloud.community.controller;
 
+import com.hzgc.cloud.community.model.Count;
 import com.hzgc.common.service.error.RestErrorCode;
 import com.hzgc.common.service.response.ResponseResult;
 import com.hzgc.common.service.rest.BigDataPath;
@@ -38,17 +39,17 @@ public class CommunityController {
         return ResponseResult.init(peopleCountVO);
     }
 
-    @ApiOperation(value = "网格人口数量统计", response = CountVO.class)
+    @ApiOperation(value = "网格人口数量统计", response = Count.class)
     @RequestMapping(value = BigDataPath.GRID_COUNT, method = RequestMethod.GET)
-    public ResponseResult<CountVO> countGridPeople(Long gridCode) {
+    public ResponseResult<List<Count>> countGridPeople(Long gridCode) {
         if (gridCode == null) {
             log.error("Start count grid people info, but gridCode is null");
             return ResponseResult.error(RestErrorCode.ILLEGAL_ARGUMENT, "网格ID不能为空，请检查！");
         }
         log.info("Start count grid people info, gridCode is:" + gridCode);
-        CountVO countVO = communityService.countGridPeople(gridCode);
+        List<Count> counts = communityService.countGridPeople(gridCode);
         log.info("Count community people info successfully");
-        return ResponseResult.init(countVO);
+        return ResponseResult.init(counts);
     }
 
     @ApiOperation(value = "小区实有人口查询", response = PeopleVO.class)
