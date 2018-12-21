@@ -16,6 +16,8 @@ public class SearchPeopleDTO implements Serializable {
     private String searchVal;
     @ApiModelProperty(value = "区域ID")
     private List<Long> regionIds;
+    @ApiModelProperty(value = "网格ID")
+    private List<Long> gridCodes;
     @ApiModelProperty(value = "小区ID")
     private Long communityId;
     @ApiModelProperty(value = "起始行数")
