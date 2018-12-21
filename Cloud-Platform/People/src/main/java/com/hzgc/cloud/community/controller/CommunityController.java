@@ -48,7 +48,7 @@ public class CommunityController {
         }
         log.info("Start count grid people info, gridCode is:" + gridCode);
         List<Count> counts = communityService.countGridPeople(gridCode);
-        log.info("Count community people info successfully");
+        log.info("Count grid people info successfully");
         return ResponseResult.init(counts);
     }
 
