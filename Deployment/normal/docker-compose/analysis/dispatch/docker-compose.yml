@@ -16,7 +16,7 @@ services:
     - platform:${PLATFORM_HOST}
     volumes:
     - /opt/GsFaceLib:/opt/GsFaceLib
-    - ${DOCKER_HOME}/dispatch-background/log:/log
+
 
   dispatch:
     image: ${DOCKER_REPOSITOR}/hzgc/dispatch:${DISPATCH_VERSION}
@@ -31,5 +31,3 @@ services:
     - KAFKA_HOST=${KAFKA_HOST}:${KAFKA_PORT}
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/dispatch/log:/log

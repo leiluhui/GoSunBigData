@@ -12,8 +12,6 @@ services:
     network_mode: "host"
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/collect/log:/log
 
   facecompare:
     image: ${DOCKER_REPOSITOR}/hzgc/facecompare:${FACECOMPARE_VERSION}

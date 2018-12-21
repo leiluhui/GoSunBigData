@@ -18,5 +18,3 @@ services:
     - TAG=1
     extra_hosts:
     - platform:${PLATFORM_HOST}
-    volumes:
-    - ${DOCKER_HOME}/imsi-dynrepo/log:/log
