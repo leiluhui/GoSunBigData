@@ -390,174 +390,6 @@ public class PeopleService {
         return 1;
     }
 
-    public int insertMentalPatient(MentalPatientDTO mentalPatientDTO) {
-        Imei imei = mentalPatientDTO.mentalPatientDTOShift_insert(mentalPatientDTO);
-        return imeiMapper.insertSelective(imei);
-    }
-
-    public int updateMentalPatient(MentalPatientDTO mentalPatientDTO) {
-        Imei imei = mentalPatientDTO.mentalPatientDTOShift_insert(mentalPatientDTO);
-        return imeiMapper.updateByPrimaryKeySelective(imei);
-    }
-
-    public ImeiVO selectMentalPatientByPeopleId(String peopleId) {
-        ImeiVO vo = new ImeiVO();
-        Imei imei = imeiMapper.selectByPeopleId(peopleId);
-        vo.setId(imei.getId());
-        vo.setPeopleId(imei.getPeopleid());
-        vo.setImei(imei.getImei());
-        vo.setGuardianName(imei.getGuardianname());
-        vo.setGuardianPhone(imei.getGuardianphone());
-        vo.setCadresName(imei.getCadresname());
-        vo.setCadresPhone(imei.getCadresphone());
-        vo.setPoliceName(imei.getPolicename());
-        vo.setPolicePhone(imei.getPolicephone());
-        return vo;
-    }
-
-    /**
-     * 添加人口库照片信息
-     *
-     * @param dto 添加照片信息
-     * @return 成功状态 1：修改成功, 0：修改失败
-     */
-    public int insertPicture(PictureDTO dto) {
-        PictureWithBLOBs picture = new PictureWithBLOBs();
-        picture.setPeopleid(dto.getPeopleId());
-        byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getPicture());
-        if (dto.getType() == 0) {
-            picture.setIdcardpic(bytes);
-        }
-        if (dto.getType() == 1) {
-            picture.setCapturepic(bytes);
-        }
-        PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
-        if (pictureData == null) {
-            log.error("Face feature extract is null");
-            return 0;
-        }
-        FaceAttribute faceAttribute = pictureData.getFeature();
-        if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-            log.error("Face feature extract failed");
-            return 0;
-        }
-        picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-        picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-        int status = pictureMapper.insertSelective(picture);
-        if (status != 1) {
-            log.info("Insert picture to t_picture failed");
-            return 0;
-        }
-        SyncPeopleManager manager = new SyncPeopleManager();
-        manager.setType("2");
-        manager.setPersonid(dto.getPeopleId());
-        this.sendKafka("ADD", manager);
-        return 1;
-    }
-
-    /**
-     * 修改人口库照片信息
-     *
-     * @param dto 修改照片信息
-     * @return 成功状态 1：修改成功, 0：修改失败
-     */
-    public int updatePicture(PictureDTO dto) {
-        PictureWithBLOBs picture = new PictureWithBLOBs();
-        picture.setId(dto.getPictureId());
-        picture.setPeopleid(dto.getPeopleId());
-        byte[] bytes = FaceUtil.base64Str2BitFeature(dto.getPicture());
-        if (dto.getType() == 0) {
-            picture.setIdcardpic(bytes);
-        }
-        if (dto.getType() == 1) {
-            picture.setCapturepic(bytes);
-        }
-        PictureData pictureData = innerService.faceFeautreCheck(dto.getPicture());
-        if (pictureData == null) {
-            log.error("Face feature extract is null");
-            return 0;
-        }
-        FaceAttribute faceAttribute = pictureData.getFeature();
-        if (faceAttribute == null || faceAttribute.getFeature() == null || faceAttribute.getBitFeature() == null) {
-            log.error("Face feature extract failed");
-            return 0;
-        }
-        picture.setFeature(FaceUtil.floatFeature2Base64Str(faceAttribute.getFeature()));
-        picture.setBitfeature(FaceUtil.bitFeautre2Base64Str(faceAttribute.getBitFeature()));
-        int status = pictureMapper.updateByPrimaryKeyWithBLOBs(picture);
-        if (status != 1) {
-            log.info("Update picture to t_picture failed");
-            return 0;
-        }
-        SyncPeopleManager manager = new SyncPeopleManager();
-        manager.setType("3");
-        manager.setPersonid(dto.getPeopleId());
-        this.sendKafka("UPDATE", manager);
-        return 1;
-    }
-
-    /**
-     * 删除人口库照片信息
-     *
-     * @param dto 删除照片信息
-     * @return 成功状态 1：修改成功, 0：修改失败
-     */
-    public int deletePicture(PictureDTO dto) {
-        int status = pictureMapper.deleteByPrimaryKey(dto.getPictureId());
-        if (status != 1) {
-            log.info("Delete picture to t_picture failed, picture id:" + dto.getPictureId());
-            return 0;
-        }
-        SyncPeopleManager manager = new SyncPeopleManager();
-        manager.setType("4");
-        manager.setPersonid(dto.getPeopleId());
-        this.sendKafka("DELETE", manager);
-        return 1;
-    }
-
-    /**
-     * 根据照片ID查询照片
-     *
-     * @param pictureId 照片ID
-     * @return byte[] 照片
-     */
-    public byte[] searchPictureByPicId(Long pictureId) {
-        PictureWithBLOBs picture = pictureMapper.selectPictureById(pictureId);
-        if (picture != null) {
-            if (picture.getIdcardpic() != null) {
-                return picture.getIdcardpic();
-            } else {
-                return picture.getCapturepic();
-            }
-        }
-        return null;
-    }
-
-    public PictureVO searchPictureByPeopleId(String peopleId) {
-        PictureVO pictureVO = new PictureVO();
-        List<PictureWithBLOBs> pictures = pictureMapper.selectPictureByPeopleId(peopleId);
-        if (pictures != null && pictures.size() > 0) {
-            List<Long> pictureIds = new ArrayList<>();
-            List<Long> idcardPictureIds = new ArrayList<>();
-            List<Long> capturePictureIds = new ArrayList<>();
-            for (PictureWithBLOBs picture : pictures) {
-                if (picture != null) {
-                    pictureIds.add(picture.getId());
-                    byte[] idcardPic = picture.getIdcardpic();
-                    if (idcardPic != null && idcardPic.length > 0) {
-                        idcardPictureIds.add(picture.getId());
-                    } else {
-                        capturePictureIds.add(picture.getId());
-                    }
-                }
-            }
-            pictureVO.setPictureIds(pictureIds);
-            pictureVO.setIdcardPics(idcardPictureIds);
-            pictureVO.setCapturePics(capturePictureIds);
-        }
-        return pictureVO;
-    }
-
     /**
      * 根据ID查询人口信息
      *
@@ -670,16 +502,6 @@ public class PeopleService {
     }
 
     /**
-     * 根据精神病手环ID查询peopleId(检测精神病手环ID是否绑定人口信息)
-     *
-     * @param imeiId 精神病手环ID
-     * @return peopleId
-     */
-    public String selectPeopleIdByImeiId(String imeiId) {
-        return imeiMapper.selectPeopleIdByImei(imeiId);
-    }
-
-    /**
      * 查询人员对象
      *
      * @param param 查询过滤字段封装
@@ -773,6 +595,10 @@ public class PeopleService {
             peopleVO.setName(people.getName());
             peopleVO.setIdCard(people.getIdcard());
             peopleVO.setRegionId(people.getRegion());
+            peopleVO.setStreet(people.getStreet());
+            peopleVO.setStreetName(platformService.getStreetNameById(people.getStreet()));
+            peopleVO.setGridCode(people.getGridcode());
+            peopleVO.setGridName(platformService.getGridNameById(people.getGridcode()));
             peopleVO.setAddress(people.getAddress());
             peopleVO.setSex(people.getSex());
             peopleVO.setAge(IdCardUtil.getAge(people.getIdcard()));
@@ -878,7 +704,7 @@ public class PeopleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    private Integer excelImport(List<PeopleDTO> peopleDTOList) {
+    Integer excelImport(List<PeopleDTO> peopleDTOList) {
         for (PeopleDTO peopleDTO : peopleDTOList) {
             peopleDTO.setId(UuidUtil.getUuid());
             String id = this.insertPeople(peopleDTO);
